@@ -1,0 +1,12 @@
+name "bindbc-sdl"
+description "Dynamic and static bindings to SDL2, SDL2_image, SDL2_mixer, SDL2_ttf and SDL2_net."
+homepage ""
+authors "Mike Parker"
+license "Boost"
+targetType "none"
+
+dependency "bindbc-sdl:sdl" version="*"
+subPackage "./sdl/"
+
+dependency "bindbc-sdl:image" version="*"
+subPackage "./image/"

@@ -1,0 +1,20 @@
+name "image"
+description "Dynamic and static bindings SDL2_image."
+homepage ""
+authors "Mike Parker"
+license "Boost"
+targetType "staticLibrary"
+targetPath "../lib"
+targetName "BindBCSDLImage"
+dflags "-betterC"
+
+dependency "bindbc-sdl:sdl" version="~>0.1.0"
+
+configuration "dynamic" {
+    dependency "bindbc-loader" version="~>0.1.0"
+}
+
+configuration "static" {
+    versions "BindSDL_Static"
+    libs "SDL2_image"
+}

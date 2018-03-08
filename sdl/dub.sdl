@@ -5,7 +5,7 @@ authors "Mike Parker"
 license "Boost"
 targetType "staticLibrary"
 targetPath "../lib"
-targetName "BindBCSDL"
+targetName "BindBC_SDL"
 dflags "-betterC"
 
 configuration "dynamic" {

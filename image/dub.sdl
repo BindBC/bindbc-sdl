@@ -5,7 +5,7 @@ authors "Mike Parker"
 license "Boost"
 targetType "staticLibrary"
 targetPath "../lib"
-targetName "BindBCSDLImage"
+targetName "BindBC_SDLImage"
 dflags "-betterC"
 
 dependency "bindbc-sdl:sdl" version="~>0.1.0"

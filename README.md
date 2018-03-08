@@ -72,7 +72,12 @@ When using DUB, its `versions` directive is an option:
 
 __dub.json__
 ```
-
+"dependencies": {
+    "bindbc-sdl:sdl": "~>0.1.0",
+    "bindbc-sdl:image": "~>0.1.0"
+},
+"versions": ["BindSDL_Static"],
+"libs": ["SDL2", "SDL2_image"]
 ```
 
 __dub.sdl__
@@ -88,7 +93,14 @@ Instead of using DUB's `versions` directive, a `subConfiguration` can be used. E
 
 __dub.json__
 ```
-
+"dependencies": {
+    "bindbc-sdl:sdl": "~>0.1.0",
+    "bindbc-sdl:image": "~>0.1.0"
+},
+"subConfigurations": {
+    "bindbc-sdl:sdl": "static",
+    "bindbc-sdl:image": "static"
+}
 ```
 
 __dub.sdl__
@@ -108,7 +120,11 @@ It is recommended that you always select the minimum version you require _and no
 
 __dub.json__
 ```
-
+"dependencies": {
+    "bindbc-sdl:sdl": "~>0.1.0",
+    "bindbc-sdl:image": "~>0.1.0"
+},
+"versions": ["SDL_202"]
 ```
 
 __dub.sdl__
@@ -132,8 +148,8 @@ When you call `loadSDL`, if SDL 2.0.2 or later is installed on the user's system
 |SDL 2.0.7           | SDL_207          |
 |SDL 2.0.8           | SDL_208          |
 |--                  | --               |
-|SDL_Image 2.0.0     | Default          |
-|SDL_Image 2.0.1     | SDL_Image_201    |
-|SDL_Image 2.0.2     | SDL_Image_202    |
+|SDL_image 2.0.0     | Default          |
+|SDL_image 2.0.1     | SDL_Image_201    |
+|SDL_image 2.0.2     | SDL_Image_202    |
 
 __Note__: SDL's [Filesystem](https://wiki.libsdl.org/CategoryFilesystem) API was added in SDL 2.0.1. However, there was a bug on Windows that prevented `SDL_GetPrefPath` from creating the path when it doesn't exist. When using this API on Windows, it's fine to compile with `SDL_201` -- just make sure to ship SDL 2.0.2 or later with your app and _verify_ that [the loaded SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later via the `SDL_GetVersion` function. Alternatively, you can compile your app with version `SDL_202` on Windows and `SDL_201` on other platforms. This will guarantee you have at least SDL 2.0.2 or higher on Windows.

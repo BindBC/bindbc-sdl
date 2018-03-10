@@ -1,0 +1,20 @@
+name "mixer"
+description "Dynamic and static bindings for SDL2_mixer."
+homepage ""
+authors "Mike Parker"
+license "Boost"
+targetType "staticLibrary"
+targetPath "../lib"
+targetName "BindBC_SDLMixer"
+dflags "-betterC"
+
+dependency "bindbc-sdl:sdl" version="~>0.1.0"
+
+configuration "dynamic" {
+    dependency "bindbc-loader" version="~>0.1.0"
+}
+
+configuration "static" {
+    versions "BindSDL_Static"
+    libs "SDL2_mixer"
+}

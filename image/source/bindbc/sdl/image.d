@@ -37,7 +37,7 @@ alias IMG_SetError = SDL_SetError;
 alias IMG_GetError = SDL_GetError;
 
 enum SDLImageSupport {
-    sdlImage200     = 200,
+    sdlImage200 = 200,
     sdlImage201,
     sdlImage202,
 }
@@ -58,7 +58,8 @@ else {
     enum ubyte SDL_IMAGE_PATCHLEVEL = 0;
 }
 
-@nogc nothrow void SDL_IMAGE_VERSION(SDL_version* X) {
+@nogc nothrow void SDL_IMAGE_VERSION(SDL_version* X)
+{
     X.major     = SDL_IMAGE_MAJOR_VERSION;
     X.minor     = SDL_IMAGE_MINOR_VERSION;
     X.patch     = SDL_IMAGE_PATCHLEVEL;
@@ -66,7 +67,7 @@ else {
 
 // These were implemented in SDL_image 2.0.2, but are fine for all versions.
 enum SDL_IMAGE_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL);
-enum SDL_INAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_IMAGE_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
+enum SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_IMAGE_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
 
 enum {
     IMG_INIT_JPG    = 0x00000001,
@@ -78,7 +79,7 @@ version(BindSDL_Static) {
     extern(C) @nogc nothrow {
         int IMG_Init(int);
         int IMG_Quit();
-        const(SDL_version)* IMG_Linked_Versionn();
+        const(SDL_version)* IMG_Linked_Version();
         SDL_Surface* IMG_LoadTyped_RW(SDL_RWops*,int,const(char)*);
         SDL_Surface* IMG_Load(const(char)*);
         SDL_Surface* IMG_Load_RW(SDL_RWops*,int);
@@ -245,7 +246,8 @@ else {
 
     private SharedLib lib;
 
-    void unloadSDLImage() {
+    void unloadSDLImage()
+    {
         if(lib != invalidHandle) {
             lib.unload();
         }

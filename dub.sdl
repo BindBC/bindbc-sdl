@@ -10,3 +10,6 @@ subPackage "./sdl/"
 
 dependency "bindbc-sdl:image" version="*"
 subPackage "./image/"
+
+dependency "bindbc-sdl:mixer" version="*"
+subPackage "./mixer/"

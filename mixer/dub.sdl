@@ -15,6 +15,6 @@ configuration "dynamic" {
 }
 
 configuration "static" {
-    versions "BindSDL_Static"
+    versions "BindSDL_Mixer_Static"
     libs "SDL2_mixer"
 }

@@ -186,7 +186,6 @@ extern(C) nothrow {
     }
 }
 
-version(BindSDL_Static) version = BindSDL_Mixer_Static;
 version(BindSDL_Mixer_Static) {
     extern(C) @nogc nothrow {
         const(SDL_version)* Mix_Linked_Version();

@@ -75,7 +75,8 @@ enum {
     IMG_INIT_TIF    = 0x00000004,
     IMG_INIT_WEBP   = 0x00000008,
 }
-version(BindSDL_Static) {
+
+version(BindSDL_Image_Static) {
     extern(C) @nogc nothrow {
         int IMG_Init(int);
         int IMG_Quit();

@@ -64,7 +64,7 @@ Note that all of the `load*` functions will return `false` only if the shared li
 The static bindings do not require a manual load at runtime. Instead, they have a link-time dependency on the SDL library and any statellite libraries that are use in the program. Either the static libraries or the shared libraries can be used (i.e. to use the shared libraries, link with the import libraries on Windows and directly with the shared libraries elsewhere). Enabling the static binding can be done in two ways.
 
 ### Via the compiler's `-version` switch or DUB's `versions` directive
-Pass the `BindBC_Static` version to the compiler and link with the appropriate libraries. 
+Pass the `BindSDL_Static` version, or the appropriate version for the satellite libraries (e.g. `BindSDL_Image_Static`, `BindSDL_Mixer_Static`, etc.) to the compiler and link with the appropriate libraries. 
 
 When using the compiler command line or a build system that doesn't support DUB, this is the only option. The `-version=BindSDL_Static` option should be passed to the compiler when building your program. All of the requried C libraries, as well as the BindBC static libraries, must also be passed to the compiler on the command line or via your build system's configuration. 
 
@@ -76,7 +76,7 @@ __dub.json__
     "bindbc-sdl:sdl": "~>0.1.0",
     "bindbc-sdl:image": "~>0.1.0"
 },
-"versions": ["BindSDL_Static"],
+"versions": ["BindSDL_Static", "BindSDL_Image_Static"],
 "libs": ["SDL2", "SDL2_image"]
 ```
 
@@ -84,7 +84,7 @@ __dub.sdl__
 ```
 dependency "bindbc-sdl:sdl" version="~>0.1.0"
 dependency "bindbc-sdl:image" version="~>0.1.0"
-versions "BindSDL_Static"
+versions "BindSDL_Static" "BindSDL_Image_Static"
 libs "SDL2" "SDL2_image"
 ```
 
@@ -111,7 +111,7 @@ subConfiguration "bindbc-sdl:sdl" "static"
 subConfiguration "bindbc-sdl:image" "static"
 ```
 
-This will ensure the appropriate `BindBC*_Static` versoins are given to the compiler. It also has the benefit that it completely excludes from the build all of the source modules related to the dynamic bindings, i.e. they will never be passed to the compiler. When using DUB, prefer this approach over the `versions` directive.
+This will ensure the appropriate `BindBC*_Static` versions are given to the compiler. It also has the benefit that it completely excludes from the build all of the source modules related to the dynamic bindings, i.e. they will never be passed to the compiler. When using DUB, prefer this approach over the `versions` directive.
 
 ## The minimum required SDL version
 By default, each bindbc-sdl package is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via the `-version` compiler switch and the `versions` DUB directive. 
@@ -136,7 +136,7 @@ versions "SDL_202"
 
 When you call `loadSDL`, if SDL 2.0.2 or later is installed on the user's system, the library will load without error. Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
 
-|  Library & Version | Version ID       |
+| Library & Version  | Version ID       |
 |--------------------|------------------|
 |SDL 2.0.0           | Default          |
 |SDL 2.0.1           | SDL_201          |
@@ -151,5 +151,9 @@ When you call `loadSDL`, if SDL 2.0.2 or later is installed on the user's system
 |SDL_image 2.0.0     | Default          |
 |SDL_image 2.0.1     | SDL_Image_201    |
 |SDL_image 2.0.2     | SDL_Image_202    |
+|--                  | --               |
+|SDL_mixer 2.0.0     | Default          |
+|SDL_mixer 2.0.1     | SDL_Mixer_201    |
+|SDL_mixer 2.0.2     | SDL_Mixer_202    |
 
 __Note__: SDL's [Filesystem](https://wiki.libsdl.org/CategoryFilesystem) API was added in SDL 2.0.1. However, there was a bug on Windows that prevented `SDL_GetPrefPath` from creating the path when it doesn't exist. When using this API on Windows, it's fine to compile with `SDL_201` -- just make sure to ship SDL 2.0.2 or later with your app and _verify_ that [the loaded SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later via the `SDL_GetVersion` function. Alternatively, you can compile your app with version `SDL_202` on Windows and `SDL_201` on other platforms. This will guarantee you have at least SDL 2.0.2 or higher on Windows.

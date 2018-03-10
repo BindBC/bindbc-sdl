@@ -231,14 +231,14 @@ else {
     static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
         extern(C) @nogc nothrow {
             alias pIMG_isSVG = int function(SDL_RWops*);
-            alias pIMG_LoadSVG = SDL_Surface* function(SDL_RWops*);
+            alias pIMG_LoadSVG_RW = SDL_Surface* function(SDL_RWops*);
             alias pIMG_SaveJPG = int function(SDL_Surface*,const(char)*,int);
             alias pIMG_SaveJPG_RW = int function(SDL_Surface*,SDL_RWops*,int,int);
         }
 
         __gshared {
             pIMG_isSVG IMG_isSVG;
-            pIMG_LoadSVG IMG_LoadSVG;
+            pIMG_LoadSVG_RW IMG_LoadSVG;
             pIMG_SaveJPG IMG_SaveJPG;
             pIMG_SaveJPG_RW IMG_SaveJPG_RW;
         }

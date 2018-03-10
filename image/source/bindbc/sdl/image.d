@@ -42,29 +42,20 @@ enum SDLImageSupport {
     sdlImage202,
 }
 
-version(SDL_Image_201) {
-    enum sdlImageSupport = SDLImageSupport.sdlImage201;
-    enum : ubyte {
-        SDL_IMAGE_MAJOR_VERSION     = 2,
-        SDL_IMAGE_MINOR_VERSION     = 0,
-        SDL_IMAGE_PATCHLEVEL        = 1,
-    }
-}
+enum ubyte SDL_IMAGE_MAJOR_VERSION = 2;
+enum ubyte SDL_IMAGE_MINOR_VERSION = 0;
+
 version(SDL_Image_202) {
     enum sdlImageSupport = SDLImageSupport.sdlImage202;
-    enum : ubyte {
-        SDL_IMAGE_MAJOR_VERSION     = 2,
-        SDL_IMAGE_MINOR_VERSION     = 0,
-        SDL_IMAGE_PATCHLEVEL        = 2,
-    }
+    enum ubyte SDL_IMAGE_PATCHLEVEL = 2;
+}
+else version(SDL_Image_201) {
+    enum sdlImageSupport = SDLImageSupport.sdlImage201;
+    enum ubyte SDL_IMAGE_PATCHLEVEL = 1;
 }
 else {
     enum sdlImageSupport = SDLImageSupport.sdlImage200;
-    enum : ubyte {
-        SDL_IMAGE_MAJOR_VERSION     = 2,
-        SDL_IMAGE_MINOR_VERSION     = 0,
-        SDL_IMAGE_PATCHLEVEL        = 0,
-    }
+    enum ubyte SDL_IMAGE_PATCHLEVEL = 0;
 }
 
 @nogc nothrow void SDL_IMAGE_VERSION(SDL_version* X) {

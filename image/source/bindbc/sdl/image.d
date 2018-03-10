@@ -310,7 +310,7 @@ else {
 
         static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
             lib.bindSymbol(cast(void**)&IMG_isSVG,"IMG_isSVG");
-            lib.bindSymbol(cast(void**)&IMG_LoadSVG,"IMG_LoadSVG");
+            lib.bindSymbol(cast(void**)&IMG_LoadSVG,"IMG_LoadSVG_RW");
             lib.bindSymbol(cast(void**)&IMG_SaveJPG,"IMG_SaveJPG");
             lib.bindSymbol(cast(void**)&IMG_SaveJPG_RW,"IMG_SaveJPG_RW");
         }

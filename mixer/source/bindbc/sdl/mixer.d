@@ -263,7 +263,9 @@ version(BindSDL_Mixer_Static) {
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
             int Mix_OpenAudioDevice(int,ushort,int,int,const(char)*,int);
             SDL_bool Mix_HasChunkDecoder(const(char)*);
-            SDL_bool Mix_HasMusicDecoder(const(char)*);
+
+            // Declared in SDL_mixer.h, but not implemented
+            // SDL_bool Mix_HasMusicDecoder(const(char)*);
         }
     }
 }
@@ -421,13 +423,15 @@ else {
         extern(C) @nogc nothrow {
             alias pMix_OpenAudioDevice = int function(int,ushort,int,int,const(char)*,int);
             alias pMix_HasChunkDecoder = SDL_bool function(const(char)*);
-            alias pMix_HasMusicDecoder = SDL_bool function(const(char)*);
+
+            // Declared in SDL_mixer.h, but not implemented
+            //alias pMix_HasMusicDecoder = SDL_bool function(const(char)*);
         }
 
         __gshared {
             pMix_OpenAudioDevice Mix_OpenAudioDevice;
             pMix_HasChunkDecoder Mix_HasChunkDecoder;
-            pMix_HasMusicDecoder Mix_HasMusicDecoder;
+            //pMix_HasMusicDecoder Mix_HasMusicDecoder;
         }
     }
 
@@ -525,9 +529,8 @@ else {
         lib.bindSymbol(cast(void**)&Mix_CloseAudio,"Mix_CloseAudio");
 
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
-            lib.bindSymbol(cast(void**)&Mix_OpenAudioDevice, "Mix_OpenAudioDevice");
-            lib.bindSymbol(cast(void**)&Mix_HasChunkDecoder, "Mix_HasChunkDecoder");
-            lib.bindSymbol(cast(void**)&Mix_HasMusicDecoder, "Mix_HasMusicDecoder");
+            lib.bindSymbol(cast(void**)&Mix_OpenAudioDevice,"Mix_OpenAudioDevice");
+            lib.bindSymbol(cast(void**)&Mix_HasChunkDecoder,"Mix_HasChunkDecoder");
         }
 
         return true;

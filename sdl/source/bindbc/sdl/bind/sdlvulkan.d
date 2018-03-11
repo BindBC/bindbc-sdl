@@ -26,14 +26,14 @@ else {
             alias pSDL_Vulkan_LoadLibrary = int function(const(char)*);
             alias pSDL_Vulkan_UnloadLibrary = void function();
         }
-    }
 
-    __gshared {
-        pSDL_Vulkan_CreateSurface SDL_Vulkan_CreateSurface;
-        pSDL_Vulkan_GetDrawableSize SDL_Vulkan_GetDrawableSize;
-        pSDL_Vulkan_GetInstanceExtensions SDL_Vulkan_GetInstanceExtensions;
-        pSDL_Vulkan_GetVkGetInstanceProcAddr SDL_Vulkan_GetVkGetInstanceProcAddr;
-        pSDL_Vulkan_LoadLibrary SDL_Vulkan_LoadLibrary;
-        pSDL_Vulkan_UnloadLibrary SDL_Vulkan_UnloadLibrary;
+        __gshared {
+            pSDL_Vulkan_CreateSurface SDL_Vulkan_CreateSurface;
+            pSDL_Vulkan_GetDrawableSize SDL_Vulkan_GetDrawableSize;
+            pSDL_Vulkan_GetInstanceExtensions SDL_Vulkan_GetInstanceExtensions;
+            pSDL_Vulkan_GetVkGetInstanceProcAddr SDL_Vulkan_GetVkGetInstanceProcAddr;
+            pSDL_Vulkan_LoadLibrary SDL_Vulkan_LoadLibrary;
+            pSDL_Vulkan_UnloadLibrary SDL_Vulkan_UnloadLibrary;
+        }
     }
 }

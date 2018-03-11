@@ -190,5 +190,10 @@ When you call `loadSDL`, if SDL 2.0.2 or later is installed on the user's system
 |SDL_mixer 2.0.0     | Default          |
 |SDL_mixer 2.0.1     | SDL_Mixer_201    |
 |SDL_mixer 2.0.2     | SDL_Mixer_202    |
+|--                  | --               |
+|SDL_ttf 2.0.12      | Default          |
+|SDL_ttf 2.0.13      | SDL_TTF_2013     |
+|SDL_ttf 2.0.14      | SDL_TTF_2014     |
+
 
 __Note__: SDL's [Filesystem](https://wiki.libsdl.org/CategoryFilesystem) API was added in SDL 2.0.1. However, there was a bug on Windows that prevented `SDL_GetPrefPath` from creating the path when it doesn't exist. When using this API on Windows, it's fine to compile with `SDL_201` -- just make sure to ship SDL 2.0.2 or later with your app and _verify_ that [the loaded SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later via the `SDL_GetVersion` function. Alternatively, you can compile your app with version `SDL_202` on Windows and `SDL_201` on other platforms. This will guarantee you have at least SDL 2.0.2 or higher on Windows.

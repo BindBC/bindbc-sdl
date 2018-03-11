@@ -27,6 +27,8 @@ DEALINGS IN THE SOFTWARE.
 */
 module bindbc.sdl.mixer;
 
+version(BindSDL_Mixer):
+
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlaudio : AUDIO_S16LSB, SDL_MIX_MAXVOLUME;
 import bindbc.sdl.bind.sdlerror : SDL_GetError, SDL_SetError, SDL_ClearError;
@@ -186,7 +188,7 @@ extern(C) nothrow {
     }
 }
 
-version(BindSDL_Mixer_Static) {
+version(BindSDL_Static) {
     extern(C) @nogc nothrow {
         const(SDL_version)* Mix_Linked_Version();
         int Mix_Init(int);
@@ -445,7 +447,7 @@ else {
 
     bool loadSDLMixer()
     {
-        version(Windows) return loadSDLMixer("SDL2_Mixer.dll");
+        version(Windows) return loadSDLMixer("SDL2_mixer.dll");
         else return false;
     }
 

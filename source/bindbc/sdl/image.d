@@ -27,6 +27,8 @@ DEALINGS IN THE SOFTWARE.
 */
 module bindbc.sdl.image;
 
+version(BindSDL_Image):
+
 import bindbc.sdl.bind.sdlerror : SDL_GetError, SDL_SetError;
 import bindbc.sdl.bind.sdlrender : SDL_Renderer, SDL_Texture;
 import bindbc.sdl.bind.sdlrwops : SDL_RWops;
@@ -76,7 +78,7 @@ enum {
     IMG_INIT_WEBP   = 0x00000008,
 }
 
-version(BindSDL_Image_Static) {
+version(BindSDL_Static) {
     extern(C) @nogc nothrow {
         int IMG_Init(int);
         int IMG_Quit();

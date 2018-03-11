@@ -3,13 +3,26 @@ description "Dynamic and static bindings to SDL2, SDL2_image, SDL2_mixer, SDL2_t
 homepage ""
 authors "Mike Parker"
 license "Boost"
-targetType "none"
 
-dependency "bindbc-sdl:sdl" version="*"
-subPackage "./sdl/"
+targetType "staticLibrary"
+targetPath "lib"
+targetName "BindBC_SDL"
 
-dependency "bindbc-sdl:image" version="*"
-subPackage "./image/"
+configuration "dynamic" {
+    dependency "bindbc-loader" version="~>0.1.0"
+}
 
-dependency "bindbc-sdl:mixer" version="*"
-subPackage "./mixer/"
+configuration "dynamicBC" {
+    dependency "bindbc-loader" version="~>0.1.0"
+    subConfiguration "bindbc-loader" "yesBC"
+}
+
+configuration "static" {
+    versions "BindSDL_Static"
+}
+
+configuration "staticBC" {
+    dflags "-betterC"
+    versions "BindSDL_Static"
+    excludedSourceFiles "source/bindbc/sdl/dynload.d"
+}

@@ -26,7 +26,9 @@ versions "BindSDL_Image" "BindSDL_TTF"
 ```
 
 ### The dynamic binding
-The dynamic bindings require no special configuration when using DUB to manage your project. To load the shared libraries, you need to call the appropriate load function.
+The dynamic bindings require no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributed the SDL DLLs with your program. On other systems, it usually means installing the SDL runtime libraries through a package manager.
+
+To load the shared libraries, you need to call the appropriate load function.
 
 ```d
 import bindbc.sdl;
@@ -70,7 +72,11 @@ Note that all of the `load*` functions will return `false` only if the shared li
 To determine if any of the symbols failed to load, which usually indicates an version mismatch, use the error handling functions from the `bindbc-loader` package.
 
 ## The static bindings
-The static bindings do not require a manual load at runtime. Instead, they have a link-time dependency on the SDL library and any statellite libraries that are use in the program. Either the static libraries or the shared libraries can be used (i.e. to use the shared libraries, link with the import libraries on Windows and directly with the shared libraries elsewhere). Enabling the static binding can be done in two ways.
+The static bindings have a link-time dependency on the either the shared or static libraries for SDL and any satellite libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries. 
+
+This requires the SDL development packages be installed on your system at compile time. When linking with the static libraries, there is no runtime dependency. When linking with the shared libraries, the runtime dependency is the same as the dynamic bindings, the difference being that the shared libraries are no longer loaded manually -- loading is handled automatically by the system when the program is launched.
+
+Enabling the static binding can be done in two ways.
 
 ### Via the compiler's `-version` switch or DUB's `versions` directive
 Pass the `BindSDL_Static` version, or the appropriate version for the satellite libraries (e.g. `BindSDL_Image_Static`, `BindSDL_Mixer_Static`, etc.) to the compiler and link with the appropriate libraries. 

@@ -1,5 +1,5 @@
 ===============================================================================
-The source code for bindbc-sdl is distrubted under the Boost Software License.
+The source code for bindbc-sdl is distrbuted under the Boost Software License.
 
           Copyright Michael D. Parker 2018.
  Distributed under the Boost Software License, Version 1.0.
@@ -14,7 +14,7 @@ should adhere to the SDL license. The same applies to the SDL  satellite librari
 All are distributed under the 3-clause BSD license.
 
 Simple DirectMedia Layer
-Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
 SDL_image:  An example image loading library for use with SDL
   Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>

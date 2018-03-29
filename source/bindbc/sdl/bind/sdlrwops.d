@@ -83,7 +83,7 @@ enum {
     int SDL_RWclose(SDL_RWops* ctx) { return ctx.close(ctx); }
 }
 
-static if(sdlSupport >= SDLSupport.sdl202) {
+static if(sdlSupport >= SDLSupport.sdl206) {
     @nogc nothrow
     void* SDL_LoadFile(const(char)* filename, size_t datasize) {
         pragma(inline, true);

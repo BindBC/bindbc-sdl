@@ -22,6 +22,11 @@ void unloadSDL()
     }
 }
 
+bool isLoadedSDL()
+{
+    return  lib != invalidHandle;
+}
+
 bool loadSDL()
 {
     // #1778 prevents me from using static arrays here :(

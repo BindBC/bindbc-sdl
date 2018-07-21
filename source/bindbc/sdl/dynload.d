@@ -33,6 +33,17 @@ bool loadSDL()
     version(Windows) {
         return loadSDL("SDL2.dll");
     }
+    else version(OSX) {
+        return false;
+    }
+    else version(Posix) {
+        if(loadSDL("libSDL2.so")) return true;
+        else if(loadSDL("/usr/local/lib/libSDL2.so")) return true;
+        else if(loadSDL("libSDL2-2.0.so")) return true;
+        else if(loadSDL("/usr/local/lib/libSDL2-2.0.so")) return true;
+        else if(loadSDL("libSDL2-2.0.so.0")) return true;
+        else return loadSDL("/usr/local/lib/libSDL2-2.0.so.0");
+    }
     else return false;
 }
 

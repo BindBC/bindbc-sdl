@@ -426,7 +426,25 @@ else {
 
     bool loadSDLMixer()
     {
-        version(Windows) return loadSDLMixer("SDL2_mixer.dll");
+        version(Windows) {
+            return loadSDLMixer("SDL2_mixer.dll");
+        }
+        version(OSX) {
+            if(loadSDLMixer("libSDL2_mixer.dylib")) return true;
+            else if(loadSDLMixer("/usr/local/lib/libSDL2_mixer.dylib")) return true;
+            else if(loadSDLMixer("../Frameworks/SDL2_mixer.framework/SDL2_mixer")) return true;
+            else if(loadSDLMixer("/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer")) return true;
+            else if(loadSDLMixer("/System/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer")) return true;
+            else return loadSDLMixer("/opt/local/lib/libSDL2_mixer.dylib");
+        }
+        else version(Posix) {
+            if(loadSDLImage("libSDL2_mixer.so")) return true;
+            else if(loadSDLMixer("/usr/local/lib/libSDL2_mixer.so")) return true;
+            else if(loadSDLMixer("libSDL2-2.0_mixer.so")) return true;
+            else if(loadSDLMixer("/usr/local/lib/libSDL2-2.0_mixer.so")) return true;
+            else if(loadSDLMixer("libSDL2-2.0_mixer.so.0")) return true;
+            else return loadSDLMixer("/usr/local/lib/libSDL2-2.0_mixer.so.0");
+        }
         else return false;
     }
 

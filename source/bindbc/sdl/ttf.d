@@ -250,7 +250,25 @@ else {
 
     bool loadSDLTTF()
     {
-        version(Windows) return loadSDLTTF("SDL2_ttf.dll");
+        version(Windows) {
+            return loadSDLTTF("SDL2_ttf.dll");
+        }
+        else version(OSX) {
+            if(loadSDLImage("libSDL2_ttf.dylib")) return true;
+            else if(loadSDLTTF("/usr/local/lib/libSDL2_ttf.dylib")) return true;
+            else if(loadSDLTTF("../Frameworks/SDL2_ttf.framework/SDL2_ttf")) return true;
+            else if(loadSDLTTF("/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf")) return true;
+            else if(loadSDLTTF("/System/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf")) return true;
+            else return loadSDLTTF("/opt/local/lib/libSDL2_ttf.dylib");
+        }
+        else version(Posix) {
+            if(loadSDLTTF("libSDL2_ttf.so")) return true;
+            else if(loadSDLTTF("/usr/local/lib/libSDL2_ttf.so")) return true;
+            else if(loadSDLTTF("libSDL2-2.0_ttf.so")) return true;
+            else if(loadSDLTTF("/usr/local/lib/libSDL2-2.0_ttf.so")) return true;
+            else if(loadSDLTTF("libSDL2-2.0_ttf.so.0")) return true;
+            else return loadSDLTTF("/usr/local/lib/libSDL2-2.0_ttf.so.0");
+        }
         else return false;
     }
 

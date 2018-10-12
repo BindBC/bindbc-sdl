@@ -237,7 +237,26 @@ else {
 
     bool loadSDLImage()
     {
-        version(Windows) return loadSDLImage("SDL2_image.dll");
+        version(Windows) {
+            return loadSDLImage("SDL2_image.dll");
+        }
+        else version(OSX) {
+            if(loadSDLImage("libSDL2_image.dylib")) return true;
+            else if(loadSDLImage("/usr/local/lib/libSDL2_image.dylib")) return true;
+            else if(loadSDLImage("../Frameworks/SDL2_image.framework/SDL2_image")) return true;
+            else if(loadSDLImage("/Library/Frameworks/SDL2_image.framework/SDL2_image")) return true;
+            else if(loadSDLImage("/System/Library/Frameworks/SDL2_image.framework/SDL2_image")) return true;
+            else return loadSDLImage("/opt/local/lib/libSDL2_image.dylib");
+
+        }
+        else version(Posix) {
+            if(loadSDLImage("libSDL2_image.so")) return true;
+            else if(loadSDLImage("/usr/local/lib/libSDL2_image.so")) return true;
+            else if(loadSDLImage("libSDL2-2.0_image.so")) return true;
+            else if(loadSDLImage("/usr/local/lib/libSDL2-2.0_image.so")) return true;
+            else if(loadSDLImage("libSDL2-2.0_image.so.0")) return true;
+            else return loadSDLImage("/usr/local/lib/libSDL2-2.0_image.so.0");
+        }
         else return false;
     }
 

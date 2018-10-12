@@ -34,7 +34,13 @@ bool loadSDL()
         return loadSDL("SDL2.dll");
     }
     else version(OSX) {
-        return false;
+        if(loadSDL("libSDL2.dylib")) return true;
+        else if(loadSDL("/usr/local/lib/libSDL2.dylib")) return true;
+        else if(loadSDL("/usr/local/lib/libSDL2/libSDL2.dylib")) return true;
+        else if(loadSDL("../Frameworks/SDL2.framework/SDL2")) return true;
+        else if(loadSDL("/Library/Frameworks/SDL2.framework/SDL2")) return true;
+        else if(loadSDL("/System/Library/Frameworks/SDL2.framework/SDL2")) return true;
+        else return loadSDL("/opt/local/lib/libSDL2.dylib");
     }
     else version(Posix) {
         if(loadSDL("libSDL2.so")) return true;

@@ -7,6 +7,8 @@
 module bindbc.sdl.config;
 
 enum SDLSupport {
+    noLibrary,
+    badLibrary,
     sdl200      = 200,
     sdl201      = 201,
     sdl202      = 202,

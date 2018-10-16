@@ -19,9 +19,11 @@ alias TTF_SetError = SDL_SetError;
 alias TTF_GetError = SDL_GetError;
 
 enum SDLTTFSupport {
-    sdlTTF2012 = 12,
-    sdlTTF2013 = 13,
-    sdlTTF2014 = 14,
+    noLibrary,
+    badLibrary,
+    sdlTTF2012 = 2012,
+    sdlTTF2013 = 2013,
+    sdlTTF2014 = 2014,
 }
 
 enum ubyte SDL_TTF_MAJOR_VERSION = 2;
@@ -239,7 +241,10 @@ else {
         }
     }
 
-    private SharedLib lib;
+    private {
+        SharedLib lib;
+        SDLTTFSupport loadedVersion;
+    }
 
     void unloadSDLTTF()
     {
@@ -248,36 +253,52 @@ else {
         }
     }
 
-    bool loadSDLTTF()
+    SDLTTFSupport loadedSDLTTFVersion() { return loadedVersion; }
+
+    SDLTTFSupport loadSDLTTF()
     {
         version(Windows) {
-            return loadSDLTTF("SDL2_ttf.dll");
+            const(char)[][1] libNames = ["SDL2_ttf.dll"];
         }
         else version(OSX) {
-            if(loadSDLImage("libSDL2_ttf.dylib")) return true;
-            else if(loadSDLTTF("/usr/local/lib/libSDL2_ttf.dylib")) return true;
-            else if(loadSDLTTF("../Frameworks/SDL2_ttf.framework/SDL2_ttf")) return true;
-            else if(loadSDLTTF("/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf")) return true;
-            else if(loadSDLTTF("/System/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf")) return true;
-            else return loadSDLTTF("/opt/local/lib/libSDL2_ttf.dylib");
+            const(char)[][6] libNames = [
+                "libSDL2_ttf.dylib",
+                "/usr/local/lib/libSDL2_ttf.dylib",
+                "../Frameworks/SDL2_ttf.framework/SDL2_ttf",
+                "/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf",
+                "/System/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf",
+                "/opt/local/lib/libSDL2_ttf.dylib"
+            ];
         }
         else version(Posix) {
-            if(loadSDLTTF("libSDL2_ttf.so")) return true;
-            else if(loadSDLTTF("/usr/local/lib/libSDL2_ttf.so")) return true;
-            else if(loadSDLTTF("libSDL2-2.0_ttf.so")) return true;
-            else if(loadSDLTTF("/usr/local/lib/libSDL2-2.0_ttf.so")) return true;
-            else if(loadSDLTTF("libSDL2-2.0_ttf.so.0")) return true;
-            else return loadSDLTTF("/usr/local/lib/libSDL2-2.0_ttf.so.0");
+            const(char)[][6] libNames = [
+                "libSDL2_ttf.so",
+                "/usr/local/lib/libSDL2_ttf.so",
+                "libSDL2-2.0_ttf.so",
+                "/usr/local/lib/libSDL2-2.0_ttf.so",
+                "libSDL2-2.0_ttf.so.0",
+                "/usr/local/lib/libSDL2-2.0_ttf.so.0"
+            ];
         }
-        else return false;
+        else static assert(0, "bindbc-sdl is not yet supported on this platform.");
+
+        SDLTTFSupport ret;
+        foreach(name; libNames) {
+            ret = loadSDLTTF(name.ptr);
+            if(ret != SDLTTFSupport.noLibrary) break;
+        }
+        return ret;
     }
 
-    bool loadSDLTTF(const(char)* libName)
+    SDLTTFSupport loadSDLTTF(const(char)* libName)
     {
         lib = load(libName);
         if(lib == invalidHandle) {
-            return false;
+            return SDLTTFSupport.badLibrary;
         }
+
+        auto errCount = errorCount();
+        loadedVersion = SDLTTFSupport.badLibrary;
 
         lib.bindSymbol(cast(void**)&TTF_Linked_Version,"TTF_Linked_Version");
         lib.bindSymbol(cast(void**)&TTF_ByteSwappedUNICODE,"TTF_ByteSwappedUNICODE");
@@ -327,10 +348,17 @@ else {
         lib.bindSymbol(cast(void**)&TTF_WasInit,"TTF_WasInit");
         lib.bindSymbol(cast(void**)&TTF_GetFontKerningSize,"TTF_GetFontKerningSize");
 
+        loadedVersion = SDLTTFSupport.sdlTTF2012;
+
         static if(sdlTTFSupport >= SDLTTFSupport.sdlTTF2014) {
             lib.bindSymbol(cast(void**)&TTF_GetFontKerningSizeGlyphs,"TTF_GetFontKerningSizeGlyphs");
+
+            loadedVersion = SDLTTFSupport.sdlTTF2014;
         }
 
-        return true;
+
+        if(errorCount() != errCount) return SDLTTFSupport.badLibrary;
+
+        return loadedVersion;
     }
 }

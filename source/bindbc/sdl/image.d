@@ -18,6 +18,8 @@ alias IMG_SetError = SDL_SetError;
 alias IMG_GetError = SDL_GetError;
 
 enum SDLImageSupport {
+    noLibrary,
+    badLibrary,
     sdlImage200 = 200,
     sdlImage201,
     sdlImage202,
@@ -226,7 +228,10 @@ else {
         }
     }
 
-    private SharedLib lib;
+    private {
+        SharedLib lib;
+        SDLImageSupport loadedVersion;
+    }
 
     void unloadSDLImage()
     {
@@ -235,37 +240,52 @@ else {
         }
     }
 
-    bool loadSDLImage()
+    SDLImageSupport loadedSDLImageVersion() { return loadedVersion; }
+
+    SDLImageSupport loadSDLImage()
     {
         version(Windows) {
-            return loadSDLImage("SDL2_image.dll");
+            const(char)[][1] libNames = ["SDL2_image.dll"];
         }
         else version(OSX) {
-            if(loadSDLImage("libSDL2_image.dylib")) return true;
-            else if(loadSDLImage("/usr/local/lib/libSDL2_image.dylib")) return true;
-            else if(loadSDLImage("../Frameworks/SDL2_image.framework/SDL2_image")) return true;
-            else if(loadSDLImage("/Library/Frameworks/SDL2_image.framework/SDL2_image")) return true;
-            else if(loadSDLImage("/System/Library/Frameworks/SDL2_image.framework/SDL2_image")) return true;
-            else return loadSDLImage("/opt/local/lib/libSDL2_image.dylib");
-
+            const(char)[][6] libNames = [
+                "libSDL2_image.dylib",
+                "/usr/local/lib/libSDL2_image.dylib",
+                "../Frameworks/SDL2_image.framework/SDL2_image",
+                "/Library/Frameworks/SDL2_image.framework/SDL2_image",
+                "/System/Library/Frameworks/SDL2_image.framework/SDL2_image",
+                "/opt/local/lib/libSDL2_image.dylib"
+            ];
         }
         else version(Posix) {
-            if(loadSDLImage("libSDL2_image.so")) return true;
-            else if(loadSDLImage("/usr/local/lib/libSDL2_image.so")) return true;
-            else if(loadSDLImage("libSDL2-2.0_image.so")) return true;
-            else if(loadSDLImage("/usr/local/lib/libSDL2-2.0_image.so")) return true;
-            else if(loadSDLImage("libSDL2-2.0_image.so.0")) return true;
-            else return loadSDLImage("/usr/local/lib/libSDL2-2.0_image.so.0");
+            const(char)[][6] libNames = [
+                "libSDL2_image.so",
+                "/usr/local/lib/libSDL2_image.so",
+                "libSDL2-2.0_image.so",
+                "/usr/local/lib/libSDL2-2.0_image.so",
+                "libSDL2-2.0_image.so.0",
+                "/usr/local/lib/libSDL2-2.0_image.so.0"
+            ];
         }
-        else return false;
+        else static assert(0, "bindbc-sdl is not yet supported on this platform.");
+
+        SDLImageSupport ret;
+        foreach(name; libNames) {
+            ret = loadSDLImage(name.ptr);
+            if(ret != SDLImageSupport.noLibrary) break;
+        }
+        return ret;
     }
 
-    bool loadSDLImage(const(char)* libName)
+    SDLImageSupport loadSDLImage(const(char)* libName)
     {
         lib = load(libName);
         if(lib == invalidHandle) {
-            return false;
+            return SDLImageSupport.noLibrary;
         }
+
+        auto errCount = errorCount();
+        loadedVersion = SDLImageSupport.badLibrary;
 
         lib.bindSymbol(cast(void**)&IMG_Init,"IMG_Init");
         lib.bindSymbol(cast(void**)&IMG_Quit,"IMG_Quit");
@@ -309,13 +329,19 @@ else {
         lib.bindSymbol(cast(void**)&IMG_SavePNG,"IMG_SavePNG");
         lib.bindSymbol(cast(void**)&IMG_SavePNG_RW,"IMG_SavePNG_RW");
 
+        loadedVersion = SDLImageSupport.sdlImage200;
+
         static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
             lib.bindSymbol(cast(void**)&IMG_isSVG,"IMG_isSVG");
             lib.bindSymbol(cast(void**)&IMG_LoadSVG,"IMG_LoadSVG_RW");
             lib.bindSymbol(cast(void**)&IMG_SaveJPG,"IMG_SaveJPG");
             lib.bindSymbol(cast(void**)&IMG_SaveJPG_RW,"IMG_SaveJPG_RW");
+
+            loadedVersion = SDLImageSupport.sdlImage202;
         }
 
-        return true;
+        if(errorCount() != errCount) return SDLImageSupport.badLibrary;
+
+        return loadedVersion;
     }
 }

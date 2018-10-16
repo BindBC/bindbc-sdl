@@ -13,7 +13,10 @@ import bindbc.loader;
 import bindbc.sdl.config,
        bindbc.sdl.bind;
 
-private SharedLib lib;
+private {
+    SharedLib lib;
+    SDLSupport loadedVersion;
+}
 
 void unloadSDL()
 {
@@ -22,43 +25,59 @@ void unloadSDL()
     }
 }
 
+SDLSupport loadedSDLVersion() { return loadedVersion; }
+
 bool isLoadedSDL()
 {
     return  lib != invalidHandle;
 }
 
-bool loadSDL()
+SDLSupport loadSDL()
 {
     // #1778 prevents me from using static arrays here :(
     version(Windows) {
-        return loadSDL("SDL2.dll");
+        const(char)[][1] libNames = ["SDL2.dll"];
     }
     else version(OSX) {
-        if(loadSDL("libSDL2.dylib")) return true;
-        else if(loadSDL("/usr/local/lib/libSDL2.dylib")) return true;
-        else if(loadSDL("/usr/local/lib/libSDL2/libSDL2.dylib")) return true;
-        else if(loadSDL("../Frameworks/SDL2.framework/SDL2")) return true;
-        else if(loadSDL("/Library/Frameworks/SDL2.framework/SDL2")) return true;
-        else if(loadSDL("/System/Library/Frameworks/SDL2.framework/SDL2")) return true;
-        else return loadSDL("/opt/local/lib/libSDL2.dylib");
+        const(char)[][7] libNames = [
+            "libSDL2.dylib",
+            "/usr/local/lib/libSDL2.dylib",
+            "/usr/local/lib/libSDL2/libSDL2.dylib",
+            "../Frameworks/SDL2.framework/SDL2",
+            "/Library/Frameworks/SDL2.framework/SDL2",
+            "/System/Library/Frameworks/SDL2.framework/SDL2",
+            "/opt/local/lib/libSDL2.dylib"
+        ];
     }
     else version(Posix) {
-        if(loadSDL("libSDL2.so")) return true;
-        else if(loadSDL("/usr/local/lib/libSDL2.so")) return true;
-        else if(loadSDL("libSDL2-2.0.so")) return true;
-        else if(loadSDL("/usr/local/lib/libSDL2-2.0.so")) return true;
-        else if(loadSDL("libSDL2-2.0.so.0")) return true;
-        else return loadSDL("/usr/local/lib/libSDL2-2.0.so.0");
+        const(char)[][6] libNames = [
+            "libSDL2.so",
+            "/usr/local/lib/libSDL2.so",
+            "libSDL2-2.0.so",
+            "/usr/local/lib/libSDL2-2.0.so",
+            "libSDL2-2.0.so.0",
+            "/usr/local/lib/libSDL2-2.0.so.0"
+        ];
     }
-    else return false;
+    else static assert(0, "bindbc-sdl is not yet supported on this platform.");
+
+    SDLSupport ret;
+    foreach(name; libNames) {
+        ret = loadSDL(name.ptr);
+        if(ret != SDLSupport.noLibrary) break;
+    }
+    return ret;
 }
 
-bool loadSDL(const(char)* libName)
+SDLSupport loadSDL(const(char)* libName)
 {
     lib = load(libName);
     if(lib == invalidHandle) {
-        return false;
+        return SDLSupport.noLibrary;
     }
+
+    auto errCount = errorCount();
+    loadedVersion = SDLSupport.badLibrary;
 
     lib.bindSymbol(cast(void**)&SDL_Init, "SDL_Init");
     lib.bindSymbol(cast(void**)&SDL_InitSubSystem, "SDL_InitSubSystem");
@@ -479,6 +498,8 @@ bool loadSDL(const(char)* libName)
     lib.bindSymbol(cast(void**)&SDL_GL_SwapWindow, "SDL_GL_SwapWindow");
     lib.bindSymbol(cast(void**)&SDL_GL_DeleteContext, "SDL_GL_DeleteContext");
 
+    loadedVersion = SDLSupport.sdl200;
+
     static if(sdlSupport >= SDLSupport.sdl201) {
         lib.bindSymbol(cast(void**)&SDL_GetSystemRAM, "SDL_GetSystemRAM");
         lib.bindSymbol(cast(void**)&SDL_GetBasePath, "SDL_GetBasePath");
@@ -490,6 +511,8 @@ bool loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_Direct3D9GetAdapterIndex, "SDL_Direct3D9GetAdapterIndex") ;
             lib.bindSymbol(cast(void**)&SDL_RenderGetD3D9Device, "SDL_RenderGetD3D9Device");
         }
+
+        loadedVersion = SDLSupport.sdl201;
     }
 
     static if(sdlSupport >= SDLSupport.sdl202) {
@@ -502,6 +525,8 @@ bool loadSDL(const(char)* libName)
         version(Windows) {
             lib.bindSymbol(cast(void**)&SDL_DXGIGetOutputInfo, "SDL_DXGIGetOutputInfo");
         }
+
+        loadedVersion = SDLSupport.sdl202;
     }
 
     static if(sdlSupport >= SDLSupport.sdl204) {
@@ -523,6 +548,8 @@ bool loadSDL(const(char)* libName)
         version(Windows) {
             lib.bindSymbol(cast(void**)&SDL_SetWindowsMessageHook, "SDL_SetWindowsMessageHook");
         }
+
+        loadedVersion = SDLSupport.sdl203;
     }
 
     static if(sdlSupport >= SDLSupport.sdl205) {
@@ -539,6 +566,8 @@ bool loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_SetWindowModalFor, "SDL_SetWindowModalFor");
         lib.bindSymbol(cast(void**)&SDL_SetWindowOpacity, "SDL_SetWindowOpacity");
         lib.bindSymbol(cast(void**)&SDL_SetWindowResizable, "SDL_SetWindowResizable");
+
+        loadedVersion = SDLSupport.sdl205;
     }
 
     static if(sdlSupport >= SDLSupport.sdl206) {
@@ -567,6 +596,8 @@ bool loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_Vulkan_GetVkGetInstanceProcAddr, "SDL_Vulkan_GetVkGetInstanceProcAddr");
         lib.bindSymbol(cast(void**)&SDL_Vulkan_LoadLibrary, "SDL_Vulkan_LoadLibrary");
         lib.bindSymbol(cast(void**)&SDL_Vulkan_UnloadLibrary, "SDL_Vulkan_UnloadLibrary");
+
+        loadedVersion = SDLSupport.sdl206;
     }
 
     static if(sdlSupport >= SDLSupport.sdl207) {
@@ -595,6 +626,8 @@ bool loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_Vulkan_GetVkGetInstanceProcAddr, "SDL_Vulkan_GetVkGetInstanceProcAddr");
         lib.bindSymbol(cast(void**)&SDL_Vulkan_LoadLibrary, "SDL_Vulkan_LoadLibrary");
         lib.bindSymbol(cast(void**)&SDL_Vulkan_UnloadLibrary, "SDL_Vulkan_UnloadLibrary");
+
+        loadedVersion = SDLSupport.sdl207;
     }
 
     static if(sdlSupport >= SDLSupport.sdl208) {
@@ -607,7 +640,11 @@ bool loadSDL(const(char)* libName)
         version(Android) {
             lib.bindSymbol(cast(void**)&SDL_IsAndroidTV, "SDL_IsAndroidTV");
         }
+
+        loadedVersion = SDLSupport.sdl208;
     }
 
-    return true;
+    if(errorCount() != errCount) return SDLSupport.badLibrary;
+
+    return loadedVersion;
 }

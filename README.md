@@ -28,7 +28,7 @@ versions "BindSDL_Image" "BindSDL_TTF"
 ### The dynamic bindings
 The dynamic bindings require no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the SDL DLLs with your program. On other systems, it usually means installing the SDL runtime libraries through a package manager.
 
-To load the shared libraries, you need to call the appropriate load function.
+To load the shared libraries, you need to call the appropriate load function. The load functions return a binding-specific value indicating either that the library failed to load (it couldn't be found), one or more symbols failed to load, or a version number that matches a global enum value based on the compile-time configuration.
 
 ```d
 import bindbc.sdl;
@@ -46,30 +46,113 @@ import bindbc.sdl.ttf;              // SDL_ttf binding
 This version attempts to load the SDL shared library using well-known variations
 of the library name for the host system.
 */
-if(!loadSDL()) {
-    // handle error;
+SDLSupport ret = loadSDL();
+if(ret != sdlSupport) {
+    // Handle error. For most use cases, this is enough. The error handling API in
+    // bindbc-loader can be used for error messages. If necessary, it's  possible
+    // to determine the primary cause programmtically:
+
+    if(ret == SDLSupport.noLibrary) {
+        // SDL shared library failed to load
+    }
+    else if(SDLSupport.badLibrary) {
+        // One or more symbols failed to load. The likely cause is that the
+        // shared library is for a lower version than bindbc-sdl was configured
+        // to load (via SDL_201, SDL_202, etc.)
+    }
 }
 /*
 This version attempts to load the SDL library using a user-supplied file name.
 Usually, the name and/or path used will be platform specific, as in this example
 which attempts to load `SDL2.dll` from the `libs` subdirectory, relative
-to the executable, only on Windows.
+to the executable, only on Windows. It has the same return values.
 */
 // version(Windows) loadSDL("libs/SDL2.dll")
 
 /*
 The satellite library loaders also have the same two versions of the load functions,
 named according to the library name. Only the parameterless versions are shown
-here.
+here. These return similar values as loadSDL, but in an enum namespace that matches
+the library name: SDLImageSupport, SDLMixerSupport, and SDLTTFSupport.
 */
-if(!loadSDLImage())  { /* handle error */ }
-if(!loadSDLMixer())  { /* handle error */ }
-if(!loadSDLTTF())    { /* handle error */ }
+if(loadSDLImage() != sdlImageSupport) {
+    /* handle error */
+}
+if(loadSDLMixer() != sdlMixerSupport) {
+    /* handle error */
+}
+if(loadSDLTTFSupport() != sdlTTFSupport) {
+    /* handle error */
+}
 ```
 
-Note that all of the `load*` functions will return `false` only if the shared library is not found. If any of the functions in the library fail to load, the `load*` functions **will still return true**. It's possible for the binding to be compiled for a higher version of a shared library than the version on the user's system, in which case it's still safe to use the library if none of the missing functions are called.
+By default, each `bindbc-sdl` binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via the `-version` compiler switch or the `versions` DUB directive.
 
-To determine if any of the symbols failed to load, which usually indicates a version mismatch, use the error handling functions from the [`bindbc-loader`](https://github.com/BindBC/bindbc-loader) package.
+It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4.
+
+__dub.json__
+```
+"dependencies": {
+    "bindbc-sdl": "~>0.1.0"
+},
+"versions": ["SDL_204"]
+```
+
+__dub.sdl__
+```
+dependency "bindbc-sdl" version="~>0.1.0"
+versions "SDL_204"
+```
+
+When `bindbc-sdl` is configured with `SDL_202`, then `sdlSupport == SDLSupport.sdl202` and `loadSDL` will return `SDLSupport.sdl202` on a successful load. However, it's possible for the binding to be compiled for a higher version of SDL than that on the user's system. In that
+case, `loadSDL` will return `SDLSupport.badLibrary`. It's still possible to use that version of the library as long as you remember not to call any of the unloaded functions from the higher version. To determine the version actually loaded, call the function `loadedSDLVersion`.
+
+```d
+SDLSupport ret = loadSDL();
+if(ret != sdlSupport) {
+    if(SDLSupport.badLibrary) {
+        // Let's say we've configured to support SDL 2.0.5, but we are happy to also
+        // support 2.0.4:
+        if(loadedSDLVersion < SDLSupport.sdl204) {
+            // Version to low. Handle the error.
+        }
+    }
+    else {
+        // No library. Handle the error.
+    }
+}
+```
+
+The satellite libraries provide similar functions: `loadedSDLImageVersion`, `loadedSDLMixerVersion`, and `loadedSDLTTFVersion`.
+
+Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
+
+| Library & Version  | Version ID       |
+|--------------------|------------------|
+|SDL 2.0.0           | Default          |
+|SDL 2.0.1           | SDL_201          |
+|SDL 2.0.2           | SDL_202          |
+|SDL 2.0.3           | SDL_203          |
+|SDL 2.0.4           | SDL_204          |
+|SDL 2.0.5           | SDL_205          |
+|SDL 2.0.6           | SDL_206          |
+|SDL 2.0.7           | SDL_207          |
+|SDL 2.0.8           | SDL_208          |
+|--                  | --               |
+|SDL_image 2.0.0     | Default          |
+|SDL_image 2.0.1     | SDL_Image_201    |
+|SDL_image 2.0.2     | SDL_Image_202    |
+|--                  | --               |
+|SDL_mixer 2.0.0     | Default          |
+|SDL_mixer 2.0.1     | SDL_Mixer_201    |
+|SDL_mixer 2.0.2     | SDL_Mixer_202    |
+|--                  | --               |
+|SDL_ttf 2.0.12      | Default          |
+|SDL_ttf 2.0.13      | SDL_TTF_2013     |
+|SDL_ttf 2.0.14      | SDL_TTF_2014     |
+
+
+__Note__: SDL's [Filesystem](https://wiki.libsdl.org/CategoryFilesystem) API was added in SDL 2.0.1. However, there was a bug on Windows that prevented `SDL_GetPrefPath` from creating the path when it doesn't exist. When using this API on Windows, it's fine to compile with `SDL_201` -- just make sure to ship SDL 2.0.2 or later with your app on Windows and _verify_ that [the loaded SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later via the `SDL_GetVersion` function. Alternatively, you can compile your app with version `SDL_202` on Windows and `SDL_201` on other platforms, thereby guaranteeing errors if the user does not have at least SDL 2.0.2 or higher on Windows.
 
 ## The static bindings
 The static bindings have a link-time dependency on either the shared or static libraries for SDL and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
@@ -155,65 +238,3 @@ libs "SDL2" "SDL2_image"
 ```
 
 When not using DUB to manage your project, first use DUB to compile the BindBC libraries with the `dynamicBC` or `staticBC` configuration, then pass `-betterC` to the compiler when building your project.
-
-## The minimum required SDL version
-By default, each `bindbc-sdl` binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via the `-version` compiler switch or the `versions` DUB directive.
-
-It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.2.
-
-__dub.json__
-```
-"dependencies": {
-    "bindbc-sdl": "~>0.1.0"
-},
-"versions": ["SDL_202"]
-```
-
-__dub.sdl__
-```
-dependency "bindbc-sdl" version="~>0.1.0"
-versions "SDL_202"
-```
-
-When you call `loadSDL` with this example configuration, if SDL 2.0.2 or later is installed on the user's system, the library will load without error. If only SDL 2.0.1 or lower is installed, `loadSDL` will return `true`, but the error functions in `bindbc-loader` will indicate that some functions failed to load. This is why it is recommended to always specify the version you require if it is higher than the default. Then you can abort on error, e.g.:
-
-```d
-import loader = bindbc.loader;
-import bindbc.sdl;
-int main() {
-    if(!loadSDL() || loader.errorCount > 0) {
-        // Either the installed version of SDL is lower than
-        // the program requires, or it's corrupt.
-        return -1;
-    }
-}
-```
-
-Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
-
-| Library & Version  | Version ID       |
-|--------------------|------------------|
-|SDL 2.0.0           | Default          |
-|SDL 2.0.1           | SDL_201          |
-|SDL 2.0.2           | SDL_202          |
-|SDL 2.0.3           | SDL_203          |
-|SDL 2.0.4           | SDL_204          |
-|SDL 2.0.5           | SDL_205          |
-|SDL 2.0.6           | SDL_206          |
-|SDL 2.0.7           | SDL_207          |
-|SDL 2.0.8           | SDL_208          |
-|--                  | --               |
-|SDL_image 2.0.0     | Default          |
-|SDL_image 2.0.1     | SDL_Image_201    |
-|SDL_image 2.0.2     | SDL_Image_202    |
-|--                  | --               |
-|SDL_mixer 2.0.0     | Default          |
-|SDL_mixer 2.0.1     | SDL_Mixer_201    |
-|SDL_mixer 2.0.2     | SDL_Mixer_202    |
-|--                  | --               |
-|SDL_ttf 2.0.12      | Default          |
-|SDL_ttf 2.0.13      | SDL_TTF_2013     |
-|SDL_ttf 2.0.14      | SDL_TTF_2014     |
-
-
-__Note__: SDL's [Filesystem](https://wiki.libsdl.org/CategoryFilesystem) API was added in SDL 2.0.1. However, there was a bug on Windows that prevented `SDL_GetPrefPath` from creating the path when it doesn't exist. When using this API on Windows, it's fine to compile with `SDL_201` -- just make sure to ship SDL 2.0.2 or later with your app on Windows and _verify_ that [the loaded SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later via the `SDL_GetVersion` function. Alternatively, you can compile your app with version `SDL_202` on Windows and `SDL_201` on other platforms, thereby guaranteeing errors if the user does not have at least SDL 2.0.2 or higher on Windows.

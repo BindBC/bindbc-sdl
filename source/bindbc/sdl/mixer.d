@@ -20,6 +20,8 @@ alias Mix_GetError = SDL_GetError;
 alias Mix_ClearError = SDL_ClearError;
 
 enum SDLMixerSupport {
+    noLibrary,
+    badLibrary,
     sdlMixer200 = 200,
     sdlMixer201 = 201,
     sdlMixer202 = 202,
@@ -415,7 +417,10 @@ else {
         }
     }
 
-    private SharedLib lib;
+    private {
+        SharedLib lib;
+        SDLMixerSupport loadedVersion;
+    }
 
     void unloadSDLMixer()
     {
@@ -424,36 +429,52 @@ else {
         }
     }
 
-    bool loadSDLMixer()
+    SDLMixerSupport loadedSDLMixerVersion() { return loadedVersion; }
+
+    SDLMixerSupport loadSDLMixer()
     {
         version(Windows) {
-            return loadSDLMixer("SDL2_mixer.dll");
+            const(char)[][1] libNames = ["SDL2_mixer.dll"];
         }
-        version(OSX) {
-            if(loadSDLMixer("libSDL2_mixer.dylib")) return true;
-            else if(loadSDLMixer("/usr/local/lib/libSDL2_mixer.dylib")) return true;
-            else if(loadSDLMixer("../Frameworks/SDL2_mixer.framework/SDL2_mixer")) return true;
-            else if(loadSDLMixer("/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer")) return true;
-            else if(loadSDLMixer("/System/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer")) return true;
-            else return loadSDLMixer("/opt/local/lib/libSDL2_mixer.dylib");
+        else version(OSX) {
+            const(char)[][6] libNames = [
+                "libSDL2_mixer.dylib",
+                "/usr/local/lib/libSDL2_mixer.dylib",
+                "../Frameworks/SDL2_mixer.framework/SDL2_mixer",
+                "/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer",
+                "/System/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer",
+                "/opt/local/lib/libSDL2_mixer.dylib"
+            ];
         }
         else version(Posix) {
-            if(loadSDLImage("libSDL2_mixer.so")) return true;
-            else if(loadSDLMixer("/usr/local/lib/libSDL2_mixer.so")) return true;
-            else if(loadSDLMixer("libSDL2-2.0_mixer.so")) return true;
-            else if(loadSDLMixer("/usr/local/lib/libSDL2-2.0_mixer.so")) return true;
-            else if(loadSDLMixer("libSDL2-2.0_mixer.so.0")) return true;
-            else return loadSDLMixer("/usr/local/lib/libSDL2-2.0_mixer.so.0");
+            const(char)[][6] libNames = [
+                "libSDL2_mixer.so",
+                "/usr/local/lib/libSDL2_mixer.so",
+                "libSDL2-2.0_mixer.so",
+                "/usr/local/lib/libSDL2-2.0_mixer.so",
+                "libSDL2-2.0_mixer.so.0",
+                "/usr/local/lib/libSDL2-2.0_mixer.so.0"
+            ];
         }
-        else return false;
+        else static assert(0, "bindbc-sdl is not yet supported on this platform.");
+
+        SDLMixerSupport ret;
+        foreach(name; libNames) {
+            ret = loadSDLMixer(name.ptr);
+            if(ret != SDLMixerSupport.noLibrary) break;
+        }
+        return ret;
     }
 
-    bool loadSDLMixer(const(char)* libName)
+    SDLMixerSupport loadSDLMixer(const(char)* libName)
     {
         lib = load(libName);
         if(lib == invalidHandle) {
-            return false;
+            return SDLMixerSupport.noLibrary;
         }
+
+        auto errCount = errorCount();
+        loadedVersion = SDLMixerSupport.badLibrary;
 
         lib.bindSymbol(cast(void**)&Mix_Linked_Version,"Mix_Linked_Version");
         lib.bindSymbol(cast(void**)&Mix_Init,"Mix_Init");
@@ -526,11 +547,17 @@ else {
         lib.bindSymbol(cast(void**)&Mix_GetChunk,"Mix_GetChunk");
         lib.bindSymbol(cast(void**)&Mix_CloseAudio,"Mix_CloseAudio");
 
+        loadedVersion = SDLMixerSupport.sdlMixer200;
+
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
             lib.bindSymbol(cast(void**)&Mix_OpenAudioDevice,"Mix_OpenAudioDevice");
             lib.bindSymbol(cast(void**)&Mix_HasChunkDecoder,"Mix_HasChunkDecoder");
+
+            loadedVersion = SDLMixerSupport.sdlMixer202;
         }
 
-        return true;
+        if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
+
+        return loadedVersion;
     }
 }

@@ -164,7 +164,7 @@ Enabling the static bindings can be done in two ways.
 ### Via the compiler's `-version` switch or DUB's `versions` directive
 Pass the `BindSDL_Static` version to the compiler and link with the appropriate libraries. Note that `BindSDL_Static` will also enable the static binding for any satellite libraries used.
 
-When using the compiler command line or a build system that doesn't support DUB, this is the only option. The `-version=BindSDL_Static` option should be passed to the compiler when building your program. All of the requried C libraries, as well as the `bindbc-sdl` and `bindbc-loader` static libraries, must also be passed to the compiler on the command line or via your build system's configuration.
+When using the compiler command line or a build system that doesn't support DUB, this is the only option. The `-version=BindSDL_Static` option should be passed to the compiler when building your program. All of the required C libraries, as well as the `bindbc-sdl` and `bindbc-loader` static libraries, must also be passed to the compiler on the command line or via your build system's configuration.
 
 When using DUB, its `versions` directive is an option. For example, when using the static bindings for SDL and SDL_image:
 

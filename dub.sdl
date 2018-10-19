@@ -1,5 +1,5 @@
 name "bindbc-sdl"
-description "Dynamic and static bindings to SDL2, SDL2_image, SDL2_mixer, SDL2_ttf and SDL2_net."
+description "Dynamic and static bindings to SDL2 and its satellite libraries, compatible with -betterC, @nogc, and nothrow."
 homepage ""
 authors "Mike Parker"
 license "Boost"

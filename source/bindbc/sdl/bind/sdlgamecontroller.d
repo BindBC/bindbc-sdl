@@ -104,17 +104,19 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl202) {
             int SDL_GameControllerAddMappingsFromRW(SDL_RWops*,int);
         }
-
         static if(sdlSupport >= SDLSupport.sdl204) {
             SDL_GameController* SDL_GameControllerFromInstanceID(SDL_JoystickID);
         }
-
         static if(sdlSupport >= SDLSupport.sdl206) {
             ushort SDL_GameControllerGetProduct(SDL_GameController*);
             ushort SDL_GameControllerGetProductVersion(SDL_GameController*);
             ushort SDL_GameControllerGetVendor(SDL_GameController*);
             char* SDL_GameControllerMappingForIndex(int);
             int SDL_GameControllerNumMappings();
+        }
+        static if(sdlSupport >= SDLSupport.sdl209) {
+            char* SDL_GameControllerMappingForDeviceIndex(int);
+            int SDL_GameControllerRumble(SDL_GameController*,ushort,ushort,uint);
         }
     }
 }
@@ -200,6 +202,18 @@ else {
             pSDL_GameControllerGetVendor SDL_GameControllerGetVendor;
             pSDL_GameControllerMappingForIndex SDL_GameControllerMappingForIndex;
             pSDL_GameControllerNumMappings SDL_GameControllerNumMappings;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GameControllerMappingForDeviceIndex = char* function(int);
+            alias pSDL_GameControllerRumble = int function(SDL_GameController*,ushort,ushort,uint);
+        }
+
+        __gshared {
+            pSDL_GameControllerMappingForDeviceIndex SDL_GameControllerMappingForDeviceIndex;
+            pSDL_GameControllerRumble SDL_GameControllerRumble;
         }
     }
 }

@@ -644,6 +644,25 @@ SDLSupport loadSDL(const(char)* libName)
         loadedVersion = SDLSupport.sdl208;
     }
 
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        lib.bindSymbol(cast(void**)&SDL_GameControllerMappingForDeviceIndex, "SDL_GameControllerMappingForDeviceIndex");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerRumble, "SDL_GameControllerRumble");
+        lib.bindSymbol(cast(void**)&SDL_JoystickRumble, "SDL_JoystickRumble");
+        lib.bindSymbol(cast(void**)&SDL_HasColorKey, "SDL_HasColorKey");
+        lib.bindSymbol(cast(void**)&SDL_GetDisplayOrientation, "SDL_GetDisplayOrientation");
+
+        version(linux) {
+            lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriority, "SDL_LinuxSetThreadPriority");
+        }
+        else version(Android) {
+            lib.bindSymbol(cast(void**)&SDL_IsChromebook, "SDL_IsChromebook");
+            lib.bindSymbol(cast(void**)&SDL_IsDeXMode, "SDL_IsDeXMode");
+            lib.bindSymbol(cast(void**)&SDL_AndroidBackButton, "SDL_AndroidBackButton");
+        }
+
+        loadedVersion = SDLSupport.sdl209;
+    }
+
     if(errorCount() != errCount) return SDLSupport.badLibrary;
 
     return loadedVersion;

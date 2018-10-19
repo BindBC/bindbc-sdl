@@ -37,20 +37,27 @@ version(BindSDL_Static) {
             static if(sdlSupport >= SDLSupport.sdl208) {
                 SDL_bool SDL_IsAndroidTV();
             }
+            static if(sdlSupport >= SDLSupport.sdl209) {
+                SDL_bool SDL_IsChromebook();
+                SDL_bool SDL_IsDeXMode();
+                void SDL_AndroidBackButton();
+            }
         }
-
-        version(Windows) {
+        else version(Windows) {
             static if(sdlSupport >= SDLSupport.sdl201) {
                 int SDL_Direct3D9GetAdapterIndex(int);
                 IDirect3DDevice9* SDL_RenderGetD3D9Device(SDL_Renderer*);
             }
-
             static if(sdlSupport >= SDLSupport.sdl202) {
                 SDL_bool SDL_DXGIGetOutputInfo(int,int*,int*);
             }
-
             static if(sdlSupport >= SDLSupport.sdl204) {
                 void SDL_SetWindowsMessageHook(SDL_WindowsMessageHook,void*);
+            }
+        }
+        else version(linux) {
+            static if(sdlSupport >= SDLSupport.sdl209) {
+                int SDL_LinuxSetThreadPriority(long,int);
             }
         }
     }
@@ -83,9 +90,22 @@ else {
                 pSDL_IsAndroidTV SDL_IsAndroidTV;
             }
         }
-    }
 
-    version(Windows) {
+        static if(sdlSupport >= SDLSupport.sdl209) {
+            extern(C) @nogc nothrow {
+                alias pSDL_IsChromebook = SDL_bool function();
+                alias pSDL_IsDeXMode = SDL_bool function();
+                alias pSDL_AndroidBackButton = void function();
+            }
+
+            __gshared {
+                pSDL_IsChromebook SDL_IsChromebook;
+                pSDL_IsDeXMode SDL_IsDeXMode;
+                pSDL_AndroidBackButton SDL_AndroidBackButton;
+            }
+        }
+    }
+    else version(Windows) {
         static if(sdlSupport >= SDLSupport.sdl201) {
             extern(C) @nogc nothrow {
                 alias pSDL_Direct3D9GetAdapterIndex = int function(int);
@@ -115,6 +135,17 @@ else {
 
             __gshared {
                 pSDL_SetWindowsMessageHook SDL_SetWindowsMessageHook;
+            }
+        }
+    }
+    else version(linux) {
+        static if(sdlSupport >= SDLSupport.sdl209) {
+            extern(C) @nogc nothrow {
+                alias pSDL_LinuxSetThreadPriority = int function(long,int);
+            }
+
+            __gshared {
+                pSDL_LinuxSetThreadPriority SDL_LinuxSetThreadPriority;
             }
         }
     }

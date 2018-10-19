@@ -138,6 +138,7 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL 2.0.6           | SDL_206          |
 |SDL 2.0.7           | SDL_207          |
 |SDL 2.0.8           | SDL_208          |
+|SDL 2.0.9           | SDL_209          |
 |--                  | --               |
 |SDL_image 2.0.0     | Default          |
 |SDL_image 2.0.1     | SDL_Image_201    |

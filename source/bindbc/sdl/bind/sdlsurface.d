@@ -102,15 +102,16 @@ version(BindSDL_Static) {
             SDL_Surface* SDL_CreateRGBSurfaceWithFormat(uint,int,int,int,uint);
             SDL_Surface* SDL_CreateRGBSurfaceWithFormatFrom(void*,int,int,int,int,uint);
         }
-
         static if(sdlSupport >= SDLSupport.sdl205) {
             SDL_Surface* SDL_DuplicateSurface(SDL_Surface*);
         }
-
         static if(sdlSupport >= SDLSupport.sdl208) {
             void SDL_SetYUVConversionMode(SDL_YUV_CONVERSION_MODE);
             SDL_YUV_CONVERSION_MODE SDL_GetYUVConversionMode();
             SDL_YUV_CONVERSION_MODE SDL_GetYUVConversionModeForResolution(int,int);
+        }
+        static if(sdlSupport >= SDLSupport.sdl209) {
+            SDL_bool SDL_HasColorKey(SDL_Surface*);
         }
     }
 }
@@ -211,6 +212,16 @@ else {
             pSDL_SetYUVConversionMode SDL_SetYUVConversionMode;
             pSDL_GetYUVConversionMode SDL_GetYUVConversionMode;
             pSDL_GetYUVConversionModeForResolution SDL_GetYUVConversionModeForResolution;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        extern(C) @nogc nothrow {
+            alias pSDL_HasColorKey = SDL_bool function(SDL_Surface*);
+        }
+
+        __gshared {
+            pSDL_HasColorKey SDL_HasColorKey;
         }
     }
 }

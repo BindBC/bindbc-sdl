@@ -180,6 +180,23 @@ else {
 }
 mixin(expandEnum!SDL_WindowEventID);
 
+static if(sdlSupport >= SDLSupport.sdl209) {
+    enum SDL_DisplayEventID {
+        SDL_DISPLAYEVENT_NONE,
+        SDL_DISPLAYEVENT_ORIENTATION,
+    }
+    mixin(expandEnum!SDL_DisplayEventID);
+
+    enum SDL_DisplayOrientation {
+        SDL_ORIENTATION_UNKNOWN,
+        SDL_ORIENTATION_LANDSCAPE,
+        SDL_ORIENTATION_LANDSCAPE_FLIPPED,
+        SDL_ORIENTATION_PORTRAIT,
+        SDL_ORIENTATION_PORTRAIT_FLIPPED,
+    }
+    mixin(expandEnum!SDL_DisplayOrientation);
+}
+
 alias SDL_GLContext = void*;
 
 static if(sdlSupport >= SDLSupport.sdl206) {
@@ -423,17 +440,14 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl201) {
             void SDL_GL_GetDrawableSize(SDL_Window*,int*,int*);
         }
-
         static if(sdlSupport >= SDLSupport.sdl202) {
             void SDL_GL_ResetAttributes();
         }
-
         static if(sdlSupport >= SDLSupport.sdl204) {
             int SDL_GetDisplayDPI(int,float*,float*,float*);
             SDL_Window* SDL_GetGrabbedWindow();
             int SDL_SetWindowHitTest(SDL_Window*,SDL_HitTest,void*);
         }
-
         static if(sdlSupport >= SDLSupport.sdl205) {
             int SDL_GetDisplayUsableBounds(int,SDL_Rect*);
             int SDL_GetWindowBordersSize(SDL_Window*,int*,int*,int*,int*);
@@ -442,6 +456,9 @@ version(BindSDL_Static) {
             int SDL_SetWindowModalFor(SDL_Window*,SDL_Window*);
             int SDL_SetWindowOpacity(SDL_Window*,float);
             void SDL_SetWindowResizable(SDL_Window*,SDL_bool);
+        }
+        static if(sdlSupport >= SDLSupport.sdl209) {
+            SDL_DisplayOrientation SDL_GetDisplayOrientation(int);
         }
     }
 }
@@ -645,6 +662,16 @@ else {
             pSDL_SetWindowModalFor SDL_SetWindowModalFor;
             pSDL_SetWindowOpacity SDL_SetWindowOpacity;
             pSDL_SetWindowResizable SDL_SetWindowResizable;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GetDisplayOrientation = SDL_DisplayOrientation function(int);
+        }
+
+        __gshared {
+            pSDL_GetDisplayOrientation SDL_GetDisplayOrientation;
         }
     }
 }

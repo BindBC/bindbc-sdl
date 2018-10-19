@@ -22,7 +22,62 @@ enum {
     SDL_PRESSED = 1,
 }
 
-static if(sdlSupport >= SDLSupport.sdl205) {
+static if(sdlSupport >= SDLSupport.sdl209) {
+    enum SDL_EventType {
+        SDL_FIRSTEVENT = 0,
+        SDL_QUIT = 0x100,
+        SDL_APP_TERMINATING,
+        SDL_APP_LOWMEMORY,
+        SDL_APP_WILLENTERBACKGROUND,
+        SDL_APP_DIDENTERBACKGROUND,
+        SDL_APP_WILLENTERFOREGROUND,
+        SDL_APP_DIDENTERFOREGROUND,
+        SDL_DISPLAYEVENT = 0x150,
+        SDL_WINDOWEVENT = 0x200,
+        SDL_SYSWMEVENT,
+        SDL_KEYDOWN = 0x300,
+        SDL_KEYUP,
+        SDL_TEXTEDITING,
+        SDL_TEXTINPUT,
+        SDL_KEYMAPCHANGED,
+        SDL_MOUSEMOTION = 0x400,
+        SDL_MOUSEBUTTONDOWN,
+        SDL_MOUSEBUTTONUP,
+        SDL_MOUSEWHEEL,
+        SDL_JOYAXISMOTION = 0x600,
+        SDL_JOYBALLMOTION,
+        SDL_JOYHATMOTION,
+        SDL_JOYBUTTONDOWN,
+        SDL_JOYBUTTONUP,
+        SDL_JOYDEVICEADDED,
+        SDL_JOYDEVICEREMOVED,
+        SDL_CONTROLLERAXISMOTION = 0x650,
+        SDL_CONTROLLERBUTTONDOWN,
+        SDL_CONTROLLERBUTTONUP,
+        SDL_CONTROLLERDEVICEADDED,
+        SDL_CONTROLLERDEVICEREMOVED,
+        SDL_CONTROLLERDEVICEREMAPPED,
+        SDL_FINGERDOWN = 0x700,
+        SDL_FINGERUP,
+        SDL_FINGERMOTION,
+        SDL_DOLLARGESTURE = 0x800,
+        SDL_DOLLARRECORD,
+        SDL_MULTIGESTURE,
+        SDL_CLIPBOARDUPDATE = 0x900,
+        SDL_DROPFILE = 0x1000,
+        SDL_DROPTEXT,
+        SDL_DROPBEGIN,
+        SDL_DROPCOMPLETE,
+        SDL_AUDIODEVICEADDED = 0x1100,
+        SDL_AUDIODEVICEREMOVED,
+        SDL_SENSORUPDATE = 0x1200,
+        SDL_RENDER_TARGETS_RESET = 0x2000,
+        SDL_RENDER_DEVICE_RESET,
+        SDL_USEREVENT = 0x8000,
+        SDL_LASTEVENT = 0xFFFF
+    }
+}
+else static if(sdlSupport >= SDLSupport.sdl205) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -221,6 +276,19 @@ mixin(expandEnum!SDL_EventType);
 struct SDL_CommonEvent {
     SDL_EventType type;
     uint timestamp;
+}
+
+static if(sdlSupport >= SDLSupport.sdl209) {
+    struct SDL_DisplayEvent {
+        SDL_EventType type;
+        uint timestamp;
+        uint display;
+        ubyte event;
+        ubyte padding1;
+        ubyte padding2;
+        ubyte padding3;
+        int data1;
+    }
 }
 
 struct SDL_WindowEvent {
@@ -441,6 +509,13 @@ struct SDL_DropEvent {
     }
 }
 
+struct SDL_SensorEvent {
+    SDL_EventType type;
+    uint timestamp;
+    int which;
+    float[6] data;
+}
+
 struct SDL_QuitEvent {
     SDL_EventType type;
     uint timestamp;
@@ -469,6 +544,9 @@ struct SDL_SysWMEvent {
 union SDL_Event {
     SDL_EventType type;
     SDL_CommonEvent common;
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        SDL_DisplayEvent display;
+    }
     SDL_WindowEvent window;
     SDL_KeyboardEvent key;
     SDL_TextEditingEvent edit;
@@ -486,6 +564,9 @@ union SDL_Event {
     SDL_ControllerDeviceEvent cdevice;
     static if(sdlSupport >= SDLSupport.sdl204) {
         SDL_AudioDeviceEvent adevice;
+    }
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        SDL_SensorEvent sensor;
     }
     SDL_QuitEvent quit;
     SDL_UserEvent user;

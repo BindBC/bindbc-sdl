@@ -15,7 +15,7 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl206) {
             SDL_bool SDL_Vulkan_CreateSurface(SDL_Window*,void*,void*);
             void SDL_Vulkan_GetDrawableSize(SDL_Window*,int*,int*);
-            SDL_bool SDL_Vulkan_GetInstanceExtensions(SDL_Window*,uint,const(char)**);
+            SDL_bool SDL_Vulkan_GetInstanceExtensions(SDL_Window*,uint*,const(char)**);
             void* SDL_Vulkan_GetVkGetInstanceProcAddr();
             int SDL_Vulkan_LoadLibrary(const(char)*);
             void SDL_Vulkan_UnloadLibrary();
@@ -27,7 +27,7 @@ else {
         extern(C) @nogc nothrow {
             alias pSDL_Vulkan_CreateSurface = SDL_bool function(SDL_Window*,void*,void*);
             alias pSDL_Vulkan_GetDrawableSize = void function(SDL_Window*,int*,int*);
-            alias pSDL_Vulkan_GetInstanceExtensions = SDL_bool function(SDL_Window*,uint,const(char)**);
+            alias pSDL_Vulkan_GetInstanceExtensions = SDL_bool function(SDL_Window*,uint*,const(char)**);
             alias pSDL_Vulkan_GetVkGetInstanceProcAddr = void* function();
             alias pSDL_Vulkan_LoadLibrary = int function(const(char)*);
             alias pSDL_Vulkan_UnloadLibrary = void function();

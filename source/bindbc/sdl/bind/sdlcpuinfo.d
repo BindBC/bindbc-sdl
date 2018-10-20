@@ -28,17 +28,17 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl201) {
             int SDL_GetSystemRAM();
         }
-
         static if(sdlSupport >= SDLSupport.sdl202) {
             SDL_bool SDL_HasAVX();
         }
-
         static if(sdlSupport >= SDLSupport.sdl204) {
             SDL_bool SDL_HasAVX2();
         }
-
         static if(sdlSupport >= SDLSupport.sdl206) {
             SDL_bool SDL_HasNEON();
+        }
+        static if(sdlSupport >= SDLSupport.sdl209) {
+            SDL_bool SDL_HasAVX512F();
         }
     }
 }
@@ -103,11 +103,21 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
-            alias pSDL_HasNEON = SDL_bool function();
+            alias pSDL_HasAVX512F = SDL_bool function();
         }
 
         __gshared {
-            pSDL_HasNEON SDL_HasNEON;
+            pSDL_HasAVX512F SDL_HasAVX512F;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        extern(C) @nogc nothrow {
+            alias pSDL_HasAVX512F = SDL_bool function();
+        }
+
+        __gshared {
+            pSDL_HasAVX512F SDL_HasAVX512F;
         }
     }
 }

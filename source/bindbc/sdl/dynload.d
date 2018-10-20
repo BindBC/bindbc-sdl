@@ -645,6 +645,7 @@ SDLSupport loadSDL(const(char)* libName)
     }
 
     static if(sdlSupport >= SDLSupport.sdl209) {
+        lib.bindSymbol(cast(void**)&SDL_HasAVX512F, "SDL_HasAVX512F");
         lib.bindSymbol(cast(void**)&SDL_GameControllerMappingForDeviceIndex, "SDL_GameControllerMappingForDeviceIndex");
         lib.bindSymbol(cast(void**)&SDL_GameControllerRumble, "SDL_GameControllerRumble");
         lib.bindSymbol(cast(void**)&SDL_JoystickRumble, "SDL_JoystickRumble");

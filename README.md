@@ -85,7 +85,6 @@ if(loadSDLTTFSupport() != sdlTTFSupport) {
     /* handle error */
 }
 ```
-
 By default, each `bindbc-sdl` binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via the `-version` compiler switch or the `versions` DUB directive.
 
 It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4.
@@ -105,7 +104,8 @@ versions "SDL_204"
 ```
 
 When `bindbc-sdl` is configured with `SDL_202`, then `sdlSupport == SDLSupport.sdl202` and `loadSDL` will return `SDLSupport.sdl202` on a successful load. However, it's possible for the binding to be compiled for a higher version of SDL than that on the user's system. In that
-case, `loadSDL` will return `SDLSupport.badLibrary`. It's still possible to use that version of the library as long as you remember not to call any of the unloaded functions from the higher version. To determine the version actually loaded, call the function `loadedSDLVersion`. (See [the README for `bindbc.loader`](https://github.com/BindBC/bindbc-loader/blob/master/README.md) for the error handling API.)
+case, `loadSDL` will return `SDLSupport.badLibrary`. It's still possible to use that version of the library as long as you remember not to call any of the unloaded functions from the higher version. To determine the version actually loaded, call the function `loadedSDLVersion`.
+The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not. (See [the README for `bindbc.loader`](https://github.com/BindBC/bindbc-loader/blob/master/README.md) for the error handling API.)
 
 ```d
 SDLSupport ret = loadSDL();

@@ -27,7 +27,7 @@ void unloadSDL()
 
 SDLSupport loadedSDLVersion() { return loadedVersion; }
 
-bool isLoadedSDL()
+bool isSDLLoaded()
 {
     return  lib != invalidHandle;
 }

@@ -103,11 +103,11 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
-            alias pSDL_HasAVX512F = SDL_bool function();
+            alias pSDL_HasNEON = SDL_bool function();
         }
 
         __gshared {
-            pSDL_HasAVX512F SDL_HasAVX512F;
+            pSDL_HasNEON SDL_HasNEON;
         }
     }
 

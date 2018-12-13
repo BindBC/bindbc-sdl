@@ -43,7 +43,7 @@ alias SDL_SYSTEM_CURSOR_NO          = SDL_SystemCursor.SDL_SYSTEM_CURSOR_NO;
 alias SDL_SYSTEM_CURSOR_HAND        = SDL_SystemCursor.SDL_SYSTEM_CURSOR_HAND;
 alias SDL_NUM_SYSTEM_CURSORS        = SDL_SystemCursor.SDL_NUM_SYSTEM_CURSORS;
 
-enum SDL_BUTTON(ubyte x) = 1 << x;
+enum SDL_BUTTON(ubyte x) = 1 << (x-1);
 
 enum : ubyte {
     SDL_BUTTON_LEFT = 1,

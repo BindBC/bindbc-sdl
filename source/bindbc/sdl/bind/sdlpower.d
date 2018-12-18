@@ -19,7 +19,7 @@ mixin(expandEnum!SDL_PowerState);
 
 version(BindSDL_Static) {
     extern(C) @nogc nothrow {
-        alias pSDL_GetPowerInfo = SDL_PowerState function(int*,int*);
+        SDL_PowerState SDL_GetPowerInfo(int*,int*);
     }
 }
 else {

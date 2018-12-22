@@ -21,8 +21,8 @@ static if(sdlSupport >= SDLSupport.sdl209) {
         SDL_INIT_NOPARACHUTE = 0x00100000,
         SDL_INIT_EVERYTHING =
                     SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO |
-                    SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC |
-                    SDL_INIT_GAMECONTROLLER
+                    SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER |
+                    SDL_INIT_EVENTS | SDL_INIT_SENSOR
     }
 } else {
     enum : uint {
@@ -36,8 +36,8 @@ static if(sdlSupport >= SDLSupport.sdl209) {
         SDL_INIT_NOPARACHUTE = 0x00100000,
         SDL_INIT_EVERYTHING =
                     SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO |
-                    SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC |
-                    SDL_INIT_GAMECONTROLLER
+                    SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER |
+                    SDL_INIT_EVENTS
     }
 }
 

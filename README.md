@@ -81,7 +81,7 @@ if(loadSDLImage() != sdlImageSupport) {
 if(loadSDLMixer() != sdlMixerSupport) {
     /* handle error */
 }
-if(loadSDLTTFSupport() != sdlTTFSupport) {
+if(loadSDLTTF() != sdlTTFSupport) {
     /* handle error */
 }
 ```

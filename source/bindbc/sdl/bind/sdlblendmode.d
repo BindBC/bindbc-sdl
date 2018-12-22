@@ -16,6 +16,7 @@ static if(sdlSupport >= SDLSupport.sdl206) {
         SDL_BLENDMODE_MOD = 0x00000004,
         SDL_BLENDMODE_INVALID = 0x7FFFFFFF,
     }
+    mixin(expandEnum!SDL_BlendMode);
 
     enum SDL_BlendOperation {
         SDL_BLENDOPERATION_ADD = 0x1,
@@ -47,6 +48,7 @@ else {
         SDL_BLENDMODE_ADD = 0x00000002,
         SDL_BLENDMODE_MOD = 0x00000004,
     }
+    mixin(expandEnum!SDL_BlendMode);
 }
 
 version(BindSDL_Static) {

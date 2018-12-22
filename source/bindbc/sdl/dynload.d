@@ -529,6 +529,10 @@ SDLSupport loadSDL(const(char)* libName)
         loadedVersion = SDLSupport.sdl202;
     }
 
+    static if(sdlSupport >= SDLSupport.sdl203) {
+        loadedVersion = SDLSupport.sdl203;
+    }
+
     static if(sdlSupport >= SDLSupport.sdl204) {
         lib.bindSymbol(cast(void**)&SDL_ClearQueuedAudio, "SDL_ClearQueuedAudio");
         lib.bindSymbol(cast(void**)&SDL_GetQueuedAudioSize, "SDL_GetQueuedAudioSize");
@@ -549,7 +553,7 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_SetWindowsMessageHook, "SDL_SetWindowsMessageHook");
         }
 
-        loadedVersion = SDLSupport.sdl203;
+        loadedVersion = SDLSupport.sdl204;
     }
 
     static if(sdlSupport >= SDLSupport.sdl205) {

@@ -261,10 +261,10 @@ else {
             const(char)[][6] libNames = [
                 "libSDL2_image.so",
                 "/usr/local/lib/libSDL2_image.so",
-                "libSDL2-2.0_image.so",
-                "/usr/local/lib/libSDL2-2.0_image.so",
-                "libSDL2-2.0_image.so.0",
-                "/usr/local/lib/libSDL2-2.0_image.so.0"
+                "libSDL2_image-2.0.so",
+                "/usr/local/lib/libSDL2_image-2.0.so",
+                "libSDL2_image-2.0.so.0",
+                "/usr/local/lib/libSDL2_image-2.0.so.0"
             ];
         }
         else static assert(0, "bindbc-sdl is not yet supported on this platform.");

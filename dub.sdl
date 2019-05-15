@@ -15,6 +15,7 @@ configuration "dynamic" {
 configuration "dynamicBC" {
     dependency "bindbc-loader" version="~>0.2.1"
     subConfiguration "bindbc-loader" "yesBC"
+    dflags "-betterC"
 }
 
 configuration "static" {

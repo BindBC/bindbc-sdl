@@ -294,7 +294,7 @@ else {
     {
         lib = load(libName);
         if(lib == invalidHandle) {
-            return SDLTTFSupport.badLibrary;
+            return SDLTTFSupport.noLibrary;
         }
 
         auto errCount = errorCount();

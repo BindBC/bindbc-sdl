@@ -255,6 +255,11 @@ else {
 
     SDLTTFSupport loadedSDLTTFVersion() { return loadedVersion; }
 
+    bool isSDLTTFLoaded()
+    {
+        return  lib != invalidHandle;
+    }
+
     SDLTTFSupport loadSDLTTF()
     {
         version(Windows) {

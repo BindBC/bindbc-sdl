@@ -242,6 +242,12 @@ else {
 
     SDLImageSupport loadedSDLImageVersion() { return loadedVersion; }
 
+    bool isSDLImageLoaded()
+    {
+        return  lib != invalidHandle;
+    }
+
+
     SDLImageSupport loadSDLImage()
     {
         version(Windows) {

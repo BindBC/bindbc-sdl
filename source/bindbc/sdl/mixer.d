@@ -431,6 +431,12 @@ else {
 
     SDLMixerSupport loadedSDLMixerVersion() { return loadedVersion; }
 
+    bool isSDLMixerLoaded()
+    {
+        return  lib != invalidHandle;
+    }
+
+
     SDLMixerSupport loadSDLMixer()
     {
         version(Windows) {

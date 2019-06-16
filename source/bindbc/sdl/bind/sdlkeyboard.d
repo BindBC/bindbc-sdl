@@ -22,7 +22,7 @@ struct SDL_Keysym {
 version(BindSDL_Static) {
     extern(C) @nogc nothrow {
         SDL_Window* SDL_GetKeyboardFocus();
-        ubyte* SDL_GetKeyboardStaten(int*);
+        ubyte* SDL_GetKeyboardState(int*);
         SDL_Keymod SDL_GetModState();
         void SDL_SetModState(SDL_Keymod);
         SDL_Keycode SDL_GetKeyFromScancode(SDL_Scancode);

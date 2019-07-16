@@ -56,6 +56,9 @@ extern(C) nothrow alias SDL_blit = int function(SDL_Surface* src, SDL_Rect* srcr
     }
 }
 
+alias SDL_BlitSurface = SDL_UpperBlit;
+alias SDL_BlitScaled = SDL_UpperBlitScaled;
+
 static if(sdlSupport >= SDLSupport.sdl208) {
     enum SDL_YUV_CONVERSION_MODE {
         SDL_YUV_CONVERSION_JPEG,

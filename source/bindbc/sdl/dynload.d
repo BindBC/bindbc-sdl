@@ -668,6 +668,36 @@ SDLSupport loadSDL(const(char)* libName)
         loadedVersion = SDLSupport.sdl209;
     }
 
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        lib.bindSymbol(cast(void**)&SDL_SIMDGetAlignment, "SDL_SIMDGetAlignment");
+        lib.bindSymbol(cast(void**)&SDL_SIMDAlloc, "SDL_SIMDAlloc");
+        lib.bindSymbol(cast(void**)&SDL_SIMDFree, "SDL_SIMDFree");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetPlayerIndex, "SDL_GameControllerGetPlayerIndex");
+        lib.bindSymbol(cast(void**)&SDL_JoystickGetDevicePlayerIndex, "SDL_JoystickGetDevicePlayerIndex");
+        lib.bindSymbol(cast(void**)&SDL_JoystickGetPlayerIndex, "SDL_JoystickGetPlayerIndex");
+        lib.bindSymbol(cast(void**)&SDL_RenderDrawPointF, "SDL_RenderDrawPointF");
+        lib.bindSymbol(cast(void**)&SDL_RenderDrawPointsF, "SDL_RenderDrawPointsF");
+        lib.bindSymbol(cast(void**)&SDL_RenderDrawLineF, "SDL_RenderDrawLineF");
+        lib.bindSymbol(cast(void**)&SDL_RenderDrawLinesF, "SDL_RenderDrawLinesF");
+        lib.bindSymbol(cast(void**)&SDL_RenderDrawRectF, "SDL_RenderDrawRectF");
+        lib.bindSymbol(cast(void**)&SDL_RenderDrawRectsF, "SDL_RenderDrawRectsF");
+        lib.bindSymbol(cast(void**)&SDL_RenderFillRectF, "SDL_RenderFillRectF");
+        lib.bindSymbol(cast(void**)&SDL_RenderFillRectsF, "SDL_RenderFillRectsF");
+        lib.bindSymbol(cast(void**)&SDL_RenderCopyF, "SDL_RenderCopyF");
+        lib.bindSymbol(cast(void**)&SDL_RenderCopyExF, "SDL_RenderCopyExF");
+        lib.bindSymbol(cast(void**)&SDL_RenderFlush, "SDL_RenderFlush");lib.bindSymbol(cast(void**)&SDL_Vulkan_CreateSurface, "SDL_Vulkan_CreateSurface");
+        lib.bindSymbol(cast(void**)&SDL_RWsize, "SDL_RWsize");
+        lib.bindSymbol(cast(void**)&SDL_RWseek, "SDL_RWseek");
+        lib.bindSymbol(cast(void**)&SDL_RWtell, "SDL_RWtell");
+        lib.bindSymbol(cast(void**)&SDL_RWread, "SDL_RWread");
+        lib.bindSymbol(cast(void**)&SDL_RWwrite, "SDL_RWwrite");
+        lib.bindSymbol(cast(void**)&SDL_RWclose, "SDL_RWclose");
+        lib.bindSymbol(cast(void**)&SDL_GetTouchDeviceType, "SDL_GetTouchDeviceType");
+
+
+        loadedVersion = SDLSupport.sdl2010;
+    }
+
     if(errorCount() != errCount) return SDLSupport.badLibrary;
 
     return loadedVersion;

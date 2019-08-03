@@ -6,6 +6,8 @@
 
 module bindbc.sdl.bind.sdltouch;
 
+import bindbc.sdl.config;
+
 alias SDL_TouchID = long;
 alias SDL_FingerID = long;
 
@@ -16,12 +18,29 @@ struct SDL_Finger {
     float pressure;
 }
 
+enum DL_TOUCH_MOUSEID = cast(uint)-1;
+
+static if(sdlSupport >= SDLSupport.sdl2010) {
+    enum SDL_TouchDeviceType {
+        SDL_TOUCH_DEVICE_INVALID = -1,
+        SDL_TOUCH_DEVICE_DIRECT,
+        SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE,
+        SDL_TOUCH_DEVICE_INDIRECT_RELATIVE,
+    }
+    mixin(expandEnum!SDL_TouchDeviceType);
+
+    enum SDL_MOUSE_TOUCHID = -1L;
+}
+
 version(BindSDL_Static) {
     extern(C) @nogc nothrow {
         int SDL_GetNumTouchDevices();
         SDL_TouchID SDL_GetTouchDevice(int);
         int SDL_GetNumTouchFingers(SDL_TouchID);
         SDL_Finger* SDL_GetTouchFinger(SDL_TouchID,int);
+    }
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        SDL_TouchDeviceType SDL_GetTouchDeviceType(SDL_TouchID);
     }
 }
 else {
@@ -31,11 +50,18 @@ else {
         alias pSDL_GetNumTouchFingers = int function(SDL_TouchID);
         alias pSDL_GetTouchFinger = SDL_Finger* function(SDL_TouchID,int);
     }
-
     __gshared {
         pSDL_GetNumTouchDevices SDL_GetNumTouchDevices;
         pSDL_GetTouchDevice SDL_GetTouchDevice;
         pSDL_GetNumTouchFingers SDL_GetNumTouchFingers;
         pSDL_GetTouchFinger SDL_GetTouchFinger;
+    }
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GetTouchDeviceType = SDL_TouchDeviceType function(SDL_TouchID);
+        }
+        __gshared {
+            pSDL_GetTouchDeviceType SDL_GetTouchDeviceType;
+        }
     }
 }

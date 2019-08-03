@@ -118,6 +118,9 @@ version(BindSDL_Static) {
             char* SDL_GameControllerMappingForDeviceIndex(int);
             int SDL_GameControllerRumble(SDL_GameController*,ushort,ushort,uint);
         }
+        static if(sdlSupport >= SDLSupport.sdl2010) {
+            int SDL_GameControllerGetPlayerIndex(SDL_GameController*);
+        }
     }
 }
 else {
@@ -143,7 +146,6 @@ else {
         alias pSDL_GameControllerGetButton = ubyte function(SDL_GameController*,SDL_GameControllerButton);
         alias pSDL_GameControllerClose = void function(SDL_GameController*);
     }
-
     __gshared {
         pSDL_GameControllerAddMapping SDL_GameControllerAddMapping;
         pSDL_GameControllerMappingForGUID SDL_GameControllerMappingForGUID;
@@ -166,7 +168,6 @@ else {
         pSDL_GameControllerGetButton SDL_GameControllerGetButton;
         pSDL_GameControllerClose SDL_GameControllerClose;
     }
-
     static if(sdlSupport >= SDLSupport.sdl202) {
         extern(C) @nogc nothrow {
             alias pSDL_GameControllerAddMappingsFromRW = int function(SDL_RWops*,int);
@@ -176,7 +177,6 @@ else {
             pSDL_GameControllerAddMappingsFromRW SDL_GameControllerAddMappingsFromRW;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
             alias pSDL_GameControllerFromInstanceID = SDL_GameController* function(SDL_JoystickID);
@@ -186,7 +186,6 @@ else {
             pSDL_GameControllerFromInstanceID SDL_GameControllerFromInstanceID;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
             alias pSDL_GameControllerGetProduct = ushort function(SDL_GameController*);
@@ -204,7 +203,6 @@ else {
             pSDL_GameControllerNumMappings SDL_GameControllerNumMappings;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl209) {
         extern(C) @nogc nothrow {
             alias pSDL_GameControllerMappingForDeviceIndex = char* function(int);
@@ -214,6 +212,14 @@ else {
         __gshared {
             pSDL_GameControllerMappingForDeviceIndex SDL_GameControllerMappingForDeviceIndex;
             pSDL_GameControllerRumble SDL_GameControllerRumble;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GameControllerGetPlayerIndex = int function(SDL_GameController*);
+        }
+        __gshared {
+            pSDL_GameControllerGetPlayerIndex SDL_GameControllerGetPlayerIndex;
         }
     }
 }

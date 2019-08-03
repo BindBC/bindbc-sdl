@@ -42,6 +42,9 @@ else version(SDL_208) {
 else version(SDL_209) {
     enum ubyte SDL_PATCHLEVEL = 9;
 }
+else version(SDL_2010) {
+    enum ubyte SDL_PATCHLEVEL = 10;
+}
 else {
     enum ubyte SDL_PATCHLEVEL = 0;
 }

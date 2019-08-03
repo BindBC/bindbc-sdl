@@ -6,6 +6,7 @@
 
 module bindbc.sdl.bind.sdlrect;
 
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 struct SDL_Point {
@@ -16,6 +17,17 @@ struct SDL_Point {
 struct SDL_Rect {
     int x, y;
     int w, h;
+}
+
+static if(sdlSupport >= SDLSupport.sdl2010) {
+    struct SDL_FPoint {
+        float x, y;
+    }
+
+    struct SDL_FRect {
+        float x, y;
+        float w, h;
+    }
 }
 
 @nogc nothrow pure {

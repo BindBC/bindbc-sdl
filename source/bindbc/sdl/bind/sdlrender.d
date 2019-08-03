@@ -8,7 +8,7 @@ module bindbc.sdl.bind.sdlrender;
 
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlblendmode : SDL_BlendMode;
-import bindbc.sdl.bind.sdlrect : SDL_Point, SDL_Rect;
+import bindbc.sdl.bind.sdlrect;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlsurface : SDL_Surface;
 import bindbc.sdl.bind.sdlvideo : SDL_Window;
@@ -113,19 +113,29 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl201) {
             int SDL_UpdateYUVTexture(SDL_Texture*,const(SDL_Rect)*,const(ubyte)*,int,const(ubyte)*,int,const(ubyte)*,int);
         }
-
         static if(sdlSupport >= SDLSupport.sdl204) {
             SDL_bool SDL_RenderIsClipEnabled(SDL_Renderer*);
         }
-
         static if(sdlSupport >= SDLSupport.sdl205) {
             SDL_bool SDL_RenderGetIntegerScale(SDL_Renderer*);
             int SDL_RenderSetIntegerScale(SDL_Renderer*,SDL_bool);
         }
-
         static if(sdlSupport >= SDLSupport.sdl208) {
             void* SDL_RenderGetMetalLayer(SDL_Renderer*);
             void* SDL_RenderGetMetalCommandEncoder(SDL_Renderer*);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2010) {
+            int SDL_RenderDrawPointF(SDL_Renderer*,float,float);
+            int SDL_RenderDrawPointsF(SDL_Renderer*,const(SDL_FPoint)*,int);
+            int SDL_RenderDrawLineF(SDL_Renderer*,float,float,float,float);
+            int SDL_RenderDrawLinesF(SDL_Renderer*,const(SDL_FPoint)*,int);
+            int SDL_RenderDrawRectF(SDL_Renderer*,const(SDL_FRect)*);
+            int SDL_RenderDrawRectsF(SDL_Renderer*,const(SDL_FRect)*,int);
+            int SDL_RenderFillRectF(SDL_Renderer*,const(SDL_FRect)*);
+            int SDL_RenderFillRectsF(SDL_Renderer*,const(SDL_FRect)*,int);
+            int SDL_RenderCopyF(SDL_Renderer*,SDL_Texture*,const(SDL_FRect)*,const(SDL_FRect)*);
+            int SDL_RenderCopyExF(SDL_Renderer*,SDL_Texture*,const(SDL_FRect)*,const(SDL_FRect)*,const(double),const(SDL_FPoint)*,const(SDL_RendererFlip));
+            int SDL_RenderFlush(SDL_Renderer*);
         }
     }
 }
@@ -239,48 +249,68 @@ else {
         pSDL_GL_BindTexture SDL_GL_BindTexture;
         pSDL_GL_UnbindTexture SDL_GL_UnbindTexture;
     }
-
     static if(sdlSupport >= SDLSupport.sdl201) {
         extern(C) @nogc nothrow {
             alias pSDL_UpdateYUVTexture = int function(SDL_Texture*,const(SDL_Rect)*,const(ubyte)*,int,const(ubyte)*,int,const(ubyte)*,int);
         }
-
         __gshared {
             pSDL_UpdateYUVTexture SDL_UpdateYUVTexture;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
             alias pSDL_RenderIsClipEnabled = SDL_bool function(SDL_Renderer*);
         }
-
         __gshared {
             pSDL_RenderIsClipEnabled SDL_RenderIsClipEnabled;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl205) {
         extern(C) @nogc nothrow {
             alias pSDL_RenderGetIntegerScale = SDL_bool function(SDL_Renderer*);
             alias pSDL_RenderSetIntegerScale = int function(SDL_Renderer*,SDL_bool);
         }
-
         __gshared {
             pSDL_RenderGetIntegerScale SDL_RenderGetIntegerScale;
             pSDL_RenderSetIntegerScale SDL_RenderSetIntegerScale;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl208) {
         extern(C) @nogc nothrow {
             alias pSDL_RenderGetMetalLayer = void* function(SDL_Renderer*);
             alias pSDL_RenderGetMetalCommandEncoder = void* function(SDL_Renderer*);
         }
-
         __gshared {
             pSDL_RenderGetMetalLayer SDL_RenderGetMetalLayer;
             pSDL_RenderGetMetalCommandEncoder SDL_RenderGetMetalCommandEncoder;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        extern(C) @nogc nothrow {
+            alias pSDL_RenderDrawPointF = int function(SDL_Renderer*,float,float);
+            alias pSDL_RenderDrawPointsF = int function(SDL_Renderer*,const(SDL_FPoint)*,int);
+            alias pSDL_RenderDrawLineF = int function(SDL_Renderer*,float,float,float,float);
+            alias pSDL_RenderDrawLinesF = int function(SDL_Renderer*,const(SDL_FPoint)*,int);
+            alias pSDL_RenderDrawRectF = int function(SDL_Renderer*,const(SDL_FRect)*);
+            alias pSDL_RenderDrawRectsF = int function(SDL_Renderer*,const(SDL_FRect)*,int);
+            alias pSDL_RenderFillRectF = int function(SDL_Renderer*,const(SDL_FRect)*);
+            alias pSDL_RenderFillRectsF = int function(SDL_Renderer*,const(SDL_FRect)*,int);
+            alias pSDL_RenderCopyF = int function(SDL_Renderer*,SDL_Texture*,const(SDL_FRect)*,const(SDL_FRect)*);
+            alias pSDL_RenderCopyExF = int function(SDL_Renderer*,SDL_Texture*,const(SDL_FRect)*,const(SDL_FRect)*,const(double),const(SDL_FPoint)*,const(SDL_RendererFlip));
+            alias pSDL_RenderFlush = int function(SDL_Renderer*);
+        }
+        __gshared {
+            pSDL_RenderDrawPointF SDL_RenderDrawPointF;
+            pSDL_RenderDrawPointsF SDL_RenderDrawPointsF;
+            pSDL_RenderDrawLineF SDL_RenderDrawLineF;
+            pSDL_RenderDrawLinesF SDL_RenderDrawLinesF;
+            pSDL_RenderDrawRectF SDL_RenderDrawRectF;
+            pSDL_RenderDrawRectsF SDL_RenderDrawRectsF;
+            pSDL_RenderFillRectF SDL_RenderFillRectF;
+            pSDL_RenderFillRectsF SDL_RenderFillRectsF;
+            pSDL_RenderCopyF SDL_RenderCopyF;
+            pSDL_RenderCopyExF SDL_RenderCopyExF;
+            pSDL_RenderFlush SDL_RenderFlush;
         }
     }
 }

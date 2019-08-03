@@ -19,9 +19,11 @@ enum SDLSupport {
     sdl207      = 207,
     sdl208      = 208,
     sdl209      = 209,
+    sdl2010      = 2010,
 }
 
-version(SDL_209) enum sdlSupport = SDLSupport.sdl209;
+version(SDL_2010) enum sdlSupport = SDLSupport.sdl2010;
+else version(SDL_209) enum sdlSupport = SDLSupport.sdl209;
 else version(SDL_208) enum sdlSupport = SDLSupport.sdl208;
 else version(SDL_207) enum sdlSupport = SDLSupport.sdl207;
 else version(SDL_206) enum sdlSupport = SDLSupport.sdl206;

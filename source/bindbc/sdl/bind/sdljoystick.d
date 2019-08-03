@@ -110,6 +110,10 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl209) {
             int SDL_JoystickRumble(SDL_Joystick*,ushort,ushort,uint);
         }
+        static if(sdlSupport >= SDLSupport.sdl2010) {
+             int SDL_JoystickGetDevicePlayerIndex(int);
+             int SDL_JoystickGetPlayerIndex(SDL_Joystick*);
+        }
     }
 }
 else {
@@ -136,7 +140,6 @@ else {
         alias pSDL_JoystickGetButton = ubyte function(SDL_Joystick*,int);
         alias pSDL_JoystickClose = void function(SDL_Joystick*);
     }
-
     __gshared {
         pSDL_NumJoysticks SDL_NumJoysticks;
         pSDL_JoystickNameForIndex SDL_JoystickNameForIndex;
@@ -160,19 +163,16 @@ else {
         pSDL_JoystickGetButton SDL_JoystickGetButton;
         pSDL_JoystickClose SDL_JoystickClose;
     }
-
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
             alias pSDL_JoystickCurrentPowerLevel = SDL_JoystickPowerLevel function(SDL_Joystick*);
             alias pSDL_JoystickFromInstanceID = SDL_Joystick* function(SDL_JoystickID);
         }
-
         __gshared {
             pSDL_JoystickCurrentPowerLevel SDL_JoystickCurrentPowerLevel;
             pSDL_JoystickFromInstanceID SDL_JoystickFromInstanceID;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
             alias pSDL_JoystickGetAxisInitialState = SDL_bool function(SDL_Joystick*,int,short*);
@@ -186,7 +186,6 @@ else {
             alias pSDL_JoystickGetType = SDL_JoystickType function(SDL_Joystick*);
             alias pSDL_JoystickGetVendor = ushort function(SDL_Joystick*);
         }
-
         __gshared {
             pSDL_JoystickGetAxisInitialState SDL_JoystickGetAxisInitialState;
             pSDL_JoystickGetDeviceInstanceID SDL_JoystickGetDeviceInstanceID;
@@ -200,26 +199,33 @@ else {
             pSDL_JoystickGetVendor SDL_JoystickGetVendor;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl207) {
         extern(C) @nogc nothrow {
             alias pSDL_LockJoysticks = void function();
             alias pSDL_UnlockJoysticks = void function();
         }
-
         __gshared {
             pSDL_LockJoysticks SDL_LockJoysticks;
             pSDL_UnlockJoysticks SDL_UnlockJoysticks;
         }
     }
-
-    static if(sdlSupport >= SDLSupport.sdl207) {
+    static if(sdlSupport >= SDLSupport.sdl209) {
         extern(C) @nogc nothrow {
             alias pSDL_JoystickRumble = int function(SDL_Joystick*,ushort,ushort,uint);
         }
-
         __gshared {
             pSDL_JoystickRumble SDL_JoystickRumble;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        extern(C) @nogc nothrow {
+            alias pSDL_JoystickGetDevicePlayerIndex = int function(int);
+            alias pSDL_JoystickGetPlayerIndex = int function(SDL_Joystick*);
+        }
+        __gshared {
+            pSDL_JoystickGetDevicePlayerIndex SDL_JoystickGetDevicePlayerIndex;
+            pSDL_JoystickGetPlayerIndex SDL_JoystickGetPlayerIndex;
         }
     }
 }

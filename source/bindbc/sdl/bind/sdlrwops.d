@@ -74,13 +74,15 @@ enum {
     RW_SEEK_END = 2,
 }
 
-@nogc nothrow {
-    long SDL_RWsize(SDL_RWops* ctx) { return ctx.size(ctx); }
-    long SDL_RWseek(SDL_RWops* ctx, long offset, int whence) { return ctx.seek(ctx, offset, whence); }
-    long SDL_RWtell(SDL_RWops* ctx) { return ctx.seek(ctx, 0, RW_SEEK_CUR); }
-    size_t SDL_RWread(SDL_RWops* ctx, void* ptr, size_t size, size_t n) { return ctx.read(ctx, ptr, size, n); }
-    size_t SDL_RWwrite(SDL_RWops* ctx, const(void)* ptr, size_t size, size_t n) { return ctx.write(ctx, ptr, size, n); }
-    int SDL_RWclose(SDL_RWops* ctx) { return ctx.close(ctx); }
+static if(sdlSupport < SDLSupport.sdl2010) {
+    @nogc nothrow {
+        long SDL_RWsize(SDL_RWops* ctx) { return ctx.size(ctx); }
+        long SDL_RWseek(SDL_RWops* ctx, long offset, int whence) { return ctx.seek(ctx, offset, whence); }
+        long SDL_RWtell(SDL_RWops* ctx) { return ctx.seek(ctx, 0, RW_SEEK_CUR); }
+        size_t SDL_RWread(SDL_RWops* ctx, void* ptr, size_t size, size_t n) { return ctx.read(ctx, ptr, size, n); }
+        size_t SDL_RWwrite(SDL_RWops* ctx, const(void)* ptr, size_t size, size_t n) { return ctx.write(ctx, ptr, size, n); }
+        int SDL_RWclose(SDL_RWops* ctx) { return ctx.close(ctx); }
+    }
 }
 
 static if(sdlSupport >= SDLSupport.sdl206) {
@@ -117,6 +119,14 @@ version(BindSDL_Static)  {
         static if(sdlSupport >= SDLSupport.sdl206) {
             void* SDL_LoadFile_RW(SDL_RWops*,size_t,int);
         }
+        static if(sdlSupport >= SDLSupport.sdl2010) {
+            long SDL_RWsize(SDL_RWops*);
+            long SDL_RWseek(SDL_RWops*,long,int);
+            long SDL_RWtell(SDL_RWops*);
+            size_t SDL_RWread(SDL_RWops*,void*,size_t,size_t);
+            size_t SDL_RWwrite(SDL_RWops*,const(void)*,size_t,size_t);
+            int SDL_RWclose(SDL_RWops*);
+        }
     }
 }
 else {
@@ -142,7 +152,6 @@ else {
         alias pSDL_WriteLE64 = size_t function(SDL_RWops*,ulong);
         alias pSDL_WriteBE64 = size_t function(SDL_RWops*,ulong);
     }
-
     __gshared {
         pSDL_RWFromFile SDL_RWFromFile;
         pSDL_RWFromFP SDL_RWFromFP;
@@ -165,14 +174,30 @@ else {
         pSDL_WriteLE64 SDL_WriteLE64;
         pSDL_WriteBE64 SDL_WriteBE64;
     }
-
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
             alias pSDL_LoadFile_RW = void* function(SDL_RWops*,size_t,int);
         }
-
         __gshared {
             pSDL_LoadFile_RW SDL_LoadFile_RW;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        extern(C) @nogc nothrow {
+            alias pSDL_RWsize = long function(SDL_RWops*);
+            alias pSDL_RWseek = long function(SDL_RWops*,long,int);
+            alias pSDL_RWtell = long function(SDL_RWops*);
+            alias pSDL_RWread = size_t function(SDL_RWops*,void*,size_t,size_t);
+            alias pSDL_RWwrite = size_t function(SDL_RWops*,const(void)*,size_t,size_t);
+            alias pSDL_RWclose = int function(SDL_RWops*);
+        }
+        __gshared {
+            pSDL_RWsize SDL_RWsize;
+            pSDL_RWseek SDL_RWseek;
+            pSDL_RWtell SDL_RWtell;
+            pSDL_RWread SDL_RWread;
+            pSDL_RWwrite SDL_RWwrite;
+            pSDL_RWclose SDL_RWclose;
         }
     }
 }

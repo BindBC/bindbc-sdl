@@ -498,7 +498,8 @@ SDLSupport loadSDL(const(char)* libName)
     lib.bindSymbol(cast(void**)&SDL_GL_SwapWindow, "SDL_GL_SwapWindow");
     lib.bindSymbol(cast(void**)&SDL_GL_DeleteContext, "SDL_GL_DeleteContext");
 
-    loadedVersion = SDLSupport.sdl200;
+    if(errorCount() != errCount) return SDLSupport.badLibrary;
+    else loadedVersion = SDLSupport.sdl200;
 
     static if(sdlSupport >= SDLSupport.sdl201) {
         lib.bindSymbol(cast(void**)&SDL_GetSystemRAM, "SDL_GetSystemRAM");
@@ -512,7 +513,8 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_RenderGetD3D9Device, "SDL_RenderGetD3D9Device");
         }
 
-        loadedVersion = SDLSupport.sdl201;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl201;
     }
 
     static if(sdlSupport >= SDLSupport.sdl202) {
@@ -526,7 +528,8 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_DXGIGetOutputInfo, "SDL_DXGIGetOutputInfo");
         }
 
-        loadedVersion = SDLSupport.sdl202;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl202;
     }
 
     static if(sdlSupport >= SDLSupport.sdl203) {
@@ -553,7 +556,8 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_SetWindowsMessageHook, "SDL_SetWindowsMessageHook");
         }
 
-        loadedVersion = SDLSupport.sdl204;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl204;
     }
 
     static if(sdlSupport >= SDLSupport.sdl205) {
@@ -571,7 +575,8 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_SetWindowOpacity, "SDL_SetWindowOpacity");
         lib.bindSymbol(cast(void**)&SDL_SetWindowResizable, "SDL_SetWindowResizable");
 
-        loadedVersion = SDLSupport.sdl205;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl205;
     }
 
     static if(sdlSupport >= SDLSupport.sdl206) {
@@ -601,7 +606,8 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_Vulkan_LoadLibrary, "SDL_Vulkan_LoadLibrary");
         lib.bindSymbol(cast(void**)&SDL_Vulkan_UnloadLibrary, "SDL_Vulkan_UnloadLibrary");
 
-        loadedVersion = SDLSupport.sdl206;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl206;
     }
 
     static if(sdlSupport >= SDLSupport.sdl207) {
@@ -631,7 +637,8 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_Vulkan_LoadLibrary, "SDL_Vulkan_LoadLibrary");
         lib.bindSymbol(cast(void**)&SDL_Vulkan_UnloadLibrary, "SDL_Vulkan_UnloadLibrary");
 
-        loadedVersion = SDLSupport.sdl207;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl207;
     }
 
     static if(sdlSupport >= SDLSupport.sdl208) {
@@ -645,7 +652,8 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_IsAndroidTV, "SDL_IsAndroidTV");
         }
 
-        loadedVersion = SDLSupport.sdl208;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl208;
     }
 
     static if(sdlSupport >= SDLSupport.sdl209) {
@@ -665,7 +673,8 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_AndroidBackButton, "SDL_AndroidBackButton");
         }
 
-        loadedVersion = SDLSupport.sdl209;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl209;
     }
 
     static if(sdlSupport >= SDLSupport.sdl2010) {
@@ -695,10 +704,9 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_GetTouchDeviceType, "SDL_GetTouchDeviceType");
 
 
-        loadedVersion = SDLSupport.sdl2010;
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2010;
     }
-
-    if(errorCount() != errCount) return SDLSupport.badLibrary;
 
     return loadedVersion;
 }

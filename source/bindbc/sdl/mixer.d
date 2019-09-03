@@ -553,16 +553,16 @@ else {
         lib.bindSymbol(cast(void**)&Mix_GetChunk,"Mix_GetChunk");
         lib.bindSymbol(cast(void**)&Mix_CloseAudio,"Mix_CloseAudio");
 
-        loadedVersion = SDLMixerSupport.sdlMixer200;
+        if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
+        else loadedVersion = SDLMixerSupport.sdlMixer200;
 
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
             lib.bindSymbol(cast(void**)&Mix_OpenAudioDevice,"Mix_OpenAudioDevice");
             lib.bindSymbol(cast(void**)&Mix_HasChunkDecoder,"Mix_HasChunkDecoder");
 
-            loadedVersion = SDLMixerSupport.sdlMixer202;
+            if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
+            else loadedVersion = SDLMixerSupport.sdlMixer202;
         }
-
-        if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
 
         return loadedVersion;
     }

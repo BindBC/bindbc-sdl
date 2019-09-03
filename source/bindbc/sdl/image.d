@@ -335,7 +335,8 @@ else {
         lib.bindSymbol(cast(void**)&IMG_SavePNG,"IMG_SavePNG");
         lib.bindSymbol(cast(void**)&IMG_SavePNG_RW,"IMG_SavePNG_RW");
 
-        loadedVersion = SDLImageSupport.sdlImage200;
+        if(errorCount() != errCount) return SDLImageSupport.badLibrary;
+        else loadedVersion = SDLImageSupport.sdlImage200;
 
         static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
             lib.bindSymbol(cast(void**)&IMG_isSVG,"IMG_isSVG");
@@ -343,10 +344,9 @@ else {
             lib.bindSymbol(cast(void**)&IMG_SaveJPG,"IMG_SaveJPG");
             lib.bindSymbol(cast(void**)&IMG_SaveJPG_RW,"IMG_SaveJPG_RW");
 
-            loadedVersion = SDLImageSupport.sdlImage202;
+            if(errorCount() != errCount) return SDLImageSupport.badLibrary;
+            else loadedVersion = SDLImageSupport.sdlImage202;
         }
-
-        if(errorCount() != errCount) return SDLImageSupport.badLibrary;
 
         return loadedVersion;
     }

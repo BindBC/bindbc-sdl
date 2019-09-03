@@ -353,16 +353,15 @@ else {
         lib.bindSymbol(cast(void**)&TTF_WasInit,"TTF_WasInit");
         lib.bindSymbol(cast(void**)&TTF_GetFontKerningSize,"TTF_GetFontKerningSize");
 
-        loadedVersion = SDLTTFSupport.sdlTTF2012;
+        if(errorCount() != errCount) return SDLTTFSupport.badLibrary;
+        else loadedVersion = SDLTTFSupport.sdlTTF2012;
 
         static if(sdlTTFSupport >= SDLTTFSupport.sdlTTF2014) {
             lib.bindSymbol(cast(void**)&TTF_GetFontKerningSizeGlyphs,"TTF_GetFontKerningSizeGlyphs");
 
-            loadedVersion = SDLTTFSupport.sdlTTF2014;
+            if(errorCount() != errCount) return SDLTTFSupport.badLibrary;
+            else loadedVersion = SDLTTFSupport.sdlTTF2014;
         }
-
-
-        if(errorCount() != errCount) return SDLTTFSupport.badLibrary;
 
         return loadedVersion;
     }

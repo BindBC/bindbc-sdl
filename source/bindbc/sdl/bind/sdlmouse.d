@@ -63,6 +63,7 @@ static if(sdlSupport >= SDLSupport.sdl204) {
         SDL_MOUSEWHEEL_NORMAL,
         SDL_MOUSEWHEEL_FLIPPED,
     }
+    mixin(expandEnum!SDL_MouseWheelDirection);
 }
 
 version(BindSDL_Static) {

@@ -108,7 +108,7 @@ version(BindSDL_Static)  {
         uint SDL_ReadBE32(SDL_RWops*);
         ulong SDL_ReadLE64(SDL_RWops*);
         ulong SDL_ReadBE64(SDL_RWops*);
-        size_t SDL_WriteU8n(SDL_RWops*,ubyte);
+        size_t SDL_WriteU8(SDL_RWops*,ubyte);
         size_t SDL_WriteLE16(SDL_RWops*,ushort);
         size_t SDL_WriteBE16(SDL_RWops*,ushort);
         size_t SDL_WriteLE32(SDL_RWops*,uint);

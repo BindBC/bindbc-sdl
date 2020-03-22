@@ -240,3 +240,32 @@ libs "SDL2" "SDL2_image"
 ```
 
 When not using DUB to manage your project, first use DUB to compile the BindBC libraries with the `dynamicBC` or `staticBC` configuration, then pass `-betterC` to the compiler when building your project.
+
+## Known Issues
+The SDL libraries tend to load dependent DLLs dynamically in the same way that BindBC loads libraries dynamically. Due to the way it goes about it, there is an issue that can arise on Windows when putting some of the SDL DLLs in a subdirectory of your executable directory. That is, if your executable is in e.g., the directory `myapp`, and the SDL DLLs are in e.g., the directory `myapp\libs`, you may encounter find that one or more of the SDL libraries fail to load.
+
+First, make sure the non-system libraries on which the SDL libraries depend (such as `zlib.dll`) are in the same directory as the SDL libraries. Then, you'll want to add your subdirectory path to the Windows DLL search path. This is done via the `SetDLLDirectory` function. You can make this function available by importing `core.sys.windows` and adding `Windows7` to your list of versions in your `dub.sdl/json` or on the compiler command line with `-version`.
+
+Assuming the `lib` subdirectory, the code looks like this:
+
+```d
+version(Windows) {
+    import core.sys.windows;
+    void myLoadSDL() {
+        // Add the lib subdirectory to the DLL search path
+        SetDLLDirectoryA(".\\lib");
+
+        // Load all the SDL libraries you need
+        loadSDL("libs\\SDL2.dll");
+        loadSDLTTF("libs\\SDL2_ttf.dll");
+        ...
+
+        // Reset the DLL search path to the default
+        SetDLLDirectoryA(null);
+    }
+}
+```
+
+For robustness, the paths you pass to `SetDLLDirectoryA` and in the `load*` functions should account for the case when the application is opened in a working directory that is not the same as the executable directory. (This is true for any relative paths from which you load resources.) If `Runtime.args[0]` (from `core.runtime`) is simply the application name with no path, then you need do nothing more. If it contains a path, you can strip the application name from it and append the relative path to your libraries. Use the result in the function calls.
+
+

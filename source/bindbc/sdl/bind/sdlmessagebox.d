@@ -9,10 +9,21 @@ module bindbc.sdl.bind.sdlmessagebox;
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlvideo : SDL_Window;
 
-enum SDL_MessageBoxFlags {
-    SDL_MESSAGEBOX_ERROR = 0x00000010,
-    SDL_MESSAGEBOX_WARNING = 0x00000020,
-    SDL_MESSAGEBOX_INFORMATION = 0x00000040,
+static if(sdlSupport >= SDLSupport.sdl2012) {
+    enum SDL_MessageBoxFlags {
+        SDL_MESSAGEBOX_ERROR = 0x00000010,
+        SDL_MESSAGEBOX_WARNING = 0x00000020,
+        SDL_MESSAGEBOX_INFORMATION = 0x00000040,
+        SDL_MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT = 0x00000080,
+        SDL_MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT = 0x00000100,
+    }
+}
+else {
+    enum SDL_MessageBoxFlags {
+        SDL_MESSAGEBOX_ERROR = 0x00000010,
+        SDL_MESSAGEBOX_WARNING = 0x00000020,
+        SDL_MESSAGEBOX_INFORMATION = 0x00000040,
+    }
 }
 mixin(expandEnum!SDL_MessageBoxFlags);
 

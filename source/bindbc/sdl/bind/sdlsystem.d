@@ -42,6 +42,9 @@ version(BindSDL_Static) {
                 SDL_bool SDL_IsDeXMode();
                 void SDL_AndroidBackButton();
             }
+            static if(sdlSupport >= SDLSupport.sdl2012) {
+                int SDL_GetAndroidSDKVersion();
+            }
         }
         else version(Windows) {
             static if(sdlSupport >= SDLSupport.sdl201) {
@@ -80,7 +83,6 @@ else {
             pSDL_AndroidGetInternalStorageState SDL_AndroidGetInternalStorageState;
             pSDL_AndroidGetExternalStoragePath SDL_AndroidGetExternalStoragePath;
         }
-
         static if(sdlSupport >= SDLSupport.sdl208) {
             extern(C) @nogc nothrow {
                 alias pSDL_IsAndroidTV = SDL_bool function();
@@ -90,7 +92,6 @@ else {
                 pSDL_IsAndroidTV SDL_IsAndroidTV;
             }
         }
-
         static if(sdlSupport >= SDLSupport.sdl209) {
             extern(C) @nogc nothrow {
                 alias pSDL_IsChromebook = SDL_bool function();
@@ -102,6 +103,15 @@ else {
                 pSDL_IsChromebook SDL_IsChromebook;
                 pSDL_IsDeXMode SDL_IsDeXMode;
                 pSDL_AndroidBackButton SDL_AndroidBackButton;
+            }
+        }
+        static if(sdlSupport >= SDLSupport.sdl2012) {
+            extern(C) @nogc nothrow {
+                alias pSDL_GetAndroidSDKVersion = int function();
+            }
+
+            __gshared {
+                pSDL_GetAndroidSDKVersion SDL_GetAndroidSDKVersion;
             }
         }
     }

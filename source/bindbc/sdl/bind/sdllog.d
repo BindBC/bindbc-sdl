@@ -11,7 +11,7 @@ import bindbc.sdl.config;
 
 enum SDL_MAX_LOG_MESSAGE = 4096;
 
-enum {
+enum SDL_LogCategory {
     SDL_LOG_CATEGORY_APPLICATION,
     SDL_LOG_CATEGORY_ERROR,
     SDL_LOG_CATEGORY_ASSERT,
@@ -35,6 +35,7 @@ enum {
 
     SDL_LOG_CATEGORY_CUSTOM
 }
+mixin(expandEnum!SDL_LogCategory);
 
 enum SDL_LogPriority {
     SDL_LOG_PRIORITY_VERBOSE = 1,

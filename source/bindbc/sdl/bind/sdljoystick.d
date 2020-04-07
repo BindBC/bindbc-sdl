@@ -111,8 +111,12 @@ version(BindSDL_Static) {
             int SDL_JoystickRumble(SDL_Joystick*,ushort,ushort,uint);
         }
         static if(sdlSupport >= SDLSupport.sdl2010) {
-             int SDL_JoystickGetDevicePlayerIndex(int);
-             int SDL_JoystickGetPlayerIndex(SDL_Joystick*);
+            int SDL_JoystickGetDevicePlayerIndex(int);
+            int SDL_JoystickGetPlayerIndex(SDL_Joystick*);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2012) {
+            SDL_Joystick* SDL_JoystickFromPlayerIndex(int);
+            void SDL_JoystickSetPlayerIndex(SDL_Joystick*,int);
         }
     }
 }
@@ -217,7 +221,6 @@ else {
             pSDL_JoystickRumble SDL_JoystickRumble;
         }
     }
-
     static if(sdlSupport >= SDLSupport.sdl2010) {
         extern(C) @nogc nothrow {
             alias pSDL_JoystickGetDevicePlayerIndex = int function(int);
@@ -226,6 +229,16 @@ else {
         __gshared {
             pSDL_JoystickGetDevicePlayerIndex SDL_JoystickGetDevicePlayerIndex;
             pSDL_JoystickGetPlayerIndex SDL_JoystickGetPlayerIndex;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        extern(C) @nogc nothrow {
+            alias pSDL_JoystickFromPlayerIndex = SDL_Joystick* function(int);
+            alias pSDL_JoystickSetPlayerIndex = void function(SDL_Joystick*,int);
+        }
+        __gshared {
+            pSDL_JoystickFromPlayerIndex SDL_JoystickFromPlayerIndex;
+            pSDL_JoystickSetPlayerIndex SDL_JoystickSetPlayerIndex;
         }
     }
 }

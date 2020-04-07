@@ -45,6 +45,9 @@ version(BindSDL_Static) {
             void* SDL_SIMDAlloc(const(size_t));
             void SDL_SIMDFree(void*);
         }
+        static if(sdlSupport >= SDLSupport.sdl2012) {
+            SDL_bool SDL_HasARMSIMD();
+        }
     }
 }
 else {
@@ -126,5 +129,14 @@ else {
             pSDL_SIMDAlloc SDL_SIMDAlloc;
             pSDL_SIMDFree SDL_SIMDFree;
         }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        extern(C) @nogc nothrow {
+            alias pSDL_HasARMSIMD = SDL_bool function();
+        }
+        __gshared {
+            pSDL_HasARMSIMD SDL_HasARMSIMD;
+        }
+
     }
 }

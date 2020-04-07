@@ -703,9 +703,28 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_RWclose, "SDL_RWclose");
         lib.bindSymbol(cast(void**)&SDL_GetTouchDeviceType, "SDL_GetTouchDeviceType");
 
-
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2010;
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        lib.bindSymbol(cast(void**)&SDL_HasARMSIMD, "SDL_HasARMSIMD");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerTypeForIndex, "SDL_GameControllerTypeForIndex");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerFromPlayerIndex, "SDL_GameControllerFromPlayerIndex");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetType, "SDL_GameControllerGetType");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerSetPlayerIndex, "SDL_GameControllerSetPlayerIndex");
+        lib.bindSymbol(cast(void**)&SDL_JoystickFromPlayerIndex, "SDL_JoystickFromPlayerIndex");
+        lib.bindSymbol(cast(void**)&SDL_JoystickGetGUID, "SDL_JoystickGetGUID");
+        lib.bindSymbol(cast(void**)&SDL_SetTextureScaleMode, "SDL_SetTextureScaleMode");
+        lib.bindSymbol(cast(void**)&SDL_GetTextureScaleMode, "SDL_GetTextureScaleMode");
+        lib.bindSymbol(cast(void**)&SDL_LockTextureToSurface, "SDL_LockTextureToSurface");
+        version(Android) {
+            lib.bindSymbol(cast(void**)&SDL_GetAndroidSDKVersion, "SDL_GetAndroidSDKVersion");
+        }
+
+
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2012;
     }
 
     return loadedVersion;

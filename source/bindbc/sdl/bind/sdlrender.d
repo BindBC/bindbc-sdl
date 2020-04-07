@@ -19,7 +19,6 @@ enum SDL_RendererFlags : uint {
     SDL_RENDERER_PRESENTVSYNC = 0x00000004,
     SDL_RENDERER_TARGETTEXTURE = 0x00000008,
 }
-
 mixin(expandEnum!SDL_RendererFlags);
 
 struct SDL_RendererInfo {
@@ -29,6 +28,15 @@ struct SDL_RendererInfo {
     uint[16] texture_formats;
     int max_texture_width;
     int max_texture_height;
+}
+
+static if(sdlSupport >= SDLSupport.sdl2012) {
+    enum SDL_ScaleMode {
+        SDL_ScaleModeNearest,
+        SDL_ScaleModeLinear,
+        SDL_ScaleModeBest,
+    }
+    mixin(expandEnum!SDL_ScaleMode);
 }
 
 enum SDL_TextureAccess {
@@ -136,6 +144,11 @@ version(BindSDL_Static) {
             int SDL_RenderCopyF(SDL_Renderer*,SDL_Texture*,const(SDL_FRect)*,const(SDL_FRect)*);
             int SDL_RenderCopyExF(SDL_Renderer*,SDL_Texture*,const(SDL_FRect)*,const(SDL_FRect)*,const(double),const(SDL_FPoint)*,const(SDL_RendererFlip));
             int SDL_RenderFlush(SDL_Renderer*);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2012) {
+            int SDL_SetTextureScaleMode(SDL_Texture*,SDL_ScaleMode);
+            int SDL_GetTextureScaleMode(SDL_Texture*,SDL_ScaleMode*);
+            int SDL_LockTextureToSurface(SDL_Texture*,const(SDL_Rect)*,SDL_Surface**);
         }
     }
 }
@@ -311,6 +324,18 @@ else {
             pSDL_RenderCopyF SDL_RenderCopyF;
             pSDL_RenderCopyExF SDL_RenderCopyExF;
             pSDL_RenderFlush SDL_RenderFlush;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        extern(C) @nogc nothrow {
+            alias pSDL_SetTextureScaleMode = int function(SDL_Texture*,SDL_ScaleMode);
+            alias pSDL_GetTextureScaleMode = int function(SDL_Texture*,SDL_ScaleMode*);
+            alias pSDL_LockTextureToSurface = int function(SDL_Texture*,const(SDL_Rect)*,SDL_Surface**);
+        }
+        __gshared {
+            pSDL_SetTextureScaleMode SDL_SetTextureScaleMode;
+            pSDL_GetTextureScaleMode SDL_GetTextureScaleMode;
+            pSDL_LockTextureToSurface SDL_LockTextureToSurface;
         }
     }
 }

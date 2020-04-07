@@ -127,6 +127,8 @@ The satellite libraries provide similar functions: `loadedSDLImageVersion`, `loa
 
 Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
 
+__NOTE:__ Beginning with SDL 2.0.10, all releases have even numbered (2.0.12, 2.0.14, etc.). Odd number versions beginning with 2.0.11 are development versions, which are not supported by `bindbc-sdl`.
+
 | Library & Version  | Version ID       |
 |--------------------|------------------|
 |SDL 2.0.0           | Default          |
@@ -140,6 +142,7 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL 2.0.8           | SDL_208          |
 |SDL 2.0.9           | SDL_209          |
 |SDL 2.0.10          | SDL_2010         |
+|SDL 2.0.12          | SDL_2012         |
 |--                  | --               |
 |SDL_image 2.0.0     | Default          |
 |SDL_image 2.0.1     | SDL_Image_201    |

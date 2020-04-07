@@ -475,6 +475,10 @@ struct SDL_TouchFingerEvent {
     float dx;
     float dy;
     float pressure;
+
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        uint windowID;
+    }
 }
 
 struct SDL_MultiGestureEvent {

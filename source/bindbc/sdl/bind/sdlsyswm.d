@@ -12,7 +12,25 @@ import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlversion : SDL_version;
 import bindbc.sdl.bind.sdlvideo : SDL_Window;
 
-static if(sdlSupport >= SDLSupport.sdl205) {
+
+static if(sdlSupport >= SDLSupport.sdl2012) {
+    enum SDL_SYSWM_TYPE {
+        SDL_SYSWM_UNKNOWN,
+        SDL_SYSWM_WINDOWS,
+        SDL_SYSWM_X11,
+        SDL_SYSWM_DIRECTFB,
+        SDL_SYSWM_COCOA,
+        SDL_SYSWM_UIKIT,
+        SDL_SYSWM_WAYLAND,
+        SDL_SYSWM_MIR,
+        SDL_SYSWM_WINRT,
+        SDL_SYSWM_ANDROID,
+        SDL_SYSWM_VIVANTE,
+        SDL_SYSWM_OS2,
+        SDL_SYSWM_HAIKU,
+    }
+}
+else static if(sdlSupport >= SDLSupport.sdl206) {
     enum SDL_SYSWM_TYPE {
         SDL_SYSWM_UNKNOWN,
         SDL_SYSWM_WINDOWS,

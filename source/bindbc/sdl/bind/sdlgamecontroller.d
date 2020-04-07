@@ -14,6 +14,18 @@ import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 struct SDL_GameController;
 
+static if(sdlSupport >= SDLSupport.sdl2012) {
+    enum SDL_GameControllerType {
+        SDL_CONTROLLER_TYPE_UNKNOWN = 0,
+        SDL_CONTROLLER_TYPE_XBOX360,
+        SDL_CONTROLLER_TYPE_XBOXONE,
+        SDL_CONTROLLER_TYPE_PS3,
+        SDL_CONTROLLER_TYPE_PS4,
+        SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+    }
+    mixin(expandEnum!SDL_GameControllerType);
+}
+
 enum SDL_GameControllerBindType {
     SDL_CONTROLLER_BINDTYPE_NONE = 0,
     SDL_CONTROLLER_BINDTYPE_BUTTON,
@@ -121,6 +133,12 @@ version(BindSDL_Static) {
         static if(sdlSupport >= SDLSupport.sdl2010) {
             int SDL_GameControllerGetPlayerIndex(SDL_GameController*);
         }
+        static if(sdlSupport >= SDLSupport.sdl2012) {
+            SDL_GameControllerType SDL_GameControllerTypeForIndex(int);
+            SDL_GameController* SDL_GameControllerFromPlayerIndex(int);
+            SDL_GameControllerType SDL_GameControllerGetType(SDL_GameController*);
+            void SDL_GameControllerSetPlayerIndex(SDL_GameController*,int);
+        }
     }
 }
 else {
@@ -220,6 +238,21 @@ else {
         }
         __gshared {
             pSDL_GameControllerGetPlayerIndex SDL_GameControllerGetPlayerIndex;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GameControllerTypeForIndex = SDL_GameControllerType function(int);
+            alias pSDL_GameControllerFromPlayerIndex = SDL_GameController* function(int);
+            alias pSDL_GameControllerGetType = SDL_GameControllerType function(SDL_GameController*);
+            alias pSDL_GameControllerSetPlayerIndex = void function(SDL_GameController*,int);
+
+        }
+        __gshared {
+            pSDL_GameControllerTypeForIndex SDL_GameControllerTypeForIndex;
+            pSDL_GameControllerFromPlayerIndex SDL_GameControllerFromPlayerIndex;
+            pSDL_GameControllerGetType SDL_GameControllerGetType;
+            pSDL_GameControllerSetPlayerIndex SDL_GameControllerSetPlayerIndex;
         }
     }
 }

@@ -25,12 +25,17 @@ enum SDLMixerSupport {
     sdlMixer200 = 200,
     sdlMixer201 = 201,
     sdlMixer202 = 202,
+    sdlMixer204 = 204,
 }
 
 enum ubyte SDL_MIXER_MAJOR_VERSION = 2;
 enum ubyte SDL_MIXER_MINOR_VERSION = 0;
 
-version(SDL_Mixer_202) {
+version(SDL_Mixer_204) {
+    enum sdlMixerSupport = SDLMixerSupport.sdlMixer204;
+    enum ubyte SDL_MIXER_PATCHLEVEL = 4;
+}
+else version(SDL_Mixer_202) {
     enum sdlMixerSupport = SDLMixerSupport.sdlMixer202;
     enum ubyte SDL_MIXER_PATCHLEVEL = 2;
 }
@@ -59,7 +64,17 @@ alias SDL_MIX_VERSION = SDL_MIX_MAXVOLUME;
 enum SDL_MIXER_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL);
 enum SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_MIXER_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
 
-static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
+static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer204) {
+    enum Mix_InitFlags {
+        MIX_INIT_FLAC = 0x00000001,
+        MIX_INIT_MOD = 0x00000002,
+        MIX_INIT_MP3 = 0x00000008,
+        MIX_INIT_OGG = 0x00000010,
+        MIX_INIT_MID = 0x00000020,
+        MIX_INIT_OPUS = 0x00000040,
+    }
+}
+else static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
     enum Mix_InitFlags {
         MIX_INIT_FLAC = 0x00000001,
         MIX_INIT_MOD = 0x00000002,
@@ -108,7 +123,22 @@ enum Mix_Fading {
 }
 mixin(expandEnum!Mix_Fading);
 
-static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
+static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer204) {
+    enum Mix_MusicType {
+       MUS_NONE,
+       MUS_CMD,
+       MUS_WAV,
+       MUS_MOD,
+       MUS_MID,
+       MUS_OGG,
+       MUS_MP3,
+       MUS_MP3_MAD_UNUSED,
+       MUS_FLAC,
+       MUS_MODPLUG_UNUSED,
+       MUS_OPUS,
+    }
+}
+else static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
     enum Mix_MusicType {
        MUS_NONE,
        MUS_CMD,
@@ -554,14 +584,14 @@ else {
         lib.bindSymbol(cast(void**)&Mix_CloseAudio,"Mix_CloseAudio");
 
         if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
-        else loadedVersion = SDLMixerSupport.sdlMixer200;
+        else loadedVersion = (sdlMixerSupport >= SDLMixerSupport.sdlMixer201) ? SDLMixerSupport.sdlMixer201 : SDLMixerSupport.sdlMixer200;
 
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
             lib.bindSymbol(cast(void**)&Mix_OpenAudioDevice,"Mix_OpenAudioDevice");
             lib.bindSymbol(cast(void**)&Mix_HasChunkDecoder,"Mix_HasChunkDecoder");
 
             if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
-            else loadedVersion = SDLMixerSupport.sdlMixer202;
+            else loadedVersion = (sdlMixerSupport >= SDLMixerSupport.sdlMixer204) ? SDLMixerSupport.sdlMixer204 : SDLMixerSupport.sdlMixer202;
         }
 
         return loadedVersion;

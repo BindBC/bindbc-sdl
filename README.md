@@ -154,12 +154,13 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL_mixer 2.0.0     | Default          |
 |SDL_mixer 2.0.1     | SDL_Mixer_201    |
 |SDL_mixer 2.0.2     | SDL_Mixer_202    |
+|SDL_mixer 2.0.4     | SDL_Mixer_204    |
 |--                  | --               |
 |SDL_ttf 2.0.12      | Default          |
 |SDL_ttf 2.0.13      | SDL_TTF_2013     |
 |SDL_ttf 2.0.14      | SDL_TTF_2014     |
 
-__Note__: Beginning with SDL 2.0.10, all releases have even numbered (2.0.12, 2.0.14, etc.). Odd number versions beginning with 2.0.11 are development versions, which are not supported by `bindbc-sdl`.
+__Note__: Beginning with SDL 2.0.10, all releases have even numbered (2.0.12, 2.0.14, etc.). Odd number versions beginning with 2.0.11 are development versions, which are not supported by `bindbc-sdl`. The same is true for SDL_mixer beginning with version 2.0.4 (there is no public release of SDL_mixer 2.0.3).
 
 __Note__: There are no differences in the public API between SDL_image versions 2.0.0 and 2.0.1, and then between versions 2.0.2, 2.0.3, 2.0.4, and 2.0.5, other than the value of `SDL_IMAGE_PATCHLEVEL`.
 

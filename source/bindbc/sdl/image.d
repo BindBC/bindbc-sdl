@@ -23,12 +23,28 @@ enum SDLImageSupport {
     sdlImage200 = 200,
     sdlImage201,
     sdlImage202,
+    sdlImage203,
+    sdlImage204,
+    sdlImage205,
 }
 
 enum ubyte SDL_IMAGE_MAJOR_VERSION = 2;
 enum ubyte SDL_IMAGE_MINOR_VERSION = 0;
 
-version(SDL_Image_202) {
+
+version(SDL_Image_205) {
+    enum sdlImageSupport = SDLImageSupport.sdlImage205;
+    enum ubyte SDL_IMAGE_PATCHLEVEL = 5;
+}
+else version(SDL_Image_204) {
+    enum sdlImageSupport = SDLImageSupport.sdlImage204;
+    enum ubyte SDL_IMAGE_PATCHLEVEL = 4;
+}
+else version(SDL_Image_203) {
+    enum sdlImageSupport = SDLImageSupport.sdlImage203;
+    enum ubyte SDL_IMAGE_PATCHLEVEL = 3;
+}
+else version(SDL_Image_202) {
     enum sdlImageSupport = SDLImageSupport.sdlImage202;
     enum ubyte SDL_IMAGE_PATCHLEVEL = 2;
 }
@@ -336,7 +352,7 @@ else {
         lib.bindSymbol(cast(void**)&IMG_SavePNG_RW,"IMG_SavePNG_RW");
 
         if(errorCount() != errCount) return SDLImageSupport.badLibrary;
-        else loadedVersion = SDLImageSupport.sdlImage200;
+        else loadedVersion = (sdlImageSupport >= SDLImageSupport.sdlImage201) ? SDLImageSupport.sdlImage201 : SDLImageSupport.sdlImage200;
 
         static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
             lib.bindSymbol(cast(void**)&IMG_isSVG,"IMG_isSVG");
@@ -345,7 +361,9 @@ else {
             lib.bindSymbol(cast(void**)&IMG_SaveJPG_RW,"IMG_SaveJPG_RW");
 
             if(errorCount() != errCount) return SDLImageSupport.badLibrary;
-            else loadedVersion = SDLImageSupport.sdlImage202;
+            else {
+                loadedVersion = (sdlImageSupport >= SDLImageSupport.sdlImage205) ? SDLImageSupport.sdlImage205 : sdlImageSupport;
+            }
         }
 
         return loadedVersion;

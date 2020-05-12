@@ -14,5 +14,6 @@ else public import bindbc.sdl.dynload;
 
 version(BindSDL_Image) public import bindbc.sdl.image;
 version(BindSDL_Mixer) public import bindbc.sdl.mixer;
+version(BindSDL_Net) public import bindbc.sdl.net;
 version(BindSDL_TTF) public import bindbc.sdl.ttf;
 

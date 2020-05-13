@@ -14,16 +14,18 @@ dependencies {
     "bindbc-sdl": "~>0.1.0",
 }
 "versions": [
-    "BindSDL_Image",
-    "BindSDL_TTF"
+    "SDL_Image",
+    "SDL_TTF"
 ],
 ```
 
 __dub.sdl__
 ```
 dependency "bindbc-sdl" version="~>0.1.0"
-versions "BindSDL_Image" "BindSDL_TTF"
+versions "SDL_Image" "SDL_TTF"
 ```
+
+__NOTE__: Previously, the version identifiers for the satellite libraries took the form `BindSDL_Image`, `BindSDL_TTF`, etc., and required an addition version identifier to specify the library version, e.g., `SDL_Image_204`. Those version identifiers are still accepted, so existing projects will continue to compile without modification. However, now it is necessary to specify only a single version identifier per library, e.g., `SDL_Image_204` by itself will activate the `SDL_image` binding. Without the library version number, e.g., `SDL_Image`, the lowest supported version of the library is enabled.
 
 ### The dynamic bindings
 The dynamic bindings require no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the SDL DLLs with your program. On other systems, it usually means installing the SDL runtime libraries through a package manager.
@@ -131,8 +133,6 @@ The satellite libraries provide similar functions: `loadedSDLImageVersion`, `loa
 
 Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
 
-
-
 | Library & Version  | Version ID       |
 |--------------------|------------------|
 |SDL 2.0.0           | Default          |
@@ -148,22 +148,22 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL 2.0.10          | SDL_2010         |
 |SDL 2.0.12          | SDL_2012         |
 |--                  | --               |
-|SDL_image 2.0.0     | Default          |
+|SDL_image 2.0.0     | SDL_Image, SDL_Image_200|
 |SDL_image 2.0.1     | SDL_Image_201    |
 |SDL_image 2.0.2     | SDL_Image_202    |
 |SDL_image 2.0.3     | SDL_Image_203    |
 |SDL_image 2.0.4     | SDL_Image_204    |
 |SDL_image 2.0.5     | SDL_Image_205    |
 |--                  | --               |
-|SDL_net 2.0.0       | Default          |
-|SDL_net 2.0.1       | SDL_Net_201      |
-|--                  | --               |
-|SDL_mixer 2.0.0     | Default          |
+|SDL_mixer 2.0.0     | SDL_Mixer, SDL_Mixer_200|
 |SDL_mixer 2.0.1     | SDL_Mixer_201    |
 |SDL_mixer 2.0.2     | SDL_Mixer_202    |
 |SDL_mixer 2.0.4     | SDL_Mixer_204    |
 |--                  | --               |
-|SDL_ttf 2.0.12      | Default          |
+|SDL_net 2.0.0       | SDL_Net, SDL_Net_200|
+|SDL_net 2.0.1       | SDL_Net_201      |
+|--                  | --               |
+|SDL_ttf 2.0.12      | SDL_TTF, SDL_TTF_2012|
 |SDL_ttf 2.0.13      | SDL_TTF_2013     |
 |SDL_ttf 2.0.14      | SDL_TTF_2014     |
 
@@ -195,14 +195,14 @@ __dub.json__
 "dependencies": {
     "bindbc-sdl": "~>0.1.0"
 },
-"versions": ["BindSDL_Static", "BindSDL_Image"],
+"versions": ["BindSDL_Static", "SDL_Image"],
 "libs": ["SDL2", "SDL2_image"]
 ```
 
 __dub.sdl__
 ```
 dependency "bindbc-sdl" version="~>0.1.0"
-versions "BindSDL_Static" "BindSDL_Image"
+versions "BindSDL_Static" "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```
 
@@ -218,7 +218,7 @@ __dub.json__
     "bindbc-sdl": "static"
 },
 "versions": [
-    "BindSDL_Image"
+    "SDL_Image"
 ],
 "libs": ["SDL2", "SDL2_image"]
 ```
@@ -227,7 +227,7 @@ __dub.sdl__
 ```
 dependency "bindbc-sdl" version="~>0.1.0"
 subConfiguration "bindbc-sdl" "static"
-versions "BindSDL_Image"
+versions "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```
 
@@ -246,7 +246,7 @@ __dub.json__
     "bindbc-sdl": "staticBC"
 },
 "versions": [
-    "BindSDL_Image"
+    "SDL_Image"
 ],
 "libs": ["SDL2", "SDL2_image"]
 ```
@@ -255,7 +255,7 @@ __dub.sdl__
 ```
 dependency "bindbc-sdl" version="~>0.1.0"
 subConfiguration "bindbc-sdl" "staticBC"
-versions "BindSDL_Image"
+versions "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```
 

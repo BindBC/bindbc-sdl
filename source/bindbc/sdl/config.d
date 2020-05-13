@@ -36,6 +36,37 @@ else version(SDL_202) enum sdlSupport = SDLSupport.sdl202;
 else version(SDL_201) enum sdlSupport = SDLSupport.sdl201;
 else enum sdlSupport = SDLSupport.sdl200;
 
+version(SDL_Image) version = BindSDL_Image;
+else version(SDL_Image_200) version = BindSDL_Image;
+else version(SDL_Image_201) version = BindSDL_Image;
+else version(SDL_Image_202) version = BindSDL_Image;
+else version(SDL_Image_203) version = BindSDL_Image;
+else version(SDL_Image_204) version = BindSDL_Image;
+else version(SDL_Image_205) version = BindSDL_Image;
+version(BindSDL_Image) enum bindSDLImage = true;
+else enum bindSDLImage = false;
+
+version(SDL_Mixer) version = BindSDL_Mixer;
+else version(SDL_Mixer_200) version = BindSDL_Mixer;
+else version(SDL_Mixer_201) version = BindSDL_Mixer;
+else version(SDL_Mixer_202) version = BindSDL_Mixer;
+else version(SDL_Mixer_204) version = BindSDL_Mixer;
+version(BindSDL_Mixer) enum bindSDLMixer = true;
+else enum bindSDLMixer = false;
+
+version(SDL_Net) version = BindSDL_Net;
+else version(SDL_Net_200) version = BindSDL_Net;
+else version(SDL_Net_201) version = BindSDL_Net;
+version(BindSDL_Net) enum bindSDLNet = true;
+else enum bindSDLNet = false;
+
+version(SDL_TTF) version = BindSDL_TTF;
+else version(SDL_TTF_2012) version = BindSDL_TTF;
+else version(SDL_TTF_2013) version = BindSDL_TTF;
+else version(SDL_TTF_2014) version = BindSDL_TTF;
+version(BindSDL_TTF) enum bindSDLTTF = true;
+else enum bindSDLTTF = false;
+
 enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
     string expandEnum = "enum {";
     foreach(m;__traits(allMembers, EnumType)) {

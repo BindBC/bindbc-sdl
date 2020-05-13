@@ -6,7 +6,8 @@
 
 module bindbc.sdl.image;
 
-version(BindSDL_Image):
+import bindbc.sdl.config;
+static if(bindSDLImage):
 
 import bindbc.sdl.bind.sdlerror : SDL_GetError, SDL_SetError;
 import bindbc.sdl.bind.sdlrender : SDL_Renderer, SDL_Texture;

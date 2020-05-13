@@ -6,7 +6,8 @@
 
 module bindbc.sdl.mixer;
 
-version(BindSDL_Mixer):
+import bindbc.sdl.config;
+static if(bindSDLMixer):
 
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlaudio : AUDIO_S16LSB, SDL_MIX_MAXVOLUME;

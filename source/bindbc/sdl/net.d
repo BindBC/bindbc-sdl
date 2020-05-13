@@ -3,9 +3,11 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+
 module bindbc.sdl.net;
 
-version(BindSDL_Net):
+import bindbc.sdl.config;
+static if(bindSDLNet):
 
 import bindbc.sdl.config,
        bindbc.sdl.bind.sdlstdinc;

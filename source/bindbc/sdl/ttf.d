@@ -6,7 +6,8 @@
 
 module bindbc.sdl.ttf;
 
-version(BindSDL_TTF):
+import bindbc.sdl.config;
+static if(bindSDLTTF):
 
 import core.stdc.config;
 import bindbc.sdl.bind.sdlerror : SDL_GetError, SDL_SetError;

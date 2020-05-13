@@ -12,8 +12,8 @@ public import bindbc.sdl.config,
 version(BindSDL_Static) {}
 else public import bindbc.sdl.dynload;
 
-version(BindSDL_Image) public import bindbc.sdl.image;
-version(BindSDL_Mixer) public import bindbc.sdl.mixer;
-version(BindSDL_Net) public import bindbc.sdl.net;
-version(BindSDL_TTF) public import bindbc.sdl.ttf;
+static if(bindSDLImage) public import bindbc.sdl.image;
+static if(bindSDLMixer) public import bindbc.sdl.mixer;
+static if(bindSDLNet) public import bindbc.sdl.net;
+static if(bindSDLTTF) public import bindbc.sdl.ttf;
 

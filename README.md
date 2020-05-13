@@ -69,6 +69,10 @@ This version attempts to load the SDL library using a user-supplied file name.
 Usually, the name and/or path used will be platform specific, as in this example
 which attempts to load `SDL2.dll` from the `libs` subdirectory, relative
 to the executable, only on Windows. It has the same return values.
+
+Note that this can cause problems with some of the satellite libraries unless
+special care is taken. See the section of the readme titled "Loading from outside
+the DLL search path".
 */
 // version(Windows) loadSDL("libs/SDL2.dll")
 
@@ -261,29 +265,33 @@ libs "SDL2" "SDL2_image"
 
 When not using DUB to manage your project, first use DUB to compile the BindBC libraries with the `dynamicBC` or `staticBC` configuration, then pass `-betterC` to the compiler when building your project.
 
-## Known Issues
-The SDL libraries tend to load dependent DLLs dynamically in the same way that BindBC loads libraries dynamically. Due to the way it goes about it, there is an issue that can arise on Windows when putting some of the SDL DLLs in a subdirectory of your executable directory. That is, if your executable is in e.g., the directory `myapp`, and the SDL DLLs are in e.g., the directory `myapp\libs`, you may encounter find that one or more of the SDL libraries fail to load.
+## Loading from outside the DLL search path
+The SDL libraries tend to load dependent DLLs dynamically in the same way that BindBC can load libraries dynamically. Due to the way SDL goes about it, there is an issue that can arise on Windows when putting some of the SDL DLLs in a subdirectory of your executable directory. That is, if your executable is in e.g., the directory `myapp`, and the SDL DLLs are in e.g., the directory `myapp\libs`, you may find that one or more of the SDL libraries fail to load. To solve or prevent this problem, take the following steps.
 
-First, make sure the non-system libraries on which the SDL libraries depend (such as `zlib.dll`) are in the same directory as the SDL libraries. Then, you'll want to add your subdirectory path to the Windows DLL search path. This is done via the `SetDLLDirectory` function. You can make this function available by importing `core.sys.windows` and adding `Windows7` to your list of versions in your `dub.sdl/json` or on the compiler command line with `-version`.
+First, make sure the non-system libraries on which the SDL libraries depend (such as `zlib.dll`) are in the same directory as the SDL libraries.
 
-Assuming the `lib` subdirectory, the code looks like this:
+Second, you'll want to add your subdirectory path to the Windows DLL search path. As of `bindbc-loader` version 0.3.0, this can be accomplished via the functions `setCustomLoaderSearchPath`. For details on and a full example of how to properly use this function, see the section of the `bindbc.loader` README titled ["Default Windows search path"](https://github.com/BindBC/bindbc-loader#default-windows-search-path).
+
+The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset the default search path. Bear in mind that some of the satellite libraries load their dependencies lazily. For example, `SDL_image` will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialized.
 
 ```d
-version(Windows) {
-    import core.sys.windows;
-    void myLoadSDL() {
-        // Add the lib subdirectory to the DLL search path
-        SetDLLDirectoryA(".\\lib");
+import bindbc.loader,
+       bindbc.sdl;
 
-        // Load all the SDL libraries you need
-        loadSDL("libs\\SDL2.dll");
-        loadSDLTTF("libs\\SDL2_ttf.dll");
-        ...
+// Assume the DLLs are stored in the "dlls" subdirectory
+version(Windows) setCustomLoaderSearchPath("dlls");
 
-        // Reset the DLL search path to the default
-        SetDLLDirectoryA(null);
-    }
-}
+if(loadSDL() < sdlSupport) { /* handle error */ }
+if(loadSDL_Image() < sdlImageSupport) { /* handle error */ }
+
+// Give SDL_image a change to load libpng and libjpeg
+auto flags = IMG_INIT_PNG | IMG_INIT_JPEG;
+if(IMG_Init(flags) != flags) { /* handle error */ }
+
+// Now reset the default loader search path
+version(Windows) setCustomLoaderSearchPath(null);
 ```
 
-For robustness, the paths you pass to `SetDLLDirectoryA` and in the `load*` functions should account for the case when the application is opened in a working directory that is not the same as the executable directory. (This is true for any relative paths from which you load resources.) If `Runtime.args[0]` (from `core.runtime`) is simply the application name with no path, then you need do nothing more. If it contains a path, you can strip the application name from it and append the relative path to your libraries. Use the result in the function calls.
+It is not strictly necessary to reset the default search path, but doing so can avoid unexpected issues for any other dependencies that may be loaded dynamically by application's process.
+
+`setCustomLoaderSearchPath` is only implemented on Windows, since there is no way to programmatically manipulate the default search path on Linux and (as far as I know, please correct me if I'm wrong) other platforms. Then again, this issue doesn't generally arise on those platforms.

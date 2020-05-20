@@ -87,6 +87,8 @@ SDLSupport loadSDL(const(char)* libName)
     lib.bindSymbol(cast(void**)&SDL_SetAssertionHandler, "SDL_SetAssertionHandler");
     lib.bindSymbol(cast(void**)&SDL_GetAssertionReport, "SDL_GetAssertionReport");
     lib.bindSymbol(cast(void**)&SDL_ResetAssertionReport, "SDL_ResetAssertionReport");
+    lib.bindSymbol(cast(void**)&SDL_AtomicCAS, "SDL_AtomicCAS");
+    lib.bindSymbol(cast(void**)&SDL_AtomicCASPtr, "SDL_AtomicCASPtr");
     lib.bindSymbol(cast(void**)&SDL_GetNumAudioDrivers, "SDL_GetNumAudioDrivers");
     lib.bindSymbol(cast(void**)&SDL_GetAudioDriver, "SDL_GetAudioDriver");
     lib.bindSymbol(cast(void**)&SDL_AudioInit, "SDL_AudioInit");

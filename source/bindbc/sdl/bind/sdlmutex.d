@@ -20,7 +20,7 @@ version(BindSDL_Static) {
         int SDL_LockMutex(SDL_mutex*);
         int SDL_TryLockMutex(SDL_mutex*);
         int SDL_UnlockMutex(SDL_mutex*);
-        void SDL_DestroyMutex(SDL_mutex);
+        void SDL_DestroyMutex(SDL_mutex*);
 
         SDL_sem* SDL_CreateSemaphore(uint);
         void SDL_DestroySemaphore(SDL_sem*);

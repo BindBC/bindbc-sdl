@@ -6,7 +6,8 @@
 
 module bindbc.sdl.bind.sdlloadso;
 
-version(BindSDL_Static){
+import bindbc.sdl.config;
+static if(staticBinding){
     extern(C) @nogc nothrow {
         void* SDL_LoadObject(const(char)*);
         void* SDL_LoadFunction(void*,const(char*));

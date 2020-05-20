@@ -68,7 +68,7 @@ version(Windows) {
 }
 
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         version(Windows) SDL_Thread* SDL_CreateThread(SDL_ThreadFunction,const(char)*,void*,pSDL_beginthread,pSDL_endthread);
         else SDL_Thread* SDL_CreateThread(SDL_ThreadFunction,const(char)*,void*);

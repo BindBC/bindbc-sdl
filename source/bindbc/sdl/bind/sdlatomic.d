@@ -9,6 +9,7 @@ module bindbc.sdl.bind.sdlatomic;
 version(SDL_No_Atomics) {}
 else:
 
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 alias SDL_SpinLock = int;
@@ -29,7 +30,7 @@ alias SDL_CompilerBarrier = atomicFence!();
 alias SDL_MemoryBarrierRelease = SDL_CompilerBarrier;
 alias SDL_MemoryBarrierAcquire = SDL_CompilerBarrier;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_bool SDL_AtomicTryLock(SDL_SpinLock*);
         void SDL_AtomicLock(SDL_SpinLock*);
@@ -52,7 +53,7 @@ else {
 
 // Perhaps the following could be replace with the platform-specific intrinsics for GDC, like
 // the GCC macros in SDL_atomic.h. I'll have to investigate.
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_bool SDL_AtomicCAS(SDL_atomic_t*,int,int);
         SDL_bool SDL_AtomicCASPtr(void**,void*,void*);

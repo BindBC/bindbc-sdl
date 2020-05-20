@@ -23,6 +23,10 @@ enum SDLSupport {
     sdl2012     = 2012,
 }
 
+version(BindBC_Static) version = BindSDL_Static;
+version(BindSDL_Static) enum staticBinding = true;
+else enum staticBinding = false;
+
 version(SDL_2012) enum sdlSupport = SDLSupport.sdl2012;
 else version(SDL_2010) enum sdlSupport = SDLSupport.sdl2010;
 else version(SDL_209) enum sdlSupport = SDLSupport.sdl209;

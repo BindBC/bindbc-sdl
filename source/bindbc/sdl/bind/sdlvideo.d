@@ -7,7 +7,6 @@
 module bindbc.sdl.bind.sdlvideo;
 
 import bindbc.sdl.config;
-
 import bindbc.sdl.bind.sdlrect : SDL_Rect;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlsurface : SDL_Surface;
@@ -367,7 +366,7 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     mixin(expandEnum!SDL_GLContextResetNotification);
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumVideoDrivers();
         const(char)* SDL_GetVideoDriver(int);

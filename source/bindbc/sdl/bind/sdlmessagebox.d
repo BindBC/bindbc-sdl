@@ -67,7 +67,7 @@ struct SDL_MessageBoxData {
     const(SDL_MessageBoxColorScheme)* colorScheme;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_ShowMessageBox(const(SDL_MessageBoxData)*,int*);
         int SDL_ShowSimpleMessageBox(uint,const(char)*,const(char)*,SDL_Window*);

@@ -17,7 +17,7 @@ enum SDL_PowerState {
 }
 mixin(expandEnum!SDL_PowerState);
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_PowerState SDL_GetPowerInfo(int*,int*);
     }

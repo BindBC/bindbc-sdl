@@ -76,7 +76,7 @@ enum {
     IMG_INIT_WEBP   = 0x00000008,
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int IMG_Init(int);
         int IMG_Quit();

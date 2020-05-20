@@ -614,7 +614,7 @@ enum {
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_PumpEvents();
         int SDL_PeepEvents(SDL_Event*,int,SDL_eventaction,uint,uint);

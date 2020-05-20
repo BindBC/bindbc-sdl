@@ -10,7 +10,7 @@ import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlvideo : SDL_Window;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         static if(sdlSupport >= SDLSupport.sdl206) {
             SDL_bool SDL_Vulkan_CreateSurface(SDL_Window*,void*,void*);

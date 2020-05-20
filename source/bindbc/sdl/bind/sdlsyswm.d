@@ -241,7 +241,7 @@ struct SDL_SysWMinfo {
     info_ info;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_bool SDL_GetWindowWMInfo(SDL_Window*,SDL_SysWMinfo*);
     }

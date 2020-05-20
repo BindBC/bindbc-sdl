@@ -200,7 +200,7 @@ extern(C) nothrow {
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         const(SDL_version)* Mix_Linked_Version();
         int Mix_Init(int);

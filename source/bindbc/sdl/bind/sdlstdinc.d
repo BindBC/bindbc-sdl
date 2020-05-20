@@ -26,7 +26,7 @@ alias Uint64 = ulong;
 
 enum SDL_FOURCC(char A, char B, char C, char D)  = ((A << 0) | (B << 8) | (C << 16) | (D << 24));
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_free(void* mem);
     }

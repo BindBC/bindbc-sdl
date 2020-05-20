@@ -93,7 +93,7 @@ static if(sdlSupport >= SDLSupport.sdl206) {
     }
 }
 
-version(BindSDL_Static)  {
+static if(staticBinding)  {
     extern(C) @nogc nothrow {
         SDL_RWops* SDL_RWFromFile(const(char)*,const(char)*);
         SDL_RWops* SDL_RWFromFP(FILE*,SDL_bool);

@@ -6,7 +6,8 @@
 
 module bindbc.sdl.dynload;
 
-version(BindSDL_Static) {}
+version(BindBC_Static) {}
+else version(BindSDL_Static) {}
 else:
 
 import bindbc.loader;

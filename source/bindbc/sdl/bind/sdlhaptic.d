@@ -6,6 +6,7 @@
 
 module bindbc.sdl.bind.sdlhaptic;
 
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdljoystick : SDL_Joystick;
 
 struct SDL_Haptic;
@@ -137,7 +138,7 @@ union SDL_HapticEffect {
     SDL_HapticCustom custom;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_NumHaptics();
         const(char)* SDL_HapticName(int);

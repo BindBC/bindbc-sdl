@@ -6,6 +6,7 @@
 
 module bindbc.sdl.bind.sdlkeyboard;
 
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlkeycode : SDL_Keycode, SDL_Keymod;
 import bindbc.sdl.bind.sdlrect : SDL_Rect;
 import bindbc.sdl.bind.sdlscancode : SDL_Scancode;
@@ -19,7 +20,7 @@ struct SDL_Keysym {
     uint unused;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_Window* SDL_GetKeyboardFocus();
         ubyte* SDL_GetKeyboardState(int*);

@@ -53,7 +53,7 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     mixin(expandEnum!SDL_MouseWheelDirection);
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_Window* SDL_GetMouseFocus();
         uint SDL_GetMouseState(int*,int*);

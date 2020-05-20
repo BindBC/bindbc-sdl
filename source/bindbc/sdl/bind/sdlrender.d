@@ -63,7 +63,7 @@ mixin(expandEnum!SDL_RendererFlip);
 struct SDL_Renderer;
 struct SDL_Texture;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumRenderDrivers();
         int SDL_GetRenderDriverInfo(int,SDL_RendererInfo*);

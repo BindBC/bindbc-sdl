@@ -92,7 +92,7 @@ alias SDLNet_GenericSocket = _SDLNet_GenericSocket*;
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         const(SDLNet_Version)* SDLNet_Linked_Version();
         int SDLNet_Init();

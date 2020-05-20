@@ -9,9 +9,7 @@ module bindbc.sdl;
 public import bindbc.sdl.config,
               bindbc.sdl.bind;
 
-version(BindSDL_Static) {}
-else public import bindbc.sdl.dynload;
-
+static if(!staticBinding) public import bindbc.sdl.dynload;
 static if(bindSDLImage) public import bindbc.sdl.image;
 static if(bindSDLMixer) public import bindbc.sdl.mixer;
 static if(bindSDLNet) public import bindbc.sdl.net;

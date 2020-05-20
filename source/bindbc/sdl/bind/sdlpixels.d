@@ -234,7 +234,7 @@ struct SDL_PixelFormat {
     SDL_PixelFormat* next;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
   extern(C) @nogc nothrow {
       const(char)* SDL_GetPixelFormatName(uint);
       SDL_bool SDL_PixelFormatEnumToMasks(uint,int*,uint*,uint*,uint*,uint*);

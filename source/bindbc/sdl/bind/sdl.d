@@ -41,7 +41,7 @@ static if(sdlSupport >= SDLSupport.sdl209) {
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_Init(uint);
         int SDL_InitSubSystem(uint);

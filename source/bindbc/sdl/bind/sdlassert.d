@@ -31,7 +31,7 @@ alias SDL_AssertData = SDL_assert_data;
 
 extern(C) nothrow alias SDL_AssertionHandler = SDL_AssertState function(const(SDL_AssertData)* data, void* userdata);
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_SetAssertionHandler(SDL_AssertionHandler,void*);
         const(SDL_assert_data)* SDL_GetAssertionReport();

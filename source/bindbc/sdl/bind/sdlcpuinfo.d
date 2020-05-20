@@ -11,7 +11,7 @@ import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 enum  SDL_CACHELINE_SIZE = 128;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetCPUCount();
         int SDL_GetCPUCacheLineSize();

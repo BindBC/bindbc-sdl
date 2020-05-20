@@ -74,7 +74,7 @@ enum {
 
 struct TTF_Font;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_version* TTF_Linked_Version();
         void TTF_ByteSwappedUNICODE(int);

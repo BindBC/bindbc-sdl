@@ -63,7 +63,7 @@ static if(sdlSupport >= SDLSupport.sdl206) {
     mixin(expandEnum!SDL_BlendFactor);
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         static if(sdlSupport >= SDLSupport.sdl206) {
             SDL_BlendMode SDL_ComposeCustomBlendMode(SDL_BlendFactor,SDL_BlendFactor,SDL_BlendOperation,SDL_BlendFactor,SDL_BlendFactor,SDL_BlendOperation);

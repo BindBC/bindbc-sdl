@@ -63,7 +63,7 @@ static if(sdlSupport >= SDLSupport.sdl206) {
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_NumJoysticks();
         const(char)* SDL_JoystickNameForIndex(int);

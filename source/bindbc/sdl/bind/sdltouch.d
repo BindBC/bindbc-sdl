@@ -32,7 +32,7 @@ static if(sdlSupport >= SDLSupport.sdl2010) {
     enum SDL_MOUSE_TOUCHID = -1L;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumTouchDevices();
         SDL_TouchID SDL_GetTouchDevice(int);

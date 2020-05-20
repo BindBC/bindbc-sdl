@@ -6,7 +6,9 @@
 
 module bindbc.sdl.bind.sdlerror;
 
-version(BindSDL_Static) {
+import bindbc.sdl.config;
+
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_SetError(const(char)*,...);
         const(char)* SDL_GetError();

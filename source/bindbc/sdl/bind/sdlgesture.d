@@ -6,12 +6,13 @@
 
 module bindbc.sdl.bind.sdlgesture;
 
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdltouch : SDL_TouchID;
 import bindbc.sdl.bind.sdlrwops : SDL_RWops;
 
 alias SDL_GestureID = long;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_RecordGesture(SDL_TouchID);
         int SDL_SaveAllDollarTemplates(SDL_RWops*);

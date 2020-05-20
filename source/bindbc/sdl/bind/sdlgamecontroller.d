@@ -90,7 +90,7 @@ static if(sdlSupport >= SDLSupport.sdl202) {
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GameControllerAddMapping(const(char)*);
         char* SDL_GameControllerMappingForGUID(SDL_JoystickGUID);

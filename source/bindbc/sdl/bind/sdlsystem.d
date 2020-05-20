@@ -25,7 +25,7 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     }
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         version(Android) {
             void* SDL_AndroidGetJNIEnv();

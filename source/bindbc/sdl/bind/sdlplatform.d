@@ -6,7 +6,9 @@
 
 module bindbc.sdl.bind.sdlplatform;
 
-version(BindSDL_Static) {
+import bindbc.sdl.config;
+
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         const(char)* SDL_GetPlatform();
     }

@@ -50,7 +50,7 @@ mixin(expandEnum!SDL_LogPriority);
 
 extern(C) nothrow alias SDL_LogOutputFunction = void function(void*, int, SDL_LogPriority, const(char)*);
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_LogSetAllPriority(SDL_LogPriority);
         void SDL_LogSetPriority(int,SDL_LogPriority);

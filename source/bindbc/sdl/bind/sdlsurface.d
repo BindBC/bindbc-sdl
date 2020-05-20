@@ -56,9 +56,6 @@ extern(C) nothrow alias SDL_blit = int function(SDL_Surface* src, SDL_Rect* srcr
     }
 }
 
-alias SDL_BlitSurface = SDL_UpperBlit;
-alias SDL_BlitScaled = SDL_UpperBlitScaled;
-
 static if(sdlSupport >= SDLSupport.sdl208) {
     enum SDL_YUV_CONVERSION_MODE {
         SDL_YUV_CONVERSION_JPEG,
@@ -69,7 +66,7 @@ static if(sdlSupport >= SDLSupport.sdl208) {
     mixin(expandEnum!SDL_YUV_CONVERSION_MODE);
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_Surface* SDL_CreateRGBSurface(uint,int,int,int,uint,uint,uint,uint);
         SDL_Surface* SDL_CreateRGBSurfaceFrom(void*,int,int,int,int,uint,uint,uint,uint);
@@ -100,6 +97,9 @@ version(BindSDL_Static) {
         int SDL_SoftStretch(SDL_Surface*,const(SDL_Rect)*,SDL_Surface*,const(SDL_Rect)*);
         int SDL_UpperBlitScaled(SDL_Surface*,const(SDL_Rect)*,SDL_Surface*,SDL_Rect*);
         int SDL_LowerBlitScaled(SDL_Surface*,SDL_Rect*,SDL_Surface*,SDL_Rect*);
+
+        alias SDL_BlitSurface = SDL_UpperBlit;
+        alias SDL_BlitScaled = SDL_UpperBlitScaled;
 
         static if(sdlSupport >= SDLSupport.sdl205) {
             SDL_Surface* SDL_CreateRGBSurfaceWithFormat(uint,int,int,int,uint);
@@ -148,6 +148,9 @@ else {
         alias pSDL_SoftStretch = int function(SDL_Surface*,const(SDL_Rect)*,SDL_Surface*,const(SDL_Rect)*);
         alias pSDL_UpperBlitScaled = int function(SDL_Surface*,const(SDL_Rect)*,SDL_Surface*,SDL_Rect*);
         alias pSDL_LowerBlitScaled = int function(SDL_Surface*,SDL_Rect*,SDL_Surface*,SDL_Rect*);
+
+        alias SDL_BlitSurface = SDL_UpperBlit;
+        alias SDL_BlitScaled = SDL_UpperBlitScaled;
     }
 
     __gshared {

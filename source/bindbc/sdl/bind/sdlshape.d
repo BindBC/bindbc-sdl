@@ -38,7 +38,7 @@ struct SDL_WindowShapeMode {
     SDL_WindowShapeParams parameters;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_Window* SDL_CreateShapedWindow(const(char)*,uint,uint,uint,uint,uint);
         SDL_bool SDL_IsShapedWindow(const(SDL_Window)*);

@@ -6,6 +6,8 @@
 
 module bindbc.sdl.bind.sdlmutex;
 
+import bindbc.sdl.config;
+
 enum SDL_MUTEX_TIMEOUT = 1;
 enum SDL_MUTEX_MAXWAIT = uint.max;
 
@@ -14,7 +16,7 @@ struct SDL_sem;
 struct SDL_cond;
 
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_mutex* SDL_CreateMutex();
         int SDL_LockMutex(SDL_mutex*);

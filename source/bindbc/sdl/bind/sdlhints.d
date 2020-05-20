@@ -151,7 +151,7 @@ mixin(expandEnum!SDL_HintPriority);
 
 extern(C) nothrow alias SDL_HintCallback = void function(void*, const(char)*, const(char)*);
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         SDL_bool SDL_SetHintWithPriority(const(char)*,const(char)*,SDL_HintPriority);
         SDL_bool SDL_SetHint(const(char)*,const(char)*);

@@ -8,7 +8,7 @@ module bindbc.sdl.bind.sdlfilesystem;
 
 import bindbc.sdl.config;
 
-version(BindSDL_Static){
+static if(staticBinding){
     extern(C) @nogc nothrow {
         static if(sdlSupport >= SDLSupport.sdl201) {
             char* SDL_GetBasePath();

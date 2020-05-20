@@ -6,6 +6,8 @@
 
 module bindbc.sdl.bind.sdlversion;
 
+import bindbc.sdl.config;
+
 struct SDL_version {
     ubyte major;
     ubyte minor;
@@ -64,7 +66,7 @@ enum SDL_VERSIONNUM(ubyte X, ubyte Y, ubyte Z) = X*1000 + Y*100 + Z;
 enum SDL_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
 enum SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_GetVersion(SDL_version*);
         const(char)* SDL_GetRevision();

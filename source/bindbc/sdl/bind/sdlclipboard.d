@@ -9,7 +9,7 @@ module bindbc.sdl.bind.sdlclipboard;
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_SetClipboardText(const(char)*);
         char* SDL_GetClipboardText();

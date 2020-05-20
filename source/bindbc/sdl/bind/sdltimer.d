@@ -6,6 +6,7 @@
 
 module bindbc.sdl.bind.sdltimer;
 
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 extern(C) nothrow alias SDL_TimerCallback = uint function(uint interval, void* param);
@@ -20,7 +21,7 @@ bool SDL_TICKS_PASSED(uint A, uint B) {
     return cast(int)(B - A) <= 0;
 }
 
-version(BindSDL_Static) {
+static if(staticBinding) {
     extern(C) @nogc nothrow {
         uint SDL_GetTicks();
         ulong SDL_GetPerformanceCounter();

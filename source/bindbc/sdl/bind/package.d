@@ -9,6 +9,7 @@ module bindbc.sdl.bind;
 public
 import bindbc.sdl.bind.sdl,
        bindbc.sdl.bind.sdlassert,
+       bindbc.sdl.bind.sdlatomic,
        bindbc.sdl.bind.sdlaudio,
        bindbc.sdl.bind.sdlblendmode,
        bindbc.sdl.bind.sdlclipboard,

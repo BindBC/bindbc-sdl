@@ -27,6 +27,8 @@ versions "SDL_Image" "SDL_TTF"
 
 __NOTE__: Previously, the version identifiers for the satellite libraries took the form `BindSDL_Image`, `BindSDL_TTF`, etc., and required an addition version identifier to specify the library version, e.g., `SDL_Image_204`. Those version identifiers are still accepted, so existing projects will continue to compile without modification. However, now it is necessary to specify only a single version identifier per library, e.g., `SDL_Image_204` by itself will activate the `SDL_image` binding. Without the library version number, e.g., `SDL_Image`, the lowest supported version of the library is enabled.
 
+__NOTE__: The C API from `SDL_atomics.h` is only partially implemented. It also has a dependency on the `core.atomic.atomicFence` template. In BetterC mode, this is not a problem as long as the source of DRuntime is available. The template instantiation will not require linking to DRuntime. However, if the `SDL_atomics` binding causes trouble and you don't need to use it, you can specify the version `SDL_No_Atomics` and the module's contents will not be compiled. If it's causing trouble and you need it, please report an issue.
+
 ### The dynamic bindings
 The dynamic bindings require no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the SDL DLLs with your program. On other systems, it usually means installing the SDL runtime libraries through a package manager.
 

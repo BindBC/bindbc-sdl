@@ -414,6 +414,15 @@ SDLSupport loadSDL(const(char)* libName)
     }
 
     lib.bindSymbol(cast(void**)&SDL_GetWindowWMInfo, "SDL_GetWindowWMInfo");
+    lib.bindSymbol(cast(void**)&SDL_CreateThread, "SDL_CreateThread");
+    lib.bindSymbol(cast(void**)&SDL_GetThreadName, "SDL_GetThreadName");
+    lib.bindSymbol(cast(void**)&SDL_ThreadID, "SDL_ThreadID");
+    lib.bindSymbol(cast(void**)&SDL_GetThreadID, "SDL_GetThreadID");
+    lib.bindSymbol(cast(void**)&SDL_SetThreadPriority, "SDL_SetThreadPriority");
+    lib.bindSymbol(cast(void**)&SDL_WaitThread, "SDL_WaitThread");
+    lib.bindSymbol(cast(void**)&SDL_TLSCreate, "SDL_TLSCreate");
+    lib.bindSymbol(cast(void**)&SDL_TLSGet, "SDL_TLSGet");
+    lib.bindSymbol(cast(void**)&SDL_TLSSet, "SDL_TLSSet");
     lib.bindSymbol(cast(void**)&SDL_GetTicks, "SDL_GetTicks");
     lib.bindSymbol(cast(void**)&SDL_GetPerformanceCounter, "SDL_GetPerformanceCounter");
     lib.bindSymbol(cast(void**)&SDL_GetPerformanceFrequency, "SDL_GetPerformanceFrequency");
@@ -523,6 +532,7 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_HasAVX, "SDL_HasAVX");
         lib.bindSymbol(cast(void**)&SDL_GameControllerAddMappingsFromRW, "SDL_GameControllerAddMappingsFromRW");
         lib.bindSymbol(cast(void**)&SDL_GL_ResetAttributes, "SDL_GL_ResetAttributes");
+        lib.bindSymbol(cast(void**)&SDL_DetachThread, "SDL_DetachThread");
 
         version(Windows) {
             lib.bindSymbol(cast(void**)&SDL_DXGIGetOutputInfo, "SDL_DXGIGetOutputInfo");
@@ -663,6 +673,7 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_JoystickRumble, "SDL_JoystickRumble");
         lib.bindSymbol(cast(void**)&SDL_HasColorKey, "SDL_HasColorKey");
         lib.bindSymbol(cast(void**)&SDL_GetDisplayOrientation, "SDL_GetDisplayOrientation");
+        lib.bindSymbol(cast(void**)&SDL_CreateThreadWithStackSize, "SDL_CreateThreadWithStackSize");
 
         version(linux) {
             lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriority, "SDL_LinuxSetThreadPriority");

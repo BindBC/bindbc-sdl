@@ -695,13 +695,14 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_GetDisplayOrientation, "SDL_GetDisplayOrientation");
         lib.bindSymbol(cast(void**)&SDL_CreateThreadWithStackSize, "SDL_CreateThreadWithStackSize");
 
-        version(linux) {
-            lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriority, "SDL_LinuxSetThreadPriority");
-        }
-        else version(Android) {
+        version(Android) 
+        {
             lib.bindSymbol(cast(void**)&SDL_IsChromebook, "SDL_IsChromebook");
             lib.bindSymbol(cast(void**)&SDL_IsDeXMode, "SDL_IsDeXMode");
             lib.bindSymbol(cast(void**)&SDL_AndroidBackButton, "SDL_AndroidBackButton");
+        }
+        else version(linux) {
+            lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriority, "SDL_LinuxSetThreadPriority");
         }
 
         if(errorCount() != errCount) return SDLSupport.badLibrary;

@@ -2,11 +2,13 @@
 This project provides both static and dynamic bindings to the [Simple Direct Media Library (SDL)](https://libsdl.org/) and its satellite libraries. They are compatible with `@nogc` and `nothrow` and can be compiled with `-betterC` compatibility. This package is intended as a replacement of [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
 ## Usage
+__NOTE__: This documentation describes how to use `bindbc-sdl`. As the maintainer of this library, I do not provide instructions on using the SDL library. However, since this is a direct binding to the SDL API, the existing SDL documentation and tutorials can be adapted to D with few modifications (those being minor differences in the language, such as array declaration syntax). See [the SDL Wiki](https://wiki.libsdl.org/FrontPage) for documentation on the SDL API. [The SDL 2 tutorials from Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/index.php) are a good start for those unfamiliar with the API.
+
 By default, `bindbc-sdl` is configured to compile as dynamic bindings that are not `-betterC` compatible. The dynamic bindings have no link-time dependency on the SDL libraries, so the SDL shared libraries must be manually loaded at runtime. When configured as static bindings, there is a link-time dependency on the SDL libraries -- either the static libraries or the appropriate files for linking with shared libraries on your system (see below).
 
 When using DUB to manage your project, the static bindings can be enabled via a DUB `subConfiguration` statement in your project's package file. `-betterC` compatibility is also enabled via subconfigurations.
 
-To use any of the supported SDL libraries, add `bindbc-sdl` as a dependency to your project's package config file and include the appropriate version for any of the satellite libraries you want to use. For example, the following is configured to use `SDL_image` and `SDL_ttf` in addition to the base SDL binding, as dynamic bindings that are not `-betterC` compatible:
+To use any of the supported SDL libraries, add `bindbc-sdl` as a dependency to your project's package config file and include the appropriate version for any of the satellite libraries you want to use. For example, the following is configured to use `SDL_image` and `SDL_ttf` in addition to the base SDL binding, as dynamic bindings that are not `-betterC` compatible (replace the `0.1.0` `bindbc-sdl` version with the actual version you require)::
 
 __dub.json__
 ```
@@ -32,57 +34,59 @@ __NOTE__: The C API from `SDL_atomics.h` is only partially implemented. It also 
 ### The dynamic bindings
 The dynamic bindings require no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the SDL DLLs with your program. On other systems, it usually means installing the SDL runtime libraries through a package manager.
 
-To load the shared libraries, you need to call the appropriate load function. The load functions return a binding-specific value indicating either that the library failed to load (it couldn't be found), one or more symbols failed to load, or a version number that matches a global enum value based on the compile-time configuration.
+To load the shared libraries, you need to call the appropriate load function. The load functions return a binding-specific value indicating either that the library failed to load (it couldn't be found) or that one or more symbols failed to load, or a version number that matches a global constant based on the compile-time configuration.
 
 ```d
+/*
+ The package modules for any satellite libraries you have configured will be publicly imported with this single import statement.
+*/
 import bindbc.sdl;
 
 /*
-The satellite libraries are optional and are only included here for
-demonstration. If they are not being used, they need be neither
-imported nor loaded.
-*/
-import bindbc.sdl.image;            // SDL_image binding
-import bindbc.sdl.mixer;            // SDL_mixer binding
-import bindbc.sdl.net;              // SDL_net binding
-import bindbc.sdl.ttf;              // SDL_ttf binding
-
-/*
-This version attempts to load the SDL shared library using well-known variations
-of the library name for the host system.
+ This version attempts to load the SDL shared library using well-known variations
+ of the library name for the host system.
 */
 SDLSupport ret = loadSDL();
 if(ret != sdlSupport) {
-    // Handle error. For most use cases, this is enough. The error handling API in
-    // bindbc-loader can be used for error messages. If necessary, it's  possible
-    // to determine the primary cause programmtically:
-
+    /*
+     Handle error. For most use cases, it's enough to use the error handling API in
+     bindbc-loader to obtain and print error messages. If necessary, it's possible
+     to determine the primary cause programmtically:
+    */
     if(ret == SDLSupport.noLibrary) {
-        // SDL shared library failed to load
+        /*
+         The system failed to load the library. Usually this means that either the library or one of its dependencies could not be found.
+        */
     }
     else if(SDLSupport.badLibrary) {
-        // One or more symbols failed to load. The likely cause is that the
-        // shared library is for a lower version than bindbc-sdl was configured
-        // to load (via SDL_201, SDL_202, etc.)
+        /*
+         This indicates that the system was able to find and successfully load the library, but one or more symbols the binding expected to find was missing. This usually indicates that the loaded library is of a lower API version than the binding was configured to load, e.g., an SDL 2.0.2 library loaded by an SDL 2.0.10 configuration.
+
+         For many C libraries, including SDL, this is perfectly fine and the application can continue as long as none of the missing functions are called.
     }
 }
 /*
-This version attempts to load the SDL library using a user-supplied file name.
-Usually, the name and/or path used will be platform specific, as in this example
-which attempts to load `SDL2.dll` from the `libs` subdirectory, relative
-to the executable, only on Windows. It has the same return values.
+ This version attempts to load the SDL library using a user-supplied file name.
+ Usually, the name and/or path will be platform specific, as in this example
+ which attempts to load `SDL2.dll` from the `libs` subdirectory, relative
+ to the executable, only on Windows. It has the same return values as the version above.
 
-Note that this can cause problems with some of the satellite libraries unless
-special care is taken. See the section of the readme titled "Loading from outside
-the DLL search path".
+ Note that this can cause problems with some of the SDL satellite libraries unless
+ special care is taken. See the section of the README titled "Loading from outside
+ the DLL search path".
 */
-// version(Windows) loadSDL("libs/SDL2.dll")
+version(Windows) {
+    auto ret = loadSDL("libs/SDL2.dll");
+    if(ret != sdlSupport) {
+        // Error handling as above.
+    }
+}
 
 /*
-The satellite library loaders also have the same two versions of the load functions,
-named according to the library name. Only the parameterless versions are shown
-here. These return similar values as loadSDL, but in an enum namespace that matches
-the library name: SDLImageSupport, SDLMixerSupport, and SDLTTFSupport.
+ The satellite library loaders also have the same two versions of the load functions,
+ named according to the library name. Only the parameterless versions are shown
+ here. These return similar values as loadSDL, but in an enum namespace that matches
+ the library name: SDLImageSupport, SDLMixerSupport, and SDLTTFSupport.
 */
 if(loadSDLImage() != sdlImageSupport) {
     /* handle error */
@@ -97,9 +101,7 @@ if(loadSDLTTF() != sdlTTFSupport) {
     /* handle error */
 }
 ```
-By default, each `bindbc-sdl` binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via the `-version` compiler switch or the `versions` DUB directive.
-
-It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4.
+By default, each `bindbc-sdl` binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via specific version identifiers. It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4 (replace the `0.1.0` `bindbc-sdl` version with the actual version you require):
 
 __dub.json__
 ```
@@ -115,8 +117,8 @@ dependency "bindbc-sdl" version="~>0.1.0"
 versions "SDL_204"
 ```
 
-When `bindbc-sdl` is configured with `SDL_202`, then `sdlSupport == SDLSupport.sdl202` and `loadSDL` will return `SDLSupport.sdl202` on a successful load. However, it's possible for the binding to be compiled for a higher version of SDL than that on the user's system. In that
-case, `loadSDL` will return `SDLSupport.badLibrary`. It's still possible to use that version of the library as long as you remember not to call any of the unloaded functions from the higher version. To determine the version actually loaded, call the function `loadedSDLVersion`.
+When `bindbc-sdl` is configured with `SDL_202`, then `sdlSupport == SDLSupport.sdl202` and `loadSDL` will return `SDLSupport.sdl202` on a successful load. However, it's possible for the binding to be compiled for a higher version of SDL than that on the user's system. In that case, `loadSDL` will return `SDLSupport.badLibrary`. It's still possible to use that version of the library as long as you remember not to call any of the unloaded functions from the higher version. To determine the version actually loaded, call the function `loadedSDLVersion`.
+
 The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not. (See [the README for `bindbc.loader`](https://github.com/BindBC/bindbc-loader/blob/master/README.md) for the error handling API.)
 
 ```d
@@ -194,7 +196,9 @@ Pass the `BindSDL_Static` version to the compiler and link with the appropriate 
 
 When using the compiler command line or a build system that doesn't support DUB, this is the only option. The `-version=BindSDL_Static` option should be passed to the compiler when building your program. All of the required C libraries, as well as the `bindbc-sdl` and `bindbc-loader` static libraries, must also be passed to the compiler on the command line or via your build system's configuration.
 
-When using DUB, its `versions` directive is an option. For example, when using the static bindings for SDL and SDL_image:
+__NOTE__: The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program, i.e., those maintained in [the BindBC GitHub organization](https://github.com/BindBC). Some third-party BindBC packages may support it as well.
+
+For example, when using the static bindings for SDL and SDL_image with DUB (replace the `0.1.0` `bindbc-sdl` version with the actual version you require):
 
 __dub.json__
 ```
@@ -240,7 +244,6 @@ libs "SDL2" "SDL2_image"
 This has the benefit that it completely excludes from the build any source modules related to the dynamic bindings, i.e. they will never be passed to the compiler.
 
 ## `-betterC` support
-
 `-betterC` support is enabled via the `dynamicBC` and `staticBC` subconfigurations, for dynamic and static bindings respectively. To enable the static bindings with `-betterC` support:
 
 __dub.json__

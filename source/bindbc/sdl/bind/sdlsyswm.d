@@ -202,13 +202,6 @@ struct SDL_SysWMinfo {
             dfb_ dfb;
 
             static if(sdlSupport >= SDLSupport.sdl202) {
-                struct wl_ {
-                    void *display;
-                    void *surface;
-                    void *shell_surface;
-                }
-                wl_ wl;
-
                 struct mir_ {
                     void *connection;
                     void *surface;
@@ -223,6 +216,15 @@ struct SDL_SysWMinfo {
                 uint window;
             }
             x11_ x11;
+
+            static if(sdlSupport >= SDLSupport.sdl202) {
+                struct wl_ {
+                    void *display;
+                    void *surface;
+                    void *shell_surface;
+                }
+                wl_ wl;
+            }
         }
 
         static if(sdlSupport >= SDLSupport.sdl204) {

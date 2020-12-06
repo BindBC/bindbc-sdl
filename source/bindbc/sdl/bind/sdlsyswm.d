@@ -6,7 +6,12 @@
 
 module bindbc.sdl.bind.sdlsyswm;
 
-import core.stdc.config : c_long;
+version(WebAssembly){
+    alias c_ulong = ulong;
+}else{
+    import core.stdc.config : c_ulong;
+}
+
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlversion : SDL_version;

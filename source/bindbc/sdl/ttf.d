@@ -247,6 +247,7 @@ else {
         SDLTTFSupport loadedVersion;
     }
 
+@nogc nothrow:
     void unloadSDLTTF()
     {
         if(lib != invalidHandle) {

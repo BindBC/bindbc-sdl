@@ -453,6 +453,7 @@ else {
         SDLMixerSupport loadedVersion;
     }
 
+@nogc nothrow:
     void unloadSDLMixer()
     {
         if(lib != invalidHandle) {

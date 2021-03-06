@@ -212,6 +212,7 @@ else {
         SDLNetSupport loadedVersion;
     }
 
+@nogc nothrow:
     void unloadSDLNet()
     {
         if(lib != invalidHandle) {

@@ -8,7 +8,7 @@ By default, `bindbc-sdl` is configured to compile as dynamic bindings that are n
 
 When using DUB to manage your project, the static bindings can be enabled via a DUB `subConfiguration` statement in your project's package file. `-betterC` compatibility is also enabled via subconfigurations.
 
-To use any of the supported SDL libraries, add `bindbc-sdl` as a dependency to your project's package config file and include the appropriate version for any of the satellite libraries you want to use. For example, the following is configured to use `SDL_image` and `SDL_ttf` in addition to the base SDL binding, as dynamic bindings that are not `-betterC` compatible (replace the `0.1.0` `bindbc-sdl` version with the actual version you require)::
+To use any of the supported SDL libraries, add `bindbc-sdl` as a dependency to your project's package config file and include the appropriate version for any of the satellite libraries you want to use. For example, the following is configured to use `SDL_image` and `SDL_ttf` in addition to the base SDL binding, as dynamic bindings that are not `-betterC` compatible (replace the `0.1.0` `bindbc-sdl` version with the actual version you require):
 
 __dub.json__
 ```

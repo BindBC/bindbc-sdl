@@ -19,6 +19,7 @@ private {
     SDLSupport loadedVersion;
 }
 
+@nogc nothrow:
 void unloadSDL()
 {
     if(lib != invalidHandle) {
@@ -695,7 +696,7 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_GetDisplayOrientation, "SDL_GetDisplayOrientation");
         lib.bindSymbol(cast(void**)&SDL_CreateThreadWithStackSize, "SDL_CreateThreadWithStackSize");
 
-        version(Android) 
+        version(Android)
         {
             lib.bindSymbol(cast(void**)&SDL_IsChromebook, "SDL_IsChromebook");
             lib.bindSymbol(cast(void**)&SDL_IsDeXMode, "SDL_IsDeXMode");

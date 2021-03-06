@@ -250,6 +250,7 @@ else {
         SDLImageSupport loadedVersion;
     }
 
+@nogc nothrow:
     void unloadSDLImage()
     {
         if(lib != invalidHandle) {

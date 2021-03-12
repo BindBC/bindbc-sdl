@@ -6,7 +6,11 @@
 
 module bindbc.sdl.bind.sdllog;
 
-import core.stdc.stdarg : va_list;
+version(WebAssembly){}
+else{
+    import core.stdc.stdarg : va_list;
+}
+
 import bindbc.sdl.config;
 
 enum SDL_MAX_LOG_MESSAGE = 4096;
@@ -64,7 +68,8 @@ static if(staticBinding) {
         void SDL_LogError(int,const(char)*,...);
         void SDL_LogCritical(int,const(char)*,...);
         void SDL_LogMessage(int,SDL_LogPriority,const(char)*,...);
-        void SDL_LogMessageV(int,SDL_LogPriority,const(char)*,va_list);
+        version(WebAssembly){}
+        else{void SDL_LogMessageV(int,SDL_LogPriority,const(char)*,va_list);}
         void SDL_LogGetOutputFunction(SDL_LogOutputFunction,void**);
         void SDL_LogSetOutputFunction(SDL_LogOutputFunction,void*);
     }

@@ -6,7 +6,12 @@
 
 module bindbc.sdl.bind.sdlthread;
 
-import core.stdc.config : c_ulong;
+version(WebAssembly){
+    alias c_ulong = ulong;
+}else{
+    import core.stdc.config : c_ulong;
+}
+
 import bindbc.sdl.config;
 
 struct SDL_Thread;

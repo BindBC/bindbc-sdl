@@ -9,7 +9,12 @@ module bindbc.sdl.ttf;
 import bindbc.sdl.config;
 static if(bindSDLTTF):
 
-import core.stdc.config;
+version(WebAssembly){
+    alias c_long = long;
+}else{
+    import core.stdc.config : c_long;
+}
+
 import bindbc.sdl.bind.sdlerror : SDL_GetError, SDL_SetError;
 import bindbc.sdl.bind.sdlpixels : SDL_Color;
 import bindbc.sdl.bind.sdlrwops : SDL_RWops;

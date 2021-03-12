@@ -6,7 +6,9 @@
 
 module bindbc.sdl.bind.sdlrwops;
 
-import core.stdc.stdio : FILE;
+version(WebAssembly){}
+else{import core.stdc.stdio : FILE;}
+
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
@@ -46,11 +48,14 @@ struct SDL_RWops {
             Windowsio windowsio;
         }
 
-        struct Stdio {
-            int autoclose;
-            FILE* fp;
+        version(WebAssembly){}
+        else{
+            struct Stdio {
+                int autoclose;
+                FILE* fp;
+            }
+            Stdio stdio;
         }
-        Stdio stdio;
 
         struct Mem {
             ubyte* base;
@@ -96,7 +101,7 @@ static if(sdlSupport >= SDLSupport.sdl206) {
 static if(staticBinding)  {
     extern(C) @nogc nothrow {
         SDL_RWops* SDL_RWFromFile(const(char)*,const(char)*);
-        SDL_RWops* SDL_RWFromFP(FILE*,SDL_bool);
+        version(WebAssembly){} else {SDL_RWops* SDL_RWFromFP(FILE*,SDL_bool);}
         SDL_RWops* SDL_RWFromMem(void*,int);
         SDL_RWops* SDL_RWFromConstMem(const(void)*,int);
         SDL_RWops* SDL_AllocRW();

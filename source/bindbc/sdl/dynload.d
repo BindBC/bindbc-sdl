@@ -651,22 +651,6 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_FreeAudioStream, "SDL_FreeAudioStream");
         lib.bindSymbol(cast(void**)&SDL_LockJoysticks, "SDL_LockJoysticks");
         lib.bindSymbol(cast(void**)&SDL_UnlockJoysticks, "SDL_UnlockJoysticks");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetDeviceProduct, "SDL_JoystickGetDeviceProduct");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetDeviceProductVersion, "SDL_JoystickGetDeviceProductVersion");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetDeviceInstanceID, "SDL_JoystickGetDeviceInstanceID");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetDeviceType, "SDL_JoystickGetDeviceType");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetProduct, "SDL_JoystickGetProduct");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetProductVersion, "SDL_JoystickGetProductVersion");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetType, "SDL_JoystickGetType");
-        lib.bindSymbol(cast(void**)&SDL_JoystickGetVendor, "SDL_JoystickGetVendor");
-        lib.bindSymbol(cast(void**)&SDL_LoadFile_RW, "SDL_LoadFile_RW");
-        lib.bindSymbol(cast(void**)&SDL_DuplicateSurface, "SDL_DuplicateSurface");
-        lib.bindSymbol(cast(void**)&SDL_Vulkan_CreateSurface, "SDL_Vulkan_CreateSurface");
-        lib.bindSymbol(cast(void**)&SDL_Vulkan_GetDrawableSize, "SDL_Vulkan_GetDrawableSize");
-        lib.bindSymbol(cast(void**)&SDL_Vulkan_GetInstanceExtensions, "SDL_Vulkan_GetInstanceExtensions");
-        lib.bindSymbol(cast(void**)&SDL_Vulkan_GetVkGetInstanceProcAddr, "SDL_Vulkan_GetVkGetInstanceProcAddr");
-        lib.bindSymbol(cast(void**)&SDL_Vulkan_LoadLibrary, "SDL_Vulkan_LoadLibrary");
-        lib.bindSymbol(cast(void**)&SDL_Vulkan_UnloadLibrary, "SDL_Vulkan_UnloadLibrary");
 
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl207;
@@ -695,6 +679,19 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_HasColorKey, "SDL_HasColorKey");
         lib.bindSymbol(cast(void**)&SDL_GetDisplayOrientation, "SDL_GetDisplayOrientation");
         lib.bindSymbol(cast(void**)&SDL_CreateThreadWithStackSize, "SDL_CreateThreadWithStackSize");
+        lib.bindSymbol(cast(void**)&SDL_NumSensors, "SDL_NumSensors");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetDeviceName, "SDL_SensorGetDeviceName");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetDeviceType, "SDL_SensorGetDeviceType");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetDeviceNonPortableType, "SDL_SensorGetDeviceNonPortableType");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetDeviceInstanceID, "SDL_SensorGetDeviceInstanceID");
+        lib.bindSymbol(cast(void**)&SDL_SensorOpen, "SDL_SensorOpen");
+        lib.bindSymbol(cast(void**)&SDL_SensorFromInstanceID, "SDL_SensorFromInstanceID");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetName, "SDL_SensorGetName");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetType, "SDL_SensorGetType");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetNonPortableType, "SDL_SensorGetNonPortableType");
+        lib.bindSymbol(cast(void**)&SDL_SensorGetData, "SDL_SensorGetData");
+        lib.bindSymbol(cast(void**)&SDL_SensorClose, "SDL_SensorClose");
+        lib.bindSymbol(cast(void**)&SDL_SensorUpdate, "SDL_SensorUpdate");
 
         version(Android)
         {
@@ -727,7 +724,7 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_RenderFillRectsF, "SDL_RenderFillRectsF");
         lib.bindSymbol(cast(void**)&SDL_RenderCopyF, "SDL_RenderCopyF");
         lib.bindSymbol(cast(void**)&SDL_RenderCopyExF, "SDL_RenderCopyExF");
-        lib.bindSymbol(cast(void**)&SDL_RenderFlush, "SDL_RenderFlush");lib.bindSymbol(cast(void**)&SDL_Vulkan_CreateSurface, "SDL_Vulkan_CreateSurface");
+        lib.bindSymbol(cast(void**)&SDL_RenderFlush, "SDL_RenderFlush");
         lib.bindSymbol(cast(void**)&SDL_RWsize, "SDL_RWsize");
         lib.bindSymbol(cast(void**)&SDL_RWseek, "SDL_RWseek");
         lib.bindSymbol(cast(void**)&SDL_RWtell, "SDL_RWtell");
@@ -755,9 +752,40 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_GetAndroidSDKVersion, "SDL_GetAndroidSDKVersion");
         }
 
-
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2012;
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2014) {
+        lib.bindSymbol(cast(void**)&SDL_SIMDRealloc, "SDL_SIMDRealloc");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasAxis, "SDL_GameControllerHasAxis");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasButton, "SDL_GameControllerHasButton");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetNumTouchpads, "SDL_GameControllerGetNumTouchpads");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetNumTouchpadFingers, "SDL_GameControllerGetNumTouchpadFingers");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetTouchpadFinger, "SDL_GameControllerGetTouchpadFinger");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasSensor, "SDL_GameControllerHasSensor");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerSetSensorEnabled, "SDL_GameControllerSetSensorEnabled");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerIsSensorEnabled, "SDL_GameControllerIsSensorEnabled");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetSensorData, "SDL_GameControllerGetSensorData");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerRumbleTriggers, "SDL_GameControllerRumbleTriggers");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasLED, "SDL_GameControllerHasLED");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerSetLED, "SDL_GameControllerSetLED");
+        lib.bindSymbol(cast(void**)&SDL_JoystickAttachVirtual, "SDL_JoystickAttachVirtual");
+        lib.bindSymbol(cast(void**)&SDL_JoystickDetachVirtual, "SDL_JoystickDetachVirtual");
+        lib.bindSymbol(cast(void**)&SDL_JoystickIsVirtual, "SDL_JoystickIsVirtual");
+        lib.bindSymbol(cast(void**)&SDL_JoystickSetVirtualAxis, "SDL_JoystickSetVirtualAxis");
+        lib.bindSymbol(cast(void**)&SDL_JoystickSetVirtualButton, "SDL_JoystickSetVirtualButton");
+        lib.bindSymbol(cast(void**)&SDL_JoystickSetVirtualHat, "SDL_JoystickSetVirtualHat");
+        lib.bindSymbol(cast(void**)&SDL_JoystickGetSerial, "SDL_JoystickGetSerial");
+        lib.bindSymbol(cast(void**)&SDL_JoystickRumbleTriggers, "SDL_JoystickRumbleTriggers");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasLED, "SDL_JoystickHasLED");
+        lib.bindSymbol(cast(void**)&SDL_JoystickSetLED, "SDL_JoystickSetLED");
+        version(Android) {
+            lib.bindSymbol(cast(void**)&SDL_AndroidRequestPermission, "SDL_AndroidRequestPermission");
+        }
+
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2014;
     }
 
     return loadedVersion;

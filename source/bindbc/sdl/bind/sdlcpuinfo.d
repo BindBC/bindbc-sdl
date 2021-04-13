@@ -42,11 +42,14 @@ static if(staticBinding) {
         }
         static if(sdlSupport >= SDLSupport.sdl2010) {
             size_t SDL_SIMDGetAlignment();
-            void* SDL_SIMDAlloc(const(size_t));
+            void* SDL_SIMDAlloc(const(size_t) len);
             void SDL_SIMDFree(void*);
         }
         static if(sdlSupport >= SDLSupport.sdl2012) {
             SDL_bool SDL_HasARMSIMD();
+        }
+        static if(sdlSupport >= SDLSupport.sdl2014) {
+            void* SDL_SIMDRealloc(void* mem, const(size_t) len);
         }
     }
 }
@@ -122,7 +125,7 @@ else {
         extern(C) @nogc nothrow {
             alias pSDL_SIMDGetAlignment = size_t function();
             alias pSDL_SIMDAlloc = void* function(const(size_t));
-            alias pSDL_SIMDFree = void function(void*);
+            alias pSDL_SIMDFree = void function(void* ptr);
         }
         __gshared {
             pSDL_SIMDGetAlignment SDL_SIMDGetAlignment;
@@ -138,5 +141,13 @@ else {
             pSDL_HasARMSIMD SDL_HasARMSIMD;
         }
 
+    }
+    static if(sdlSupport >= SDLSupport.sdl2014) {
+        extern(C) @nogc nothrow {
+            alias pSDL_SIMDRealloc = void* function(void* mem, const(size_t) len);
+        }
+        __gshared {
+            pSDL_SIMDRealloc SDL_SIMDRealloc;
+        }
     }
 }

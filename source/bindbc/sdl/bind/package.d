@@ -47,3 +47,6 @@ import bindbc.sdl.bind.sdl,
        bindbc.sdl.bind.sdlversion,
        bindbc.sdl.bind.sdlvideo,
        bindbc.sdl.bind.sdlvulkan;
+
+import bindbc.sdl.config;
+static if(sdlSupport >= SDLSupport.sdl209) public import bindbc.sdl.bind.sdlsensor;

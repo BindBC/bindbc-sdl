@@ -44,6 +44,32 @@ static if(sdlSupport >= SDLSupport.sdl206) {
         SDL_WINDOW_TOOLTIP = 0x00040000,
         SDL_WINDOW_POPUP_MENU = 0x00080000,
         SDL_WINDOW_VULKAN = 0x10000000,
+        SDL_WINDOW_METAL = 0x20000000,
+    }
+}
+else static if(sdlSupport >= SDLSupport.sdl206) {
+    enum SDL_WindowFlags {
+        SDL_WINDOW_FULLSCREEN = 0x00000001,
+        SDL_WINDOW_OPENGL = 0x00000002,
+        SDL_WINDOW_SHOWN = 0x00000004,
+        SDL_WINDOW_HIDDEN = 0x00000008,
+        SDL_WINDOW_BORDERLESS = 0x00000010,
+        SDL_WINDOW_RESIZABLE = 0x00000020,
+        SDL_WINDOW_MINIMIZED = 0x00000040,
+        SDL_WINDOW_MAXIMIZED = 0x00000080,
+        SDL_WINDOW_INPUT_GRABBED = 0x00000100,
+        SDL_WINDOW_INPUT_FOCUS = 0x00000200,
+        SDL_WINDOW_MOUSE_FOCUS = 0x00000400,
+        SDL_WINDOW_FULLSCREEN_DESKTOP = SDL_WINDOW_FULLSCREEN | 0x00001000,
+        SDL_WINDOW_FOREIGN = 0x00000800,
+        SDL_WINDOW_ALLOW_HIGHDPI = 0x00002000,
+        SDL_WINDOW_MOUSE_CAPTURE = 0x00004000,
+        SDL_WINDOW_ALWAYS_ON_TOP = 0x00008000,
+        SDL_WINDOW_SKIP_TASKBAR  = 0x00010000,
+        SDL_WINDOW_UTILITY = 0x00020000,
+        SDL_WINDOW_TOOLTIP = 0x00040000,
+        SDL_WINDOW_POPUP_MENU = 0x00080000,
+        SDL_WINDOW_VULKAN = 0x10000000,
     }
 }
 else static if(sdlSupport >= SDLSupport.sdl205) {
@@ -182,13 +208,24 @@ else {
 }
 mixin(expandEnum!SDL_WindowEventID);
 
-static if(sdlSupport >= SDLSupport.sdl209) {
+static if(sdlSupport >= SDLSupport.sdl2014) {
+    enum SDL_DisplayEventID {
+        SDL_DISPLAYEVENT_NONE,
+        SDL_DISPLAYEVENT_ORIENTATION,
+        SDL_DISPLAYEVENT_CONNECTED,
+        SDL_DISPLAYEVENT_DISCONNECTED,
+    }
+    mixin(expandEnum!SDL_DisplayEventID);
+}
+else static if(sdlSupport >= SDLSupport.sdl209) {
     enum SDL_DisplayEventID {
         SDL_DISPLAYEVENT_NONE,
         SDL_DISPLAYEVENT_ORIENTATION,
     }
     mixin(expandEnum!SDL_DisplayEventID);
+}
 
+static if(sdlSupport >= SDLSupport.sdl209) {
     enum SDL_DisplayOrientation {
         SDL_ORIENTATION_UNKNOWN,
         SDL_ORIENTATION_LANDSCAPE,

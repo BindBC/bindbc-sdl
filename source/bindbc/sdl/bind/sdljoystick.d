@@ -42,6 +42,8 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     mixin(expandEnum!SDL_JoystickPowerLevel);
 }
 
+static if(sdlSupport >= SDLSupport.sdl2014) enum SDL_IPHONE_MAX_GFORCE = 5.0;
+
 static if(sdlSupport >= SDLSupport.sdl206) {
     enum SDL_JoystickType {
         SDL_JOYSTICK_TYPE_UNKNOWN,
@@ -117,6 +119,18 @@ static if(staticBinding) {
         static if(sdlSupport >= SDLSupport.sdl2012) {
             SDL_Joystick* SDL_JoystickFromPlayerIndex(int);
             void SDL_JoystickSetPlayerIndex(SDL_Joystick*,int);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2012) {
+            int SDL_JoystickAttachVirtual(SDL_JoystickType type, int naxes, int nbuttons, int nhats);
+            int SDL_JoystickDetachVirtual(int device_index);
+            SDL_bool SDL_JoystickIsVirtual(int device_index);
+            int SDL_JoystickSetVirtualAxis(SDL_Joystick* joystick, int axis, short value);
+            int SDL_JoystickSetVirtualButton(SDL_Joystick* joystick, int button, ubyte value);
+            int SDL_JoystickSetVirtualHat(SDL_Joystick* joystick, int hat, ubyte value);
+            const(char)* SDL_JoystickGetSerial(SDL_Joystick* joystick);
+            int SDL_JoystickRumbleTriggers(SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms);
+            SDL_bool SDL_JoystickHasLED(SDL_Joystick* joystick);
+            int SDL_JoystickSetLED(SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue);
         }
     }
 }
@@ -239,6 +253,32 @@ else {
         __gshared {
             pSDL_JoystickFromPlayerIndex SDL_JoystickFromPlayerIndex;
             pSDL_JoystickSetPlayerIndex SDL_JoystickSetPlayerIndex;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2014) {
+        extern(C) @nogc nothrow {
+            alias pSDL_JoystickAttachVirtual = int function(SDL_JoystickType type, int naxes, int nbuttons, int nhats);
+            alias pSDL_JoystickDetachVirtual = int function(int device_index);
+            alias pSDL_JoystickIsVirtual = SDL_bool function(int device_index);
+            alias pSDL_JoystickSetVirtualAxis = int function(SDL_Joystick* joystick, int axis, short value);
+            alias pSDL_JoystickSetVirtualButton = int function(SDL_Joystick* joystick, int button, ubyte value);
+            alias pSDL_JoystickSetVirtualHat = int function(SDL_Joystick* joystick, int hat, ubyte value);
+            alias pSDL_JoystickGetSerial = const(char)* function(SDL_Joystick* joystick);
+            alias pSDL_JoystickRumbleTriggers = int function(SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms);
+            alias pSDL_JoystickHasLED = SDL_bool function(SDL_Joystick* joystick);
+            alias pSDL_JoystickSetLED = int function(SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue);
+        }
+        __gshared {
+            pSDL_JoystickAttachVirtual SDL_JoystickAttachVirtual;
+            pSDL_JoystickDetachVirtual SDL_JoystickDetachVirtual;
+            pSDL_JoystickIsVirtual SDL_JoystickIsVirtual;
+            pSDL_JoystickSetVirtualAxis SDL_JoystickSetVirtualAxis;
+            pSDL_JoystickSetVirtualButton SDL_JoystickSetVirtualButton;
+            pSDL_JoystickSetVirtualHat SDL_JoystickSetVirtualHat;
+            pSDL_JoystickGetSerial SDL_JoystickGetSerial;
+            pSDL_JoystickRumbleTriggers SDL_JoystickRumbleTriggers;
+            pSDL_JoystickHasLED SDL_JoystickHasLED;
+            pSDL_JoystickSetLED SDL_JoystickSetLED;
         }
     }
 }

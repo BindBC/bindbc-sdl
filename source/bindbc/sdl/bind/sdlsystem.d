@@ -45,6 +45,9 @@ static if(staticBinding) {
             static if(sdlSupport >= SDLSupport.sdl2012) {
                 int SDL_GetAndroidSDKVersion();
             }
+            static if(sdlSupport >= SDLSupport.sdl2014) {
+                SDL_bool SDL_AndroidRequestPermission(const(char)* permission);
+            }
         }
         else version(Windows) {
             static if(sdlSupport >= SDLSupport.sdl201) {
@@ -112,6 +115,14 @@ else {
 
             __gshared {
                 pSDL_GetAndroidSDKVersion SDL_GetAndroidSDKVersion;
+            }
+        }
+        static if(sdlSupport >= SDLSupport.sdl2014) {
+            extern(C) @nogc nothrow {
+                alias pSDL_AndroidRequestPermission = SDL_bool function(const(char)* permission);
+            }
+            __gshared {
+                pSDL_AndroidRequestPermission SDL_AndroidRequestPermission;
             }
         }
     }

@@ -9,12 +9,26 @@ module bindbc.sdl.bind.sdlgamecontroller;
 import bindbc.sdl.config;
 
 import bindbc.sdl.bind.sdljoystick,
-       bindbc.sdl.bind.sdlrwops;
+       bindbc.sdl.bind.sdlrwops,
+       bindbc.sdl.bind.sdlsensor;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 struct SDL_GameController;
 
-static if(sdlSupport >= SDLSupport.sdl2012) {
+static if(sdlSupport >= SDLSupport.sdl2014) {
+    enum SDL_GameControllerType {
+        SDL_CONTROLLER_TYPE_UNKNOWN = 0,
+        SDL_CONTROLLER_TYPE_XBOX360,
+        SDL_CONTROLLER_TYPE_XBOXONE,
+        SDL_CONTROLLER_TYPE_PS3,
+        SDL_CONTROLLER_TYPE_PS4,
+        SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+        SDL_CONTROLLER_TYPE_VIRTUAL,
+        SDL_CONTROLLER_TYPE_PS5
+    }
+    mixin(expandEnum!SDL_GameControllerType);
+}
+else static if(sdlSupport >= SDLSupport.sdl2012) {
     enum SDL_GameControllerType {
         SDL_CONTROLLER_TYPE_UNKNOWN = 0,
         SDL_CONTROLLER_TYPE_XBOX360,
@@ -61,26 +75,56 @@ enum SDL_GameControllerAxis {
 }
 mixin(expandEnum!SDL_GameControllerAxis);
 
-enum SDL_GameControllerButton {
-    SDL_CONTROLLER_BUTTON_INVALID = -1,
-    SDL_CONTROLLER_BUTTON_A,
-    SDL_CONTROLLER_BUTTON_B,
-    SDL_CONTROLLER_BUTTON_X,
-    SDL_CONTROLLER_BUTTON_Y,
-    SDL_CONTROLLER_BUTTON_BACK,
-    SDL_CONTROLLER_BUTTON_GUIDE,
-    SDL_CONTROLLER_BUTTON_START,
-    SDL_CONTROLLER_BUTTON_LEFTSTICK,
-    SDL_CONTROLLER_BUTTON_RIGHTSTICK,
-    SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
-    SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
-    SDL_CONTROLLER_BUTTON_DPAD_UP,
-    SDL_CONTROLLER_BUTTON_DPAD_DOWN,
-    SDL_CONTROLLER_BUTTON_DPAD_LEFT,
-    SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
-    SDL_CONTROLLER_BUTTON_MAX
+static if(sdlSupport >= SDLSupport.sdl2014) {
+    enum SDL_GameControllerButton {
+        SDL_CONTROLLER_BUTTON_INVALID = -1,
+        SDL_CONTROLLER_BUTTON_A,
+        SDL_CONTROLLER_BUTTON_B,
+        SDL_CONTROLLER_BUTTON_X,
+        SDL_CONTROLLER_BUTTON_Y,
+        SDL_CONTROLLER_BUTTON_BACK,
+        SDL_CONTROLLER_BUTTON_GUIDE,
+        SDL_CONTROLLER_BUTTON_START,
+        SDL_CONTROLLER_BUTTON_LEFTSTICK,
+        SDL_CONTROLLER_BUTTON_RIGHTSTICK,
+        SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+        SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
+        SDL_CONTROLLER_BUTTON_DPAD_UP,
+        SDL_CONTROLLER_BUTTON_DPAD_DOWN,
+        SDL_CONTROLLER_BUTTON_DPAD_LEFT,
+        SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
+        SDL_CONTROLLER_BUTTON_MISC1,
+        SDL_CONTROLLER_BUTTON_PADDLE1,
+        SDL_CONTROLLER_BUTTON_PADDLE2,
+        SDL_CONTROLLER_BUTTON_PADDLE3,
+        SDL_CONTROLLER_BUTTON_PADDLE4,
+        SDL_CONTROLLER_BUTTON_TOUCHPAD,
+        SDL_CONTROLLER_BUTTON_MAX,
+    }
+    mixin(expandEnum!SDL_GameControllerButton);
 }
-mixin(expandEnum!SDL_GameControllerButton);
+else static if(sdlSupport >= SDLSupport.sdl2012) {
+    enum SDL_GameControllerButton {
+        SDL_CONTROLLER_BUTTON_INVALID = -1,
+        SDL_CONTROLLER_BUTTON_A,
+        SDL_CONTROLLER_BUTTON_B,
+        SDL_CONTROLLER_BUTTON_X,
+        SDL_CONTROLLER_BUTTON_Y,
+        SDL_CONTROLLER_BUTTON_BACK,
+        SDL_CONTROLLER_BUTTON_GUIDE,
+        SDL_CONTROLLER_BUTTON_START,
+        SDL_CONTROLLER_BUTTON_LEFTSTICK,
+        SDL_CONTROLLER_BUTTON_RIGHTSTICK,
+        SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+        SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
+        SDL_CONTROLLER_BUTTON_DPAD_UP,
+        SDL_CONTROLLER_BUTTON_DPAD_DOWN,
+        SDL_CONTROLLER_BUTTON_DPAD_LEFT,
+        SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
+        SDL_CONTROLLER_BUTTON_MAX,
+    }
+    mixin(expandEnum!SDL_GameControllerButton);
+}
 
 static if(sdlSupport >= SDLSupport.sdl202) {
     @nogc nothrow
@@ -138,6 +182,20 @@ static if(staticBinding) {
             SDL_GameController* SDL_GameControllerFromPlayerIndex(int);
             SDL_GameControllerType SDL_GameControllerGetType(SDL_GameController*);
             void SDL_GameControllerSetPlayerIndex(SDL_GameController*,int);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2014) {
+            SDL_bool SDL_GameControllerHasAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+            SDL_bool SDL_GameControllerHasButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+            int SDL_GameControllerGetNumTouchpads(SDL_GameController* gamecontroller);
+            int SDL_GameControllerGetNumTouchpadFingers (SDL_GameController* gamecontroller, int touchpad);
+            int SDL_GameControllerGetTouchpadFinger(SDL_GameController* gamecontroller, int touchpad, int finger, ubyte* state, float* x, float* y, float* pressure);
+            SDL_bool SDL_GameControllerHasSensor(SDL_GameController* gamecontroller, SDL_SensorType type);
+            int SDL_GameControllerSetSensorEnabled(SDL_GameController* gamecontroller, SDL_SensorType type, SDL_bool enabled);
+            SDL_bool SDL_GameControllerIsSensorEnabled(SDL_GameController* gamecontroller, SDL_SensorType type);
+            int SDL_GameControllerGetSensorData(SDL_GameController* gamecontroller, SDL_SensorType type, float* data, int num_values);
+            int SDL_GameControllerRumbleTriggers(SDL_GameController* gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms);
+            SDL_bool SDL_GameControllerHasLED(SDL_GameController* gamecontroller);
+            int SDL_GameControllerSetLED(SDL_GameController* gamecontroller, ubyte red, ubyte green, ubyte blue);
         }
     }
 }
@@ -253,6 +311,36 @@ else {
             pSDL_GameControllerFromPlayerIndex SDL_GameControllerFromPlayerIndex;
             pSDL_GameControllerGetType SDL_GameControllerGetType;
             pSDL_GameControllerSetPlayerIndex SDL_GameControllerSetPlayerIndex;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2014) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GameControllerHasAxis = SDL_bool function(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+            alias pSDL_GameControllerHasButton = SDL_bool function(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+            alias pSDL_GameControllerGetNumTouchpads = int function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerGetNumTouchpadFingers = int function(SDL_GameController* gamecontroller, int touchpad);
+            alias pSDL_GameControllerGetTouchpadFinger = int function(SDL_GameController* gamecontroller, int touchpad, int finger, ubyte* state, float* x, float* y, float* pressure);
+            alias pSDL_GameControllerHasSensor = SDL_bool function(SDL_GameController* gamecontroller, SDL_SensorType type);
+            alias pSDL_GameControllerSetSensorEnabled = int function(SDL_GameController* gamecontroller, SDL_SensorType type, SDL_bool enabled);
+            alias pSDL_GameControllerIsSensorEnabled = SDL_bool function(SDL_GameController* gamecontroller, SDL_SensorType type);
+            alias pSDL_GameControllerGetSensorData = int function(SDL_GameController* gamecontroller, SDL_SensorType type, float* data, int num_values);
+            alias pSDL_GameControllerRumbleTriggers = int function(SDL_GameController* gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms);
+            alias pSDL_GameControllerHasLED = SDL_bool function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerSetLED = int function(SDL_GameController* gamecontroller, ubyte red, ubyte green, ubyte blue);
+        }
+        __gshared {
+            pSDL_GameControllerHasAxis SDL_GameControllerHasAxis;
+            pSDL_GameControllerHasButton SDL_GameControllerHasButton;
+            pSDL_GameControllerGetNumTouchpads SDL_GameControllerGetNumTouchpads;
+            pSDL_GameControllerGetNumTouchpadFingers SDL_GameControllerGetNumTouchpadFingers;
+            pSDL_GameControllerGetTouchpadFinger SDL_GameControllerGetTouchpadFinger;
+            pSDL_GameControllerHasSensor SDL_GameControllerHasSensor;
+            pSDL_GameControllerSetSensorEnabled SDL_GameControllerSetSensorEnabled;
+            pSDL_GameControllerIsSensorEnabled SDL_GameControllerIsSensorEnabled;
+            pSDL_GameControllerGetSensorData SDL_GameControllerGetSensorData;
+            pSDL_GameControllerRumbleTriggers SDL_GameControllerRumbleTriggers;
+            pSDL_GameControllerHasLED SDL_GameControllerHasLED;
+            pSDL_GameControllerSetLED SDL_GameControllerSetLED;
         }
     }
 }

@@ -30,11 +30,10 @@ enum : ushort {
     SDL_HAPTIC_PAUSE = 1u<<15,
 }
 
-enum {
-    SDL_HAPTIC_POLAR = 0,
-    SDL_HAPTIC_CARTESIAN = 1,
-    SDL_HAPTIC_SPHERICAL = 2,
-}
+enum SDL_HAPTIC_POLAR = 0;
+enum SDL_HAPTIC_CARTESIAN = 1;
+enum SDL_HAPTIC_SPHERICAL = 2;
+static if(sdlSupport >= SDLSupport.sdl2014) enum SDL_HAPTIC_STEERING_AXIS = 3;
 
 enum SDL_HAPTIC_INFINITY = 4294967295U;
 

@@ -78,58 +78,58 @@ enum {
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        int IMG_Init(int);
+        int IMG_Init(int flags);
         int IMG_Quit();
         const(SDL_version)* IMG_Linked_Version();
-        SDL_Surface* IMG_LoadTyped_RW(SDL_RWops*,int,const(char)*);
-        SDL_Surface* IMG_Load(const(char)*);
-        SDL_Surface* IMG_Load_RW(SDL_RWops*,int);
+        SDL_Surface* IMG_LoadTyped_RW(SDL_RWops* src, int freesrc, const(char)* type);
+        SDL_Surface* IMG_Load(const(char)* file);
+        SDL_Surface* IMG_Load_RW(SDL_RWops* src, int freesrc);
 
-        SDL_Texture* IMG_LoadTexture(SDL_Renderer*,const(char)*);
-        SDL_Texture* IMG_LoadTexture_RW(SDL_Renderer*,SDL_RWops*,int);
-        SDL_Texture* IMG_LoadTextureTyped_RW(SDL_Renderer*,SDL_RWops*,int,const(char)*);
+        SDL_Texture* IMG_LoadTexture(SDL_Renderer* renderer, const(char)* file);
+        SDL_Texture* IMG_LoadTexture_RW(SDL_Renderer* renderer, SDL_RWops* src, int freesrc);
+        SDL_Texture* IMG_LoadTextureTyped_RW(SDL_Renderer* renderer, SDL_RWops* src, int freesrc, const(char)* type);
 
-        int IMG_isICO(SDL_RWops*);
-        int IMG_isCUR(SDL_RWops*);
-        int IMG_isBMP(SDL_RWops*);
-        int IMG_isGIF(SDL_RWops*);
-        int IMG_isJPG(SDL_RWops*);
-        int IMG_isLBM(SDL_RWops*);
-        int IMG_isPCX(SDL_RWops*);
-        int IMG_isPNG(SDL_RWops*);
-        int IMG_isPNM(SDL_RWops*);
-        int IMG_isTIF(SDL_RWops*);
-        int IMG_isXCF(SDL_RWops*);
-        int IMG_isXPM(SDL_RWops*);
-        int IMG_isXV(SDL_RWops*);
-        int IMG_isWEBP(SDL_RWops*);
+        int IMG_isICO(SDL_RWops* src);
+        int IMG_isCUR(SDL_RWops* src);
+        int IMG_isBMP(SDL_RWops* src);
+        int IMG_isGIF(SDL_RWops* src);
+        int IMG_isJPG(SDL_RWops* src);
+        int IMG_isLBM(SDL_RWops* src);
+        int IMG_isPCX(SDL_RWops* src);
+        int IMG_isPNG(SDL_RWops* src);
+        int IMG_isPNM(SDL_RWops* src);
+        int IMG_isTIF(SDL_RWops* src);
+        int IMG_isXCF(SDL_RWops* src);
+        int IMG_isXPM(SDL_RWops* src);
+        int IMG_isXV(SDL_RWops* src);
+        int IMG_isWEBP(SDL_RWops* src);
 
-        SDL_Surface* IMG_LoadICO_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadCUR_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadBMP_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadGIF_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadJPG_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadLBM_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadPCX_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadPNG_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadPNM_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadTGA_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadTIF_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadXCF_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadXPM_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadXV_RW(SDL_RWops*);
-        SDL_Surface* IMG_LoadWEBP_RW(SDL_RWops*);
+        SDL_Surface* IMG_LoadICO_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadCUR_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadBMP_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadGIF_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadJPG_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadLBM_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadPCX_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadPNG_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadPNM_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadTGA_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadTIF_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadXCF_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadXPM_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadXV_RW(SDL_RWops* src);
+        SDL_Surface* IMG_LoadWEBP_RW(SDL_RWops* src);
 
-        SDL_Surface* IMG_ReadXPMFromArray(char**);
+        SDL_Surface* IMG_ReadXPMFromArray(char** xpm);
 
-        int IMG_SavePNG(SDL_Surface*,const(char)*);
-        int IMG_SavePNG_RW(SDL_Surface*,SDL_RWops*,int);
+        int IMG_SavePNG(SDL_Surface* surface, const(char)* file);
+        int IMG_SavePNG_RW(SDL_Surface* surface, SDL_RWops* dst, int freedst);
 
         static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
-            int IMG_isSVG(SDL_RWops*);
-            SDL_Surface* IMG_LoadSVG(SDL_RWops*);
-            int IMG_SaveJPG(SDL_Surface*,const(char)*,int);
-            int IMG_SaveJPG_RW(SDL_Surface*,SDL_RWops*,int,int);
+            int IMG_isSVG(SDL_RWops* src);
+            SDL_Surface* IMG_LoadSVG(SDL_RWops* src);
+            int IMG_SaveJPG(SDL_Surface* surface, const(char)* file, int quality);
+            int IMG_SaveJPG_RW(SDL_Surface* surface, SDL_RWops* dst, int freedst, int quality);
         }
     }
 }
@@ -137,52 +137,52 @@ else {
     import bindbc.loader;
 
     extern(C) @nogc nothrow {
-        alias pIMG_Init = int function(int);
+        alias pIMG_Init = int function(int flags);
         alias pIMG_Quit = int function();
         alias pIMG_Linked_Version = const(SDL_version)* function();
-        alias pIMG_LoadTyped_RW = SDL_Surface* function(SDL_RWops*,int,const(char)*);
-        alias pIMG_Load = SDL_Surface* function(const(char)*);
-        alias pIMG_Load_RW = SDL_Surface* function(SDL_RWops*,int);
+        alias pIMG_LoadTyped_RW = SDL_Surface* function(SDL_RWops* src, int freesrc, const(char)* type);
+        alias pIMG_Load = SDL_Surface* function(const(char)* file);
+        alias pIMG_Load_RW = SDL_Surface* function(SDL_RWops* src, int freesrc);
 
-        alias pIMG_LoadTexture = SDL_Texture* function(SDL_Renderer*,const(char)*);
-        alias pIMG_LoadTexture_RW = SDL_Texture* function(SDL_Renderer*,SDL_RWops*,int);
-        alias pIMG_LoadTextureTyped_RW = SDL_Texture* function(SDL_Renderer*,SDL_RWops*,int,const(char)*);
+        alias pIMG_LoadTexture = SDL_Texture* function(SDL_Renderer* renderer, const(char)* file);
+        alias pIMG_LoadTexture_RW = SDL_Texture* function(SDL_Renderer* renderer, SDL_RWops* src, int freesrc);
+        alias pIMG_LoadTextureTyped_RW = SDL_Texture* function(SDL_Renderer* renderer, SDL_RWops* src, int freesrc, const(char)* type);
 
-        alias pIMG_isICO = int function(SDL_RWops*);
-        alias pIMG_isCUR = int function(SDL_RWops*);
-        alias pIMG_isBMP = int function(SDL_RWops*);
-        alias pIMG_isGIF = int function(SDL_RWops*);
-        alias pIMG_isJPG = int function(SDL_RWops*);
-        alias pIMG_isLBM = int function(SDL_RWops*);
-        alias pIMG_isPCX = int function(SDL_RWops*);
-        alias pIMG_isPNG = int function(SDL_RWops*);
-        alias pIMG_isPNM = int function(SDL_RWops*);
-        alias pIMG_isTIF = int function(SDL_RWops*);
-        alias pIMG_isXCF = int function(SDL_RWops*);
-        alias pIMG_isXPM = int function(SDL_RWops*);
-        alias pIMG_isXV = int function(SDL_RWops*);
-        alias pIMG_isWEBP = int function(SDL_RWops*);
+        alias pIMG_isICO = int function(SDL_RWops* src);
+        alias pIMG_isCUR = int function(SDL_RWops* src);
+        alias pIMG_isBMP = int function(SDL_RWops* src);
+        alias pIMG_isGIF = int function(SDL_RWops* src);
+        alias pIMG_isJPG = int function(SDL_RWops* src);
+        alias pIMG_isLBM = int function(SDL_RWops* src);
+        alias pIMG_isPCX = int function(SDL_RWops* src);
+        alias pIMG_isPNG = int function(SDL_RWops* src);
+        alias pIMG_isPNM = int function(SDL_RWops* src);
+        alias pIMG_isTIF = int function(SDL_RWops* src);
+        alias pIMG_isXCF = int function(SDL_RWops* src);
+        alias pIMG_isXPM = int function(SDL_RWops* src);
+        alias pIMG_isXV = int function(SDL_RWops* src);
+        alias pIMG_isWEBP = int function(SDL_RWops* src);
 
-        alias pIMG_LoadICO_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadCUR_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadBMP_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadGIF_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadJPG_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadLBM_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadPCX_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadPNG_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadPNM_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadTGA_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadTIF_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadXCF_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadXPM_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadXV_RW = SDL_Surface* function(SDL_RWops*);
-        alias pIMG_LoadWEBP_RW = SDL_Surface* function(SDL_RWops*);
+        alias pIMG_LoadICO_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadCUR_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadBMP_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadGIF_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadJPG_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadLBM_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadPCX_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadPNG_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadPNM_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadTGA_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadTIF_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadXCF_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadXPM_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadXV_RW = SDL_Surface* function(SDL_RWops* src);
+        alias pIMG_LoadWEBP_RW = SDL_Surface* function(SDL_RWops* src);
 
-        alias pIMG_ReadXPMFromArray = SDL_Surface* function(char**);
+        alias pIMG_ReadXPMFromArray = SDL_Surface* function(char** xpm);
 
-        alias pIMG_SavePNG = int function(SDL_Surface*,const(char)*);
-        alias pIMG_SavePNG_RW = int function(SDL_Surface*,SDL_RWops*,int);
+        alias pIMG_SavePNG = int function(SDL_Surface* surface, const(char)* file);
+        alias pIMG_SavePNG_RW = int function(SDL_Surface* surface, SDL_RWops* dst, int freedst);
     }
 
     __gshared {
@@ -231,10 +231,10 @@ else {
 
     static if(sdlImageSupport >= SDLImageSupport.sdlImage202) {
         extern(C) @nogc nothrow {
-            alias pIMG_isSVG = int function(SDL_RWops*);
-            alias pIMG_LoadSVG_RW = SDL_Surface* function(SDL_RWops*);
-            alias pIMG_SaveJPG = int function(SDL_Surface*,const(char)*,int);
-            alias pIMG_SaveJPG_RW = int function(SDL_Surface*,SDL_RWops*,int,int);
+            alias pIMG_isSVG = int function(SDL_RWops* src);
+            alias pIMG_LoadSVG_RW = SDL_Surface* function(SDL_RWops* src);
+            alias pIMG_SaveJPG = int function(SDL_Surface* surface, const(char)* file, int quality);
+            alias pIMG_SaveJPG_RW = int function(SDL_Surface* surface, SDL_RWops* dst, int freedst, int quality);
         }
 
         __gshared {

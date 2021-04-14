@@ -245,12 +245,12 @@ struct SDL_SysWMinfo {
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        SDL_bool SDL_GetWindowWMInfo(SDL_Window*,SDL_SysWMinfo*);
+        SDL_bool SDL_GetWindowWMInfo(SDL_Window* window, SDL_SysWMinfo* info);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_GetWindowWMInfo = SDL_bool function(SDL_Window*,SDL_SysWMinfo*);
+        alias pSDL_GetWindowWMInfo = SDL_bool function(SDL_Window* window, SDL_SysWMinfo* info);
     }
 
     __gshared {

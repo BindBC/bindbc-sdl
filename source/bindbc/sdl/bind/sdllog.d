@@ -52,40 +52,40 @@ extern(C) nothrow alias SDL_LogOutputFunction = void function(void*, int, SDL_Lo
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        void SDL_LogSetAllPriority(SDL_LogPriority);
-        void SDL_LogSetPriority(int,SDL_LogPriority);
-        SDL_LogPriority SDL_LogGetPriority(int);
+        void SDL_LogSetAllPriority(SDL_LogPriority priority);
+        void SDL_LogSetPriority(int,SDL_LogPriority priority);
+        SDL_LogPriority SDL_LogGetPriority(int category);
         void SDL_LogResetPriorities();
-        void SDL_Log(const(char)*,...);
-        void SDL_LogVerbose(int,const(char)*,...);
-        void SDL_LogDebug(int,const(char)*,...);
-        void SDL_LogInfo(int,const(char)*,...);
-        void SDL_LogWarn(int,const(char)*,...);
-        void SDL_LogError(int,const(char)*,...);
-        void SDL_LogCritical(int,const(char)*,...);
-        void SDL_LogMessage(int,SDL_LogPriority,const(char)*,...);
-        void SDL_LogMessageV(int,SDL_LogPriority,const(char)*,va_list);
-        void SDL_LogGetOutputFunction(SDL_LogOutputFunction,void**);
-        void SDL_LogSetOutputFunction(SDL_LogOutputFunction,void*);
+        void SDL_Log(const(char)* fmt,...);
+        void SDL_LogVerbose(int category, const(char)* fmt,...);
+        void SDL_LogDebug(int category, const(char)* fmt,...);
+        void SDL_LogInfo(int category, const(char)* fmt,...);
+        void SDL_LogWarn(int category, const(char)* fmt,...);
+        void SDL_LogError(int category, const(char)* fmt,...);
+        void SDL_LogCritical(int category, const(char)* fmt,...);
+        void SDL_LogMessage(int category,SDL_LogPriority, const(char)* fmt,...);
+        void SDL_LogMessageV(int category,SDL_LogPriority, const(char)* fmt, va_list ap);
+        void SDL_LogGetOutputFunction(SDL_LogOutputFunction callback, void** userdata);
+        void SDL_LogSetOutputFunction(SDL_LogOutputFunction callback,void* userdata);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_LogSetAllPriority = void function(SDL_LogPriority);
-        alias pSDL_LogSetPriority = void function(int,SDL_LogPriority);
-        alias pSDL_LogGetPriority = SDL_LogPriority function(int);
+        alias pSDL_LogSetAllPriority = void function(SDL_LogPriority priority);
+        alias pSDL_LogSetPriority = void function(int category,SDL_LogPriority priority);
+        alias pSDL_LogGetPriority = SDL_LogPriority function(int category);
         alias pSDL_LogResetPriorities = void function();
-        alias pSDL_Log = void function(const(char)*,...);
-        alias pSDL_LogVerbose = void function(int,const(char)*,...);
-        alias pSDL_LogDebug = void function(int,const(char)*,...);
-        alias pSDL_LogInfo = void function(int,const(char)*,...);
-        alias pSDL_LogWarn = void function(int,const(char)*,...);
-        alias pSDL_LogError = void function(int,const(char)*,...);
-        alias pSDL_LogCritical = void function(int,const(char)*,...);
-        alias pSDL_LogMessage = void function(int,SDL_LogPriority,const(char)*,...);
-        alias pSDL_LogMessageV = void function(int,SDL_LogPriority,const(char)*,va_list);
-        alias pSDL_LogGetOutputFunction = void function(SDL_LogOutputFunction,void**);
-        alias pSDL_LogSetOutputFunction = void function(SDL_LogOutputFunction,void*);
+        alias pSDL_Log = void function(const(char)* fmt,...);
+        alias pSDL_LogVerbose = void function(int category, const(char)* fmt,...);
+        alias pSDL_LogDebug = void function(int category, const(char)* fmt,...);
+        alias pSDL_LogInfo = void function(int category, const(char)* fmt,...);
+        alias pSDL_LogWarn = void function(int category, const(char)* fmt,...);
+        alias pSDL_LogError = void function(int category, const(char)* fmt,...);
+        alias pSDL_LogCritical = void function(int category, const(char)* fmt,...);
+        alias pSDL_LogMessage = void function(int category,SDL_LogPriority, const(char)* fmt,...);
+        alias pSDL_LogMessageV = void function(int category,SDL_LogPriority, const(char)* fmt, va_list ap);
+        alias pSDL_LogGetOutputFunction = void function(SDL_LogOutputFunction callback, void** userdata);
+        alias pSDL_LogSetOutputFunction = void function(SDL_LogOutputFunction callback,void* userdata);
     }
 
     __gshared {

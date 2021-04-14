@@ -51,19 +51,19 @@ static if(staticBinding) {
         }
         else version(Windows) {
             static if(sdlSupport >= SDLSupport.sdl201) {
-                int SDL_Direct3D9GetAdapterIndex(int);
-                IDirect3DDevice9* SDL_RenderGetD3D9Device(SDL_Renderer*);
+                int SDL_Direct3D9GetAdapterIndex(int displayIndex);
+                IDirect3DDevice9* SDL_RenderGetD3D9Device(SDL_Renderer* renderer);
             }
             static if(sdlSupport >= SDLSupport.sdl202) {
-                SDL_bool SDL_DXGIGetOutputInfo(int,int*,int*);
+                SDL_bool SDL_DXGIGetOutputInfo(int displayIndex, int* adapterIndex, int* outputIndex);
             }
             static if(sdlSupport >= SDLSupport.sdl204) {
-                void SDL_SetWindowsMessageHook(SDL_WindowsMessageHook,void*);
+                void SDL_SetWindowsMessageHook(SDL_WindowsMessageHook callback, void* userdata);
             }
         }
         else version(linux) {
             static if(sdlSupport >= SDLSupport.sdl209) {
-                int SDL_LinuxSetThreadPriority(long,int);
+                int SDL_LinuxSetThreadPriority(long threadID, int priority);
             }
         }
     }
@@ -129,8 +129,8 @@ else {
     else version(Windows) {
         static if(sdlSupport >= SDLSupport.sdl201) {
             extern(C) @nogc nothrow {
-                alias pSDL_Direct3D9GetAdapterIndex = int function(int);
-                alias pSDL_RenderGetD3D9Device = IDirect3DDevice9* function(SDL_Renderer*);
+                alias pSDL_Direct3D9GetAdapterIndex = int function(int displayIndex);
+                alias pSDL_RenderGetD3D9Device = IDirect3DDevice9* function(SDL_Renderer* renderer);
             }
 
             __gshared {
@@ -141,7 +141,7 @@ else {
 
         static if(sdlSupport >= SDLSupport.sdl202) {
             extern(C) @nogc nothrow {
-                alias pSDL_DXGIGetOutputInfo = SDL_bool function(int,int*,int*);
+                alias pSDL_DXGIGetOutputInfo = SDL_bool function(int displayIndex, int* adapterIndex, int* outputIndex);
             }
 
             __gshared {
@@ -151,7 +151,7 @@ else {
 
         static if(sdlSupport >= SDLSupport.sdl204) {
             extern(C) @nogc nothrow {
-                alias pSDL_SetWindowsMessageHook = void function(SDL_WindowsMessageHook,void*);
+                alias pSDL_SetWindowsMessageHook = void function(SDL_WindowsMessageHook callback, void* userdata);
             }
 
             __gshared {
@@ -162,7 +162,7 @@ else {
     else version(linux) {
         static if(sdlSupport >= SDLSupport.sdl209) {
             extern(C) @nogc nothrow {
-                alias pSDL_LinuxSetThreadPriority = int function(long,int);
+                alias pSDL_LinuxSetThreadPriority = int function(long threadID, int priority);
             }
 
             __gshared {

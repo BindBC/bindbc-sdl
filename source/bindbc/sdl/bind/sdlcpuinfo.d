@@ -124,7 +124,7 @@ else {
     static if(sdlSupport >= SDLSupport.sdl2010) {
         extern(C) @nogc nothrow {
             alias pSDL_SIMDGetAlignment = size_t function();
-            alias pSDL_SIMDAlloc = void* function(const(size_t));
+            alias pSDL_SIMDAlloc = void* function(const(size_t) len);
             alias pSDL_SIMDFree = void function(void* ptr);
         }
         __gshared {

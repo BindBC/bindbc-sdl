@@ -35,20 +35,20 @@ static if(sdlSupport >= SDLSupport.sdl2010) {
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumTouchDevices();
-        SDL_TouchID SDL_GetTouchDevice(int);
-        int SDL_GetNumTouchFingers(SDL_TouchID);
-        SDL_Finger* SDL_GetTouchFinger(SDL_TouchID,int);
+        SDL_TouchID SDL_GetTouchDevice(int index);
+        int SDL_GetNumTouchFingers(SDL_TouchID touchID);
+        SDL_Finger* SDL_GetTouchFinger(SDL_TouchID touchID, int index);
     }
     static if(sdlSupport >= SDLSupport.sdl2010) {
-        SDL_TouchDeviceType SDL_GetTouchDeviceType(SDL_TouchID);
+        SDL_TouchDeviceType SDL_GetTouchDeviceType(SDL_TouchID touchID);
     }
 }
 else {
     extern(C) @nogc nothrow {
         alias pSDL_GetNumTouchDevices = int function();
-        alias pSDL_GetTouchDevice = SDL_TouchID function(int);
-        alias pSDL_GetNumTouchFingers = int function(SDL_TouchID);
-        alias pSDL_GetTouchFinger = SDL_Finger* function(SDL_TouchID,int);
+        alias pSDL_GetTouchDevice = SDL_TouchID function(int index);
+        alias pSDL_GetNumTouchFingers = int function(SDL_TouchID touchID);
+        alias pSDL_GetTouchFinger = SDL_Finger* function(SDL_TouchID touchID, int index);
     }
     __gshared {
         pSDL_GetNumTouchDevices SDL_GetNumTouchDevices;
@@ -58,7 +58,7 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl2010) {
         extern(C) @nogc nothrow {
-            alias pSDL_GetTouchDeviceType = SDL_TouchDeviceType function(SDL_TouchID);
+            alias pSDL_GetTouchDeviceType = SDL_TouchDeviceType function(SDL_TouchID touchID);
         }
         __gshared {
             pSDL_GetTouchDeviceType SDL_GetTouchDeviceType;

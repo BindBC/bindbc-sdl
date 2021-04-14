@@ -33,19 +33,19 @@ extern(C) nothrow alias SDL_AssertionHandler = SDL_AssertState function(const(SD
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        void SDL_SetAssertionHandler(SDL_AssertionHandler,void*);
+        void SDL_SetAssertionHandler(SDL_AssertionHandler handler, void* userdata);
         const(SDL_assert_data)* SDL_GetAssertionReport();
         void SDL_ResetAssertionReport();
 
         static if(sdlSupport >= SDLSupport.sdl202) {
-            SDL_AssertionHandler SDL_GetAssertionHandler(void**);
+            SDL_AssertionHandler SDL_GetAssertionHandler(void** puserdata);
             SDL_AssertionHandler SDL_GetDefaultAssertionHandler();
         }
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_SetAssertionHandler = void function(SDL_AssertionHandler,void*);
+        alias pSDL_SetAssertionHandler = void function(SDL_AssertionHandler handler, void* userdata);
         alias pSDL_GetAssertionReport = const(SDL_assert_data)* function();
         alias pSDL_ResetAssertionReport = void function();
     }
@@ -58,7 +58,7 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl202) {
         extern(C) @nogc nothrow {
-            alias pSDL_GetAssertionHandler = SDL_AssertionHandler function(void**);
+            alias pSDL_GetAssertionHandler = SDL_AssertionHandler function(void** puserdata);
             alias pSDL_GetDefaultAssertionHandler = SDL_AssertionHandler function();
         }
 

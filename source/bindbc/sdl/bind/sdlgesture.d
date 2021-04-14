@@ -14,18 +14,18 @@ alias SDL_GestureID = long;
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        int SDL_RecordGesture(SDL_TouchID);
-        int SDL_SaveAllDollarTemplates(SDL_RWops*);
-        int SDL_SaveDollarTemplate(SDL_GestureID,SDL_RWops*);
-        int SDL_LoadDollarTemplates(SDL_TouchID,SDL_RWops*);
+        int SDL_RecordGesture(SDL_TouchID touchId);
+        int SDL_SaveAllDollarTemplates(SDL_RWops* dst);
+        int SDL_SaveDollarTemplate(SDL_GestureID gestureId, SDL_RWops* dst);
+        int SDL_LoadDollarTemplates(SDL_TouchID touchId,SDL_RWops* src);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_RecordGesture = int function(SDL_TouchID);
-        alias pSDL_SaveAllDollarTemplates = int function(SDL_RWops*);
-        alias pSDL_SaveDollarTemplate = int function(SDL_GestureID,SDL_RWops*);
-        alias pSDL_LoadDollarTemplates = int function(SDL_TouchID,SDL_RWops*);
+        alias pSDL_RecordGesture = int function(SDL_TouchID touchId);
+        alias pSDL_SaveAllDollarTemplates = int function(SDL_RWops* dst);
+        alias pSDL_SaveDollarTemplate = int function(SDL_GestureID gestureId, SDL_RWops* dst);
+        alias pSDL_LoadDollarTemplates = int function(SDL_TouchID touchId, SDL_RWops* src);
     }
 
     __gshared {

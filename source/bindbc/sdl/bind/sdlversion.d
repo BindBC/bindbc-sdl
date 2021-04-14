@@ -71,14 +71,14 @@ enum SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_COMPILEDVERSION >= SDL
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        void SDL_GetVersion(SDL_version*);
+        void SDL_GetVersion(SDL_version* ver);
         const(char)* SDL_GetRevision();
         int SDL_GetRevisionNumber();
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_GetVersion = void function(SDL_version*);
+        alias pSDL_GetVersion = void function(SDL_version* ver);
         alias pSDL_GetRevision = const(char)* function();
         alias pSDL_GetRevisionNumber = int function();
     }

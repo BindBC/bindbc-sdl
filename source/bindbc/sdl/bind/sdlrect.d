@@ -54,20 +54,20 @@ static if(sdlSupport >= SDLSupport.sdl2010) {
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        SDL_bool SDL_HasIntersection(const(SDL_Rect)*,const(SDL_Rect)*);
-        SDL_bool SDL_IntersectRect(const(SDL_Rect)*,const(SDL_Rect)*,SDL_Rect*);
-        void SDL_UnionRect(const(SDL_Rect)*,const(SDL_Rect)*,SDL_Rect*);
-        SDL_bool SDL_EnclosePoints(const(SDL_Point)*,int,const(SDL_Rect)*,SDL_Rect*);
-        SDL_bool SDL_IntersectRectAndLine(const(SDL_Rect)*,int*,int*,int*,int*);
+        SDL_bool SDL_HasIntersection(const(SDL_Rect)* A, const(SDL_Rect)* B);
+        SDL_bool SDL_IntersectRect(const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result);
+        void SDL_UnionRect(const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result);
+        SDL_bool SDL_EnclosePoints(const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result);
+        SDL_bool SDL_IntersectRectAndLine(const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_HasIntersection = SDL_bool function(const(SDL_Rect)*,const(SDL_Rect)*);
-        alias pSDL_IntersectRect = SDL_bool function(const(SDL_Rect)*,const(SDL_Rect)*,SDL_Rect*);
-        alias pSDL_UnionRect = void function(const(SDL_Rect)*,const(SDL_Rect)*,SDL_Rect*);
-        alias pSDL_EnclosePoints = SDL_bool function(const(SDL_Point)*,int,const(SDL_Rect)*,SDL_Rect*);
-        alias pSDL_IntersectRectAndLine = SDL_bool function(const(SDL_Rect)*,int*,int*,int*,int*);
+        alias pSDL_HasIntersection = SDL_bool function(const(SDL_Rect)* A, const(SDL_Rect)* B);
+        alias pSDL_IntersectRect = SDL_bool function(const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result);
+        alias pSDL_UnionRect = void function(const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result);
+        alias pSDL_EnclosePoints = SDL_bool function(const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result);
+        alias pSDL_IntersectRectAndLine = SDL_bool function(const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2);
     }
 
     __gshared {

@@ -9,16 +9,16 @@ module bindbc.sdl.bind.sdlloadso;
 import bindbc.sdl.config;
 static if(staticBinding){
     extern(C) @nogc nothrow {
-        void* SDL_LoadObject(const(char)*);
-        void* SDL_LoadFunction(void*,const(char*));
-        void SDL_UnloadObject(void*);
+        void* SDL_LoadObject(const(char)* sofile);
+        void* SDL_LoadFunction(void* handle,const(char*) name);
+        void SDL_UnloadObject(void* handle);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_LoadObject = void* function(const(char)*);
-        alias pSDL_LoadFunction = void* function(void*,const(char*));
-        alias pSDL_UnloadObject = void function(void*);
+        alias pSDL_LoadObject = void* function(const(char)* sofile);
+        alias pSDL_LoadFunction = void* function(void* handle,const(char*) name);
+        alias pSDL_UnloadObject = void function(void* handle);
     }
 
     __gshared {

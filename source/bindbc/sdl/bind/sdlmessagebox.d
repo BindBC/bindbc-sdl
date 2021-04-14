@@ -69,14 +69,14 @@ struct SDL_MessageBoxData {
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        int SDL_ShowMessageBox(const(SDL_MessageBoxData)*,int*);
-        int SDL_ShowSimpleMessageBox(uint,const(char)*,const(char)*,SDL_Window*);
+        int SDL_ShowMessageBox(const(SDL_MessageBoxData)* messageboxdata, int* buttonid);
+        int SDL_ShowSimpleMessageBox(uint flags, const(char)* title, const(char)* messsage, SDL_Window* window);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_ShowMessageBox = int function(const(SDL_MessageBoxData)*,int*);
-        alias pSDL_ShowSimpleMessageBox = int function(uint,const(char)*,const(char)*,SDL_Window*);
+        alias pSDL_ShowMessageBox = int function(const(SDL_MessageBoxData)* messageboxdata, int* buttonid);
+        alias pSDL_ShowSimpleMessageBox = int function(uint flags, const(char)* title, const(char)* messsage, SDL_Window* window);
     }
 
     __gshared {

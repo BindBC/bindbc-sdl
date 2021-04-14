@@ -242,38 +242,38 @@ struct SDL_PixelFormat {
 
 static if(staticBinding) {
   extern(C) @nogc nothrow {
-      const(char)* SDL_GetPixelFormatName(uint);
-      SDL_bool SDL_PixelFormatEnumToMasks(uint,int*,uint*,uint*,uint*,uint*);
-      uint SDL_MasksToPixelFormatEnum(int,uint,uint,uint,uint);
-      SDL_PixelFormat* SDL_AllocFormat(uint);
-      void SDL_FreeFormat(SDL_PixelFormat*);
-      SDL_Palette* SDL_AllocPalette(int);
-      int SDL_SetPixelFormatPalette(SDL_PixelFormat*,SDL_Palette*);
-      int SDL_SetPaletteColors(SDL_Palette*,const(SDL_Color)*,int,int);
-      void SDL_FreePalette(SDL_Palette*);
-      uint SDL_MapRGB(const(SDL_PixelFormat)*,ubyte,ubyte,ubyte);
-      uint SDL_MapRGBA(const(SDL_PixelFormat)*,ubyte,ubyte,ubyte,ubyte);
-      void SDL_GetRGB(uint,const(SDL_PixelFormat)*,ubyte*,ubyte*,ubyte*);
-      void SDL_GetRGBA(uint,const(SDL_PixelFormat)*,ubyte*,ubyte*,ubyte*,ubyte*);
-      void SDL_CalculateGammaRamp(float,ushort*);
+      const(char)* SDL_GetPixelFormatName(uint format);
+      SDL_bool SDL_PixelFormatEnumToMasks(uint format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask);
+      uint SDL_MasksToPixelFormatEnum(int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask);
+      SDL_PixelFormat* SDL_AllocFormat(uint pixel_format);
+      void SDL_FreeFormat(SDL_PixelFormat* format);
+      SDL_Palette* SDL_AllocPalette(int ncolors);
+      int SDL_SetPixelFormatPalette(SDL_PixelFormat* format,SDL_Palette* palette);
+      int SDL_SetPaletteColors(SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors);
+      void SDL_FreePalette(SDL_Palette* palette);
+      uint SDL_MapRGB(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b);
+      uint SDL_MapRGBA(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a);
+      void SDL_GetRGB(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b);
+      void SDL_GetRGBA(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a);
+      void SDL_CalculateGammaRamp(float gamma, ushort* ramp);
   }
 }
 else {
   extern(C) @nogc nothrow {
-      alias pSDL_GetPixelFormatName = const(char)* function(uint);
-      alias pSDL_PixelFormatEnumToMasks = SDL_bool function(uint,int*,uint*,uint*,uint*,uint*);
-      alias pSDL_MasksToPixelFormatEnum = uint function(int,uint,uint,uint,uint);
-      alias pSDL_AllocFormat = SDL_PixelFormat* function(uint);
-      alias pSDL_FreeFormat = void function(SDL_PixelFormat*);
-      alias pSDL_AllocPalette = SDL_Palette* function(int);
-      alias pSDL_SetPixelFormatPalette = int function(SDL_PixelFormat*,SDL_Palette*);
-      alias pSDL_SetPaletteColors = int function(SDL_Palette*,const(SDL_Color)*,int,int);
-      alias pSDL_FreePalette = void function(SDL_Palette*);
-      alias pSDL_MapRGB = uint function(const(SDL_PixelFormat)*,ubyte,ubyte,ubyte);
-      alias pSDL_MapRGBA = uint function(const(SDL_PixelFormat)*,ubyte,ubyte,ubyte,ubyte);
-      alias pSDL_GetRGB = void function(uint,const(SDL_PixelFormat)*,ubyte*,ubyte*,ubyte*);
-      alias pSDL_GetRGBA = void function(uint,const(SDL_PixelFormat)*,ubyte*,ubyte*,ubyte*,ubyte*);
-      alias pSDL_CalculateGammaRamp = void function(float,ushort*);
+      alias pSDL_GetPixelFormatName = const(char)* function(uint pixel_format);
+      alias pSDL_PixelFormatEnumToMasks = SDL_bool function(uint format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask);
+      alias pSDL_MasksToPixelFormatEnum = uint function(int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask);
+      alias pSDL_AllocFormat = SDL_PixelFormat* function(uint format);
+      alias pSDL_FreeFormat = void function(SDL_PixelFormat* format);
+      alias pSDL_AllocPalette = SDL_Palette* function(int ncolors);
+      alias pSDL_SetPixelFormatPalette = int function(SDL_PixelFormat* format,SDL_Palette* palette);
+      alias pSDL_SetPaletteColors = int function(SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors);
+      alias pSDL_FreePalette = void function(SDL_Palette* palette);
+      alias pSDL_MapRGB = uint function(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b);
+      alias pSDL_MapRGBA = uint function(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a);
+      alias pSDL_GetRGB = void function(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b);
+      alias pSDL_GetRGBA = void function(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a);
+      alias pSDL_CalculateGammaRamp = void function(float gamma, ushort* ramp);
   }
 
   __gshared {

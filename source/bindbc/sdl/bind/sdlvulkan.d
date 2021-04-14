@@ -13,11 +13,11 @@ import bindbc.sdl.bind.sdlvideo : SDL_Window;
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         static if(sdlSupport >= SDLSupport.sdl206) {
-            SDL_bool SDL_Vulkan_CreateSurface(SDL_Window*,void*,void*);
-            void SDL_Vulkan_GetDrawableSize(SDL_Window*,int*,int*);
-            SDL_bool SDL_Vulkan_GetInstanceExtensions(SDL_Window*,uint*,const(char)**);
+            SDL_bool SDL_Vulkan_CreateSurface(SDL_Window* window, void* instance, void* surface);
+            void SDL_Vulkan_GetDrawableSize(SDL_Window* window, int* w, int* h);
+            SDL_bool SDL_Vulkan_GetInstanceExtensions(SDL_Window* window, uint* pCount, const(char)** pNames);
             void* SDL_Vulkan_GetVkGetInstanceProcAddr();
-            int SDL_Vulkan_LoadLibrary(const(char)*);
+            int SDL_Vulkan_LoadLibrary(const(char)* path);
             void SDL_Vulkan_UnloadLibrary();
         }
     }
@@ -25,11 +25,11 @@ static if(staticBinding) {
 else {
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
-            alias pSDL_Vulkan_CreateSurface = SDL_bool function(SDL_Window*,void*,void*);
-            alias pSDL_Vulkan_GetDrawableSize = void function(SDL_Window*,int*,int*);
-            alias pSDL_Vulkan_GetInstanceExtensions = SDL_bool function(SDL_Window*,uint*,const(char)**);
+            alias pSDL_Vulkan_CreateSurface = SDL_bool function(SDL_Window* window, void* instance, void* surface);
+            alias pSDL_Vulkan_GetDrawableSize = void function(SDL_Window* window, int* w, int* h);
+            alias pSDL_Vulkan_GetInstanceExtensions = SDL_bool function(SDL_Window* window, uint* pCount, const(char)** pNames);
             alias pSDL_Vulkan_GetVkGetInstanceProcAddr = void* function();
-            alias pSDL_Vulkan_LoadLibrary = int function(const(char)*);
+            alias pSDL_Vulkan_LoadLibrary = int function(const(char)* path);
             alias pSDL_Vulkan_UnloadLibrary = void function();
         }
 

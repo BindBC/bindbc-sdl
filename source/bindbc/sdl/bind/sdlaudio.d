@@ -132,79 +132,79 @@ SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audio
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumAudioDrivers();
-        const(char)* SDL_GetAudioDriver(int);
-        int SDL_AudioInit(const(char)*);
+        const(char)* SDL_GetAudioDriver(int index);
+        int SDL_AudioInit(const(char)* driver_name);
         void SDL_AudioQuit();
         const(char)* SDL_GetCurrentAudioDriver();
-        int SDL_OpenAudio(SDL_AudioSpec*,SDL_AudioSpec*);
-        int SDL_GetNumAudioDevices(int);
-        const(char)* SDL_GetAudioDeviceName(int,int);
-        SDL_AudioDeviceID SDL_OpenAudioDevice(const(char)*,int,const(SDL_AudioSpec)*,SDL_AudioSpec*,int);
+        int SDL_OpenAudio(SDL_AudioSpec* desired, SDL_AudioSpec* obtained);
+        int SDL_GetNumAudioDevices(int iscapture);
+        const(char)* SDL_GetAudioDeviceName(int index, int iscapture);
+        SDL_AudioDeviceID SDL_OpenAudioDevice(const(char)* device, int iscapture, const(SDL_AudioSpec)* desired, SDL_AudioSpec* obtained, int allowed_changes);
         SDL_AudioStatus SDL_GetAudioStatus();
-        SDL_AudioStatus SDL_GetAudioDeviceStatus(SDL_AudioDeviceID);
-        void SDL_PauseAudio(int);
-        void SDL_PauseAudioDevice(SDL_AudioDeviceID,int);
-        SDL_AudioSpec* SDL_LoadWAV_RW(SDL_RWops*,int,SDL_AudioSpec*,ubyte**,uint*);
-        void SDL_FreeWAV(ubyte*);
-        int SDL_BuildAudioCVT(SDL_AudioCVT*,SDL_AudioFormat,ubyte,int,SDL_AudioFormat,ubyte,int);
-        int SDL_ConvertAudio(SDL_AudioCVT*);
-        void SDL_MixAudio(ubyte*,const(ubyte)*,uint,int);
-        void SDL_MixAudioFormat(ubyte*,const(ubyte)*,SDL_AudioFormat,uint,int);
+        SDL_AudioStatus SDL_GetAudioDeviceStatus(SDL_AudioDeviceID dev);
+        void SDL_PauseAudio(int pause_on);
+        void SDL_PauseAudioDevice(SDL_AudioDeviceID dev, int pause_on);
+        SDL_AudioSpec* SDL_LoadWAV_RW(SDL_RWops* src, int freesrc, SDL_AudioSpec* spec, ubyte** audio_buf, uint* audio_len);
+        void SDL_FreeWAV(ubyte* audio_buf);
+        int SDL_BuildAudioCVT(SDL_AudioCVT* cvt, SDL_AudioFormat src_format, ubyte src_channels, int src_rate, SDL_AudioFormat dst_format, ubyte dst_channels, int dst_rate);
+        int SDL_ConvertAudio(SDL_AudioCVT* cvt);
+        void SDL_MixAudio(ubyte* dst, const(ubyte)* src, uint len, int volume);
+        void SDL_MixAudioFormat(ubyte* dst, const(ubyte)* src, SDL_AudioFormat format, uint len, int volume);
         void SDL_LockAudio();
-        void SDL_LockAudioDevice(SDL_AudioDeviceID);
+        void SDL_LockAudioDevice(SDL_AudioDeviceID dev);
         void SDL_UnlockAudio();
-        void SDL_UnlockAudioDevice(SDL_AudioDeviceID);
+        void SDL_UnlockAudioDevice(SDL_AudioDeviceID dev);
         void SDL_CloseAudio();
-        void SDL_CloseAudioDevice(SDL_AudioDeviceID);
+        void SDL_CloseAudioDevice(SDL_AudioDeviceID dev);
 
         static if(sdlSupport >= SDLSupport.sdl204) {
-            int SDL_ClearQueuedAudio(SDL_AudioDeviceID);
-            int SDL_GetQueuedAudioSize(SDL_AudioDeviceID);
-            int SDL_QueueAudio(SDL_AudioDeviceID,const (void)*,uint);
+            int SDL_QueueAudio(SDL_AudioDeviceID dev, const(void)* data, uint len);
+            int SDL_ClearQueuedAudio(SDL_AudioDeviceID dev);
+            int SDL_GetQueuedAudioSize(SDL_AudioDeviceID dev);
         }
 
         static if(sdlSupport >= SDLSupport.sdl205) {
-            uint SDL_DequeueAudio(SDL_AudioDeviceID,void*,uint);
+            uint SDL_DequeueAudio(SDL_AudioDeviceID dev, void* data, uint len);
         }
 
         static if(sdlSupport >= SDLSupport.sdl207) {
-            SDL_AudioStream* SDL_NewAudioStream(const(SDL_AudioFormat),const(ubyte),const(int),const(SDL_AudioFormat),const(ubyte),const(int));
-            int SDL_AudioStreamPut(SDL_AudioStream*,const(void)*,int);
-            int SDL_AudioStreamGet(SDL_AudioStream*,void*,int);
-            int SDL_AudioStreamAvailable(SDL_AudioStream*);
-            int SDL_AudioStreamFlush(SDL_AudioStream*);
-            void SDL_AudioStreamClear(SDL_AudioStream*);
-            void SDL_FreeAudioStream(SDL_AudioStream*);
+            SDL_AudioStream* SDL_NewAudioStream(const(SDL_AudioFormat) src_format, const(ubyte) src_channels, const(int) src_rate, const(SDL_AudioFormat) dst_format, const(ubyte) dst_channels, const(int) dst_rate);
+            int SDL_AudioStreamPut(SDL_AudioStream* stream, const(void)* buf, int len);
+            int SDL_AudioStreamGet(SDL_AudioStream* stream, void* buf, int len);
+            int SDL_AudioStreamAvailable(SDL_AudioStream* stream);
+            int SDL_AudioStreamFlush(SDL_AudioStream* stream);
+            void SDL_AudioStreamClear(SDL_AudioStream* stream);
+            void SDL_FreeAudioStream(SDL_AudioStream* stream);
         }
     }
 }
 else {
     extern(C) @nogc nothrow {
         alias pSDL_GetNumAudioDrivers = int function();
-        alias pSDL_GetAudioDriver = const(char)* function(int);
-        alias pSDL_AudioInit = int function(const(char)*);
+        alias pSDL_GetAudioDriver = const(char)* function(int index);
+        alias pSDL_AudioInit = int function(const(char)* driver_name);
         alias pSDL_AudioQuit = void function();
         alias pSDL_GetCurrentAudioDriver = const(char)* function();
-        alias pSDL_OpenAudio = int function(SDL_AudioSpec*,SDL_AudioSpec*);
-        alias pSDL_GetNumAudioDevices = int function(int);
-        alias pSDL_GetAudioDeviceName = const(char)* function(int,int);
-        alias pSDL_OpenAudioDevice = SDL_AudioDeviceID function(const(char)*,int,const(SDL_AudioSpec)*,SDL_AudioSpec*,int);
+        alias pSDL_OpenAudio = int function(SDL_AudioSpec* desired, SDL_AudioSpec* obtained);
+        alias pSDL_GetNumAudioDevices = int function(int iscapture);
+        alias pSDL_GetAudioDeviceName = const(char)* function(int index, int iscapture);
+        alias pSDL_OpenAudioDevice = SDL_AudioDeviceID function(const(char)* device, int iscapture, const(SDL_AudioSpec)* desired, SDL_AudioSpec* obtained, int allowed_changes);
         alias pSDL_GetAudioStatus = SDL_AudioStatus function();
-        alias pSDL_GetAudioDeviceStatus = SDL_AudioStatus function(SDL_AudioDeviceID);
-        alias pSDL_PauseAudio = void function(int);
-        alias pSDL_PauseAudioDevice = void function(SDL_AudioDeviceID,int);
-        alias pSDL_LoadWAV_RW = SDL_AudioSpec* function(SDL_RWops*,int,SDL_AudioSpec*,ubyte**,uint*);
-        alias pSDL_FreeWAV = void function(ubyte*);
-        alias pSDL_BuildAudioCVT = int function(SDL_AudioCVT*,SDL_AudioFormat,ubyte,int,SDL_AudioFormat,ubyte,int);
-        alias pSDL_ConvertAudio = int function(SDL_AudioCVT*);
-        alias pSDL_MixAudio = void function(ubyte*,const(ubyte)*,uint,int);
-        alias pSDL_MixAudioFormat = void function(ubyte*,const(ubyte)*,SDL_AudioFormat,uint,int);
+        alias pSDL_GetAudioDeviceStatus = SDL_AudioStatus function(SDL_AudioDeviceID dev);
+        alias pSDL_PauseAudio = void function(int pause_on);
+        alias pSDL_PauseAudioDevice = void function(SDL_AudioDeviceID dev, int pause_on);
+        alias pSDL_LoadWAV_RW = SDL_AudioSpec* function(SDL_RWops* src, int freesrc, SDL_AudioSpec* spec, ubyte** audio_buf, uint* audio_len);
+        alias pSDL_FreeWAV = void function(ubyte* audio_buf);
+        alias pSDL_BuildAudioCVT = int function(SDL_AudioCVT* cvt, SDL_AudioFormat src_format, ubyte src_channels, int src_rate, SDL_AudioFormat dst_format, ubyte dst_channels, int dst_rate);
+        alias pSDL_ConvertAudio = int function(SDL_AudioCVT* cvt);
+        alias pSDL_MixAudio = void function(ubyte* dst, const(ubyte)* src, uint len, int volume);
+        alias pSDL_MixAudioFormat = void function(ubyte* dst, const(ubyte)* src, SDL_AudioFormat format, uint len, int volume);
         alias pSDL_LockAudio = void function();
-        alias pSDL_LockAudioDevice = void function(SDL_AudioDeviceID);
+        alias pSDL_LockAudioDevice = void function(SDL_AudioDeviceID dev);
         alias pSDL_UnlockAudio = void function();
-        alias pSDL_UnlockAudioDevice = void function(SDL_AudioDeviceID);
+        alias pSDL_UnlockAudioDevice = void function(SDL_AudioDeviceID dev);
         alias pSDL_CloseAudio = void function();
-        alias pSDL_CloseAudioDevice = void function(SDL_AudioDeviceID);
+        alias pSDL_CloseAudioDevice = void function(SDL_AudioDeviceID dev);
     }
 
     __gshared {
@@ -237,21 +237,21 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
-            alias pSDL_ClearQueuedAudio = int function(SDL_AudioDeviceID);
-            alias pSDL_GetQueuedAudioSize = int function(SDL_AudioDeviceID);
-            alias pSDL_QueueAudio = int function(SDL_AudioDeviceID,const (void)*,uint);
+            alias pSDL_QueueAudio = int function(SDL_AudioDeviceID dev, const(void)* data, uint len);
+            alias pSDL_ClearQueuedAudio = int function(SDL_AudioDeviceID dev);
+            alias pSDL_GetQueuedAudioSize = int function(SDL_AudioDeviceID dev);
         }
 
         __gshared {
+            pSDL_QueueAudio SDL_QueueAudio;
             pSDL_ClearQueuedAudio SDL_ClearQueuedAudio;
             pSDL_GetQueuedAudioSize SDL_GetQueuedAudioSize;
-            pSDL_QueueAudio SDL_QueueAudio;
         }
     }
 
     static if(sdlSupport >= SDLSupport.sdl205) {
         extern(C) @nogc nothrow {
-            alias pSDL_DequeueAudio = uint function(SDL_AudioDeviceID,void*,uint);
+            alias pSDL_DequeueAudio = uint function(SDL_AudioDeviceID dev, void* data, uint len);
         }
 
         __gshared {
@@ -261,13 +261,13 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl207) {
         extern(C) @nogc nothrow {
-            alias pSDL_NewAudioStream = SDL_AudioStream* function(const(SDL_AudioFormat),const(ubyte),const(int),const(SDL_AudioFormat),const(ubyte),const(int));
-            alias pSDL_AudioStreamPut = int function(SDL_AudioStream*,const(void)*,int);
-            alias pSDL_AudioStreamGet = int function(SDL_AudioStream*,void*,int);
-            alias pSDL_AudioStreamAvailable = int function(SDL_AudioStream*);
-            alias pSDL_AudioStreamFlush = int function(SDL_AudioStream*);
-            alias pSDL_AudioStreamClear = void function(SDL_AudioStream*);
-            alias pSDL_FreeAudioStream = void function(SDL_AudioStream*);
+            alias pSDL_NewAudioStream = SDL_AudioStream* function(const(SDL_AudioFormat) src_format, const(ubyte) src_channels, const(int) src_rate, const(SDL_AudioFormat) dst_format, const(ubyte) dst_channels, const(int) dst_rate);
+            alias pSDL_AudioStreamPut = int function(SDL_AudioStream* stream, const(void)* buf, int len);
+            alias pSDL_AudioStreamGet = int function(SDL_AudioStream* stream, void* buf ,int len);
+            alias pSDL_AudioStreamAvailable = int function(SDL_AudioStream* stream);
+            alias pSDL_AudioStreamFlush = int function(SDL_AudioStream* stream);
+            alias pSDL_AudioStreamClear = void function(SDL_AudioStream* stream);
+            alias pSDL_FreeAudioStream = void function(SDL_AudioStream* stream);
         }
 
         __gshared {

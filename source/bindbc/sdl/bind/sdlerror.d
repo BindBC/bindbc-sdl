@@ -10,14 +10,14 @@ import bindbc.sdl.config;
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        void SDL_SetError(const(char)*,...);
+        void SDL_SetError(const(char)* fmt,...);
         const(char)* SDL_GetError();
         void SDL_ClearError();
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_SetError = void function(const(char)*,...);
+        alias pSDL_SetError = void function(const(char)* fmt,...);
         alias pSDL_GetError = const(char)* function();
         alias pSDL_ClearError = void function();
     }

@@ -95,62 +95,62 @@ static if(sdlSupport >= SDLSupport.sdl206) {
 
 static if(staticBinding)  {
     extern(C) @nogc nothrow {
-        SDL_RWops* SDL_RWFromFile(const(char)*,const(char)*);
-        SDL_RWops* SDL_RWFromFP(FILE*,SDL_bool);
-        SDL_RWops* SDL_RWFromMem(void*,int);
-        SDL_RWops* SDL_RWFromConstMem(const(void)*,int);
+        SDL_RWops* SDL_RWFromFile(const(char)* file, const(char)* mode);
+        SDL_RWops* SDL_RWFromFP(FILE* ffp, SDL_bool autoclose);
+        SDL_RWops* SDL_RWFromMem(void* mem, int size);
+        SDL_RWops* SDL_RWFromConstMem(const(void)* mem, int size);
         SDL_RWops* SDL_AllocRW();
-        void SDL_FreeRW(SDL_RWops*);
-        ubyte SDL_ReadU8(SDL_RWops*);
-        ushort SDL_ReadLE16(SDL_RWops*);
-        ushort SDL_ReadBE16(SDL_RWops*);
-        uint SDL_ReadLE32(SDL_RWops*);
-        uint SDL_ReadBE32(SDL_RWops*);
-        ulong SDL_ReadLE64(SDL_RWops*);
-        ulong SDL_ReadBE64(SDL_RWops*);
-        size_t SDL_WriteU8(SDL_RWops*,ubyte);
-        size_t SDL_WriteLE16(SDL_RWops*,ushort);
-        size_t SDL_WriteBE16(SDL_RWops*,ushort);
-        size_t SDL_WriteLE32(SDL_RWops*,uint);
-        size_t SDL_WriteBE32(SDL_RWops*,uint);
-        size_t SDL_WriteLE64(SDL_RWops*,ulong);
-        size_t SDL_WriteBE64(SDL_RWops*,ulong);
+        void SDL_FreeRW(SDL_RWops* context);
+        ubyte SDL_ReadU8(SDL_RWops* context);
+        ushort SDL_ReadLE16(SDL_RWops* context);
+        ushort SDL_ReadBE16(SDL_RWops* context);
+        uint SDL_ReadLE32(SDL_RWops* context);
+        uint SDL_ReadBE32(SDL_RWops* context);
+        ulong SDL_ReadLE64(SDL_RWops* context);
+        ulong SDL_ReadBE64(SDL_RWops* context);
+        size_t SDL_WriteU8(SDL_RWops* context,ubyte value);
+        size_t SDL_WriteLE16(SDL_RWops* context,ushort value);
+        size_t SDL_WriteBE16(SDL_RWops* context,ushort value);
+        size_t SDL_WriteLE32(SDL_RWops* context,uint value);
+        size_t SDL_WriteBE32(SDL_RWops* context,uint value);
+        size_t SDL_WriteLE64(SDL_RWops* context,ulong value);
+        size_t SDL_WriteBE64(SDL_RWops* context,ulong value);
 
         static if(sdlSupport >= SDLSupport.sdl206) {
-            void* SDL_LoadFile_RW(SDL_RWops*,size_t,int);
+            void* SDL_LoadFile_RW(SDL_RWops* context, size_t datasize, int freesrc);
         }
         static if(sdlSupport >= SDLSupport.sdl2010) {
-            long SDL_RWsize(SDL_RWops*);
-            long SDL_RWseek(SDL_RWops*,long,int);
-            long SDL_RWtell(SDL_RWops*);
-            size_t SDL_RWread(SDL_RWops*,void*,size_t,size_t);
-            size_t SDL_RWwrite(SDL_RWops*,const(void)*,size_t,size_t);
-            int SDL_RWclose(SDL_RWops*);
+            long SDL_RWsize(SDL_RWops* context);
+            long SDL_RWseek(SDL_RWops* context, long offset, int whence);
+            long SDL_RWtell(SDL_RWops* context);
+            size_t SDL_RWread(SDL_RWops* context, void* ptr, size_t size, size_t maxnum);
+            size_t SDL_RWwrite(SDL_RWops* context, const(void)* ptr, size_t size, size_t num);
+            int SDL_RWclose(SDL_RWops* context);
         }
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_RWFromFile = SDL_RWops* function(const(char)*,const(char)*);
-        alias pSDL_RWFromFP = SDL_RWops* function(FILE*,SDL_bool);
-        alias pSDL_RWFromMem = SDL_RWops* function(void*,int);
-        alias pSDL_RWFromConstMem = SDL_RWops* function(const(void)*,int);
+        alias pSDL_RWFromFile = SDL_RWops* function(const(char)* file, const(char)* mode);
+        alias pSDL_RWFromFP = SDL_RWops* function(FILE* ffp, SDL_bool autoclose);
+        alias pSDL_RWFromMem = SDL_RWops* function(void* mem, int size);
+        alias pSDL_RWFromConstMem = SDL_RWops* function(const(void)* mem, int size);
         alias pSDL_AllocRW = SDL_RWops* function();
-        alias pSDL_FreeRW = void function(SDL_RWops*);
-        alias pSDL_ReadU8 = ubyte function(SDL_RWops*);
-        alias pSDL_ReadLE16 = ushort function(SDL_RWops*);
-        alias pSDL_ReadBE16 = ushort function(SDL_RWops*);
-        alias pSDL_ReadLE32 = uint function(SDL_RWops*);
-        alias pSDL_ReadBE32 = uint function(SDL_RWops*);
-        alias pSDL_ReadLE64 = ulong function(SDL_RWops*);
-        alias pSDL_ReadBE64 = ulong function(SDL_RWops*);
-        alias pSDL_WriteU8 = size_t function(SDL_RWops*,ubyte);
-        alias pSDL_WriteLE16 = size_t function(SDL_RWops*,ushort);
-        alias pSDL_WriteBE16 = size_t function(SDL_RWops*,ushort);
-        alias pSDL_WriteLE32 = size_t function(SDL_RWops*,uint);
-        alias pSDL_WriteBE32 = size_t function(SDL_RWops*,uint);
-        alias pSDL_WriteLE64 = size_t function(SDL_RWops*,ulong);
-        alias pSDL_WriteBE64 = size_t function(SDL_RWops*,ulong);
+        alias pSDL_FreeRW = void function(SDL_RWops* context);
+        alias pSDL_ReadU8 = ubyte function(SDL_RWops* context);
+        alias pSDL_ReadLE16 = ushort function(SDL_RWops* context);
+        alias pSDL_ReadBE16 = ushort function(SDL_RWops* context);
+        alias pSDL_ReadLE32 = uint function(SDL_RWops* context);
+        alias pSDL_ReadBE32 = uint function(SDL_RWops* context);
+        alias pSDL_ReadLE64 = ulong function(SDL_RWops* context);
+        alias pSDL_ReadBE64 = ulong function(SDL_RWops* context);
+        alias pSDL_WriteU8 = size_t function(SDL_RWops* context,ubyte value);
+        alias pSDL_WriteLE16 = size_t function(SDL_RWops* context,ushort value);
+        alias pSDL_WriteBE16 = size_t function(SDL_RWops* context,ushort value);
+        alias pSDL_WriteLE32 = size_t function(SDL_RWops* context,uint value);
+        alias pSDL_WriteBE32 = size_t function(SDL_RWops* context,uint value);
+        alias pSDL_WriteLE64 = size_t function(SDL_RWops* context,ulong value);
+        alias pSDL_WriteBE64 = size_t function(SDL_RWops* context,ulong value);
     }
     __gshared {
         pSDL_RWFromFile SDL_RWFromFile;
@@ -176,7 +176,7 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
-            alias pSDL_LoadFile_RW = void* function(SDL_RWops*,size_t,int);
+            alias pSDL_LoadFile_RW = void* function(SDL_RWops* context, size_t datasize, int freesrc);
         }
         __gshared {
             pSDL_LoadFile_RW SDL_LoadFile_RW;
@@ -184,12 +184,12 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl2010) {
         extern(C) @nogc nothrow {
-            alias pSDL_RWsize = long function(SDL_RWops*);
-            alias pSDL_RWseek = long function(SDL_RWops*,long,int);
-            alias pSDL_RWtell = long function(SDL_RWops*);
-            alias pSDL_RWread = size_t function(SDL_RWops*,void*,size_t,size_t);
-            alias pSDL_RWwrite = size_t function(SDL_RWops*,const(void)*,size_t,size_t);
-            alias pSDL_RWclose = int function(SDL_RWops*);
+            alias pSDL_RWsize = long function(SDL_RWops* context);
+            alias pSDL_RWseek = long function(SDL_RWops* context, long offset, int whence);
+            alias pSDL_RWtell = long function(SDL_RWops* context);
+            alias pSDL_RWread = size_t function(SDL_RWops* context, void* ptr, size_t size, size_t maxnum);
+            alias pSDL_RWwrite = size_t function(SDL_RWops* context, const(void)* ptr, size_t size, size_t num);
+            alias pSDL_RWclose = int function(SDL_RWops* context);
         }
         __gshared {
             pSDL_RWsize SDL_RWsize;

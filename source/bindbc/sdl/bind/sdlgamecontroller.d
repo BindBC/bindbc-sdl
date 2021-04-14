@@ -136,52 +136,52 @@ static if(sdlSupport >= SDLSupport.sdl202) {
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        int SDL_GameControllerAddMapping(const(char)*);
-        char* SDL_GameControllerMappingForGUID(SDL_JoystickGUID);
-        char* SDL_GameControllerMapping(SDL_GameController*);
-        SDL_bool SDL_IsGameController(int);
-        const(char)* SDL_GameControllerNameForIndex(int);
-        SDL_GameController* SDL_GameControllerOpen(int);
-        const(char)* SDL_GameControllerName(SDL_GameController*);
-        SDL_bool SDL_GameControllerGetAttached(SDL_GameController*);
-        SDL_Joystick* SDL_GameControllerGetJoystick(SDL_GameController*);
-        int SDL_GameControllerEventState(int);
+        int SDL_GameControllerAddMapping(const(char)* mappingString);
+        char* SDL_GameControllerMappingForGUID(SDL_JoystickGUID guid);
+        char* SDL_GameControllerMapping(SDL_GameController* gamecontroller);
+        SDL_bool SDL_IsGameController(int joystick_index);
+        const(char)* SDL_GameControllerNameForIndex(int joystick_index);
+        SDL_GameController* SDL_GameControllerOpen(int joystick_index);
+        const(char)* SDL_GameControllerName(SDL_GameController* gamecontroller);
+        SDL_bool SDL_GameControllerGetAttached(SDL_GameController* gamecontroller);
+        SDL_Joystick* SDL_GameControllerGetJoystick(SDL_GameController* gamecontroller);
+        int SDL_GameControllerEventState(int state);
         void SDL_GameControllerUpdate();
-        SDL_GameControllerAxis SDL_GameControllerGetAxisFromString(const(char)*);
-        const(char)* SDL_GameControllerGetStringForAxis(SDL_GameControllerAxis);
-        SDL_GameControllerButtonBind SDL_GameControllerGetBindForAxis(SDL_GameController*,SDL_GameControllerAxis);
-        short SDL_GameControllerGetAxis(SDL_GameController*,SDL_GameControllerAxis);
-        SDL_GameControllerButton SDL_GameControllerGetButtonFromString(const(char*));
-        const(char)* SDL_GameControllerGetStringForButton(SDL_GameControllerButton);
-        SDL_GameControllerButtonBind SDL_GameControllerGetBindForButton(SDL_GameController*,SDL_GameControllerButton);
-        ubyte SDL_GameControllerGetButton(SDL_GameController*,SDL_GameControllerButton);
-        void SDL_GameControllerClose(SDL_GameController*);
+        SDL_GameControllerAxis SDL_GameControllerGetAxisFromString(const(char)* pchString);
+        const(char)* SDL_GameControllerGetStringForAxis(SDL_GameControllerAxis axis);
+        SDL_GameControllerButtonBind SDL_GameControllerGetBindForAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+        short SDL_GameControllerGetAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+        SDL_GameControllerButton SDL_GameControllerGetButtonFromString(const(char*) pchString);
+        const(char)* SDL_GameControllerGetStringForButton(SDL_GameControllerButton button);
+        SDL_GameControllerButtonBind SDL_GameControllerGetBindForButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+        ubyte SDL_GameControllerGetButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+        void SDL_GameControllerClose(SDL_GameController* gamecontroller);
 
         static if(sdlSupport >= SDLSupport.sdl202) {
-            int SDL_GameControllerAddMappingsFromRW(SDL_RWops*,int);
+            int SDL_GameControllerAddMappingsFromRW(SDL_RWops* rw, int freerw);
         }
         static if(sdlSupport >= SDLSupport.sdl204) {
-            SDL_GameController* SDL_GameControllerFromInstanceID(SDL_JoystickID);
+            SDL_GameController* SDL_GameControllerFromInstanceID(SDL_JoystickID joyid);
         }
         static if(sdlSupport >= SDLSupport.sdl206) {
-            ushort SDL_GameControllerGetProduct(SDL_GameController*);
-            ushort SDL_GameControllerGetProductVersion(SDL_GameController*);
-            ushort SDL_GameControllerGetVendor(SDL_GameController*);
-            char* SDL_GameControllerMappingForIndex(int);
+            ushort SDL_GameControllerGetProduct(SDL_GameController* gamecontroller);
+            ushort SDL_GameControllerGetProductVersion(SDL_GameController* gamecontroller);
+            ushort SDL_GameControllerGetVendor(SDL_GameController* gamecontroller);
+            char* SDL_GameControllerMappingForIndex(int mapping_index);
             int SDL_GameControllerNumMappings();
         }
         static if(sdlSupport >= SDLSupport.sdl209) {
-            char* SDL_GameControllerMappingForDeviceIndex(int);
-            int SDL_GameControllerRumble(SDL_GameController*,ushort,ushort,uint);
+            char* SDL_GameControllerMappingForDeviceIndex(int joystick_index);
+            int SDL_GameControllerRumble(SDL_GameController* gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms);
         }
         static if(sdlSupport >= SDLSupport.sdl2010) {
-            int SDL_GameControllerGetPlayerIndex(SDL_GameController*);
+            int SDL_GameControllerGetPlayerIndex(SDL_GameController* gamecontroller);
         }
         static if(sdlSupport >= SDLSupport.sdl2012) {
-            SDL_GameControllerType SDL_GameControllerTypeForIndex(int);
-            SDL_GameController* SDL_GameControllerFromPlayerIndex(int);
-            SDL_GameControllerType SDL_GameControllerGetType(SDL_GameController*);
-            void SDL_GameControllerSetPlayerIndex(SDL_GameController*,int);
+            SDL_GameControllerType SDL_GameControllerTypeForIndex(int joystick_index);
+            SDL_GameController* SDL_GameControllerFromPlayerIndex(int player_index);
+            SDL_GameControllerType SDL_GameControllerGetType(SDL_GameController* gamecontroller);
+            void SDL_GameControllerSetPlayerIndex(SDL_GameController* gamecontroller, int player_index);
         }
         static if(sdlSupport >= SDLSupport.sdl2014) {
             SDL_bool SDL_GameControllerHasAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
@@ -201,26 +201,26 @@ static if(staticBinding) {
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_GameControllerAddMapping = int function(const(char)*);
-        alias pSDL_GameControllerMappingForGUID = char* function(SDL_JoystickGUID);
-        alias pSDL_GameControllerMapping = char* function(SDL_GameController*);
-        alias pSDL_IsGameController = SDL_bool function(int);
-        alias pSDL_GameControllerNameForIndex = const(char)* function(int);
-        alias pSDL_GameControllerOpen = SDL_GameController* function(int);
-        alias pSDL_GameControllerName = const(char)* function(SDL_GameController*);
-        alias pSDL_GameControllerGetAttached = SDL_bool function(SDL_GameController*);
-        alias pSDL_GameControllerGetJoystick = SDL_Joystick* function(SDL_GameController*);
-        alias pSDL_GameControllerEventState = int function(int);
+        alias pSDL_GameControllerAddMapping = int function(const(char)* mappingString);
+        alias pSDL_GameControllerMappingForGUID = char* function(SDL_JoystickGUID guid);
+        alias pSDL_GameControllerMapping = char* function(SDL_GameController* gamecontroller);
+        alias pSDL_IsGameController = SDL_bool function(int joystick_index);
+        alias pSDL_GameControllerNameForIndex = const(char)* function(int joystick_index);
+        alias pSDL_GameControllerOpen = SDL_GameController* function(int joystick_index);
+        alias pSDL_GameControllerName = const(char)* function(SDL_GameController* gamecontroller);
+        alias pSDL_GameControllerGetAttached = SDL_bool function(SDL_GameController* gamecontroller);
+        alias pSDL_GameControllerGetJoystick = SDL_Joystick* function(SDL_GameController* gamecontroller);
+        alias pSDL_GameControllerEventState = int function(int state);
         alias pSDL_GameControllerUpdate = void function();
-        alias pSDL_GameControllerGetAxisFromString = SDL_GameControllerAxis function(const(char)*);
-        alias pSDL_GameControllerGetStringForAxis = const(char)* function(SDL_GameControllerAxis);
-        alias pSDL_GameControllerGetBindForAxis = SDL_GameControllerButtonBind function(SDL_GameController*,SDL_GameControllerAxis);
-        alias pSDL_GameControllerGetAxis = short function(SDL_GameController*,SDL_GameControllerAxis);
-        alias pSDL_GameControllerGetButtonFromString = SDL_GameControllerButton function(const(char*));
-        alias pSDL_GameControllerGetStringForButton = const(char)* function(SDL_GameControllerButton);
-        alias pSDL_GameControllerGetBindForButton = SDL_GameControllerButtonBind function(SDL_GameController*,SDL_GameControllerButton);
-        alias pSDL_GameControllerGetButton = ubyte function(SDL_GameController*,SDL_GameControllerButton);
-        alias pSDL_GameControllerClose = void function(SDL_GameController*);
+        alias pSDL_GameControllerGetAxisFromString = SDL_GameControllerAxis function(const(char)* pchString);
+        alias pSDL_GameControllerGetStringForAxis = const(char)* function(SDL_GameControllerAxis axis);
+        alias pSDL_GameControllerGetBindForAxis = SDL_GameControllerButtonBind function(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+        alias pSDL_GameControllerGetAxis = short function(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+        alias pSDL_GameControllerGetButtonFromString = SDL_GameControllerButton function(const(char*) pchString);
+        alias pSDL_GameControllerGetStringForButton = const(char)* function(SDL_GameControllerButton button);
+        alias pSDL_GameControllerGetBindForButton = SDL_GameControllerButtonBind function(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+        alias pSDL_GameControllerGetButton = ubyte function(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+        alias pSDL_GameControllerClose = void function(SDL_GameController* gamecontroller);
     }
     __gshared {
         pSDL_GameControllerAddMapping SDL_GameControllerAddMapping;
@@ -246,7 +246,7 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl202) {
         extern(C) @nogc nothrow {
-            alias pSDL_GameControllerAddMappingsFromRW = int function(SDL_RWops*,int);
+            alias pSDL_GameControllerAddMappingsFromRW = int function(SDL_RWops* rw, int freerw);
         }
 
         __gshared {
@@ -255,7 +255,7 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
-            alias pSDL_GameControllerFromInstanceID = SDL_GameController* function(SDL_JoystickID);
+            alias pSDL_GameControllerFromInstanceID = SDL_GameController* function(SDL_JoystickID joyid);
         }
 
         __gshared {
@@ -264,10 +264,10 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
-            alias pSDL_GameControllerGetProduct = ushort function(SDL_GameController*);
-            alias pSDL_GameControllerGetProductVersion = ushort function(SDL_GameController*);
-            alias pSDL_GameControllerGetVendor = ushort function(SDL_GameController*);
-            alias pSDL_GameControllerMappingForIndex = char* function(int);
+            alias pSDL_GameControllerGetProduct = ushort function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerGetProductVersion = ushort function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerGetVendor = ushort function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerMappingForIndex = char* function(int mapping_index);
             alias pSDL_GameControllerNumMappings = int function();
         }
 
@@ -281,8 +281,8 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl209) {
         extern(C) @nogc nothrow {
-            alias pSDL_GameControllerMappingForDeviceIndex = char* function(int);
-            alias pSDL_GameControllerRumble = int function(SDL_GameController*,ushort,ushort,uint);
+            alias pSDL_GameControllerMappingForDeviceIndex = char* function(int joystick_index);
+            alias pSDL_GameControllerRumble = int function(SDL_GameController* gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms);
         }
 
         __gshared {
@@ -292,7 +292,7 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl2010) {
         extern(C) @nogc nothrow {
-            alias pSDL_GameControllerGetPlayerIndex = int function(SDL_GameController*);
+            alias pSDL_GameControllerGetPlayerIndex = int function(SDL_GameController* gamecontroller);
         }
         __gshared {
             pSDL_GameControllerGetPlayerIndex SDL_GameControllerGetPlayerIndex;
@@ -300,10 +300,10 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl2012) {
         extern(C) @nogc nothrow {
-            alias pSDL_GameControllerTypeForIndex = SDL_GameControllerType function(int);
-            alias pSDL_GameControllerFromPlayerIndex = SDL_GameController* function(int);
-            alias pSDL_GameControllerGetType = SDL_GameControllerType function(SDL_GameController*);
-            alias pSDL_GameControllerSetPlayerIndex = void function(SDL_GameController*,int);
+            alias pSDL_GameControllerTypeForIndex = SDL_GameControllerType function(int joystick_index);
+            alias pSDL_GameControllerFromPlayerIndex = SDL_GameController* function(int player_index);
+            alias pSDL_GameControllerGetType = SDL_GameControllerType function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerSetPlayerIndex = void function(SDL_GameController* gamecontroller, int player_index);
 
         }
         __gshared {

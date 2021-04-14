@@ -171,25 +171,25 @@ extern(C) nothrow alias SDL_HintCallback = void function(void*, const(char)*, co
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        SDL_bool SDL_SetHintWithPriority(const(char)*,const(char)*,SDL_HintPriority);
-        SDL_bool SDL_SetHint(const(char)*,const(char)*);
-        const(char)* SDL_GetHint(const(char)*);
-        void SDL_AddHintCallback(const(char)*,SDL_HintCallback,void*);
-        void SDL_DelHintCallback(const(char)*,SDL_HintCallback,void*);
+        SDL_bool SDL_SetHintWithPriority(const(char)* name, const(char)* value, SDL_HintPriority priority);
+        SDL_bool SDL_SetHint(const(char)* name, const(char)* value);
+        const(char)* SDL_GetHint(const(char)* name);
+        void SDL_AddHintCallback(const(char)* name, SDL_HintCallback callback, void* userdata);
+        void SDL_DelHintCallback(const(char)* name, SDL_HintCallback callback, void* userdata);
         void SDL_ClearHints();
 
         static if(sdlSupport >= SDLSupport.sdl205) {
-            SDL_bool SDL_GetHintBoolean(const(char)*,SDL_bool);
+            SDL_bool SDL_GetHintBoolean(const(char)* name, SDL_bool default_value);
         }
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_SetHintWithPriority = SDL_bool function(const(char)*,const(char)*,SDL_HintPriority);
-        alias pSDL_SetHint = SDL_bool function(const(char)*,const(char)*);
-        alias pSDL_GetHint = const(char)* function(const(char)*);
-        alias pSDL_AddHintCallback = void function(const(char)*,SDL_HintCallback,void*);
-        alias pSDL_DelHintCallback = void function(const(char)*,SDL_HintCallback,void*);
+        alias pSDL_SetHintWithPriority = SDL_bool function(const(char)* name, const(char)* value, SDL_HintPriority priority);
+        alias pSDL_SetHint = SDL_bool function(const(char)* name, const(char)* value);
+        alias pSDL_GetHint = const(char)* function(const(char)* name);
+        alias pSDL_AddHintCallback = void function(const(char)* name, SDL_HintCallback callback, void* userdata);
+        alias pSDL_DelHintCallback = void function(const(char)* name, SDL_HintCallback callback, void* userdata);
         alias pSDL_ClearHints = void function();
     }
 
@@ -204,7 +204,7 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl205) {
         extern(C) @nogc nothrow {
-            alias pSDL_GetHintBoolean = SDL_bool function(const(char)*,SDL_bool);
+            alias pSDL_GetHintBoolean = SDL_bool function(const(char)* name, SDL_bool default_value);
         }
 
         __gshared {

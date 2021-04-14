@@ -11,14 +11,14 @@ import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        int SDL_SetClipboardText(const(char)*);
+        int SDL_SetClipboardText(const(char)* text);
         char* SDL_GetClipboardText();
         SDL_bool SDL_HasClipboardText();
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_SetClipboardText = int function(const(char)*);
+        alias pSDL_SetClipboardText = int function(const(char)* text);
         alias pSDL_GetClipboardText = char* function();
         alias pSDL_HasClipboardText = SDL_bool function();
     }

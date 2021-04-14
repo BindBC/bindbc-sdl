@@ -26,9 +26,9 @@ static if(staticBinding) {
         uint SDL_GetTicks();
         ulong SDL_GetPerformanceCounter();
         ulong SDL_GetPerformanceFrequency();
-        void SDL_Delay(uint);
-        SDL_TimerID SDL_AddTimer(uint,SDL_TimerCallback,void*);
-        SDL_bool SDL_RemoveTimer(SDL_TimerID);
+        void SDL_Delay(uint ms);
+        SDL_TimerID SDL_AddTimer(uint interval, SDL_TimerCallback callback, void* param);
+        SDL_bool SDL_RemoveTimer(SDL_TimerID id);
     }
 }
 else {
@@ -36,9 +36,9 @@ else {
         alias pSDL_GetTicks = uint function();
         alias pSDL_GetPerformanceCounter = ulong function();
         alias pSDL_GetPerformanceFrequency = ulong function();
-        alias pSDL_Delay = void function(uint);
-        alias pSDL_AddTimer = SDL_TimerID function(uint,SDL_TimerCallback,void*);
-        alias pSDL_RemoveTimer = SDL_bool function(SDL_TimerID);
+        alias pSDL_Delay = void function(uint ms);
+        alias pSDL_AddTimer = SDL_TimerID function(uint interval, SDL_TimerCallback callback, void* param);
+        alias pSDL_RemoveTimer = SDL_bool function(SDL_TimerID id);
     }
 
     __gshared {

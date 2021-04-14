@@ -43,19 +43,19 @@ static if(sdlSupport >= SDLSupport.sdl209) {
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        int SDL_Init(uint);
-        int SDL_InitSubSystem(uint);
-        void SDL_QuitSubSystem(uint);
-        uint SDL_WasInit(uint);
+        int SDL_Init(uint flags);
+        int SDL_InitSubSystem(uint flags);
+        void SDL_QuitSubSystem(uint flags);
+        uint SDL_WasInit(uint flags);
         void SDL_Quit();
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_Init = int function(uint);
-        alias pSDL_InitSubSystem = int function(uint);
-        alias pSDL_QuitSubSystem = void function(uint);
-        alias pSDL_WasInit = uint function(uint);
+        alias pSDL_Init = int function(uint flags);
+        alias pSDL_InitSubSystem = int function(uint flags);
+        alias pSDL_QuitSubSystem = void function(uint flags);
+        alias pSDL_WasInit = uint function(uint flags);
         alias pSDL_Quit = void function();
     }
 

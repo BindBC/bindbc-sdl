@@ -68,57 +68,57 @@ static if(sdlSupport >= SDLSupport.sdl206) {
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_NumJoysticks();
-        const(char)* SDL_JoystickNameForIndex(int);
-        SDL_JoystickGUID SDL_JoystickGetDeviceGUID(int);
-        SDL_Joystick* SDL_JoystickOpen(int);
-        const(char)* SDL_JoystickName(SDL_Joystick*);
-        SDL_JoystickGUID SDL_JoystickGetGUID(SDL_Joystick*);
-        char* SDL_JoystickGetGUIDString(SDL_JoystickGUID);
-        SDL_JoystickGUID SDL_JoystickGetGUIDFromString(const(char)*);
-        SDL_bool SDL_JoystickGetAttached(SDL_Joystick*);
-        SDL_JoystickID SDL_JoystickInstanceID(SDL_Joystick*);
-        int SDL_JoystickNumAxes(SDL_Joystick*);
-        int SDL_JoystickNumBalls(SDL_Joystick*);
-        int SDL_JoystickNumHats(SDL_Joystick*);
-        int SDL_JoystickNumButtons(SDL_Joystick*);
+        const(char)* SDL_JoystickNameForIndex(int device_index);
+        SDL_JoystickGUID SDL_JoystickGetDeviceGUID(int device_index);
+        SDL_Joystick* SDL_JoystickOpen(int device_index);
+        const(char)* SDL_JoystickName(SDL_Joystick* joystick);
+        SDL_JoystickGUID SDL_JoystickGetGUID(SDL_Joystick* joystick);
+        void SDL_JoystickGetGUIDString(SDL_JoystickGUID guid, char* pszGUID, int cbGUID);
+        SDL_JoystickGUID SDL_JoystickGetGUIDFromString(const(char)* );
+        SDL_bool SDL_JoystickGetAttached(SDL_Joystick* joystick);
+        SDL_JoystickID SDL_JoystickInstanceID(SDL_Joystick* joystick);
+        int SDL_JoystickNumAxes(SDL_Joystick* joystick);
+        int SDL_JoystickNumBalls(SDL_Joystick* joystick);
+        int SDL_JoystickNumHats(SDL_Joystick* joystick);
+        int SDL_JoystickNumButtons(SDL_Joystick* joystick);
         void SDL_JoystickUpdate();
-        int SDL_JoystickEventState(int);
-        short SDL_JoystickGetAxis(SDL_Joystick*,int);
-        ubyte SDL_JoystickGetHat(SDL_Joystick*,int);
-        int SDL_JoystickGetBall(SDL_Joystick*,int,int*,int*);
-        ubyte SDL_JoystickGetButton(SDL_Joystick*,int);
-        void SDL_JoystickClose(SDL_Joystick*);
+        int SDL_JoystickEventState(int state);
+        short SDL_JoystickGetAxis(SDL_Joystick* joystick, int axis);
+        ubyte SDL_JoystickGetHat(SDL_Joystick* joystick, int hat);
+        int SDL_JoystickGetBall(SDL_Joystick* joystick, int ball, int* dx, int* dy);
+        ubyte SDL_JoystickGetButton(SDL_Joystick* joystick, int button);
+        void SDL_JoystickClose(SDL_Joystick* joystick);
 
         static if(sdlSupport >= SDLSupport.sdl204) {
-            SDL_JoystickPowerLevel SDL_JoystickCurrentPowerLevel(SDL_Joystick*);
-            SDL_Joystick* SDL_JoystickFromInstanceID(SDL_JoystickID);
+            SDL_JoystickPowerLevel SDL_JoystickCurrentPowerLevel(SDL_Joystick* joystick);
+            SDL_Joystick* SDL_JoystickFromInstanceID(SDL_JoystickID instance_id);
         }
         static if(sdlSupport >= SDLSupport.sdl206) {
-            SDL_bool SDL_JoystickGetAxisInitialState(SDL_Joystick*,int,short*);
-            SDL_JoystickType SDL_JoystickGetDeviceInstanceID(int);
-            ushort SDL_JoystickGetDeviceProduct(int);
-            ushort SDL_JoystickGetDeviceProductVersion(int);
-            SDL_JoystickType SDL_JoystickGetDeviceType(int);
-            ushort SDL_JoystickGetDeviceVendor(int);
-            ushort SDL_JoystickGetProduct(SDL_Joystick*);
-            ushort SDL_JoystickGetProductVersion(SDL_Joystick*);
-            SDL_JoystickType SDL_JoystickGetType(SDL_Joystick*);
-            ushort SDL_JoystickGetVendor(SDL_Joystick*);
+            SDL_bool SDL_JoystickGetAxisInitialState(SDL_Joystick* joystick, int axis, short* state);
+            ushort SDL_JoystickGetDeviceProduct(int device_index);
+            ushort SDL_JoystickGetDeviceProductVersion(int device_index);
+            SDL_JoystickType SDL_JoystickGetDeviceType(int device_index);
+            SDL_JoystickType SDL_JoystickGetDeviceInstanceID(int device_index);
+            ushort SDL_JoystickGetDeviceVendor(int device_index);
+            ushort SDL_JoystickGetProduct(SDL_Joystick* joystick);
+            ushort SDL_JoystickGetProductVersion(SDL_Joystick* joystick);
+            SDL_JoystickType SDL_JoystickGetType(SDL_Joystick* joystick);
+            ushort SDL_JoystickGetVendor(SDL_Joystick* joystick);
         }
         static if(sdlSupport >= SDLSupport.sdl207) {
             void SDL_LockJoysticks();
             void SDL_UnlockJoysticks();
         }
         static if(sdlSupport >= SDLSupport.sdl209) {
-            int SDL_JoystickRumble(SDL_Joystick*,ushort,ushort,uint);
+            int SDL_JoystickRumble(SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms);
         }
         static if(sdlSupport >= SDLSupport.sdl2010) {
-            int SDL_JoystickGetDevicePlayerIndex(int);
-            int SDL_JoystickGetPlayerIndex(SDL_Joystick*);
+            int SDL_JoystickGetDevicePlayerIndex(int device_index);
+            int SDL_JoystickGetPlayerIndex(SDL_Joystick* joystick);
         }
         static if(sdlSupport >= SDLSupport.sdl2012) {
             SDL_Joystick* SDL_JoystickFromPlayerIndex(int);
-            void SDL_JoystickSetPlayerIndex(SDL_Joystick*,int);
+            void SDL_JoystickSetPlayerIndex(SDL_Joystick* joystick,int);
         }
         static if(sdlSupport >= SDLSupport.sdl2012) {
             int SDL_JoystickAttachVirtual(SDL_JoystickType type, int naxes, int nbuttons, int nhats);
@@ -137,26 +137,26 @@ static if(staticBinding) {
 else {
     extern(C) @nogc nothrow {
         alias pSDL_NumJoysticks = int function();
-        alias pSDL_JoystickNameForIndex = const(char)* function(int);
-        alias pSDL_JoystickGetDeviceGUID = SDL_JoystickGUID function(int);
-        alias pSDL_JoystickOpen = SDL_Joystick* function(int);
-        alias pSDL_JoystickName = const(char)* function(SDL_Joystick*);
-        alias pSDL_JoystickGetGUID = SDL_JoystickGUID function(SDL_Joystick*);
-        alias pSDL_JoystickGetGUIDString = char* function(SDL_JoystickGUID);
-        alias pSDL_JoystickGetGUIDFromString = SDL_JoystickGUID function(const(char)*);
-        alias pSDL_JoystickGetAttached = SDL_bool function(SDL_Joystick*);
-        alias pSDL_JoystickInstanceID = SDL_JoystickID function(SDL_Joystick*);
-        alias pSDL_JoystickNumAxes = int function(SDL_Joystick*);
-        alias pSDL_JoystickNumBalls = int function(SDL_Joystick*);
-        alias pSDL_JoystickNumHats = int function(SDL_Joystick*);
-        alias pSDL_JoystickNumButtons = int function(SDL_Joystick*);
+        alias pSDL_JoystickNameForIndex = const(char)* function(int device_index);
+        alias pSDL_JoystickGetDeviceGUID = SDL_JoystickGUID function(int device_index);
+        alias pSDL_JoystickOpen = SDL_Joystick* function(int device_index);
+        alias pSDL_JoystickName = const(char)* function(SDL_Joystick* joystick);
+        alias pSDL_JoystickGetGUID = SDL_JoystickGUID function(SDL_Joystick* joystick);
+        alias pSDL_JoystickGetGUIDString = void function(SDL_JoystickGUID guid, char* pszGUID, int cbGUID);
+        alias pSDL_JoystickGetGUIDFromString = SDL_JoystickGUID function(const(char)* pchGUID);
+        alias pSDL_JoystickGetAttached = SDL_bool function(SDL_Joystick* joystick);
+        alias pSDL_JoystickInstanceID = SDL_JoystickID function(SDL_Joystick* joystick);
+        alias pSDL_JoystickNumAxes = int function(SDL_Joystick* joystick);
+        alias pSDL_JoystickNumBalls = int function(SDL_Joystick* joystick);
+        alias pSDL_JoystickNumHats = int function(SDL_Joystick* joystick);
+        alias pSDL_JoystickNumButtons = int function(SDL_Joystick* joystick);
         alias pSDL_JoystickUpdate = void function();
-        alias pSDL_JoystickEventState = int function(int);
-        alias pSDL_JoystickGetAxis = short function(SDL_Joystick*,int);
-        alias pSDL_JoystickGetHat = ubyte function(SDL_Joystick*,int);
-        alias pSDL_JoystickGetBall = int function(SDL_Joystick*,int,int*,int*);
-        alias pSDL_JoystickGetButton = ubyte function(SDL_Joystick*,int);
-        alias pSDL_JoystickClose = void function(SDL_Joystick*);
+        alias pSDL_JoystickEventState = int function(int state);
+        alias pSDL_JoystickGetAxis = short function(SDL_Joystick* joystick, int axis);
+        alias pSDL_JoystickGetHat = ubyte function(SDL_Joystick* joystick, int hat);
+        alias pSDL_JoystickGetBall = int function(SDL_Joystick* joystick, int ball, int* dx, int* dy);
+        alias pSDL_JoystickGetButton = ubyte function(SDL_Joystick* joystick, int button);
+        alias pSDL_JoystickClose = void function(SDL_Joystick* joystick);
     }
     __gshared {
         pSDL_NumJoysticks SDL_NumJoysticks;
@@ -183,8 +183,8 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
-            alias pSDL_JoystickCurrentPowerLevel = SDL_JoystickPowerLevel function(SDL_Joystick*);
-            alias pSDL_JoystickFromInstanceID = SDL_Joystick* function(SDL_JoystickID);
+            alias pSDL_JoystickCurrentPowerLevel = SDL_JoystickPowerLevel function(SDL_Joystick* joystick);
+            alias pSDL_JoystickFromInstanceID = SDL_Joystick* function(SDL_JoystickID instance_id);
         }
         __gshared {
             pSDL_JoystickCurrentPowerLevel SDL_JoystickCurrentPowerLevel;
@@ -193,23 +193,23 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl206) {
         extern(C) @nogc nothrow {
-            alias pSDL_JoystickGetAxisInitialState = SDL_bool function(SDL_Joystick*,int,short*);
-            alias pSDL_JoystickGetDeviceInstanceID = SDL_JoystickType function(int);
-            alias pSDL_JoystickGetDeviceProduct = ushort function(int);
-            alias pSDL_JoystickGetDeviceProductVersion = ushort function(int);
-            alias pSDL_JoystickGetDeviceType = SDL_JoystickType function(int);
-            alias pSDL_JoystickGetDeviceVendor = ushort function(int);
-            alias pSDL_JoystickGetProduct = ushort function(SDL_Joystick*);
-            alias pSDL_JoystickGetProductVersion = ushort function(SDL_Joystick*);
-            alias pSDL_JoystickGetType = SDL_JoystickType function(SDL_Joystick*);
-            alias pSDL_JoystickGetVendor = ushort function(SDL_Joystick*);
+            alias pSDL_JoystickGetAxisInitialState = SDL_bool function(SDL_Joystick* joystick, int axis, short* state);
+            alias pSDL_JoystickGetDeviceProduct = ushort function(int device_index);
+            alias pSDL_JoystickGetDeviceProductVersion = ushort function(int device_index);
+            alias pSDL_JoystickGetDeviceType = SDL_JoystickType function(int device_index);
+            alias pSDL_JoystickGetDeviceInstanceID = SDL_JoystickType function(int device_index);
+            alias pSDL_JoystickGetDeviceVendor = ushort function(int device_index);
+            alias pSDL_JoystickGetProduct = ushort function(SDL_Joystick* joystick);
+            alias pSDL_JoystickGetProductVersion = ushort function(SDL_Joystick* joystick);
+            alias pSDL_JoystickGetType = SDL_JoystickType function(SDL_Joystick* joystick);
+            alias pSDL_JoystickGetVendor = ushort function(SDL_Joystick* joystick);
         }
         __gshared {
             pSDL_JoystickGetAxisInitialState SDL_JoystickGetAxisInitialState;
-            pSDL_JoystickGetDeviceInstanceID SDL_JoystickGetDeviceInstanceID;
             pSDL_JoystickGetDeviceProduct SDL_JoystickGetDeviceProduct;
             pSDL_JoystickGetDeviceProductVersion SDL_JoystickGetDeviceProductVersion;
             pSDL_JoystickGetDeviceType SDL_JoystickGetDeviceType;
+            pSDL_JoystickGetDeviceInstanceID SDL_JoystickGetDeviceInstanceID;
             pSDL_JoystickGetDeviceVendor SDL_JoystickGetDeviceVendor;
             pSDL_JoystickGetProduct SDL_JoystickGetProduct;
             pSDL_JoystickGetProductVersion SDL_JoystickGetProductVersion;
@@ -229,7 +229,7 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl209) {
         extern(C) @nogc nothrow {
-            alias pSDL_JoystickRumble = int function(SDL_Joystick*,ushort,ushort,uint);
+            alias pSDL_JoystickRumble = int function(SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms);
         }
         __gshared {
             pSDL_JoystickRumble SDL_JoystickRumble;
@@ -237,8 +237,8 @@ else {
     }
     static if(sdlSupport >= SDLSupport.sdl2010) {
         extern(C) @nogc nothrow {
-            alias pSDL_JoystickGetDevicePlayerIndex = int function(int);
-            alias pSDL_JoystickGetPlayerIndex = int function(SDL_Joystick*);
+            alias pSDL_JoystickGetDevicePlayerIndex = int function(int device_index);
+            alias pSDL_JoystickGetPlayerIndex = int function(SDL_Joystick* joystick);
         }
         __gshared {
             pSDL_JoystickGetDevicePlayerIndex SDL_JoystickGetDevicePlayerIndex;
@@ -248,7 +248,7 @@ else {
     static if(sdlSupport >= SDLSupport.sdl2012) {
         extern(C) @nogc nothrow {
             alias pSDL_JoystickFromPlayerIndex = SDL_Joystick* function(int);
-            alias pSDL_JoystickSetPlayerIndex = void function(SDL_Joystick*,int);
+            alias pSDL_JoystickSetPlayerIndex = void function(SDL_Joystick* joystick,int);
         }
         __gshared {
             pSDL_JoystickFromPlayerIndex SDL_JoystickFromPlayerIndex;

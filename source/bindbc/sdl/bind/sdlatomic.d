@@ -32,16 +32,16 @@ alias SDL_MemoryBarrierAcquire = SDL_CompilerBarrier;
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        SDL_bool SDL_AtomicTryLock(SDL_SpinLock*);
-        void SDL_AtomicLock(SDL_SpinLock*);
-        void SDL_AtomicUnlock(SDL_SpinLock);
+        SDL_bool SDL_AtomicTryLock(SDL_SpinLock* lock);
+        void SDL_AtomicLock(SDL_SpinLock* lock);
+        void SDL_AtomicUnlock(SDL_SpinLock* lock);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_AtomicTryLock = SDL_bool function(SDL_SpinLock*);
-        alias pSDL_AtomicLock = void function(SDL_SpinLock*);
-        alias pSDL_AtomicUnlock = void function(SDL_SpinLock);
+        alias pSDL_AtomicTryLock = SDL_bool function(SDL_SpinLock* lock);
+        alias pSDL_AtomicLock = void function(SDL_SpinLock* lock);
+        alias pSDL_AtomicUnlock = void function(SDL_SpinLock* lock);
     }
 
     __gshared {
@@ -51,18 +51,18 @@ else {
     }
 }
 
-// Perhaps the following could be replace with the platform-specific intrinsics for GDC, like
+// Perhaps the following could be replaced with the platform-specific intrinsics for GDC, like
 // the GCC macros in SDL_atomic.h. I'll have to investigate.
 static if(staticBinding) {
     extern(C) @nogc nothrow {
-        SDL_bool SDL_AtomicCAS(SDL_atomic_t*,int,int);
-        SDL_bool SDL_AtomicCASPtr(void**,void*,void*);
+        SDL_bool SDL_AtomicCAS(SDL_atomic_t* a, int oldval, int newval);
+        SDL_bool SDL_AtomicCASPtr(void** a, void* oldval, void* newval);
     }
 }
 else {
     extern(C) @nogc nothrow {
-        alias pSDL_AtomicCAS = SDL_bool function(SDL_atomic_t*,int,int);
-        alias pSDL_AtomicCASPtr = SDL_bool function(void**,void*,void*);
+        alias pSDL_AtomicCAS = SDL_bool function(SDL_atomic_t* a, int oldval, int newval);
+        alias pSDL_AtomicCASPtr = SDL_bool function(void** a, void* oldval, void* newval);
     }
 
     __gshared {
@@ -71,29 +71,75 @@ else {
     }
 }
 
-int SDL_AtomicSet(SDL_atomic_t* a, int v) {
-    pragma(inline, true)
-    int value;
-    do {
-        value = a.value;
-    } while(!SDL_AtomicCAS(a, value, v));
-    return value;
-}
+static if(sdlSupport >= SDLSupport.sdl203) {
+    static if(staticBinding) {
+        extern(C) @nogc nothrow {
+            int SDL_AtomicSet(SDL_atomic_t* a, int v);
+            int SDL_AtomicGet(SDL_atomic_t* a);
+            int SDL_AtomicAdd(SDL_atomic_t* a, int v);
+            void* SDL_AtomicSetPtr(void** a, void* v);
+            void* SDL_AtomicGetPtr(void** a);
+        }
+    }
+    else {
+        extern(C) @nogc nothrow {
+            alias pSDL_AtomicSet = int function(SDL_atomic_t* a, int v);
+            alias pSDL_AtomicGet = int function(SDL_atomic_t* a);
+            alias pSDL_AtomicAdd = int function(SDL_atomic_t* a, int v);
+            alias pSDL_AtomicSetPtr = void* function(void** a, void* v);
+            alias pSDL_AtomicGetPtr = void* function(void** a);
+        }
 
-int SDL_AtomicGet(SDL_atomic_t* a) {
-    pragma(inline, true)
-    int value = a.value;
-    SDL_CompilerBarrier();
-    return value;
+        __gshared {
+            pSDL_AtomicSet SDL_AtomicSet;
+            pSDL_AtomicGet SDL_AtomicGet;
+            pSDL_AtomicAdd SDL_AtomicAdd;
+            pSDL_AtomicSetPtr SDL_AtomicSetPtr;
+            pSDL_AtomicGetPtr SDL_AtomicGetPtr;
+        }
+    }
 }
+else {
+    int SDL_AtomicSet(SDL_atomic_t* a, int v) {
+        pragma(inline, true)
+        int value;
+        do {
+            value = a.value;
+        } while(!SDL_AtomicCAS(a, value, v));
+        return value;
+    }
 
-int SDL_AtomicAdd(SDL_atomic_t* a, int v) {
-    pragma(inline, true)
-    int value;
-    do {
-        value = a.value;
-    } while(!SDL_AtomicCAS(a, value, value + v));
-    return value;
+    int SDL_AtomicGet(SDL_atomic_t* a) {
+        pragma(inline, true)
+        int value = a.value;
+        SDL_CompilerBarrier();
+        return value;
+    }
+
+    int SDL_AtomicAdd(SDL_atomic_t* a, int v) {
+        pragma(inline, true)
+        int value;
+        do {
+            value = a.value;
+        } while(!SDL_AtomicCAS(a, value, value + v));
+        return value;
+    }
+
+    void* SDL_AtomicSetPtr(void** a, void* v) {
+        pragma(inline, true)
+        void* value;
+        do {
+            value = *a;
+        } while(!SDL_AtomicCASPtr(a, value, v));
+        return value;
+    }
+
+    void* SDL_AtomicGetPtr(void** a) {
+        pragma(inline, true)
+        void* value = *a;
+        SDL_CompilerBarrier();
+        return value;
+    }
 }
 
 int SDL_AtomicIncRef(SDL_atomic_t* a) {
@@ -104,20 +150,4 @@ int SDL_AtomicIncRef(SDL_atomic_t* a) {
 SDL_bool SDL_AtomicDecRef(SDL_atomic_t* a) {
     pragma(inline, true)
     return cast(SDL_bool)(SDL_AtomicAdd(a, -1) == 1);
-}
-
-void* SDL_AtomicSetPtr(void** a, void* v) {
-    pragma(inline, true)
-    void* value;
-    do {
-        value = *a;
-    } while(!SDL_AtomicCASPtr(a, value, v));
-    return value;
-}
-
-void* SDL_AtomicGetPtr(void** a) {
-    pragma(inline, true)
-    void* value = *a;
-    SDL_CompilerBarrier();
-    return value;
 }

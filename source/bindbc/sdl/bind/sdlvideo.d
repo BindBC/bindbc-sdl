@@ -406,173 +406,173 @@ static if(sdlSupport >= SDLSupport.sdl204) {
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumVideoDrivers();
-        const(char)* SDL_GetVideoDriver(int);
-        int SDL_VideoInit(const(char)*);
+        const(char)* SDL_GetVideoDriver(int index);
+        int SDL_VideoInit(const(char)* driver_name);
         void SDL_VideoQuit();
         const(char)* SDL_GetCurrentVideoDriver();
         int SDL_GetNumVideoDisplays();
-        const(char)* SDL_GetDisplayName(int);
-        int SDL_GetDisplayBounds(int,SDL_Rect*);
-        int SDL_GetNumDisplayModes(int);
-        int SDL_GetDisplayMode(int,int,SDL_DisplayMode*);
-        int SDL_GetDesktopDisplayMode(int,SDL_DisplayMode*);
-        int SDL_GetCurrentDisplayMode(int,SDL_DisplayMode*);
-        SDL_DisplayMode* SDL_GetClosestDisplayMode(int,const(SDL_DisplayMode)*,SDL_DisplayMode*);
-        int SDL_GetWindowDisplayIndex(SDL_Window*);
-        int SDL_SetWindowDisplayMode(SDL_Window*,const(SDL_DisplayMode)*);
-        int SDL_GetWindowDisplayMode(SDL_Window*,SDL_DisplayMode*);
-        uint SDL_GetWindowPixelFormat(SDL_Window*);
-        SDL_Window* SDL_CreateWindow(const(char)*,int,int,int,int,SDL_WindowFlags);
-        SDL_Window* SDL_CreateWindowFrom(const(void)*);
-        uint SDL_GetWindowID(SDL_Window*);
-        SDL_Window* SDL_GetWindowFromID(uint);
-        SDL_WindowFlags SDL_GetWindowFlags(SDL_Window*);
-        void SDL_SetWindowTitle(SDL_Window*,const(char)*);
-        const(char)* SDL_GetWindowTitle(SDL_Window*);
-        void SDL_SetWindowIcon(SDL_Window*,SDL_Surface*);
-        void* SDL_SetWindowData(SDL_Window*,const(char)*,void*);
-        void* SDL_GetWindowData(SDL_Window*,const(char)*);
-        void SDL_SetWindowPosition(SDL_Window*,int,int);
-        void SDL_GetWindowPosition(SDL_Window*,int*,int*);
-        void SDL_SetWindowSize(SDL_Window*,int,int);
-        void SDL_GetWindowSize(SDL_Window*,int*,int*);
-        void SDL_SetWindowMinimumSize(SDL_Window*,int,int);
-        void SDL_GetWindowMinimumSize(SDL_Window*,int*,int*);
-        void SDL_SetWindowMaximumSize(SDL_Window*,int,int);
-        void SDL_GetWindowMaximumSize(SDL_Window*,int*,int*);
-        void SDL_SetWindowBordered(SDL_Window*,SDL_bool);
-        void SDL_ShowWindow(SDL_Window*);
-        void SDL_HideWindow(SDL_Window*);
-        void SDL_RaiseWindow(SDL_Window*);
-        void SDL_MaximizeWindow(SDL_Window*);
-        void SDL_MinimizeWindow(SDL_Window*);
-        void SDL_RestoreWindow(SDL_Window*);
-        int SDL_SetWindowFullscreen(SDL_Window*,uint);
-        SDL_Surface* SDL_GetWindowSurface(SDL_Window*);
-        int SDL_UpdateWindowSurface(SDL_Window*);
-        int SDL_UpdateWindowSurfaceRects(SDL_Window*,SDL_Rect*,int);
-        void SDL_SetWindowGrab(SDL_Window*,SDL_bool);
-        SDL_bool SDL_GetWindowGrab(SDL_Window*);
-        int SDL_SetWindowBrightness(SDL_Window*,float);
-        float SDL_GetWindowBrightness(SDL_Window*);
-        int SDL_SetWindowGammaRamp(SDL_Window*,const(ushort)*,const(ushort)*,const(ushort)*);
-        int SDL_GetWindowGammaRamp(SDL_Window*,ushort*,ushort*,ushort*);
-        void SDL_DestroyWindow(SDL_Window*);
+        const(char)* SDL_GetDisplayName(int displayIndex);
+        int SDL_GetDisplayBounds(int displayIndex, SDL_Rect* rect);
+        int SDL_GetNumDisplayModes(int displayIndex);
+        int SDL_GetDisplayMode(int displayIndex, int modeIndex, SDL_DisplayMode* mode);
+        int SDL_GetDesktopDisplayMode(int displayIndex, SDL_DisplayMode* mode);
+        int SDL_GetCurrentDisplayMode(int displayIndex, SDL_DisplayMode* mode);
+        SDL_DisplayMode* SDL_GetClosestDisplayMode(int displayIndex, const(SDL_DisplayMode)* mode, SDL_DisplayMode* closest);
+        int SDL_GetWindowDisplayIndex(SDL_Window* window);
+        int SDL_SetWindowDisplayMode(SDL_Window* window, const(SDL_DisplayMode)* mode);
+        int SDL_GetWindowDisplayMode(SDL_Window* window, SDL_DisplayMode* mode);
+        uint SDL_GetWindowPixelFormat(SDL_Window* window);
+        SDL_Window* SDL_CreateWindow(const(char)* title, int x, int y, int w, int h, SDL_WindowFlags flags);
+        SDL_Window* SDL_CreateWindowFrom(const(void)* data);
+        uint SDL_GetWindowID(SDL_Window* window);
+        SDL_Window* SDL_GetWindowFromID(uint id);
+        SDL_WindowFlags SDL_GetWindowFlags(SDL_Window* window);
+        void SDL_SetWindowTitle(SDL_Window* window, const(char)* title);
+        const(char)* SDL_GetWindowTitle(SDL_Window* window);
+        void SDL_SetWindowIcon(SDL_Window* window, SDL_Surface* icon);
+        void* SDL_SetWindowData(SDL_Window* window, const(char)* name, void* userdata);
+        void* SDL_GetWindowData(SDL_Window* window, const(char)* name);
+        void SDL_SetWindowPosition(SDL_Window* window, int x, int y);
+        void SDL_GetWindowPosition(SDL_Window* window, int* x, int* y);
+        void SDL_SetWindowSize(SDL_Window* window, int w, int h);
+        void SDL_GetWindowSize(SDL_Window* window, int* w, int* h);
+        void SDL_SetWindowMinimumSize(SDL_Window* window, int min_w, int min_h);
+        void SDL_GetWindowMinimumSize(SDL_Window* window, int* w, int* h);
+        void SDL_SetWindowMaximumSize(SDL_Window* window, int max_w, int ,max_h);
+        void SDL_GetWindowMaximumSize(SDL_Window* window, int* w, int* h);
+        void SDL_SetWindowBordered(SDL_Window* window, SDL_bool bordered);
+        void SDL_ShowWindow(SDL_Window* window);
+        void SDL_HideWindow(SDL_Window* window);
+        void SDL_RaiseWindow(SDL_Window* window);
+        void SDL_MaximizeWindow(SDL_Window* window);
+        void SDL_MinimizeWindow(SDL_Window* window);
+        void SDL_RestoreWindow(SDL_Window* window);
+        int SDL_SetWindowFullscreen(SDL_Window* window, SDL_WindowFlags flags);
+        SDL_Surface* SDL_GetWindowSurface(SDL_Window* window);
+        int SDL_UpdateWindowSurface(SDL_Window* window);
+        int SDL_UpdateWindowSurfaceRects(SDL_Window* window, SDL_Rect* rects, int numrects);
+        void SDL_SetWindowGrab(SDL_Window* window, SDL_bool grabbed);
+        SDL_bool SDL_GetWindowGrab(SDL_Window* window);
+        int SDL_SetWindowBrightness(SDL_Window* window, float brightness);
+        float SDL_GetWindowBrightness(SDL_Window* window);
+        int SDL_SetWindowGammaRamp(SDL_Window* window, const(ushort)* red, const(ushort)* green, const(ushort)* blue);
+        int SDL_GetWindowGammaRamp(SDL_Window* window, ushort* red, ushort* green, ushort* blue);
+        void SDL_DestroyWindow(SDL_Window* window);
         SDL_bool SDL_IsScreenSaverEnabled();
         void SDL_EnableScreenSaver();
         void SDL_DisableScreenSaver();
-        int SDL_GL_LoadLibrary(const(char)*);
-        void* SDL_GL_GetProcAddress(const(char)*);
+        int SDL_GL_LoadLibrary(const(char)* path);
+        void* SDL_GL_GetProcAddress(const(char)* proc);
         void SDL_GL_UnloadLibrary();
-        SDL_bool SDL_GL_ExtensionSupported(const(char)*);
-        int SDL_GL_SetAttribute(SDL_GLattr,int);
-        int SDL_GL_GetAttribute(SDL_GLattr,int*);
-        SDL_GLContext SDL_GL_CreateContext(SDL_Window*);
-        int SDL_GL_MakeCurrent(SDL_Window*,SDL_GLContext);
+        SDL_bool SDL_GL_ExtensionSupported(const(char)* extension);
+        int SDL_GL_SetAttribute(SDL_GLattr attr, int value);
+        int SDL_GL_GetAttribute(SDL_GLattr attr, int* value);
+        SDL_GLContext SDL_GL_CreateContext(SDL_Window* window);
+        int SDL_GL_MakeCurrent(SDL_Window* window, SDL_GLContext context);
         SDL_Window* SDL_GL_GetCurrentWindow();
         SDL_GLContext SDL_GL_GetCurrentContext();
-        int SDL_GL_SetSwapInterval(int);
+        int SDL_GL_SetSwapInterval(int interval);
         int SDL_GL_GetSwapInterval();
-        void SDL_GL_SwapWindow(SDL_Window*);
-        void SDL_GL_DeleteContext(SDL_GLContext);
+        void SDL_GL_SwapWindow(SDL_Window* window);
+        void SDL_GL_DeleteContext(SDL_GLContext context);
 
         static if(sdlSupport >= SDLSupport.sdl201) {
-            void SDL_GL_GetDrawableSize(SDL_Window*,int*,int*);
+            void SDL_GL_GetDrawableSize(SDL_Window* window, int* w, int* h);
         }
         static if(sdlSupport >= SDLSupport.sdl202) {
             void SDL_GL_ResetAttributes();
         }
         static if(sdlSupport >= SDLSupport.sdl204) {
-            int SDL_GetDisplayDPI(int,float*,float*,float*);
+            int SDL_GetDisplayDPI(int displayIndex, float* ddpi, float* hdpi, float* vdpi);
             SDL_Window* SDL_GetGrabbedWindow();
-            int SDL_SetWindowHitTest(SDL_Window*,SDL_HitTest,void*);
+            int SDL_SetWindowHitTest(SDL_Window* window, SDL_HitTest callback, void* callback_data);
         }
         static if(sdlSupport >= SDLSupport.sdl205) {
-            int SDL_GetDisplayUsableBounds(int,SDL_Rect*);
-            int SDL_GetWindowBordersSize(SDL_Window*,int*,int*,int*,int*);
-            int SDL_GetWindowOpacity(SDL_Window*,float*);
-            int SDL_SetWindowInputFocus(SDL_Window*);
-            int SDL_SetWindowModalFor(SDL_Window*,SDL_Window*);
-            int SDL_SetWindowOpacity(SDL_Window*,float);
-            void SDL_SetWindowResizable(SDL_Window*,SDL_bool);
+            int SDL_GetDisplayUsableBounds(int displayIndex, SDL_Rect* rect);
+            int SDL_GetWindowBordersSize(SDL_Window* window, int* top, int* left, int* bottom, int* right);
+            int SDL_GetWindowOpacity(SDL_Window* window, float* opacity);
+            int SDL_SetWindowInputFocus(SDL_Window* window);
+            int SDL_SetWindowModalFor(SDL_Window* modal_window, SDL_Window* parent_window);
+            int SDL_SetWindowOpacity(SDL_Window* window, float opacity);
+            void SDL_SetWindowResizable(SDL_Window* window, SDL_bool resizable);
         }
         static if(sdlSupport >= SDLSupport.sdl209) {
-            SDL_DisplayOrientation SDL_GetDisplayOrientation(int);
+            SDL_DisplayOrientation SDL_GetDisplayOrientation(int displayIndex);
         }
     }
 }
 else {
     extern(C) @nogc nothrow {
         alias pSDL_GetNumVideoDrivers = int function();
-        alias pSDL_GetVideoDriver = const(char)* function(int);
-        alias pSDL_VideoInit = int function(const(char)*);
+        alias pSDL_GetVideoDriver = const(char)* function(int index);
+        alias pSDL_VideoInit = int function(const(char)* driver_name);
         alias pSDL_VideoQuit = void function();
         alias pSDL_GetCurrentVideoDriver = const(char)* function();
         alias pSDL_GetNumVideoDisplays = int function();
-        alias pSDL_GetDisplayName = const(char)* function(int);
-        alias pSDL_GetDisplayBounds = int function(int,SDL_Rect*);
-        alias pSDL_GetNumDisplayModes = int function(int);
-        alias pSDL_GetDisplayMode = int function(int,int,SDL_DisplayMode*);
-        alias pSDL_GetDesktopDisplayMode = int function(int,SDL_DisplayMode*);
-        alias pSDL_GetCurrentDisplayMode = int function(int,SDL_DisplayMode*);
-        alias pSDL_GetClosestDisplayMode = SDL_DisplayMode* function(int,const(SDL_DisplayMode)*,SDL_DisplayMode*);
-        alias pSDL_GetWindowDisplayIndex = int function(SDL_Window*);
-        alias pSDL_SetWindowDisplayMode = int function(SDL_Window*,const(SDL_DisplayMode)*);
-        alias pSDL_GetWindowDisplayMode = int function(SDL_Window*,SDL_DisplayMode*);
-        alias pSDL_GetWindowPixelFormat = uint function(SDL_Window*);
-        alias pSDL_CreateWindow = SDL_Window* function(const(char)*,int,int,int,int,SDL_WindowFlags);
-        alias pSDL_CreateWindowFrom = SDL_Window* function(const(void)*);
-        alias pSDL_GetWindowID = uint function(SDL_Window*);
-        alias pSDL_GetWindowFromID = SDL_Window* function(uint);
-        alias pSDL_GetWindowFlags = SDL_WindowFlags function(SDL_Window*);
-        alias pSDL_SetWindowTitle = void function(SDL_Window*,const(char)*);
-        alias pSDL_GetWindowTitle = const(char)* function(SDL_Window*);
-        alias pSDL_SetWindowIcon = void function(SDL_Window*,SDL_Surface*);
-        alias pSDL_SetWindowData = void* function(SDL_Window*,const(char)*,void*);
-        alias pSDL_GetWindowData = void* function(SDL_Window*,const(char)*);
-        alias pSDL_SetWindowPosition = void function(SDL_Window*,int,int);
-        alias pSDL_GetWindowPosition = void function(SDL_Window*,int*,int*);
-        alias pSDL_SetWindowSize = void function(SDL_Window*,int,int);
-        alias pSDL_GetWindowSize = void function(SDL_Window*,int*,int*);
-        alias pSDL_SetWindowMinimumSize = void function(SDL_Window*,int,int);
-        alias pSDL_GetWindowMinimumSize = void function(SDL_Window*,int*,int*);
-        alias pSDL_SetWindowMaximumSize = void function(SDL_Window*,int,int);
-        alias pSDL_GetWindowMaximumSize = void function(SDL_Window*,int*,int*);
-        alias pSDL_SetWindowBordered = void function(SDL_Window*,SDL_bool);
-        alias pSDL_ShowWindow = void function(SDL_Window*);
-        alias pSDL_HideWindow = void function(SDL_Window*);
-        alias pSDL_RaiseWindow = void function(SDL_Window*);
-        alias pSDL_MaximizeWindow = void function(SDL_Window*);
-        alias pSDL_MinimizeWindow = void function(SDL_Window*);
-        alias pSDL_RestoreWindow = void function(SDL_Window*);
-        alias pSDL_SetWindowFullscreen = int function(SDL_Window*,uint);
-        alias pSDL_GetWindowSurface = SDL_Surface* function(SDL_Window*);
-        alias pSDL_UpdateWindowSurface = int function(SDL_Window*);
-        alias pSDL_UpdateWindowSurfaceRects = int function(SDL_Window*,SDL_Rect*,int);
-        alias pSDL_SetWindowGrab = void function(SDL_Window*,SDL_bool);
-        alias pSDL_GetWindowGrab = SDL_bool function(SDL_Window*);
-        alias pSDL_SetWindowBrightness = int function(SDL_Window*,float);
-        alias pSDL_GetWindowBrightness = float function(SDL_Window*);
-        alias pSDL_SetWindowGammaRamp = int function(SDL_Window*,const(ushort)*,const(ushort)*,const(ushort)*);
-        alias pSDL_GetWindowGammaRamp = int function(SDL_Window*,ushort*,ushort*,ushort*);
-        alias pSDL_DestroyWindow = void function(SDL_Window*);
+        alias pSDL_GetDisplayName = const(char)* function(int displayIndex);
+        alias pSDL_GetDisplayBounds = int function(int displayIndex, SDL_Rect* rect);
+        alias pSDL_GetNumDisplayModes = int function(int displayIndex);
+        alias pSDL_GetDisplayMode = int function(int displayIndex, int modeIndex, SDL_DisplayMode* mode);
+        alias pSDL_GetDesktopDisplayMode = int function(int displayIndex, SDL_DisplayMode* mode);
+        alias pSDL_GetCurrentDisplayMode = int function(int displayIndex, SDL_DisplayMode* mode);
+        alias pSDL_GetClosestDisplayMode = SDL_DisplayMode* function(int displayIndex, const(SDL_DisplayMode)* mode, SDL_DisplayMode* closest);
+        alias pSDL_GetWindowDisplayIndex = int function(SDL_Window* window);
+        alias pSDL_SetWindowDisplayMode = int function(SDL_Window* window, const(SDL_DisplayMode)* mode);
+        alias pSDL_GetWindowDisplayMode = int function(SDL_Window* window, SDL_DisplayMode* mode);
+        alias pSDL_GetWindowPixelFormat = uint function(SDL_Window* window);
+        alias pSDL_CreateWindow = SDL_Window* function(const(char)* title, int x, int y, int w, int h, SDL_WindowFlags flags);
+        alias pSDL_CreateWindowFrom = SDL_Window* function(const(void)* data);
+        alias pSDL_GetWindowID = uint function(SDL_Window* window);
+        alias pSDL_GetWindowFromID = SDL_Window* function(uint id);
+        alias pSDL_GetWindowFlags = SDL_WindowFlags function(SDL_Window* window);
+        alias pSDL_SetWindowTitle = void function(SDL_Window* window, const(char)* title);
+        alias pSDL_GetWindowTitle = const(char)* function(SDL_Window* window);
+        alias pSDL_SetWindowIcon = void function(SDL_Window* window, SDL_Surface* icon);
+        alias pSDL_SetWindowData = void* function(SDL_Window* window, const(char)* name, void* userdata);
+        alias pSDL_GetWindowData = void* function(SDL_Window* window, const(char)* name);
+        alias pSDL_SetWindowPosition = void function(SDL_Window* window, int x, int y);
+        alias pSDL_GetWindowPosition = void function(SDL_Window* window, int* x, int* y);
+        alias pSDL_SetWindowSize = void function(SDL_Window* window, int w, int h);
+        alias pSDL_GetWindowSize = void function(SDL_Window* window, int* w, int* h);
+        alias pSDL_SetWindowMinimumSize = void function(SDL_Window* window, int min_w, int min_h);
+        alias pSDL_GetWindowMinimumSize = void function(SDL_Window* window, int* w, int* h);
+        alias pSDL_SetWindowMaximumSize = void function(SDL_Window* window, int max_w, int max_h);
+        alias pSDL_GetWindowMaximumSize = void function(SDL_Window* window, int* w, int* h);
+        alias pSDL_SetWindowBordered = void function(SDL_Window* window, SDL_bool bordered);
+        alias pSDL_ShowWindow = void function(SDL_Window* window);
+        alias pSDL_HideWindow = void function(SDL_Window* window);
+        alias pSDL_RaiseWindow = void function(SDL_Window* window);
+        alias pSDL_MaximizeWindow = void function(SDL_Window* window);
+        alias pSDL_MinimizeWindow = void function(SDL_Window* window);
+        alias pSDL_RestoreWindow = void function(SDL_Window* window);
+        alias pSDL_SetWindowFullscreen = int function(SDL_Window* window, SDL_WindowFlags flags);
+        alias pSDL_GetWindowSurface = SDL_Surface* function(SDL_Window* window);
+        alias pSDL_UpdateWindowSurface = int function(SDL_Window* window);
+        alias pSDL_UpdateWindowSurfaceRects = int function(SDL_Window* window, SDL_Rect* rects, int numrects);
+        alias pSDL_SetWindowGrab = void function(SDL_Window* window, SDL_bool grabbed);
+        alias pSDL_GetWindowGrab = SDL_bool function(SDL_Window* window);
+        alias pSDL_SetWindowBrightness = int function(SDL_Window* window, float brightness);
+        alias pSDL_GetWindowBrightness = float function(SDL_Window* window);
+        alias pSDL_SetWindowGammaRamp = int function(SDL_Window* window, const(ushort)* red, const(ushort)* green, const(ushort)* blue);
+        alias pSDL_GetWindowGammaRamp = int function(SDL_Window* window, ushort* red, ushort* green, ushort* blue);
+        alias pSDL_DestroyWindow = void function(SDL_Window* window);
         alias pSDL_IsScreenSaverEnabled = SDL_bool function();
         alias pSDL_EnableScreenSaver = void function();
         alias pSDL_DisableScreenSaver = void function();
-        alias pSDL_GL_LoadLibrary = int function(const(char)*);
-        alias pSDL_GL_GetProcAddress = void* function(const(char)*);
+        alias pSDL_GL_LoadLibrary = int function(const(char)* path);
+        alias pSDL_GL_GetProcAddress = void* function(const(char)* proc);
         alias pSDL_GL_UnloadLibrary = void function();
-        alias pSDL_GL_ExtensionSupported = SDL_bool function(const(char)*);
-        alias pSDL_GL_SetAttribute = int function(SDL_GLattr,int);
-        alias pSDL_GL_GetAttribute = int function(SDL_GLattr,int*);
-        alias pSDL_GL_CreateContext = SDL_GLContext function(SDL_Window*);
-        alias pSDL_GL_MakeCurrent = int function(SDL_Window*,SDL_GLContext);
+        alias pSDL_GL_ExtensionSupported = SDL_bool function(const(char)* extension);
+        alias pSDL_GL_SetAttribute = int function(SDL_GLattr attr, int value);
+        alias pSDL_GL_GetAttribute = int function(SDL_GLattr attr, int* value);
+        alias pSDL_GL_CreateContext = SDL_GLContext function(SDL_Window* window);
+        alias pSDL_GL_MakeCurrent = int function(SDL_Window* window, SDL_GLContext context);
         alias pSDL_GL_GetCurrentWindow = SDL_Window* function();
         alias pSDL_GL_GetCurrentContext = SDL_GLContext function();
-        alias pSDL_GL_SetSwapInterval = int function(int);
+        alias pSDL_GL_SetSwapInterval = int function(int interval);
         alias pSDL_GL_GetSwapInterval = int function();
-        alias pSDL_GL_SwapWindow = void function(SDL_Window*);
-        alias pSDL_GL_DeleteContext = void function(SDL_GLContext);
+        alias pSDL_GL_SwapWindow = void function(SDL_Window* window);
+        alias pSDL_GL_DeleteContext = void function(SDL_GLContext context);
     }
 
     __gshared {
@@ -650,7 +650,7 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl201) {
         extern(C) @nogc nothrow {
-            alias pSDL_GL_GetDrawableSize = void function(SDL_Window*,int*,int*);
+            alias pSDL_GL_GetDrawableSize = void function(SDL_Window* window, int* w, int* h);
         }
 
         __gshared {
@@ -670,9 +670,9 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl204) {
         extern(C) @nogc nothrow {
-            alias pSDL_GetDisplayDPI = int function(int,float*,float*,float*);
+            alias pSDL_GetDisplayDPI = int function(int displayIndex, float* ddpi, float* hdpi, float* vdpi);
             alias pSDL_GetGrabbedWindow = SDL_Window* function();
-            alias pSDL_SetWindowHitTest = int function(SDL_Window*,SDL_HitTest,void*);
+            alias pSDL_SetWindowHitTest = int function(SDL_Window* window, SDL_HitTest callback, void* callback_data);
         }
 
         __gshared {
@@ -684,13 +684,13 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl205) {
         extern(C) @nogc nothrow {
-            alias pSDL_GetDisplayUsableBounds = int function(int,SDL_Rect*);
-            alias pSDL_GetWindowBordersSize = int function(SDL_Window*,int*,int*,int*,int*);
-            alias pSDL_GetWindowOpacity = int function(SDL_Window*,float*);
-            alias pSDL_SetWindowInputFocus = int function(SDL_Window*);
-            alias pSDL_SetWindowModalFor = int function(SDL_Window*,SDL_Window*);
-            alias pSDL_SetWindowOpacity = int function(SDL_Window*,float);
-            alias pSDL_SetWindowResizable = void function(SDL_Window*,SDL_bool);
+            alias pSDL_GetDisplayUsableBounds = int function(int displayIndex, SDL_Rect* rect);
+            alias pSDL_GetWindowBordersSize = int function(SDL_Window* window, int* top, int* left, int* bottom, int* right);
+            alias pSDL_GetWindowOpacity = int function(SDL_Window* window, float* opacity);
+            alias pSDL_SetWindowInputFocus = int function(SDL_Window* window);
+            alias pSDL_SetWindowModalFor = int function(SDL_Window* modal_window, SDL_Window* parent_window);
+            alias pSDL_SetWindowOpacity = int function(SDL_Window* window, float opacity);
+            alias pSDL_SetWindowResizable = void function(SDL_Window* window, SDL_bool resizable);
         }
 
         __gshared {
@@ -706,7 +706,7 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl209) {
         extern(C) @nogc nothrow {
-            alias pSDL_GetDisplayOrientation = SDL_DisplayOrientation function(int);
+            alias pSDL_GetDisplayOrientation = SDL_DisplayOrientation function(int displayIndex);
         }
 
         __gshared {

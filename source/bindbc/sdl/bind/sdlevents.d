@@ -702,43 +702,43 @@ enum {
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         void SDL_PumpEvents();
-        int SDL_PeepEvents(SDL_Event*,int,SDL_eventaction,uint,uint);
-        SDL_bool SDL_HasEvent(uint);
-        SDL_bool SDL_HasEvents(uint,uint);
-        void SDL_FlushEvent(uint);
-        void SDL_FlushEvents(uint,uint);
-        int SDL_PollEvent(SDL_Event*);
-        int SDL_WaitEvent(SDL_Event*);
-        int SDL_WaitEventTimeout(SDL_Event*,int);
-        int SDL_PushEvent(SDL_Event*);
-        void SDL_SetEventFilter(SDL_EventFilter,void*);
-        SDL_bool SDL_GetEventFilter(SDL_EventFilter*,void**);
-        void SDL_AddEventWatch(SDL_EventFilter,void*);
-        void SDL_DelEventWatch(SDL_EventFilter,void*);
-        void SDL_FilterEvents(SDL_EventFilter,void*);
-        ubyte SDL_EventState(uint,int);
-        uint SDL_RegisterEvents(int);
+        int SDL_PeepEvents(SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType);
+        SDL_bool SDL_HasEvent(uint type);
+        SDL_bool SDL_HasEvents(uint minType, uint maxType);
+        void SDL_FlushEvent(uint type);
+        void SDL_FlushEvents(uint minType, uint maxType);
+        int SDL_PollEvent(SDL_Event* event);
+        int SDL_WaitEvent(SDL_Event* event);
+        int SDL_WaitEventTimeout(SDL_Event* event, int timeout);
+        int SDL_PushEvent(SDL_Event* event);
+        void SDL_SetEventFilter(SDL_EventFilter filter, void* userdata);
+        SDL_bool SDL_GetEventFilter(SDL_EventFilter* filter, void** userdata);
+        void SDL_AddEventWatch(SDL_EventFilter filter, void* userdata);
+        void SDL_DelEventWatch(SDL_EventFilter filter, void* userdata);
+        void SDL_FilterEvents(SDL_EventFilter filter, void* userdata);
+        ubyte SDL_EventState(uint type, int state);
+        uint SDL_RegisterEvents(int numevents);
     }
 }
 else {
     extern(C) @nogc nothrow {
         alias pSDL_PumpEvents = void function();
-        alias pSDL_PeepEvents = int function(SDL_Event*,int,SDL_eventaction,uint,uint);
-        alias pSDL_HasEvent = SDL_bool function(uint);
-        alias pSDL_HasEvents = SDL_bool function(uint,uint);
-        alias pSDL_FlushEvent = void function(uint);
-        alias pSDL_FlushEvents = void function(uint,uint);
-        alias pSDL_PollEvent = int function(SDL_Event*);
-        alias pSDL_WaitEvent = int function(SDL_Event*);
-        alias pSDL_WaitEventTimeout = int function(SDL_Event*,int);
-        alias pSDL_PushEvent = int function(SDL_Event*);
-        alias pSDL_SetEventFilter = void function(SDL_EventFilter,void*);
-        alias pSDL_GetEventFilter = SDL_bool function(SDL_EventFilter*,void**);
-        alias pSDL_AddEventWatch = void function(SDL_EventFilter,void*);
-        alias pSDL_DelEventWatch = void function(SDL_EventFilter,void*);
-        alias pSDL_FilterEvents = void function(SDL_EventFilter,void*);
-        alias pSDL_EventState = ubyte function(uint,int);
-        alias pSDL_RegisterEvents = uint function(int);
+        alias pSDL_PeepEvents = int function(SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType);
+        alias pSDL_HasEvent = SDL_bool function(uint type);
+        alias pSDL_HasEvents = SDL_bool function(uint minType, uint maxType);
+        alias pSDL_FlushEvent = void function(uint type);
+        alias pSDL_FlushEvents = void function(uint minType, uint maxType);
+        alias pSDL_PollEvent = int function(SDL_Event* event);
+        alias pSDL_WaitEvent = int function(SDL_Event* event);
+        alias pSDL_WaitEventTimeout = int function(SDL_Event* event, int timeout);
+        alias pSDL_PushEvent = int function(SDL_Event* event);
+        alias pSDL_SetEventFilter = void function(SDL_EventFilter filter, void* userdata);
+        alias pSDL_GetEventFilter = SDL_bool function(SDL_EventFilter* filter, void** userdata);
+        alias pSDL_AddEventWatch = void function(SDL_EventFilter filter, void* userdata);
+        alias pSDL_DelEventWatch = void function(SDL_EventFilter filter, void* userdata);
+        alias pSDL_FilterEvents = void function(SDL_EventFilter filter, void* userdata);
+        alias pSDL_EventState = ubyte function(uint type, int state);
+        alias pSDL_RegisterEvents = uint function(int numevents);
     }
 
     __gshared {

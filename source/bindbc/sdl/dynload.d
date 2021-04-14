@@ -564,6 +564,13 @@ SDLSupport loadSDL(const(char)* libName)
     }
 
     static if(sdlSupport >= SDLSupport.sdl203) {
+        lib.bindSymbol(cast(void**)&SDL_AtomicSet, "SDL_AtomicSet");
+        lib.bindSymbol(cast(void**)&SDL_AtomicGet, "SDL_AtomicGet");
+        lib.bindSymbol(cast(void**)&SDL_AtomicAdd, "SDL_AtomicAdd");
+        lib.bindSymbol(cast(void**)&SDL_AtomicSetPtr, "SDL_AtomicSetPtr");
+        lib.bindSymbol(cast(void**)&SDL_AtomicGetPtr, "SDL_AtomicGetPtr");
+
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
         loadedVersion = SDLSupport.sdl203;
     }
 

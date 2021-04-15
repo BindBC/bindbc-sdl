@@ -178,9 +178,10 @@ extern(C) nothrow {
 
     // These aren't in SDL_mixer.h and are just here as a convenient and
     // visible means to add the proper attributes these callbacks.
-    alias callbackI = void function(int);
-    alias callbackVUi8I = void function(void*,ubyte*,int);
-    alias callbackN = void function();
+    alias callbackVI = void function(int);
+    alias callbackVPVPUbI = void function(void*,ubyte*,int);
+    alias callbackV = void function();
+    alias callbackIPCPV = int function(const(char*),void*);
 }
 
 @nogc nothrow {
@@ -221,11 +222,11 @@ static if(staticBinding) {
         int Mix_GetNumMusicDecoders();
         const(char)* Mix_GetMusicDecoder(int index);
         Mix_MusicType Mix_GetMusicType(const(Mix_Music)* music);
-        void Mix_SetPostMix(callbackVUi8I mix_func, void* arg);
-        void Mix_HookMusic(callbackVUi8I mix_func, void* arg);
-        void Mix_HookMusicFinished(callbackN music_finished);
+        void Mix_SetPostMix(callbackVPVPUbI mix_func, void* arg);
+        void Mix_HookMusic(callbackVPVPUbI mix_func, void* arg);
+        void Mix_HookMusicFinished(callbackV music_finished);
         void* Mix_GetMusicHookData();
-        void Mix_ChannelFinished(callbackI channel_finished);
+        void Mix_ChannelFinished(callbackVI channel_finished);
         int Mix_RegisterEffect(int chan, Mix_EffectFunc_t f, Mix_EffectDone_t d, void* arg);
         int Mix_UnregisterEffect(int channel, Mix_EffectFunc_t f);
         int Mix_UnregisterAllEffects(int channel);
@@ -270,6 +271,9 @@ static if(staticBinding) {
         int Mix_SetMusicCMD(const(char)* command);
         int Mix_SetSynchroValue(int value);
         int Mix_GetSynchroValue();
+        int Mix_SetSoundFonts(const char *paths);
+        const(char)* Mix_GetSoundFonts();
+        int Mix_EachSoundFont(callbackIPCPV function_, void *data);
         Mix_Chunk* Mix_GetChunk(int channel);
         void Mix_CloseAudio();
 
@@ -305,11 +309,11 @@ else {
         alias pMix_GetNumMusicDecoders = int function();
         alias pMix_GetMusicDecoder = const(char)* function(int index);
         alias pMix_GetMusicType = Mix_MusicType function(const(Mix_Music)* music);
-        alias pMix_SetPostMix = void function(callbackVUi8I mix_func, void* arg);
-        alias pMix_HookMusic = void function(callbackVUi8I mix_func, void* arg);
-        alias pMix_HookMusicFinished = void function(callbackN music_finished);
+        alias pMix_SetPostMix = void function(callbackVPVPUbI mix_func, void* arg);
+        alias pMix_HookMusic = void function(callbackVPVPUbI mix_func, void* arg);
+        alias pMix_HookMusicFinished = void function(callbackV music_finished);
         alias pMix_GetMusicHookData = void* function();
-        alias pMix_ChannelFinished = void function(callbackI channel_finished);
+        alias pMix_ChannelFinished = void function(callbackVI channel_finished);
         alias pMix_RegisterEffect = int function(int chan, Mix_EffectFunc_t f, Mix_EffectDone_t d, void* arg);
         alias pMix_UnregisterEffect = int function(int channel, Mix_EffectFunc_t f);
         alias pMix_UnregisterAllEffects = int function(int channel);
@@ -354,6 +358,9 @@ else {
         alias pMix_SetMusicCMD = int function(const(char)* command);
         alias pMix_SetSynchroValue = int function(int value);
         alias pMix_GetSynchroValue = int function();
+        alias pMix_SetSoundFonts = int function(const char *paths);
+        alias pMix_GetSoundFonts = const(char)* function();
+        alias pMix_EachSoundFont = int function(callbackIPCPV function_, void *data);
         alias pMix_GetChunk = Mix_Chunk* function(int channel);
         alias pMix_CloseAudio = void function();
     }
@@ -427,6 +434,9 @@ else {
         pMix_SetMusicCMD Mix_SetMusicCMD;
         pMix_SetSynchroValue Mix_SetSynchroValue;
         pMix_GetSynchroValue Mix_GetSynchroValue;
+        pMix_SetSoundFonts Mix_SetSoundFonts;
+        pMix_GetSoundFonts Mix_GetSoundFonts;
+        pMix_EachSoundFont Mix_EachSoundFont;
         pMix_GetChunk Mix_GetChunk;
         pMix_CloseAudio Mix_CloseAudio;
     }
@@ -582,6 +592,9 @@ else {
         lib.bindSymbol(cast(void**)&Mix_SetMusicCMD,"Mix_SetMusicCMD");
         lib.bindSymbol(cast(void**)&Mix_SetSynchroValue,"Mix_SetSynchroValue");
         lib.bindSymbol(cast(void**)&Mix_GetSynchroValue,"Mix_GetSynchroValue");
+        lib.bindSymbol(cast(void**)&Mix_SetSoundFonts,"Mix_SetSoundFonts");
+        lib.bindSymbol(cast(void**)&Mix_GetSoundFonts,"Mix_GetSoundFonts");
+        lib.bindSymbol(cast(void**)&Mix_EachSoundFont,"Mix_EachSoundFont");
         lib.bindSymbol(cast(void**)&Mix_GetChunk,"Mix_GetChunk");
         lib.bindSymbol(cast(void**)&Mix_CloseAudio,"Mix_CloseAudio");
 

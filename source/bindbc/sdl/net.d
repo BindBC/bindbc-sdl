@@ -9,8 +9,7 @@ module bindbc.sdl.net;
 import bindbc.sdl.config;
 static if(bindSDLNet):
 
-import bindbc.sdl.config,
-       bindbc.sdl.bind.sdlstdinc;
+import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlversion : SDL_version;
 
 enum SDLNetSupport {
@@ -41,8 +40,8 @@ alias SDLNet_Version = SDL_version;
 }
 
 struct IPaddress {
-    Uint32 host;
-    Uint16 port;
+    uint host;
+    ubyte port;
 }
 
 enum {
@@ -61,7 +60,7 @@ alias UDPsocket = void*;
 
 struct UDPpacket {
     int channel;
-    Uint8* data;
+    ubyte* data;
     int len;
     int maxlen;
     int status;
@@ -97,36 +96,36 @@ static if(staticBinding) {
         const(SDLNet_Version)* SDLNet_Linked_Version();
         int SDLNet_Init();
         void SDLNet_Quit();
-        int SDLNet_ResolveHost(IPaddress*,const(char)*,Uint16);
-        const(char)* SDLNet_ResolveIP(const(IPaddress)*);
-        int SDLNet_GetLocalAddresses(IPaddress*,int);
-        TCPsocket SDLNet_TCP_Open(IPaddress*);
-        TCPsocket SDLNet_TCP_Accept(TCPsocket);
-        IPaddress* SDLNet_TCP_GetPeerAddress(TCPsocket);
-        int SDLNet_TCP_Send(TCPsocket,const(void)*,int);
-        int SDLNet_TCP_Recv(TCPsocket,void*,int);
-        void SDLNet_TCP_Close(TCPsocket);
-        UDPpacket* SDLNet_AllocPacket(int);
-        int SDLNet_ResizePacket(UDPpacket*,int);
-        void SDLNet_FreePacket(UDPpacket*);
-        UDPpacket** SDLNet_AllocPacketV(int,int);
-        void SDLNet_FreePacketV(UDPpacket**);
-        UDPsocket SDLNet_UDP_Open(Uint16);
-        void SDLNet_UDP_SetPacketLoss(UDPsocket,int);
-        int SDLNet_UDP_Bind(UDPsocket,int,const(IPaddress)*);
-        void SDLNet_UDP_Unbind(UDPsocket,int);
-        IPaddress* SDLNet_UDP_GetPeerAddress(UDPsocket,int);
-        int SDLNet_UDP_SendV(UDPsocket,UDPpacket**,int);
-        int SDLNet_UDP_Send(UDPsocket,int,UDPpacket*);
-        int SDLNet_UDP_RecvV(UDPsocket,UDPpacket**);
-        int SDLNet_UDP_Recv(UDPsocket,UDPpacket*);
-        void SDLNet_UDP_Close(UDPsocket);
-        SDLNet_SocketSet SDLNet_AllocSocketSet(int);
-        int SDLNet_AddSocket(SDLNet_SocketSet,SDLNet_GenericSocket);
-        int SDLNet_DelSocket(SDLNet_SocketSet,SDLNet_GenericSocket);
-        int SDLNet_CheckSockets(SDLNet_SocketSet,Uint32);
-        void SDLNet_FreeSocketSet(SDLNet_SocketSet);
-        void SDLNet_SetError(const(char)* fmt,...);
+        int SDLNet_ResolveHost(IPaddress* address, const(char)* host, ushort port);
+        const(char)* SDLNet_ResolveIP(const(IPaddress)* ip);
+        int SDLNet_GetLocalAddresses(IPaddress* addresses, int maxcount);
+        TCPsocket SDLNet_TCP_Open(IPaddress* ip);
+        TCPsocket SDLNet_TCP_Accept(TCPsocket server);
+        IPaddress* SDLNet_TCP_GetPeerAddress(TCPsocket sock);
+        int SDLNet_TCP_Send(TCPsocket sock, const(void)* data, int len);
+        int SDLNet_TCP_Recv(TCPsocket sock, void* data, int len);
+        void SDLNet_TCP_Close(TCPsocket sock);
+        UDPpacket* SDLNet_AllocPacket(int size);
+        int SDLNet_ResizePacket(UDPpacket* packet, int newsize);
+        void SDLNet_FreePacket(UDPpacket* packet);
+        UDPpacket** SDLNet_AllocPacketV(int howmany, int size);
+        void SDLNet_FreePacketV(UDPpacket** packetV);
+        UDPsocket SDLNet_UDP_Open(ushort port);
+        void SDLNet_UDP_SetPacketLoss(UDPsocket sock, int percent);
+        int SDLNet_UDP_Bind(UDPsocket sock, int channel, const(IPaddress)* address);
+        void SDLNet_UDP_Unbind(UDPsocket sock, int channel);
+        IPaddress* SDLNet_UDP_GetPeerAddress(UDPsocket sock, int channel);
+        int SDLNet_UDP_SendV(UDPsocket sock, UDPpacket** packets, int npackets);
+        int SDLNet_UDP_Send(UDPsocket sock, int channel, UDPpacket* packet);
+        int SDLNet_UDP_RecvV(UDPsocket sock, UDPpacket** packets);
+        int SDLNet_UDP_Recv(UDPsocket sock, UDPpacket* packet);
+        void SDLNet_UDP_Close(UDPsocket sock);
+        SDLNet_SocketSet SDLNet_AllocSocketSet(int maxsockets);
+        int SDLNet_AddSocket(SDLNet_SocketSet set, SDLNet_GenericSocket sock);
+        int SDLNet_DelSocket(SDLNet_SocketSet set, SDLNet_GenericSocket sock);
+        int SDLNet_CheckSockets(SDLNet_SocketSet set, uint timeout);
+        void SDLNet_FreeSocketSet(SDLNet_SocketSet set);
+        void SDLNet_SetError(const(char)* fmt, ...);
         const(char)* SDLNet_GetError();
     }
 }
@@ -137,36 +136,36 @@ else {
         alias pSDLNet_Linked_Version = const(SDLNet_Version)* function();
         alias pSDLNet_Init = int function();
         alias pSDLNet_Quit = void function();
-        alias pSDLNet_ResolveHost = int function(IPaddress*,const(char)*,Uint16);
-        alias pSDLNet_ResolveIP = const(char)* function(const(IPaddress)*);
-        alias pSDLNet_GetLocalAddresses = int function(IPaddress*,int);
-        alias pSDLNet_TCP_Open = TCPsocket function(IPaddress*);
-        alias pSDLNet_TCP_Accept = TCPsocket function(TCPsocket);
-        alias pSDLNet_TCP_GetPeerAddress = IPaddress* function(TCPsocket);
-        alias pSDLNet_TCP_Send = int function(TCPsocket,const(void)*,int);
-        alias pSDLNet_TCP_Recv = int function(TCPsocket,void*,int);
-        alias pSDLNet_TCP_Close = void function(TCPsocket);
-        alias pSDLNet_AllocPacket = UDPpacket* function(int);
-        alias pSDLNet_ResizePacket = int function(UDPpacket*,int);
-        alias pSDLNet_FreePacket = void function(UDPpacket*);
-        alias pSDLNet_AllocPacketV = UDPpacket** function(int,int);
-        alias pSDLNet_FreePacketV = void function(UDPpacket**);
-        alias pSDLNet_UDP_Open = UDPsocket function(Uint16);
-        alias pSDLNet_UDP_SetPacketLoss = void function(UDPsocket,int);
-        alias pSDLNet_UDP_Bind = int function(UDPsocket,int,const(IPaddress)*);
-        alias pSDLNet_UDP_Unbind = void function(UDPsocket,int);
-        alias pSDLNet_UDP_GetPeerAddress = IPaddress* function(UDPsocket,int);
-        alias pSDLNet_UDP_SendV = int function(UDPsocket,UDPpacket**,int);
-        alias pSDLNet_UDP_Send = int function(UDPsocket,int,UDPpacket*);
-        alias pSDLNet_UDP_RecvV = int function(UDPsocket,UDPpacket**);
-        alias pSDLNet_UDP_Recv = int function(UDPsocket,UDPpacket*);
-        alias pSDLNet_UDP_Close = void function(UDPsocket);
-        alias pSDLNet_AllocSocketSet = SDLNet_SocketSet function(int);
-        alias pSDLNet_AddSocket = int function(SDLNet_SocketSet,SDLNet_GenericSocket);
-        alias pSDLNet_DelSocket = int function(SDLNet_SocketSet,SDLNet_GenericSocket);
-        alias pSDLNet_CheckSockets = int function(SDLNet_SocketSet,Uint32);
-        alias pSDLNet_FreeSocketSet = void function(SDLNet_SocketSet);
-        alias pSDLNet_SetError = void function(const(char)* fmt,...);
+        alias pSDLNet_ResolveHost = int function(IPaddress* address, const(char)* host, ushort port);
+        alias pSDLNet_ResolveIP = const(char)* function(const(IPaddress)* ip);
+        alias pSDLNet_GetLocalAddresses = int function(IPaddress* addresses, int maxcount);
+        alias pSDLNet_TCP_Open = TCPsocket function(IPaddress* ip);
+        alias pSDLNet_TCP_Accept = TCPsocket function(TCPsocket server);
+        alias pSDLNet_TCP_GetPeerAddress = IPaddress* function(TCPsocket sock);
+        alias pSDLNet_TCP_Send = int function(TCPsocket sock, const(void)* data, int len);
+        alias pSDLNet_TCP_Recv = int function(TCPsocket sock, void* data, int len);
+        alias pSDLNet_TCP_Close = void function(TCPsocket sock);
+        alias pSDLNet_AllocPacket = UDPpacket* function(int size);
+        alias pSDLNet_ResizePacket = int function(UDPpacket* packet, int newsize);
+        alias pSDLNet_FreePacket = void function(UDPpacket* packet);
+        alias pSDLNet_AllocPacketV = UDPpacket** function(int howmany, int size);
+        alias pSDLNet_FreePacketV = void function(UDPpacket** packetV);
+        alias pSDLNet_UDP_Open = UDPsocket function(ushort port);
+        alias pSDLNet_UDP_SetPacketLoss = void function(UDPsocket sock, int percent);
+        alias pSDLNet_UDP_Bind = int function(UDPsocket sock, int channel, const(IPaddress)* address);
+        alias pSDLNet_UDP_Unbind = void function(UDPsocket sock, int channel);
+        alias pSDLNet_UDP_GetPeerAddress = IPaddress* function(UDPsocket sock, int channel);
+        alias pSDLNet_UDP_SendV = int function(UDPsocket sock, UDPpacket** packets, int npackets);
+        alias pSDLNet_UDP_Send = int function(UDPsocket sock, int channel, UDPpacket* packet);
+        alias pSDLNet_UDP_RecvV = int function(UDPsocket sock, UDPpacket** packets);
+        alias pSDLNet_UDP_Recv = int function(UDPsocket sock, UDPpacket* packet);
+        alias pSDLNet_UDP_Close = void function(UDPsocket sock);
+        alias pSDLNet_AllocSocketSet = SDLNet_SocketSet function(int maxsockets);
+        alias pSDLNet_AddSocket = int function(SDLNet_SocketSet set, SDLNet_GenericSocket sock);
+        alias pSDLNet_DelSocket = int function(SDLNet_SocketSet set, SDLNet_GenericSocket sock);
+        alias pSDLNet_CheckSockets = int function(SDLNet_SocketSet set, uint timeout);
+        alias pSDLNet_FreeSocketSet = void function(SDLNet_SocketSet set);
+        alias pSDLNet_SetError = void function(const(char)* fmt, ...);
         alias pSDLNet_GetError = const(char)* function();
     }
 

@@ -101,9 +101,8 @@ static if(sdlSupport >= SDLSupport.sdl2014) {
         SDL_CONTROLLER_BUTTON_TOUCHPAD,
         SDL_CONTROLLER_BUTTON_MAX,
     }
-    mixin(expandEnum!SDL_GameControllerButton);
 }
-else static if(sdlSupport >= SDLSupport.sdl2012) {
+else {
     enum SDL_GameControllerButton {
         SDL_CONTROLLER_BUTTON_INVALID = -1,
         SDL_CONTROLLER_BUTTON_A,
@@ -123,8 +122,8 @@ else static if(sdlSupport >= SDLSupport.sdl2012) {
         SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
         SDL_CONTROLLER_BUTTON_MAX,
     }
-    mixin(expandEnum!SDL_GameControllerButton);
 }
+mixin(expandEnum!SDL_GameControllerButton);
 
 static if(sdlSupport >= SDLSupport.sdl202) {
     @nogc nothrow

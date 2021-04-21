@@ -105,7 +105,7 @@ static if(staticBinding) {
         int TTF_SizeUTF8(TTF_Font* font, const(char)* text, int* w, int* h);
         int TTF_SizeUNICODE(TTF_Font* font, const(ushort)* text, int* w, int* h);
         SDL_Surface* TTF_RenderText_Solid(TTF_Font* font, const(char)* text, SDL_Color fg);
-        SDL_Surface* TTF_RenderUTF8_Solid(TTfgt* font, const(char)* text, SDL_Color fg);
+        SDL_Surface* TTF_RenderUTF8_Solid(TTF_Font* font, const(char)* text, SDL_Color fg);
         SDL_Surface* TTF_RenderUNICODE_Solid(TTF_Font* font, const(ushort)* text, SDL_Color fg);
         SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font* font, ushort ch, SDL_Color fg);
         SDL_Surface* TTF_RenderText_Shaded(TTF_Font* font, const(char)* text, SDL_Color fg, SDL_Color bg);
@@ -122,7 +122,7 @@ static if(staticBinding) {
         void TTF_CloseFont(TTF_Font* font);
         void TTF_Quit();
         int TTF_WasInit();
-        int TTF_GetFontKerningSize(TTF_Font font, int prev_index, int index);
+        int TTF_GetFontKerningSize(TTF_Font* font, int prev_index, int index);
 
         static if(sdlTTFSupport >= SDLTTFSupport.sdlTTF2014)  {
             int TTF_GetFontKerningSizeGlyph(TTF_Font* font, ushort previous_ch, ushort ch);

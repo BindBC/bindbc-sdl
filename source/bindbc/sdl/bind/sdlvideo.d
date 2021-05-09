@@ -438,7 +438,7 @@ static if(staticBinding) {
         void SDL_GetWindowSize(SDL_Window* window, int* w, int* h);
         void SDL_SetWindowMinimumSize(SDL_Window* window, int min_w, int min_h);
         void SDL_GetWindowMinimumSize(SDL_Window* window, int* w, int* h);
-        void SDL_SetWindowMaximumSize(SDL_Window* window, int max_w, int ,max_h);
+        void SDL_SetWindowMaximumSize(SDL_Window* window, int max_w, int max_h);
         void SDL_GetWindowMaximumSize(SDL_Window* window, int* w, int* h);
         void SDL_SetWindowBordered(SDL_Window* window, SDL_bool bordered);
         void SDL_ShowWindow(SDL_Window* window);

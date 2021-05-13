@@ -430,10 +430,10 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_AndroidGetActivity, "SDL_AndroidGetActivity");
 
         lib.bindSymbol(cast(void**)&SDL_AndroidGetInternalStoragePath, "SDL_AndroidGetInternalStoragePath");
-        lib.bindSymbol(cast(void**)&SDL_AndroidGetInternalStorageState, "SDL_AndroidGetInternalStorageState");
-        lib.bindSymbol(cast(void**)&SDL_AndroidGetExternalStoragePath, "SDL_AndroidGetExternalStoragePath");
-    }
 
+        lib.bindSymbol(cast(void**)&SDL_AndroidGetExternalStoragePath, "SDL_AndroidGetExternalStoragePath");
+        lib.bindSymbol(cast(void**)&SDL_AndroidGetExternalStorageState, "SDL_AndroidGetExternalStorageState");
+    }
     lib.bindSymbol(cast(void**)&SDL_GetWindowWMInfo, "SDL_GetWindowWMInfo");
     lib.bindSymbol(cast(void**)&SDL_CreateThread, "SDL_CreateThread");
     lib.bindSymbol(cast(void**)&SDL_GetThreadName, "SDL_GetThreadName");

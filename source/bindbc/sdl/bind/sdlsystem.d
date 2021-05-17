@@ -31,7 +31,7 @@ static if(staticBinding) {
             void* SDL_AndroidGetJNIEnv();
             void* SDL_AndroidGetActivity();
             const(char)* SDL_AndroidGetInternalStoragePath();
-            int SDL_AndroidGetInternalStorageState();
+            int SDL_AndroidGetExternalStorageState();
             const(char)* SDL_AndroidGetExternalStoragePath();
 
             static if(sdlSupport >= SDLSupport.sdl208) {
@@ -74,7 +74,7 @@ else {
             alias pSDL_AndroidGetJNIEnv = void* function();
             alias pSDL_AndroidGetActivity = void* function();
             alias pSDL_AndroidGetInternalStoragePath = const(char)* function();
-            alias pSDL_AndroidGetInternalStorageState = int function();
+            alias pSDL_AndroidGetExternalStorageState = int function();
             alias pSDL_AndroidGetExternalStoragePath = const(char)* function();
         }
 
@@ -83,7 +83,7 @@ else {
             pSDL_AndroidGetActivity SDL_AndroidGetActivity;
 
             pSDL_AndroidGetInternalStoragePath SDL_AndroidGetInternalStoragePath;
-            pSDL_AndroidGetInternalStorageState SDL_AndroidGetInternalStorageState;
+            pSDL_AndroidGetExternalStorageState SDL_AndroidGetExternalStorageState;
             pSDL_AndroidGetExternalStoragePath SDL_AndroidGetExternalStoragePath;
         }
         static if(sdlSupport >= SDLSupport.sdl208) {

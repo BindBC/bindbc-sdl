@@ -167,7 +167,7 @@ bool loadLib() {
             logError(info.error, info.message);
         }
 
-        // Optionally onstruct a user-friendly error message for the user
+        // Optionally construct a user-friendly error message for the user
         string msg;
         if(ret == SDLSupport.noLibrary) {
             msg = "This application requires the SDL library.";

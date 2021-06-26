@@ -13,13 +13,13 @@ import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlsurface : SDL_Surface;
 import bindbc.sdl.bind.sdlvideo : SDL_Window;
 
-enum SDL_RendererFlags : uint {
+enum : uint {
     SDL_RENDERER_SOFTWARE = 0x00000001,
     SDL_RENDERER_ACCELERATED = 0x00000002,
     SDL_RENDERER_PRESENTVSYNC = 0x00000004,
     SDL_RENDERER_TARGETTEXTURE = 0x00000008,
 }
-mixin(expandEnum!SDL_RendererFlags);
+alias SDL_RendererFlags = uint;
 
 struct SDL_RendererInfo {
     const(char)* name;

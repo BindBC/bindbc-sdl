@@ -8,37 +8,20 @@ module bindbc.sdl.bind.sdlblendmode;
 
 import bindbc.sdl.config;
 
+// SDL_BlendMode
+enum SDL_BLENDMODE_NONE = 0x00000000;
+enum SDL_BLENDMODE_BLEND = 0x00000001;
+enum SDL_BLENDMODE_ADD = 0x00000002;
+enum SDL_BLENDMODE_MOD = 0x00000004;
 static if(sdlSupport >= SDLSupport.sdl2012) {
-    enum SDL_BlendMode {
-        SDL_BLENDMODE_NONE = 0x00000000,
-        SDL_BLENDMODE_BLEND = 0x00000001,
-        SDL_BLENDMODE_ADD = 0x00000002,
-        SDL_BLENDMODE_MOD = 0x00000004,
-        SDL_BLENDMODE_MUL = 0x00000008,
-        SDL_BLENDMODE_INVALID = 0x7FFFFFFF,
-    }
+    enum SDL_BLENDMODE_MUL = 0x00000008;
 }
-else static if(sdlSupport >= SDLSupport.sdl206) {
-    enum SDL_BlendMode {
-        SDL_BLENDMODE_NONE = 0x00000000,
-        SDL_BLENDMODE_BLEND = 0x00000001,
-        SDL_BLENDMODE_ADD = 0x00000002,
-        SDL_BLENDMODE_MOD = 0x00000004,
-        SDL_BLENDMODE_INVALID = 0x7FFFFFFF,
-    }
+static if(sdlSupport >= SDLSupport.sdl206) {
+    enum SDL_BLENDMODE_INVALID = 0x7FFFFFFF;
 }
-else {
-    enum SDL_BlendMode {
-        SDL_BLENDMODE_NONE = 0x00000000,
-        SDL_BLENDMODE_BLEND = 0x00000001,
-        SDL_BLENDMODE_ADD = 0x00000002,
-        SDL_BLENDMODE_MOD = 0x00000004,
-    }
-}
-mixin(expandEnum!SDL_BlendMode);
+alias SDL_BlendMode = int;
 
 static if(sdlSupport >= SDLSupport.sdl206) {
-
     enum SDL_BlendOperation {
         SDL_BLENDOPERATION_ADD = 0x1,
         SDL_BLENDOPERATION_SUBTRACT = 0x2,

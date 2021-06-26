@@ -34,15 +34,13 @@ __NOTE__: The C API from `SDL_atomics.h` is only partially implemented. It also 
 ### The dynamic bindings
 The dynamic bindings require no special configuration when using DUB to manage your project. There is no link-time dependency. At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the SDL DLLs with your program. On other systems, it usually means installing the SDL runtime libraries through a package manager.
 
-To load the shared libraries, you need to call the appropriate load function. The load functions return
-    * a binding-specific value indicating either that the library or one or more of its symbols were not found, or
-    * a version number that matches a global constant based on the compile-time configuration.
+To load the shared libraries, you need to call the appropriate load function. This returns a member of the `SDLSupport` enumeration:
+
+* `SDLsupport.noLibrary` indicating that the library failed to load (it couldn't be found)
+* `SDLsupport.badLibrary` indicating that one or more symbols in the library failed to load
+* a member of `SDLsupport` indicating a version number that matches the version of SDL that bindbc-sdl was configured at compile-time to load. By default, that is `SDLsupport.glfw30`, but can be configured via a version identifier (see below). This value will match the global manifest constant, `sdlSupport`.
 
 ```d
-/*
- The package modules for any satellite libraries you have configured will be publicly imported with this single import
- statement.
-*/
 import bindbc.sdl;
 
 /*
@@ -50,95 +48,32 @@ import bindbc.sdl;
  system.
 */
 SDLSupport ret = loadSDL();
-if(ret != sdlSupport) {
+if(ret !=sdlSupport) {
+
     /*
-     Handle error. For most use cases, it's enough to use the error handling API in bindbc-loader to obtain and log
-     error messages. If necessary, it's possible to determine the primary cause programmtically. See below for details.
+     Handle error. For most use cases, it's reasonable to use the the error handling API in bindbc-loader to retrieve
+     error messages for logging and then abort. If necessary, it's possible to determine the root cause via the return
+     value:
     */
-    ...
-}
-/*
- This version attempts to load the SDL library using a user-supplied file name. Usually, the name and/or path will be
- platform specific, as in this example which attempts to load SDL2.dll from the libs subdirectory, relative to the
- executable, only on Windows. It has the same return values as the version above.
 
- Note that this can cause problems with some of the SDL satellite libraries unless special care is taken. See the
- section of the README titled "Loading from outside the DLL search path".
-*/
-version(Windows) {
-    auto ret = loadSDL("libs/SDL2.dll");
-    if(ret != sdlSupport) {
-        // Error handling as above.
+    if(ret == SDLSupport.noLibrary) {
+        // The SDL shared library failed to load
     }
-}
-
-/*
- The satellite library loaders also have the same two versions of the load functions, named according to the library
- name. Only the parameterless versions are shown here. These return values to those returned by loadSDL, but in an enum
- namespace that matches the library name: SDLImageSupport, SDLMixerSupport, and SDLTTFSupport.
-*/
-if(loadSDLImage() != sdlImageSupport) {
-    /* handle error */
-}
-if(loadSDLMixer() != sdlMixerSupport) {
-    /* handle error */
-}
-if(loadSDLNet() != sdlNetSupport) {
-    /* handle error */
-}
-if(loadSDLTTF() != sdlTTFSupport) {
-    /* handle error */
-}
-```
-By default, each bindbc-sdl binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via specific version identifiers. It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4:
-
-__dub.json__
-```
-"dependencies": {
-    "bindbc-sdl": "~>1.0.0"
-},
-"versions": ["SDL_204"]
-```
-
-__dub.sdl__
-```
-dependency "bindbc-sdl" version="~>1.0.0"
-versions "SDL_204"
-```
-
-When bindbc-sdl is configured with `SDL_204`, then `sdlSupport` is set at compile time to `SDLSupport.sdl204` and `loadSDL` will return `SDLSupport.sdl204` on a successful load. However, it's possible for the binding to be compiled for a higher version of SDL than that on the user's system. In that case, `loadSDL` will return `SDLSupport.badLibrary`. It's still possible to use that version of the library as long as you remember not to call any of the unloaded functions from the higher version. To determine the version actually loaded, call the function `loadedSDLVersion`.
-
-The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not. (See [the README for bindbc.loader](https://github.com/BindBC/bindbc-loader/blob/master/README.md) for the error handling API.)
-
-```d
-SDLSupport ret = loadSDL();
-if(ret != sdlSupport) {
-    if(SDLSupport.badLibrary) {
+    else if(SDLSupport.badLibrary) {
         /*
-         Let's say we've configured support for SDL 2.0.10 for some of the functions added to the SDL renderer API in
-         that version and don't use them if they aren't available. Let's further say that the absolute minimum version
-         of SDL we require is 2.0.4, because we rely on some of the functions that version added to the SDL API.
-
-         In this scenario, `SDLSupport.badLibrary` indicates that we have loaded a version of SDL that is less than
-         2.0.10. Maybe it's 2.0.9, or 2.0.2. We require at least 2.0.4, so we can check.
+         One or more symbols failed to load. The likely cause is that the shared library is for a lower version than bindbc-sdl was configured to load (via SDL_204, GLFW_2010 etc.)
         */
-        if(loadedSDLVersion < SDLSupport.sdl204) {
-            // Version too low. Handle the error.
-        }
-    }
-    /*
-     The only other possible return value is `SDLSupport.noLibrary`, indicating the SDL library or one of its
-     dependencies could not be found.
-    */
-    else {
-        // No library. Handle the error.
     }
 }
+/*
+ This version attempts to load the SDL library using a user-supplied file name. Usually, the name and/or path used
+ will be platform specific, as in this example which attempts to load `sdl2.dll` from the `libs` subdirectory,
+ relative to the executable, only on Windows.
+*/
+version(Windows) loadSDL("libs/sdl2.dll");
 ```
 
-The satellite libraries provide similar functions, e.g., `loadedSDLImageVersion` and `isSDLImageLoaded`.
-
-For most use cases, it's probably not necessary to check for `SDLSupport.badLibrary` or `SDLSupport.noLibrary`. The bindbc-loader package provides [a means to fetch error information](https://github.com/BindBC/bindbc-loader#error-handling) regarding load failures. This information can be written to a log file before aborting the program.
+[The error reporting API](https://github.com/BindBC/bindbc-loader#error-handling) in bindbc-loader can be used to log error messages.
 
 ```d
 // Import the dependent package
@@ -181,6 +116,64 @@ bool loadLib() {
     return true;
 }
 ```
+
+By default, each bindbc-sdl binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via specific version identifiers. It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4:
+
+__dub.json__
+```
+"dependencies": {
+    "bindbc-sdl": "~>1.0.0"
+},
+"versions": ["SDL_204"]
+```
+
+__dub.sdl__
+```
+dependency "bindbc-sdl" version="~>1.0.0"
+versions "SDL_204"
+```
+
+With this example configuration, `sdlSupport` is configured at compile time as `SDLSupport.sdl204`. If SDL 2.0.4 or later is installed on the system, `loadSDL` will return `SDLSupport.sdl204`. If a lower version of SDL is installed, `loadSDL` will return `SDLSupport.badLibrary`. In this scenario, calling `loadedSDLVersion()` will return an `SDLSupport` member indicating which version of SDL, if any, actually loaded.
+
+If a lower version is loaded, it's still possible to call functions from that version of SDL, but any calls to functions from versions between that version and the one you configured will result in a null pointer access. For example, if you configured `SDL 2.0.4` and loaded `SDL 2.0.2`, then function pointers from both 2.0.3 and 2.0.4 will be `null`. For this reason, it's recommended to always specify your required version of the SDL library at compile time and abort when you receive an `SDLSupport.badLibrary` return value from `loadSDL`.
+
+No matter which version was configured, the successfully loaded version can be obtained via a call to `loadedSDLVersion`. It returns one of the following:
+
+* `SDLSupport.noLibrary` if `loadSDL` returned `SDLSupport.noLibrary`
+* `SDLSupport.badLibrary` if `loadSDL` returned `SDLSupport.badLibrary` and no version of SDL successfully loaded
+* a member of `SDLSupport` indicating the version of SDL that successfully loaded. When `loadSDL` returns `GLFWSupport.badLibrary`, this will be a version number lower than the one configured at compile time. Otherwise, it will be the same as the manifest constant `sdlSupport`.
+
+The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not.
+
+```d
+SDLSupport ret = loadSDL();
+if(ret != sdlSupport) {
+    if(SDLSupport.badLibrary) {
+        /*
+         Let's say we've configured support for SDL 2.0.10 for some of the functions added to the SDL renderer API in
+         that version and don't use them if they aren't available. Let's further say that the absolute minimum version
+         of SDL we require is 2.0.4, because we rely on some of the functions that version added to the SDL API.
+
+         In this scenario, `SDLSupport.badLibrary` indicates that we have loaded a version of SDL that is less than
+         2.0.10. Maybe it's 2.0.9, or 2.0.2. We require at least 2.0.4, so we can check.
+        */
+        if(loadedSDLVersion < SDLSupport.sdl204) {
+            // Version too low. Handle the error.
+        }
+    }
+    /*
+     The only other possible return value is `SDLSupport.noLibrary`, indicating the SDL library or one of its
+     dependencies could not be found.
+    */
+    else {
+        // No library. Handle the error.
+    }
+}
+```
+
+The satellite libraries provide similar functions, e.g., `loadedSDLImageVersion` and `isSDLImageLoaded`.
+
+For most use cases, it's probably not necessary to check for `SDLSupport.badLibrary` or `SDLSupport.noLibrary`. The bindbc-loader package provides [a means to fetch error information](https://github.com/BindBC/bindbc-loader#error-handling) regarding load failures. This information can be written to a log file before aborting the program.
 
 Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
 

@@ -74,10 +74,9 @@ version(BindSDL_TTF) enum bindSDLTTF = true;
 else enum bindSDLTTF = false;
 
 enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
-    string expandEnum = "enum {";
+    string expandEnum;
     foreach(m;__traits(allMembers, EnumType)) {
-        expandEnum ~= m ~ " = " ~ fqnEnumType ~ "." ~ m ~ ",";
+        expandEnum ~= "alias " ~ m ~ " = " ~ fqnEnumType ~ "." ~ m ~ ";";
     }
-    expandEnum  ~= "}";
     return expandEnum;
 }();

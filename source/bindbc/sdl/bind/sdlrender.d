@@ -150,6 +150,9 @@ static if(staticBinding) {
             int SDL_GetTextureScaleMode(SDL_Texture* texture, SDL_ScaleMode* scaleMode);
             int SDL_LockTextureToSurface(SDL_Texture* texture, const(SDL_Rect)* rect,SDL_Surface** surface);
         }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            int SDL_UpdateNVTexture(SDL_Texture* texture, const(SDL_Rect)* rect, const(ubyte)* Yplane, int Ypitch, const(ubyte)* UVplane, int UVpitch);
+        }
     }
 }
 else {
@@ -336,6 +339,14 @@ else {
             pSDL_SetTextureScaleMode SDL_SetTextureScaleMode;
             pSDL_GetTextureScaleMode SDL_GetTextureScaleMode;
             pSDL_LockTextureToSurface SDL_LockTextureToSurface;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        extern(C) @nogc nothrow {
+            alias pSDL_UpdateNVTexture = int function(SDL_Texture* texture, const(SDL_Rect)* rect, const(ubyte)* Yplane, int Ypitch, const(ubyte)* UVplane, int UVpitch);
+        }
+        __gshared {
+            pSDL_UpdateNVTexture SDL_UpdateNVTexture;
         }
     }
 }

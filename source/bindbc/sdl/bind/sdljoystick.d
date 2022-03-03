@@ -120,7 +120,7 @@ static if(staticBinding) {
             SDL_Joystick* SDL_JoystickFromPlayerIndex(int);
             void SDL_JoystickSetPlayerIndex(SDL_Joystick* joystick,int);
         }
-        static if(sdlSupport >= SDLSupport.sdl2012) {
+        static if(sdlSupport >= SDLSupport.sdl2014) {
             int SDL_JoystickAttachVirtual(SDL_JoystickType type, int naxes, int nbuttons, int nhats);
             int SDL_JoystickDetachVirtual(int device_index);
             SDL_bool SDL_JoystickIsVirtual(int device_index);
@@ -131,6 +131,9 @@ static if(staticBinding) {
             int SDL_JoystickRumbleTriggers(SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms);
             SDL_bool SDL_JoystickHasLED(SDL_Joystick* joystick);
             int SDL_JoystickSetLED(SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            int SDL_JoystickSendEffect(SDL_Joystick* joystick, const(void)*data, int size);
         }
     }
 }
@@ -279,6 +282,14 @@ else {
             pSDL_JoystickRumbleTriggers SDL_JoystickRumbleTriggers;
             pSDL_JoystickHasLED SDL_JoystickHasLED;
             pSDL_JoystickSetLED SDL_JoystickSetLED;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        extern(C) @nogc nothrow {
+            alias pSDL_JoystickSendEffect = int function(SDL_Joystick* joystick, const(void)*data, int size);
+        }
+        __gshared {
+            pSDL_JoystickSendEffect SDL_JoystickSendEffect;
         }
     }
 }

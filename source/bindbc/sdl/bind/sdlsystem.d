@@ -48,6 +48,9 @@ static if(staticBinding) {
             static if(sdlSupport >= SDLSupport.sdl2014) {
                 SDL_bool SDL_AndroidRequestPermission(const(char)* permission);
             }
+            static if(sdlSupport >= SDLSupport.sdl2016) {
+                int SDL_AndroidShowToast(const(char)* message, int duration, int gravity, int xoffset, int yoffset);
+            }
         }
         else version(Windows) {
             static if(sdlSupport >= SDLSupport.sdl201) {
@@ -59,6 +62,9 @@ static if(staticBinding) {
             }
             static if(sdlSupport >= SDLSupport.sdl204) {
                 void SDL_SetWindowsMessageHook(SDL_WindowsMessageHook callback, void* userdata);
+            }
+            static if(sdlSupport >= SDLSupport.sdl2016) {
+                void SDL_RenderGetD3D11Device(SDL_Renderer* renderer);
             }
         }
         else version(linux) {
@@ -125,6 +131,14 @@ else {
                 pSDL_AndroidRequestPermission SDL_AndroidRequestPermission;
             }
         }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            extern(C) @nogc nothrow {
+                alias pSDL_AndroidShowToast = int function(const(char)* message, int duration, int gravity, int xoffset, int yoffset);
+            }
+            __gshared {
+                pSDL_AndroidShowToast SDL_AndroidShowToast;
+            }
+        }
     }
     else version(Windows) {
         static if(sdlSupport >= SDLSupport.sdl201) {
@@ -156,6 +170,16 @@ else {
 
             __gshared {
                 pSDL_SetWindowsMessageHook SDL_SetWindowsMessageHook;
+            }
+        }
+
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            extern(C) @nogc nothrow {
+                alias pSDL_RenderGetD3D11Device = void function(SDL_Renderer* renderer);
+            }
+
+            __gshared {
+                pSDL_RenderGetD3D11Device SDL_RenderGetD3D11Device;
             }
         }
     }

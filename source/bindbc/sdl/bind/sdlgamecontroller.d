@@ -15,6 +15,21 @@ import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 struct SDL_GameController;
 
+static if(sdlSupport >= SDLSupport.sdl2016) {
+    enum SDL_GameControllerType {
+        SDL_CONTROLLER_TYPE_UNKNOWN = 0,
+        SDL_CONTROLLER_TYPE_XBOX360,
+        SDL_CONTROLLER_TYPE_XBOXONE,
+        SDL_CONTROLLER_TYPE_PS3,
+        SDL_CONTROLLER_TYPE_PS4,
+        SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+        SDL_CONTROLLER_TYPE_VIRTUAL,
+        SDL_CONTROLLER_TYPE_PS5,
+        SDL_CONTROLLER_TYPE_AMAZON_LUNA,
+        SDL_CONTROLLER_TYPE_GOOGLE_STADIA
+    }
+    mixin(expandEnum!SDL_GameControllerType);
+}
 static if(sdlSupport >= SDLSupport.sdl2014) {
     enum SDL_GameControllerType {
         SDL_CONTROLLER_TYPE_UNKNOWN = 0,
@@ -196,6 +211,10 @@ static if(staticBinding) {
             SDL_bool SDL_GameControllerHasLED(SDL_GameController* gamecontroller);
             int SDL_GameControllerSetLED(SDL_GameController* gamecontroller, ubyte red, ubyte green, ubyte blue);
         }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            int SDL_GameControllerSendEffect(SDL_GameController* gamecontroller, const(void)* data, int size);
+            float SDL_GameControllerGetSensorDataRate(SDL_GameController* gamecontroller, SDL_SensorType type);
+        }
     }
 }
 else {
@@ -340,6 +359,16 @@ else {
             pSDL_GameControllerRumbleTriggers SDL_GameControllerRumbleTriggers;
             pSDL_GameControllerHasLED SDL_GameControllerHasLED;
             pSDL_GameControllerSetLED SDL_GameControllerSetLED;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GameControllerSendEffect = int function(SDL_GameController* gamecontroller, const(void)* data, int size);
+            alias pSDL_GameControllerGetSensorDataRate = int function(SDL_GameController* gamecontroller, SDL_SensorType type);
+        }
+        __gshared {
+            pSDL_GameControllerSendEffect SDL_GameControllerSendEffect;
+            pSDL_GameControllerGetSensorDataRate SDL_GameControllerGetSensorDataRate;
         }
     }
 }

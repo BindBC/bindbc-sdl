@@ -116,6 +116,9 @@ static if(staticBinding) {
         static if(sdlSupport >= SDLSupport.sdl209) {
             SDL_bool SDL_HasColorKey(SDL_Surface* surface);
         }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            int SDL_SoftStretchLinear(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, const SDL_Rect* dstrect);
+        }
     }
 }
 else {
@@ -228,6 +231,16 @@ else {
 
         __gshared {
             pSDL_HasColorKey SDL_HasColorKey;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        extern(C) @nogc nothrow {
+            alias pSDL_SoftStretchLinear = int function(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, const SDL_Rect* dstrect);
+        }
+
+        __gshared {
+            pSDL_SoftStretchLinear SDL_SoftStretchLinear;
         }
     }
 }

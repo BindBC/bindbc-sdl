@@ -160,6 +160,11 @@ static if(sdlSupport >= SDLSupport.sdl2014) {
     enum SDL_HINT_PREFERRED_LOCALES = "SDL_PREFERRED_LOCALES";
 }
 
+static if(sdlSupport >= SDLSupport.sdl2016) {
+    enum SDL_HINT_AUDIO_INCLUDE_MONITORS = "SDL_AUDIO_INCLUDE_MONITORS";
+    enum SDL_HINT_AUDIO_DEVICE_STREAM_ROLE = "SDL_AUDIO_DEVICE_STREAM_ROLE";
+}
+
 enum SDL_HintPriority {
     SDL_HINT_DEFAULT,
     SDL_HINT_NORMAL,

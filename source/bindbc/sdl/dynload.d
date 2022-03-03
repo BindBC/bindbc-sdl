@@ -817,7 +817,28 @@ SDLSupport loadSDL(const(char)* libName)
     }
     
     static if(sdlSupport >= SDLSupport.sdl2018){
+        lib.bindSymbol(cast(void**)&SDL_RenderGeometry, "SDL_RenderGeometry");
+        lib.bindSymbol(cast(void**)&SDL_RenderGeometryRaw, "SDL_RenderGeometryRaw");
+        lib.bindSymbol(cast(void**)&SDL_SetTextureUserData, "SDL_SetTextureUserData");
+        lib.bindSymbol(cast(void**)&SDL_GetTextureUserData, "SDL_GetTextureUserData");
+        lib.bindSymbol(cast(void**)&SDL_RenderWindowToLogical, "SDL_RenderWindowToLogical");
+        lib.bindSymbol(cast(void**)&SDL_RenderLogicalToWindow, "SDL_RenderLogicalToWindow");
+        lib.bindSymbol(cast(void**)&SDL_RenderSetVSync, "SDL_RenderSetVSync");
+        lib.bindSymbol(cast(void**)&SDL_PremultiplyAlpha, "SDL_PremultiplyAlpha");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowICCProfile, "SDL_GetWindowICCProfile");
+        lib.bindSymbol(cast(void**)&SDL_SetWindowMouseRect, "SDL_SetWindowMouseRect");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowMouseRect, "SDL_GetWindowMouseRect");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumble, "SDL_GameControllerHasRumble");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumbleTriggers, "SDL_GameControllerHasRumbleTriggers");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumble, "SDL_JoystickHasRumble");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumbleTriggers, "SDL_JoystickHasRumbleTriggers");
         lib.bindSymbol(cast(void**)&SDL_GetTicks64, "SDL_GetTicks64");
+        version(iOS){
+            lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForButton, "SDL_GameControllerGetAppleSFSymbolsNameForButton");
+            lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForAxis, "SDL_GameControllerGetAppleSFSymbolsNameForAxis");
+        }else version(linux){
+            lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriorityAndPolicy, "SDL_LinuxSetThreadPriorityAndPolicy");
+        }
         
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2018;

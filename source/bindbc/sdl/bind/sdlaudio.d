@@ -176,6 +176,10 @@ static if(staticBinding) {
             void SDL_AudioStreamClear(SDL_AudioStream* stream);
             void SDL_FreeAudioStream(SDL_AudioStream* stream);
         }
+        
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            int SDL_GetAudioDeviceSpec(int index, int iscapture, SDL_AudioSpec *spec);
+        }
     }
 }
 else {
@@ -278,6 +282,16 @@ else {
             pSDL_AudioStreamFlush SDL_AudioStreamFlush;
             pSDL_AudioStreamClear SDL_AudioStreamClear;
             pSDL_FreeAudioStream SDL_FreeAudioStream;
+        }
+    }
+    
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GetAudioDeviceSpec = int function(int index, int iscapture, SDL_AudioSpec *spec);
+        }
+
+        __gshared {
+            pSDL_GetAudioDeviceSpec SDL_GetAudioDeviceSpec;
         }
     }
 }

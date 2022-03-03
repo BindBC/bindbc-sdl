@@ -307,6 +307,15 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     mixin(expandEnum!SDL_GLContextResetNotification);
 }
 
+ static if(sdlSupport >= SDLSupport.sdl2016) {
+    enum SDL_FlashOperation {
+        SDL_FLASH_CANCEL,
+        SDL_FLASH_BRIEFLY,
+        SDL_FLASH_UNTIL_FOCUSED
+    }
+    mixin(expandEnum!SDL_FlashOperation);
+}
+
 static if(staticBinding) {
     extern(C) @nogc nothrow {
         int SDL_GetNumVideoDrivers();
@@ -402,6 +411,11 @@ static if(staticBinding) {
         }
         static if(sdlSupport >= SDLSupport.sdl209) {
             SDL_DisplayOrientation SDL_GetDisplayOrientation(int displayIndex);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            int SDL_FlashWindow(SDL_Window* window, SDL_FlashOperation operation);
+            void SDL_SetWindowAlwaysOnTop(SDL_Window* window, SDL_bool on_top);
+            void SDL_SetWindowKeyboardGrab(SDL_Window* window, SDL_bool grabbed);
         }
     }
 }
@@ -615,6 +629,20 @@ else {
 
         __gshared {
             pSDL_GetDisplayOrientation SDL_GetDisplayOrientation;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        extern(C) @nogc nothrow {
+            alias pSDL_FlashWindow = int function(SDL_Window* window, SDL_FlashOperation operation);
+            alias pSDL_SetWindowAlwaysOnTop = void function(SDL_Window* window, SDL_bool on_top);
+            alias pSDL_SetWindowKeyboardGrab = void function(SDL_Window* window, SDL_bool grabbed);
+        }
+
+        __gshared {
+            pSDL_FlashWindow SDL_FlashWindow;
+            pSDL_SetWindowAlwaysOnTop SDL_SetWindowAlwaysOnTop;
+            pSDL_SetWindowKeyboardGrab SDL_SetWindowKeyboardGrab;
         }
     }
 }

@@ -30,7 +30,7 @@ static if(sdlSupport >= SDLSupport.sdl2016) {
     }
     mixin(expandEnum!SDL_GameControllerType);
 }
-static if(sdlSupport >= SDLSupport.sdl2014) {
+else static if(sdlSupport >= SDLSupport.sdl2014) {
     enum SDL_GameControllerType {
         SDL_CONTROLLER_TYPE_UNKNOWN = 0,
         SDL_CONTROLLER_TYPE_XBOX360,
@@ -215,6 +215,12 @@ static if(staticBinding) {
             int SDL_GameControllerSendEffect(SDL_GameController* gamecontroller, const(void)* data, int size);
             float SDL_GameControllerGetSensorDataRate(SDL_GameController* gamecontroller, SDL_SensorType type);
         }
+        static if(sdlSupport >= SDLSupport.sdl2018) {
+            SDL_bool SDL_GameControllerHasRumble(SDL_GameController* gamecontroller);
+            SDL_bool SDL_GameControllerHasRumbleTriggers(SDL_GameController* gamecontroller);
+            const(char)* SDL_GameControllerGetAppleSFSymbolsNameForButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+            const(char)* SDL_GameControllerGetAppleSFSymbolsNameForAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+        }
     }
 }
 else {
@@ -369,6 +375,20 @@ else {
         __gshared {
             pSDL_GameControllerSendEffect SDL_GameControllerSendEffect;
             pSDL_GameControllerGetSensorDataRate SDL_GameControllerGetSensorDataRate;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2018){
+        extern(C) @nogc nothrow {
+            alias pSDL_GameControllerHasRumble = SDL_bool function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerHasRumbleTriggers = SDL_bool function(SDL_GameController* gamecontroller);
+            alias pSDL_GameControllerGetAppleSFSymbolsNameForButton = const(char)* function(SDL_GameController* gamecontroller, SDL_GameControllerButton button);
+            alias pSDL_GameControllerGetAppleSFSymbolsNameForAxis = const(char)* function(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis);
+        }
+        __gshared {
+            pSDL_GameControllerHasRumble SDL_GameControllerHasRumble;
+            pSDL_GameControllerHasRumbleTriggers SDL_GameControllerHasRumbleTriggers;
+            pSDL_GameControllerGetAppleSFSymbolsNameForButton SDL_GameControllerGetAppleSFSymbolsNameForButton;
+            pSDL_GameControllerGetAppleSFSymbolsNameForAxis SDL_GameControllerGetAppleSFSymbolsNameForAxis;
         }
     }
 }

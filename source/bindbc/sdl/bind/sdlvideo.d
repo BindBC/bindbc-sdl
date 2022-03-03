@@ -416,6 +416,8 @@ static if(staticBinding) {
             int SDL_FlashWindow(SDL_Window* window, SDL_FlashOperation operation);
             void SDL_SetWindowAlwaysOnTop(SDL_Window* window, SDL_bool on_top);
             void SDL_SetWindowKeyboardGrab(SDL_Window* window, SDL_bool grabbed);
+            void SDL_SetWindowMouseGrab(SDL_Window* window, SDL_bool grabbed);
+            SDL_bool SDL_GetWindowMouseGrab(SDL_Window* window);
         }
     }
 }
@@ -637,12 +639,16 @@ else {
             alias pSDL_FlashWindow = int function(SDL_Window* window, SDL_FlashOperation operation);
             alias pSDL_SetWindowAlwaysOnTop = void function(SDL_Window* window, SDL_bool on_top);
             alias pSDL_SetWindowKeyboardGrab = void function(SDL_Window* window, SDL_bool grabbed);
+            alias pSDL_SetWindowMouseGrab = void function(SDL_Window* window, SDL_bool grabbed);
+            alias pSDL_GetWindowMouseGrab = SDL_bool function(SDL_Window* window);
         }
 
         __gshared {
             pSDL_FlashWindow SDL_FlashWindow;
             pSDL_SetWindowAlwaysOnTop SDL_SetWindowAlwaysOnTop;
             pSDL_SetWindowKeyboardGrab SDL_SetWindowKeyboardGrab;
+            pSDL_SetWindowMouseGrab SDL_SetWindowMouseGrab;
+            pSDL_GetWindowMouseGrab SDL_GetWindowMouseGrab;
         }
     }
 }

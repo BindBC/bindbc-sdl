@@ -168,7 +168,8 @@ static if(staticBinding) {
             void SDL_RenderWindowToLogical(SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY);
             void SDL_RenderLogicalToWindow(SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY);
             int SDL_RenderGeometry(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Vertex)* vertices, int num_vertices, const(int)* indices, int num_indices);
-            int SDL_RenderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
+            static if(sdlSupport >= SDLSupport.sdl2020) int SDL_RenderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
+            else int SDL_RenderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(int)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
             int SDL_RenderSetVSync(SDL_Renderer* renderer, int vsync);
         }
     }
@@ -374,7 +375,8 @@ else {
             alias pSDL_RenderWindowToLogical = void function(SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY);
             alias pSDL_RenderLogicalToWindow = void function(SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY);
             alias pSDL_RenderGeometry = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Vertex)* vertices, int num_vertices, const(int)* indices, int num_indices);
-            alias pSDL_RenderGeometryRaw = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
+            static if(sdlSupport >= SDLSupport.sdl2020) alias pSDL_RenderGeometryRaw = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
+            else alias pSDL_RenderGeometryRaw = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(int)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
             alias pSDL_RenderSetVSync = int function(SDL_Renderer* renderer, int vsync);
         }
         __gshared {

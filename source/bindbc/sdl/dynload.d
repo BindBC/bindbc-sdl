@@ -837,7 +837,7 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_hid_init, "SDL_hid_init");
         lib.bindSymbol(cast(void**)&SDL_hid_exit, "SDL_hid_exit");
         lib.bindSymbol(cast(void**)&SDL_hid_device_change_count, "SDL_hid_device_change_count");
-        lib.bindSymbol(cast(void**)&SDL_hid_enumerate, "SDL_hid_enumerate";
+        lib.bindSymbol(cast(void**)&SDL_hid_enumerate, "SDL_hid_enumerate");
         lib.bindSymbol(cast(void**)&SDL_hid_free_enumeration, "SDL_hid_free_enumeration");
         lib.bindSymbol(cast(void**)&SDL_hid_open, "SDL_hid_open");
         lib.bindSymbol(cast(void**)&SDL_hid_open_path, "SDL_hid_open_path");

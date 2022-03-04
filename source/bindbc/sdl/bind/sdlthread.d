@@ -89,6 +89,9 @@ static if(staticBinding) {
             version(Windows) SDL_Thread* SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread);
             else SDL_Thread* SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data);
         }
+        static if(sdlSupport >= SDLSupport.sdl2016) {
+            void SDL_TLSCleanup();
+        }
     }
 }
 else {
@@ -135,6 +138,16 @@ else {
 
         __gshared {
             pSDL_CreateThreadWithStackSize SDL_CreateThreadWithStackSize;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+
+        extern(C) @nogc nothrow {
+            alias pSDL_TLSCleanup = void function();
+        }
+
+        __gshared {
+            pSDL_TLSCleanup SDL_TLSCleanup;
         }
     }
 }

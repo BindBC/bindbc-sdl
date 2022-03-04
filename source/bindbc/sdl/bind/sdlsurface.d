@@ -249,7 +249,7 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl2018) {
         extern(C) @nogc nothrow {
-            alias pSDL_PremultiplyAlpha = int function(int width, int height, uint src_format, const(void)* src, int src_pitch, uint dst_format, void* dst, int dst_pitch)
+            alias pSDL_PremultiplyAlpha = int function(int width, int height, uint src_format, const(void)* src, int src_pitch, uint dst_format, void* dst, int dst_pitch);
         }
 
         __gshared {

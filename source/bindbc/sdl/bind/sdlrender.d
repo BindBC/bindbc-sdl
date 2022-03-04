@@ -12,6 +12,7 @@ import bindbc.sdl.bind.sdlrect;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 import bindbc.sdl.bind.sdlsurface : SDL_Surface;
 import bindbc.sdl.bind.sdlvideo : SDL_Window;
+import bindbc.sdl.bind.sdlpixels : SDL_Color;
 
 enum : uint {
     SDL_RENDERER_SOFTWARE = 0x00000001,
@@ -37,6 +38,14 @@ static if(sdlSupport >= SDLSupport.sdl2012) {
         SDL_ScaleModeBest,
     }
     mixin(expandEnum!SDL_ScaleMode);
+}
+
+static if(sdlSupport >= SDLSupport.sdl2018) {
+    struct SDL_Vertex {
+        SDL_FPoint position;
+        SDL_Color color;
+        SDL_FPoint tex_coord;
+    }
 }
 
 enum SDL_TextureAccess {

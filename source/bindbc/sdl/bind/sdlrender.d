@@ -153,6 +153,15 @@ static if(staticBinding) {
         static if(sdlSupport >= SDLSupport.sdl2016) {
             int SDL_UpdateNVTexture(SDL_Texture* texture, const(SDL_Rect)* rect, const(ubyte)* Yplane, int Ypitch, const(ubyte)* UVplane, int UVpitch);
         }
+        static if(sdlSupport >= SDLSupport.sdl2018) {
+            int SDL_SetTextureUserData(SDL_Texture* texture, void* userdata);
+            void* SDL_GetTextureUserData(SDL_Texture* texture);
+            void SDL_RenderWindowToLogical(SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY);
+            void SDL_RenderLogicalToWindow(SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY);
+            int SDL_RenderGeometry(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Vertex)* vertices, int num_vertices, const(int)* indices, int num_indices);
+            int SDL_RenderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
+            int SDL_RenderSetVSync(SDL_Renderer* renderer, int vsync);
+        }
     }
 }
 else {
@@ -347,6 +356,26 @@ else {
         }
         __gshared {
             pSDL_UpdateNVTexture SDL_UpdateNVTexture;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2018) {
+        extern(C) @nogc nothrow {
+            alias pSDL_SetTextureUserData = int function(SDL_Texture* texture, void* userdata);
+            alias pSDL_GetTextureUserData = void* function(SDL_Texture* texture);
+            alias pSDL_RenderWindowToLogical = void function(SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY);
+            alias pSDL_RenderLogicalToWindow = void function(SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY);
+            alias pSDL_RenderGeometry = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Vertex)* vertices, int num_vertices, const(int)* indices, int num_indices);
+            alias pSDL_RenderGeometryRaw = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
+            alias pSDL_RenderSetVSync = int function(SDL_Renderer* renderer, int vsync);
+        }
+        __gshared {
+            pSDL_SetTextureUserData SDL_SetTextureUserData;
+            pSDL_GetTextureUserData SDL_GetTextureUserData;
+            pSDL_RenderWindowToLogical SDL_RenderWindowToLogical;
+            pSDL_RenderLogicalToWindow SDL_RenderLogicalToWindow;
+            pSDL_RenderGeometry SDL_RenderGeometry;
+            pSDL_RenderGeometryRaw SDL_RenderGeometryRaw;
+            pSDL_RenderSetVSync SDL_RenderSetVSync;
         }
     }
 }

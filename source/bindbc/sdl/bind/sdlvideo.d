@@ -419,6 +419,12 @@ static if(staticBinding) {
             void SDL_SetWindowMouseGrab(SDL_Window* window, SDL_bool grabbed);
             SDL_bool SDL_GetWindowMouseGrab(SDL_Window* window);
         }
+        static if(sdlSupport >= SDLSupport.sdl2018) {
+            void* SDL_GetWindowICCProfile(SDL_Window* window, size_t* size);
+            int SDL_SetWindowMouseRect(SDL_Window* window, const(SDL_Rect)* rect);
+            const(SDL_Rect)* SDL_GetWindowMouseRect(SDL_Window* window);
+            
+        }
     }
 }
 else {
@@ -649,6 +655,20 @@ else {
             pSDL_SetWindowKeyboardGrab SDL_SetWindowKeyboardGrab;
             pSDL_SetWindowMouseGrab SDL_SetWindowMouseGrab;
             pSDL_GetWindowMouseGrab SDL_GetWindowMouseGrab;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2018) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GetWindowICCProfile = void* function(SDL_Window* window, size_t* size);
+            alias pSDL_SetWindowMouseRect = int function(SDL_Window* window, const(SDL_Rect)* rect);
+            alias pSDL_GetWindowMouseRect = const(SDL_Rect)* function(SDL_Window* window);
+        }
+
+        __gshared {
+            pSDL_GetWindowICCProfile SDL_GetWindowICCProfile;
+            pSDL_SetWindowMouseRect SDL_SetWindowMouseRect;
+            pSDL_GetWindowMouseRect SDL_GetWindowMouseRect;
         }
     }
 }

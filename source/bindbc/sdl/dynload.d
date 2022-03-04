@@ -833,6 +833,25 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_JoystickHasRumble, "SDL_JoystickHasRumble");
         lib.bindSymbol(cast(void**)&SDL_JoystickHasRumbleTriggers, "SDL_JoystickHasRumbleTriggers");
         lib.bindSymbol(cast(void**)&SDL_GetTicks64, "SDL_GetTicks64");
+        lib.bindSymbol(cast(void**)&SDL_NumHaptics, "SDL_NumHaptics");
+        lib.bindSymbol(cast(void**)&SDL_hid_init, "SDL_hid_init");
+        lib.bindSymbol(cast(void**)&SDL_hid_exit, "SDL_hid_exit");
+        lib.bindSymbol(cast(void**)&SDL_hid_device_change_count, "SDL_hid_device_change_count");
+        lib.bindSymbol(cast(void**)&SDL_hid_enumerate, "SDL_hid_enumerate";
+        lib.bindSymbol(cast(void**)&SDL_hid_free_enumeration, "SDL_hid_free_enumeration");
+        lib.bindSymbol(cast(void**)&SDL_hid_open, "SDL_hid_open");
+        lib.bindSymbol(cast(void**)&SDL_hid_open_path, "SDL_hid_open_path");
+        lib.bindSymbol(cast(void**)&SDL_hid_write, "SDL_hid_write");
+        lib.bindSymbol(cast(void**)&SDL_hid_read_timeout, "SDL_hid_read_timeout");
+        lib.bindSymbol(cast(void**)&SDL_hid_read, "SDL_hid_read");
+        lib.bindSymbol(cast(void**)&SDL_hid_set_nonblocking, "SDL_hid_set_nonblocking");
+        lib.bindSymbol(cast(void**)&SDL_hid_send_feature_report, "SDL_hid_send_feature_report");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_feature_report, "SDL_hid_get_feature_report");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_manufacturer_string, "SDL_hid_get_manufacturer_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_product_string, "SDL_hid_get_product_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_serial_number_string, "SDL_hid_get_serial_number_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_indexed_string, "SDL_hid_get_indexed_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_ble_scan, "SDL_hid_ble_scan");
         version(iOS){
             lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForButton, "SDL_GameControllerGetAppleSFSymbolsNameForButton");
             lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForAxis, "SDL_GameControllerGetAppleSFSymbolsNameForAxis");

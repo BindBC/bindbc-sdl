@@ -71,6 +71,9 @@ static if(staticBinding) {
             static if(sdlSupport >= SDLSupport.sdl209) {
                 int SDL_LinuxSetThreadPriority(long threadID, int priority);
             }
+            static if(sdlSupport >= SDLSupport.sdl2018) {
+                int SDL_LinuxSetThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy);
+            }
         }
     }
 }
@@ -191,6 +194,16 @@ else {
 
             __gshared {
                 pSDL_LinuxSetThreadPriority SDL_LinuxSetThreadPriority;
+            }
+        }
+
+        static if(sdlSupport >= SDLSupport.sdl2018) {
+            extern(C) @nogc nothrow {
+                alias pSDL_LinuxSetThreadPriorityAndPolicy = int function(long threadID, int sdlPriority, int schedPolicy);
+            }
+
+            __gshared {
+                pSDL_LinuxSetThreadPriorityAndPolicy SDL_LinuxSetThreadPriorityAndPolicy;
             }
         }
     }

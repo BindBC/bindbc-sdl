@@ -433,6 +433,10 @@ struct SDL_MouseWheelEvent {
     static if(sdlSupport >= SDLSupport.sdl204) {
         uint direction;
     }
+    static if(sdlSupport >= SDLSupport.sdl2018) {
+        float preciseX;
+        float preciseY;
+    }
 }
 
 struct SDL_JoyAxisEvent {

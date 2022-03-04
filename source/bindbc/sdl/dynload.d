@@ -794,6 +794,81 @@ SDLSupport loadSDL(const(char)* libName)
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2014;
     }
+    
+    static if(sdlSupport >= SDLSupport.sdl2016){
+        lib.bindSymbol(cast(void**)&SDL_FlashWindow, "SDL_FlashWindow");
+        lib.bindSymbol(cast(void**)&SDL_GetAudioDeviceSpec, "SDL_GetAudioDeviceSpec");
+        lib.bindSymbol(cast(void**)&SDL_SetWindowAlwaysOnTop, "SDL_SetWindowAlwaysOnTop");
+        lib.bindSymbol(cast(void**)&SDL_SetWindowKeyboardGrab, "SDL_SetWindowKeyboardGrab");
+        lib.bindSymbol(cast(void**)&SDL_SoftStretchLinear, "SDL_SoftStretchLinear");
+        lib.bindSymbol(cast(void**)&SDL_UpdateNVTexture, "SDL_UpdateNVTexture");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerSendEffect, "SDL_GameControllerSendEffect");
+        lib.bindSymbol(cast(void**)&SDL_JoystickSendEffect, "SDL_JoystickSendEffect");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetSensorDataRate, "SDL_GameControllerGetSensorDataRate");
+        version(Android){
+            lib.bindSymbol(cast(void**)&SDL_AndroidShowToast, "SDL_AndroidShowToast");
+        }else version(Windows){
+            lib.bindSymbol(cast(void**)&SDL_SetWindowsMessageHook, "SDL_SetWindowsMessageHook");
+            lib.bindSymbol(cast(void**)&SDL_RenderGetD3D11Device, "SDL_RenderGetD3D11Device");
+        }
+        
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2016;
+    }
+    
+    static if(sdlSupport >= SDLSupport.sdl2018){
+        lib.bindSymbol(cast(void**)&SDL_RenderGeometry, "SDL_RenderGeometry");
+        lib.bindSymbol(cast(void**)&SDL_RenderGeometryRaw, "SDL_RenderGeometryRaw");
+        lib.bindSymbol(cast(void**)&SDL_SetTextureUserData, "SDL_SetTextureUserData");
+        lib.bindSymbol(cast(void**)&SDL_GetTextureUserData, "SDL_GetTextureUserData");
+        lib.bindSymbol(cast(void**)&SDL_RenderWindowToLogical, "SDL_RenderWindowToLogical");
+        lib.bindSymbol(cast(void**)&SDL_RenderLogicalToWindow, "SDL_RenderLogicalToWindow");
+        lib.bindSymbol(cast(void**)&SDL_RenderSetVSync, "SDL_RenderSetVSync");
+        lib.bindSymbol(cast(void**)&SDL_PremultiplyAlpha, "SDL_PremultiplyAlpha");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowICCProfile, "SDL_GetWindowICCProfile");
+        lib.bindSymbol(cast(void**)&SDL_SetWindowMouseRect, "SDL_SetWindowMouseRect");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowMouseRect, "SDL_GetWindowMouseRect");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumble, "SDL_GameControllerHasRumble");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumbleTriggers, "SDL_GameControllerHasRumbleTriggers");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumble, "SDL_JoystickHasRumble");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumbleTriggers, "SDL_JoystickHasRumbleTriggers");
+        lib.bindSymbol(cast(void**)&SDL_GetTicks64, "SDL_GetTicks64");
+        lib.bindSymbol(cast(void**)&SDL_NumHaptics, "SDL_NumHaptics");
+        lib.bindSymbol(cast(void**)&SDL_hid_init, "SDL_hid_init");
+        lib.bindSymbol(cast(void**)&SDL_hid_exit, "SDL_hid_exit");
+        lib.bindSymbol(cast(void**)&SDL_hid_device_change_count, "SDL_hid_device_change_count");
+        lib.bindSymbol(cast(void**)&SDL_hid_enumerate, "SDL_hid_enumerate");
+        lib.bindSymbol(cast(void**)&SDL_hid_free_enumeration, "SDL_hid_free_enumeration");
+        lib.bindSymbol(cast(void**)&SDL_hid_open, "SDL_hid_open");
+        lib.bindSymbol(cast(void**)&SDL_hid_open_path, "SDL_hid_open_path");
+        lib.bindSymbol(cast(void**)&SDL_hid_write, "SDL_hid_write");
+        lib.bindSymbol(cast(void**)&SDL_hid_read_timeout, "SDL_hid_read_timeout");
+        lib.bindSymbol(cast(void**)&SDL_hid_read, "SDL_hid_read");
+        lib.bindSymbol(cast(void**)&SDL_hid_set_nonblocking, "SDL_hid_set_nonblocking");
+        lib.bindSymbol(cast(void**)&SDL_hid_send_feature_report, "SDL_hid_send_feature_report");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_feature_report, "SDL_hid_get_feature_report");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_manufacturer_string, "SDL_hid_get_manufacturer_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_product_string, "SDL_hid_get_product_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_serial_number_string, "SDL_hid_get_serial_number_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_get_indexed_string, "SDL_hid_get_indexed_string");
+        lib.bindSymbol(cast(void**)&SDL_hid_ble_scan, "SDL_hid_ble_scan");
+        version(iOS){
+            lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForButton, "SDL_GameControllerGetAppleSFSymbolsNameForButton");
+            lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForAxis, "SDL_GameControllerGetAppleSFSymbolsNameForAxis");
+        }else version(linux){
+            lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriorityAndPolicy, "SDL_LinuxSetThreadPriorityAndPolicy");
+        }
+        
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2018;
+    }
+    
+    static if(sdlSupport >= SDLSupport.sdl2020){
+        //no new functions
+        
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2020;
+    }
 
     return loadedVersion;
 }

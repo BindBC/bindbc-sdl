@@ -174,6 +174,10 @@ static if(sdlSupport >= SDLSupport.sdl2018) {
     enum SDL_HINT_JOYSTICK_DEVICE = "SDL_JOYSTICK_DEVICE";
 }
 
+static if(sdlSupport >= SDLSupport.sdl2020) {
+    enum SDL_HINT_RENDER_LINE_METHOD = "SDL_RENDER_LINE_METHOD";
+}
+
 enum SDL_HintPriority {
     SDL_HINT_DEFAULT,
     SDL_HINT_NORMAL,

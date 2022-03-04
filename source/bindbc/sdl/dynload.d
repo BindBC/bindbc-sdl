@@ -864,6 +864,7 @@ SDLSupport loadSDL(const(char)* libName)
     }
     
     static if(sdlSupport >= SDLSupport.sdl2020){
+        //no new functions
         
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2020;

@@ -59,7 +59,6 @@ else {
         extern(C) @nogc nothrow {
             alias pSDL_GetTicks64 = ulong function();
         }
-
         __gshared {
             pSDL_GetTicks64 SDL_GetTicks64;
         }

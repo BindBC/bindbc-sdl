@@ -135,6 +135,10 @@ static if(staticBinding) {
         static if(sdlSupport >= SDLSupport.sdl2016) {
             int SDL_JoystickSendEffect(SDL_Joystick* joystick, const(void)*data, int size);
         }
+        static if(sdlSupport >= SDLSupport.sdl2018) {
+            SDL_bool SDL_JoystickHasRumble(SDL_Joystick* joystick);
+            SDL_bool SDL_JoystickHasRumbleTriggers(SDL_Joystick* joystick);
+        }
     }
 }
 else {
@@ -290,6 +294,16 @@ else {
         }
         __gshared {
             pSDL_JoystickSendEffect SDL_JoystickSendEffect;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2018) {
+        extern(C) @nogc nothrow {
+            alias pSDL_JoystickHasRumble = SDL_bool function(SDL_Joystick* joystick);
+            alias pSDL_JoystickHasRumbleTriggers = SDL_bool function(SDL_Joystick* joystick);
+        }
+        __gshared {
+            pSDL_JoystickHasRumble SDL_JoystickHasRumble;
+            pSDL_JoystickHasRumbleTriggers SDL_JoystickHasRumbleTriggers;
         }
     }
 }

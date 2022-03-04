@@ -117,7 +117,10 @@ static if(staticBinding) {
             SDL_bool SDL_HasColorKey(SDL_Surface* surface);
         }
         static if(sdlSupport >= SDLSupport.sdl2016) {
-            int SDL_SoftStretchLinear(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, const SDL_Rect* dstrect);
+            int SDL_SoftStretchLinear(SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, const(SDL_Rect)* dstrect);
+        }
+        static if(sdlSupport >= SDLSupport.sdl2018) {
+            int SDL_PremultiplyAlpha(int width, int height, uint src_format, const(void)* src, int src_pitch, uint dst_format, void* dst, int dst_pitch);
         }
     }
 }
@@ -236,11 +239,21 @@ else {
 
     static if(sdlSupport >= SDLSupport.sdl2016) {
         extern(C) @nogc nothrow {
-            alias pSDL_SoftStretchLinear = int function(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, const SDL_Rect* dstrect);
+            alias pSDL_SoftStretchLinear = int function(SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, const(SDL_Rect)* dstrect);
         }
 
         __gshared {
             pSDL_SoftStretchLinear SDL_SoftStretchLinear;
+        }
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2018) {
+        extern(C) @nogc nothrow {
+            alias pSDL_PremultiplyAlpha = int function(int width, int height, uint src_format, const(void)* src, int src_pitch, uint dst_format, void* dst, int dst_pitch)
+        }
+
+        __gshared {
+            pSDL_PremultiplyAlpha SDL_PremultiplyAlpha;
         }
     }
 }

@@ -50,4 +50,5 @@ import bindbc.sdl.bind.sdl,
 
 import bindbc.sdl.config;
 static if(sdlSupport >= SDLSupport.sdl209) public import bindbc.sdl.bind.sdlsensor;
+static if(sdlSupport >= SDLSupport.sdl2014) public import bindbc.sdl.bind.sdlmisc;
 static if(sdlSupport >= SDLSupport.sdl2018) public import bindbc.sdl.bind.sdlhidapi;

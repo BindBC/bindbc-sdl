@@ -787,6 +787,8 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_JoystickRumbleTriggers, "SDL_JoystickRumbleTriggers");
         lib.bindSymbol(cast(void**)&SDL_JoystickHasLED, "SDL_JoystickHasLED");
         lib.bindSymbol(cast(void**)&SDL_JoystickSetLED, "SDL_JoystickSetLED");
+        lib.bindSymbol(cast(void**)&SDL_OpenURL, "SDL_OpenURL");
+        
         version(Android) {
             lib.bindSymbol(cast(void**)&SDL_AndroidRequestPermission, "SDL_AndroidRequestPermission");
         }

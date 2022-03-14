@@ -22,7 +22,7 @@ enum {
     SDL_PRESSED = 1,
 }
 
-static if(sdlSupport >= SDLSupport.sdl209) {
+static if(sdlSupport >= SDLSupport.sdl2014) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,

@@ -796,15 +796,17 @@ SDLSupport loadSDL(const(char)* libName)
     }
     
     static if(sdlSupport >= SDLSupport.sdl2016){
-        lib.bindSymbol(cast(void**)&SDL_FlashWindow, "SDL_FlashWindow");
         lib.bindSymbol(cast(void**)&SDL_GetAudioDeviceSpec, "SDL_GetAudioDeviceSpec");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerSendEffect, "SDL_GameControllerSendEffect");
+        lib.bindSymbol(cast(void**)&SDL_GameControllerGetSensorDataRate, "SDL_GameControllerGetSensorDataRate");
+        lib.bindSymbol(cast(void**)&SDL_JoystickSendEffect, "SDL_JoystickSendEffect");lib.bindSymbol(cast(void**)&SDL_SoftStretchLinear, "SDL_SoftStretchLinear");
+        lib.bindSymbol(cast(void**)&SDL_UpdateNVTexture, "SDL_UpdateNVTexture");
+        lib.bindSymbol(cast(void**)&SDL_SoftStretchLinear, "SDL_SoftStretchLinear");
+        lib.bindSymbol(cast(void**)&SDL_FlashWindow, "SDL_FlashWindow");
         lib.bindSymbol(cast(void**)&SDL_SetWindowAlwaysOnTop, "SDL_SetWindowAlwaysOnTop");
         lib.bindSymbol(cast(void**)&SDL_SetWindowKeyboardGrab, "SDL_SetWindowKeyboardGrab");
-        lib.bindSymbol(cast(void**)&SDL_SoftStretchLinear, "SDL_SoftStretchLinear");
-        lib.bindSymbol(cast(void**)&SDL_UpdateNVTexture, "SDL_UpdateNVTexture");
-        lib.bindSymbol(cast(void**)&SDL_GameControllerSendEffect, "SDL_GameControllerSendEffect");
-        lib.bindSymbol(cast(void**)&SDL_JoystickSendEffect, "SDL_JoystickSendEffect");
-        lib.bindSymbol(cast(void**)&SDL_GameControllerGetSensorDataRate, "SDL_GameControllerGetSensorDataRate");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowKeyboardGrab, "SDL_GetWindowKeyboardGrab");
+        
         version(Android){
             lib.bindSymbol(cast(void**)&SDL_AndroidShowToast, "SDL_AndroidShowToast");
         }else version(Windows){

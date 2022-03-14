@@ -54,6 +54,10 @@ static if(sdlSupport >= SDLSupport.sdl206) {
 static if(sdlSupport >= SDLSupport.sdl206) {
     enum uint SDL_WINDOW_METAL = 0x20000000;
 }
+static if(sdlSupport >= SDLSupport.sdl2016) {
+    enum uint SDL_WINDOW_MOUSE_GRABBED = SDL_WINDOW_INPUT_GRABBED;
+    enum uint SDL_WINDOW_KEYBOARD_GRABBED = 0x00100000;
+}
 alias SDL_WindowFlags = uint;
 
 enum uint SDL_WINDOWPOS_UNDEFINED_MASK = 0x1FFF0000;
@@ -138,6 +142,15 @@ static if(sdlSupport >= SDLSupport.sdl209) {
         SDL_ORIENTATION_PORTRAIT_FLIPPED,
     }
     mixin(expandEnum!SDL_DisplayOrientation);
+}
+
+static if(sdlSupport >= SDLSupport.sdl2016) {
+    enum SDL_FlashOperation {
+        SDL_FLASH_CANCEL,
+        SDL_FLASH_BRIEFLY,
+        SDL_FLASH_UNTIL_FOCUSED
+    }
+    mixin(expandEnum!SDL_FlashOperation);
 }
 
 alias SDL_GLContext = void*;
@@ -299,7 +312,7 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     extern(C) nothrow alias SDL_HitTest = SDL_HitTestResult function(SDL_Window*,const(SDL_Point)*,void*);
 }
 
- static if(sdlSupport >= SDLSupport.sdl206) {
+static if(sdlSupport >= SDLSupport.sdl206) {
     enum SDL_GLContextResetNotification {
         SDL_GL_CONTEXT_RESET_NO_NOTIFICATION = 0x0000,
         SDL_GL_CONTEXT_RESET_LOSE_CONTEXT    = 0x0001,
@@ -307,14 +320,7 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     mixin(expandEnum!SDL_GLContextResetNotification);
 }
 
- static if(sdlSupport >= SDLSupport.sdl2016) {
-    enum SDL_FlashOperation {
-        SDL_FLASH_CANCEL,
-        SDL_FLASH_BRIEFLY,
-        SDL_FLASH_UNTIL_FOCUSED
-    }
-    mixin(expandEnum!SDL_FlashOperation);
-}
+ 
 
 static if(staticBinding) {
     extern(C) @nogc nothrow {
@@ -416,6 +422,7 @@ static if(staticBinding) {
             int SDL_FlashWindow(SDL_Window* window, SDL_FlashOperation operation);
             void SDL_SetWindowAlwaysOnTop(SDL_Window* window, SDL_bool on_top);
             void SDL_SetWindowKeyboardGrab(SDL_Window* window, SDL_bool grabbed);
+            SDL_bool SDL_GetWindowKeyboardGrab(SDL_Window * window);
             void SDL_SetWindowMouseGrab(SDL_Window* window, SDL_bool grabbed);
             SDL_bool SDL_GetWindowMouseGrab(SDL_Window* window);
         }
@@ -645,6 +652,7 @@ else {
             alias pSDL_FlashWindow = int function(SDL_Window* window, SDL_FlashOperation operation);
             alias pSDL_SetWindowAlwaysOnTop = void function(SDL_Window* window, SDL_bool on_top);
             alias pSDL_SetWindowKeyboardGrab = void function(SDL_Window* window, SDL_bool grabbed);
+            alias pSDL_GetWindowKeyboardGrab = SDL_bool function(SDL_Window* window);
             alias pSDL_SetWindowMouseGrab = void function(SDL_Window* window, SDL_bool grabbed);
             alias pSDL_GetWindowMouseGrab = SDL_bool function(SDL_Window* window);
         }
@@ -653,6 +661,7 @@ else {
             pSDL_FlashWindow SDL_FlashWindow;
             pSDL_SetWindowAlwaysOnTop SDL_SetWindowAlwaysOnTop;
             pSDL_SetWindowKeyboardGrab SDL_SetWindowKeyboardGrab;
+            pSDL_GetWindowKeyboardGrab SDL_GetWindowKeyboardGrab;
             pSDL_SetWindowMouseGrab SDL_SetWindowMouseGrab;
             pSDL_GetWindowMouseGrab SDL_GetWindowMouseGrab;
         }

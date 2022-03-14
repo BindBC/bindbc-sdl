@@ -13,7 +13,7 @@ To use any of the supported SDL libraries, add bindbc-sdl as a dependency to you
 __dub.json__
 ```
 dependencies {
-    "bindbc-sdl": "~>1.0.0",
+    "bindbc-sdl": "~>1.1.0",
 }
 "versions": [
     "SDL_Image",
@@ -23,7 +23,7 @@ dependencies {
 
 __dub.sdl__
 ```
-dependency "bindbc-sdl" version="~>1.0.0"
+dependency "bindbc-sdl" version="~>1.1.0"
 versions "SDL_Image" "SDL_TTF"
 ```
 
@@ -122,14 +122,14 @@ By default, each bindbc-sdl binding is configured to compile bindings for the lo
 __dub.json__
 ```
 "dependencies": {
-    "bindbc-sdl": "~>1.0.0"
+    "bindbc-sdl": "~>1.1.0"
 },
 "versions": ["SDL_204"]
 ```
 
 __dub.sdl__
 ```
-dependency "bindbc-sdl" version="~>1.0.0"
+dependency "bindbc-sdl" version="~>1.1.0"
 versions "SDL_204"
 ```
 
@@ -252,7 +252,7 @@ For example, when using the static bindings for SDL and SDL_image with DUB:
 __dub.json__
 ```
 "dependencies": {
-    "bindbc-sdl": "~>1.0.0"
+    "bindbc-sdl": "~>1.1.0"
 },
 "versions": ["BindSDL_Static", "SDL_Image"],
 "libs": ["SDL2", "SDL2_image"]
@@ -260,7 +260,7 @@ __dub.json__
 
 __dub.sdl__
 ```
-dependency "bindbc-sdl" version="~>1.0.0"
+dependency "bindbc-sdl" version="~>1.1.0"
 versions "BindSDL_Static" "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```
@@ -271,7 +271,7 @@ Instead of using DUB's `versions` directive, a `subConfiguration` can be used. E
 __dub.json__
 ```
 "dependencies": {
-    "bindbc-sdl": "~>1.0.0"
+    "bindbc-sdl": "~>1.1.0"
 },
 "subConfigurations": {
     "bindbc-sdl": "static"
@@ -284,7 +284,7 @@ __dub.json__
 
 __dub.sdl__
 ```
-dependency "bindbc-sdl" version="~>1.0.0"
+dependency "bindbc-sdl" version="~>1.1.0"
 subConfiguration "bindbc-sdl" "static"
 versions "SDL_Image"
 libs "SDL2" "SDL2_image"
@@ -298,7 +298,7 @@ This has the benefit of completely excluding from the build any source modules r
 __dub.json__
 ```
 "dependencies": {
-    "bindbc-sdl": "~>1.0.0"
+    "bindbc-sdl": "~>1.1.0"
 },
 "subConfigurations": {
     "bindbc-sdl": "staticBC"
@@ -311,7 +311,7 @@ __dub.json__
 
 __dub.sdl__
 ```
-dependency "bindbc-sdl" version="~>1.0.0"
+dependency "bindbc-sdl" version="~>1.1.0"
 subConfiguration "bindbc-sdl" "staticBC"
 versions "SDL_Image"
 libs "SDL2" "SDL2_image"

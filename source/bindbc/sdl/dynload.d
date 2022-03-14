@@ -819,23 +819,8 @@ SDLSupport loadSDL(const(char)* libName)
     }
     
     static if(sdlSupport >= SDLSupport.sdl2018){
-        lib.bindSymbol(cast(void**)&SDL_RenderGeometry, "SDL_RenderGeometry");
-        lib.bindSymbol(cast(void**)&SDL_RenderGeometryRaw, "SDL_RenderGeometryRaw");
-        lib.bindSymbol(cast(void**)&SDL_SetTextureUserData, "SDL_SetTextureUserData");
-        lib.bindSymbol(cast(void**)&SDL_GetTextureUserData, "SDL_GetTextureUserData");
-        lib.bindSymbol(cast(void**)&SDL_RenderWindowToLogical, "SDL_RenderWindowToLogical");
-        lib.bindSymbol(cast(void**)&SDL_RenderLogicalToWindow, "SDL_RenderLogicalToWindow");
-        lib.bindSymbol(cast(void**)&SDL_RenderSetVSync, "SDL_RenderSetVSync");
-        lib.bindSymbol(cast(void**)&SDL_PremultiplyAlpha, "SDL_PremultiplyAlpha");
-        lib.bindSymbol(cast(void**)&SDL_GetWindowICCProfile, "SDL_GetWindowICCProfile");
-        lib.bindSymbol(cast(void**)&SDL_SetWindowMouseRect, "SDL_SetWindowMouseRect");
-        lib.bindSymbol(cast(void**)&SDL_GetWindowMouseRect, "SDL_GetWindowMouseRect");
         lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumble, "SDL_GameControllerHasRumble");
         lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumbleTriggers, "SDL_GameControllerHasRumbleTriggers");
-        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumble, "SDL_JoystickHasRumble");
-        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumbleTriggers, "SDL_JoystickHasRumbleTriggers");
-        lib.bindSymbol(cast(void**)&SDL_GetTicks64, "SDL_GetTicks64");
-        lib.bindSymbol(cast(void**)&SDL_NumHaptics, "SDL_NumHaptics");
         lib.bindSymbol(cast(void**)&SDL_hid_init, "SDL_hid_init");
         lib.bindSymbol(cast(void**)&SDL_hid_exit, "SDL_hid_exit");
         lib.bindSymbol(cast(void**)&SDL_hid_device_change_count, "SDL_hid_device_change_count");
@@ -854,6 +839,20 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_hid_get_serial_number_string, "SDL_hid_get_serial_number_string");
         lib.bindSymbol(cast(void**)&SDL_hid_get_indexed_string, "SDL_hid_get_indexed_string");
         lib.bindSymbol(cast(void**)&SDL_hid_ble_scan, "SDL_hid_ble_scan");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumble, "SDL_JoystickHasRumble");
+        lib.bindSymbol(cast(void**)&SDL_JoystickHasRumbleTriggers, "SDL_JoystickHasRumbleTriggers");
+        lib.bindSymbol(cast(void**)&SDL_SetTextureUserData, "SDL_SetTextureUserData");
+        lib.bindSymbol(cast(void**)&SDL_GetTextureUserData, "SDL_GetTextureUserData");
+        lib.bindSymbol(cast(void**)&SDL_RenderWindowToLogical, "SDL_RenderWindowToLogical");
+        lib.bindSymbol(cast(void**)&SDL_RenderLogicalToWindow, "SDL_RenderLogicalToWindow");
+        lib.bindSymbol(cast(void**)&SDL_RenderGeometry, "SDL_RenderGeometry");
+        lib.bindSymbol(cast(void**)&SDL_RenderGeometryRaw, "SDL_RenderGeometryRaw");
+        lib.bindSymbol(cast(void**)&SDL_RenderSetVSync, "SDL_RenderSetVSync");
+        lib.bindSymbol(cast(void**)&SDL_PremultiplyAlpha, "SDL_PremultiplyAlpha");
+        lib.bindSymbol(cast(void**)&SDL_GetTicks64, "SDL_GetTicks64");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowICCProfile, "SDL_GetWindowICCProfile");
+        lib.bindSymbol(cast(void**)&SDL_SetWindowMouseRect, "SDL_SetWindowMouseRect");
+        lib.bindSymbol(cast(void**)&SDL_GetWindowMouseRect, "SDL_GetWindowMouseRect");
         version(iOS){
             lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForButton, "SDL_GameControllerGetAppleSFSymbolsNameForButton");
             lib.bindSymbol(cast(void**)&SDL_GameControllerGetAppleSFSymbolsNameForAxis, "SDL_GameControllerGetAppleSFSymbolsNameForAxis");

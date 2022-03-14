@@ -193,6 +193,7 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL 2.0.12          | SDL_2012         |
 |SDL 2.0.14          | SDL_2014         |
 |SDL 2.0.16          | SDL_2016         |
+|SDL 2.0.18          | SDL_2018         |
 |--                  | --               |
 |SDL_image 2.0.0     | SDL_Image, SDL_Image_200|
 |SDL_image 2.0.1     | SDL_Image_201    |

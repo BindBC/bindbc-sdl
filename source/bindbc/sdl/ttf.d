@@ -404,7 +404,7 @@ else {
     SDLTTFSupport loadSDLTTF(const(char)* libName)
     {
         lib = load(libName);
-        if(lib == invalidHnadle) {
+        if(lib == invalidHandle) {
             return SDLTTFSupport.noLibrary;
         }
 

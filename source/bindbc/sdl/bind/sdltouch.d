@@ -18,7 +18,7 @@ struct SDL_Finger {
     float pressure;
 }
 
-enum DL_TOUCH_MOUSEID = cast(uint)-1;
+enum SDL_TOUCH_MOUSEID = cast(uint)-1;
 
 static if(sdlSupport >= SDLSupport.sdl2010) {
     enum SDL_TouchDeviceType {

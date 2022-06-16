@@ -150,8 +150,8 @@ static if(staticBinding) {
             int SDL_RenderDrawRectsF(SDL_Renderer* renderer, const(SDL_FRect)* rects, int count);
             int SDL_RenderFillRectF(SDL_Renderer* renderer, const(SDL_FRect)* rect);
             int SDL_RenderFillRectsF(SDL_Renderer* renderer, const(SDL_FRect)* rects, int count);
-            int SDL_RenderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_FRect)* srcrect, const(SDL_FRect)* dstrect);
-            int SDL_RenderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_FRect)* srcrect, const(SDL_FRect)* dstrect, const(double) angle, const(SDL_FPoint)* center, const(SDL_RendererFlip) flip);
+            int SDL_RenderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Rect)* srcrect, const(SDL_FRect)* dstrect);
+            int SDL_RenderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Rect)* srcrect, const(SDL_FRect)* dstrect, const(double) angle, const(SDL_FPoint)* center, const(SDL_RendererFlip) flip);
             int SDL_RenderFlush(SDL_Renderer* renderer);
         }
         static if(sdlSupport >= SDLSupport.sdl2012) {
@@ -330,8 +330,8 @@ else {
             alias pSDL_RenderDrawRectsF = int function(SDL_Renderer* renderer, const(SDL_FRect)* rects, int count);
             alias pSDL_RenderFillRectF = int function(SDL_Renderer* renderer, const(SDL_FRect)* rect);
             alias pSDL_RenderFillRectsF = int function(SDL_Renderer* renderer, const(SDL_FRect)* rects, int count);
-            alias pSDL_RenderCopyF = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_FRect)* srcrect, const(SDL_FRect)* dstrect);
-            alias pSDL_RenderCopyExF = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_FRect)* srcrect, const(SDL_FRect)* dstrect, const(double) angle, const(SDL_FPoint)* center, const(SDL_RendererFlip) flip);
+            alias pSDL_RenderCopyF = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Rect)* srcrect, const(SDL_FRect)* dstrect);
+            alias pSDL_RenderCopyExF = int function(SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Rect)* srcrect, const(SDL_FRect)* dstrect, const(double) angle, const(SDL_FPoint)* center, const(SDL_RendererFlip) flip);
             alias pSDL_RenderFlush = int function(SDL_Renderer* renderer);
         }
         __gshared {

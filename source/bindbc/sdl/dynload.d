@@ -797,7 +797,7 @@ SDLSupport loadSDL(const(char)* libName)
         else loadedVersion = SDLSupport.sdl2014;
     }
     
-    static if(sdlSupport >= SDLSupport.sdl2016){
+    static if(sdlSupport >= SDLSupport.sdl2016) {
         lib.bindSymbol(cast(void**)&SDL_GetAudioDeviceSpec, "SDL_GetAudioDeviceSpec");
         lib.bindSymbol(cast(void**)&SDL_GameControllerSendEffect, "SDL_GameControllerSendEffect");
         lib.bindSymbol(cast(void**)&SDL_GameControllerGetSensorDataRate, "SDL_GameControllerGetSensorDataRate");
@@ -820,7 +820,7 @@ SDLSupport loadSDL(const(char)* libName)
         else loadedVersion = SDLSupport.sdl2016;
     }
     
-    static if(sdlSupport >= SDLSupport.sdl2018){
+    static if(sdlSupport >= SDLSupport.sdl2018) {
         lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumble, "SDL_GameControllerHasRumble");
         lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumbleTriggers, "SDL_GameControllerHasRumbleTriggers");
         lib.bindSymbol(cast(void**)&SDL_hid_init, "SDL_hid_init");
@@ -866,11 +866,30 @@ SDLSupport loadSDL(const(char)* libName)
         else loadedVersion = SDLSupport.sdl2018;
     }
     
-    static if(sdlSupport >= SDLSupport.sdl2020){
+    static if(sdlSupport >= SDLSupport.sdl2020) {
         //no new functions
         
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2020;
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        lib.bindSymbol(cast(void**)&SDL_ClearComposition, "SDL_ClearComposition");
+        lib.bindSymbol(cast(void**)&SDL_IsTextInputShown, "SDL_IsTextInputShown");
+        lib.bindSymbol(cast(void**)&SDL_HasIntersectionF, "SDL_HasIntersectionF");
+        lib.bindSymbol(cast(void**)&SDL_IntersectFRect, "SDL_IntersectFRect");
+        lib.bindSymbol(cast(void**)&SDL_UnionFRect, "SDL_UnionFRect");
+        lib.bindSymbol(cast(void**)&SDL_EncloseFPoints, "SDL_EncloseFPoints");
+        lib.bindSymbol(cast(void**)&SDL_IntersectFRectAndLine, "SDL_IntersectFRectAndLine");
+        lib.bindSymbol(cast(void**)&SDL_RenderGetWindow, "SDL_RenderGetWindow");
+        lib.bindSymbol(cast(void**)&SDL_GetTouchName, "SDL_GetTouchName");
+
+        version(Android) {
+            lib.bindSymbol(cast(void**)&SDL_AndroidSendMessage, "SDL_AndroidSendMessage");
+        }
+
+        if(errorCount() != errCount) return SDLSupport.badLibrary;
+        else loadedVersion = SDLSupport.sdl2022;
     }
 
     return loadedVersion;

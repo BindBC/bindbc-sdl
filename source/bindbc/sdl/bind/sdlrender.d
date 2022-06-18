@@ -172,6 +172,9 @@ static if(staticBinding) {
             else int SDL_RenderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(int)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices);
             int SDL_RenderSetVSync(SDL_Renderer* renderer, int vsync);
         }
+        static if(sdlSupport >= SDLSupport.sdl2022) {
+            SDL_Window* SDL_RenderGetWindow(SDL_Renderer* renderer);
+        }
     }
 }
 else {
@@ -387,6 +390,14 @@ else {
             pSDL_RenderGeometry SDL_RenderGeometry;
             pSDL_RenderGeometryRaw SDL_RenderGeometryRaw;
             pSDL_RenderSetVSync SDL_RenderSetVSync;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        extern(C) @nogc nothrow {
+            alias pSDL_RenderGetWindow = SDL_Window* function(SDL_Renderer* renderer);
+        }
+        __gshared {
+            pSDL_RenderGetWindow SDL_RenderGetWindow;
         }
     }
 }

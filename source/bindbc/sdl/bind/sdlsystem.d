@@ -51,6 +51,9 @@ static if(staticBinding) {
             static if(sdlSupport >= SDLSupport.sdl2016) {
                 int SDL_AndroidShowToast(const(char)* message, int duration, int gravity, int xoffset, int yoffset);
             }
+            static if(sdlSupport >= SDLSupport.sdl2022) {
+                int SDL_AndroidSendMessage(uint command, int param);
+            }
         }
         else version(Windows) {
             static if(sdlSupport >= SDLSupport.sdl201) {
@@ -140,6 +143,15 @@ else {
             }
             __gshared {
                 pSDL_AndroidShowToast SDL_AndroidShowToast;
+            }
+        }
+        static if(sdlSupport >= SDLSupport.sdl2022) {
+            extern(C) @nogc nothrow {
+                alias pSDL_AndroidSendMessage = int function(uint command, int param);
+            }
+
+            __gshared {
+                pSDL_AndroidSendMessage SDL_AndroidSendMessage;
             }
         }
     }

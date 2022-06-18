@@ -17,7 +17,10 @@ struct SDL_version {
 enum SDL_MAJOR_VERSION = 2;
 enum SDL_MINOR_VERSION = 0;
 
-version(SDL_2020) {
+version(SDL_2022) {
+    enum ubyte SDL_PATCHLEVEL = 22;
+}
+else version(SDL_2020) {
     enum ubyte SDL_PATCHLEVEL = 20;
 }
 else version(SDL_2018) {

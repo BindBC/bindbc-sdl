@@ -25,13 +25,15 @@ enum SDLSupport {
     sdl2016     = 2016,
     sdl2018     = 2018,
     sdl2020     = 2020,
+    sdl2022     = 2022,
 }
 
 version(BindBC_Static) version = BindSDL_Static;
 version(BindSDL_Static) enum staticBinding = true;
 else enum staticBinding = false;
 
-version(SDL_2020) enum sdlSupport = SDLSupport.sdl2020;
+version(SDL_2022) enum sdlSupport = SDLSupport.sdl2022;
+else version(SDL_2020) enum sdlSupport = SDLSupport.sdl2020;
 else version(SDL_2018) enum sdlSupport = SDLSupport.sdl2018;
 else version(SDL_2016) enum sdlSupport = SDLSupport.sdl2016;
 else version(SDL_2014) enum sdlSupport = SDLSupport.sdl2014;

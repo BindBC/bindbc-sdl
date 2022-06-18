@@ -24,6 +24,10 @@ alias Uint32 = uint;
 alias Sint64 = long;
 alias Uint64 = ulong;
 
+static if(sdlSupport >= SDLSupport.sdl2022) {
+    enum SDL_FLT_EPSILON = 1.1920928955078125e-07F;
+}
+
 enum SDL_FOURCC(char A, char B, char C, char D)  = ((A << 0) | (B << 8) | (C << 16) | (D << 24));
 
 static if(staticBinding) {

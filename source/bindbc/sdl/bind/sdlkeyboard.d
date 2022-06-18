@@ -38,6 +38,11 @@ static if(staticBinding) {
         void SDL_SetTextInputRect(SDL_Rect*);
         SDL_bool SDL_HasScreenKeyboardSupport();
         SDL_bool SDL_IsScreenKeyboardShown(SDL_Window* window);
+
+        static if(sdlSupport == SDLSupport.sdl2022) {
+            void SDL_ClearComposition();
+            SDL_bool SDL_IsTextInputShown();
+        }
     }
 }
 else {
@@ -77,5 +82,17 @@ else {
         pSDL_SetTextInputRect SDL_SetTextInputRect;
         pSDL_HasScreenKeyboardSupport SDL_HasScreenKeyboardSupport;
         pSDL_IsScreenKeyboardShown SDL_IsScreenKeyboardShown;
+    }
+
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        extern(C) @nogc nothrow {
+            alias pSDL_ClearComposition = void function();
+            alias pSDL_IsTextInputShown = SDL_bool function();
+        }
+
+        __gshared {
+            pSDL_ClearComposition SDL_ClearComposition;
+            pSDL_IsTextInputShown SDL_IsTextInputShown;
+        }
     }
 }

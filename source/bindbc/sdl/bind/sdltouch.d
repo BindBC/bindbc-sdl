@@ -42,6 +42,9 @@ static if(staticBinding) {
     static if(sdlSupport >= SDLSupport.sdl2010) {
         SDL_TouchDeviceType SDL_GetTouchDeviceType(SDL_TouchID touchID);
     }
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        const(char)* SDL_GetTouchName(int index);
+    }
 }
 else {
     extern(C) @nogc nothrow {
@@ -62,6 +65,14 @@ else {
         }
         __gshared {
             pSDL_GetTouchDeviceType SDL_GetTouchDeviceType;
+        }
+    }
+    static if(sdlSupport >= SDLSupport.sdl2010) {
+        extern(C) @nogc nothrow {
+            alias pSDL_GetTouchName = const(char)* function(int index);
+        }
+        __gshared {
+            pSDL_GetTouchName SDL_GetTouchName;
         }
     }
 }

@@ -22,7 +22,68 @@ enum {
     SDL_PRESSED = 1,
 }
 
-static if(sdlSupport >= SDLSupport.sdl2014) {
+static if(sdlSupport >= SDLSupport.sdl2022) {
+    enum SDL_EventType {
+        SDL_FIRSTEVENT = 0,
+        SDL_QUIT = 0x100,
+        SDL_APP_TERMINATING,
+        SDL_APP_LOWMEMORY,
+        SDL_APP_WILLENTERBACKGROUND,
+        SDL_APP_DIDENTERBACKGROUND,
+        SDL_APP_WILLENTERFOREGROUND,
+        SDL_APP_DIDENTERFOREGROUND,
+        SDL_LOCALECHANGED,
+        SDL_DISPLAYEVENT = 0x150,
+        SDL_WINDOWEVENT = 0x200,
+        SDL_SYSWMEVENT,
+        SDL_KEYDOWN = 0x300,
+        SDL_KEYUP,
+        SDL_TEXTEDITING,
+        SDL_TEXTINPUT,
+        SDL_KEYMAPCHANGED,
+        SDL_TEXTEDITING_EXT,
+        SDL_MOUSEMOTION = 0x400,
+        SDL_MOUSEBUTTONDOWN,
+        SDL_MOUSEBUTTONUP,
+        SDL_MOUSEWHEEL,
+        SDL_JOYAXISMOTION = 0x600,
+        SDL_JOYBALLMOTION,
+        SDL_JOYHATMOTION,
+        SDL_JOYBUTTONDOWN,
+        SDL_JOYBUTTONUP,
+        SDL_JOYDEVICEADDED,
+        SDL_JOYDEVICEREMOVED,
+        SDL_CONTROLLERAXISMOTION = 0x650,
+        SDL_CONTROLLERBUTTONDOWN,
+        SDL_CONTROLLERBUTTONUP,
+        SDL_CONTROLLERDEVICEADDED,
+        SDL_CONTROLLERDEVICEREMOVED,
+        SDL_CONTROLLERDEVICEREMAPPED,
+        SDL_CONTROLLERTOUCHPADDOWN,
+        SDL_CONTROLLERTOUCHPADMOTION,
+        SDL_CONTROLLERTOUCHPADUP,
+        SDL_CONTROLLERSENSORUPDATE,
+        SDL_FINGERDOWN = 0x700,
+        SDL_FINGERUP,
+        SDL_FINGERMOTION,
+        SDL_DOLLARGESTURE = 0x800,
+        SDL_DOLLARRECORD,
+        SDL_MULTIGESTURE,
+        SDL_CLIPBOARDUPDATE = 0x900,
+        SDL_DROPFILE = 0x1000,
+        SDL_DROPTEXT,
+        SDL_DROPBEGIN,
+        SDL_DROPCOMPLETE,
+        SDL_AUDIODEVICEADDED = 0x1100,
+        SDL_AUDIODEVICEREMOVED,
+        SDL_SENSORUPDATE = 0x1200,
+        SDL_RENDER_TARGETS_RESET = 0x2000,
+        SDL_RENDER_DEVICE_RESET,
+        SDL_USEREVENT = 0x8000,
+        SDL_LASTEVENT = 0xFFFF
+    }
+}
+else static if(sdlSupport >= SDLSupport.sdl2014) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -384,6 +445,15 @@ struct SDL_TextEditingEvent {
     int length;
 }
 
+struct SDL_TextEditingExtEvent {
+    SDL_EventType type;
+    uint timestamp;
+    uint windowID;
+    char* text;
+    int start;
+    int length;
+}
+
 enum SDL_TEXTINPUTEVENT_TEXT_SIZE = 32;
 struct SDL_TextInputEvent {
     SDL_EventType type;
@@ -392,16 +462,18 @@ struct SDL_TextInputEvent {
     char[SDL_TEXTINPUTEVENT_TEXT_SIZE] text;
 }
 
-struct SDL_MouseMotionEvent {
-    SDL_EventType type;
-    uint timestamp;
-    uint windowID;
-    uint which;
-    uint state;
-    int x;
-    int y;
-    int xrel;
-    int yrel;
+static if(sdlSupport >= SDLSupport.sdl2022) {
+    struct SDL_MouseMotionEvent {
+        SDL_EventType type;
+        uint timestamp;
+        uint windowID;
+        uint which;
+        uint state;
+        int x;
+        int y;
+        int xrel;
+        int yrel;
+    }
 }
 
 struct SDL_MouseButtonEvent {
@@ -639,6 +711,9 @@ union SDL_Event {
     SDL_WindowEvent window;
     SDL_KeyboardEvent key;
     SDL_TextEditingEvent edit;
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        SDL_TextEditingExtEvent editExt;
+    }
     SDL_TextInputEvent text;
     SDL_MouseMotionEvent motion;
     SDL_MouseButtonEvent button;

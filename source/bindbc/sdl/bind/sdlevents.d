@@ -454,26 +454,26 @@ struct SDL_TextEditingExtEvent {
     int length;
 }
 
-enum SDL_TEXTINPUTEVENT_TEXT_SIZE = 32;
-struct SDL_TextInputEvent {
-    SDL_EventType type;
-    uint timestamp;
-    uint windowID;
-    char[SDL_TEXTINPUTEVENT_TEXT_SIZE] text;
-}
-
 static if(sdlSupport >= SDLSupport.sdl2022) {
-    struct SDL_MouseMotionEvent {
+    enum SDL_TEXTINPUTEVENT_TEXT_SIZE = 32;
+    struct SDL_TextInputEvent {
         SDL_EventType type;
         uint timestamp;
         uint windowID;
-        uint which;
-        uint state;
-        int x;
-        int y;
-        int xrel;
-        int yrel;
+        char[SDL_TEXTINPUTEVENT_TEXT_SIZE] text;
     }
+}
+
+struct SDL_MouseMotionEvent {
+    SDL_EventType type;
+    uint timestamp;
+    uint windowID;
+    uint which;
+    uint state;
+    int x;
+    int y;
+    int xrel;
+    int yrel;
 }
 
 struct SDL_MouseButtonEvent {

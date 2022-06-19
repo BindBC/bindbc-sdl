@@ -715,7 +715,9 @@ union SDL_Event {
         SDL_TextEditingExtEvent editExt;
     }
     SDL_TextInputEvent text;
-    SDL_MouseMotionEvent motion;
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        SDL_MouseMotionEvent motion;
+    }
     SDL_MouseButtonEvent button;
     SDL_MouseWheelEvent wheel;
     SDL_JoyAxisEvent jaxis;

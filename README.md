@@ -339,7 +339,7 @@ import bindbc.loader,
 version(Windows) setCustomLoaderSearchPath("dlls");
 
 if(loadSDL() < sdlSupport) { /* handle error */ }
-if(loadSDL_Image() < sdlImageSupport) { /* handle error */ }
+if(loadSDLImage() < sdlImageSupport) { /* handle error */ }
 
 // Give SDL_image a chance to load libpng and libjpeg
 auto flags = IMG_INIT_PNG | IMG_INIT_JPEG;

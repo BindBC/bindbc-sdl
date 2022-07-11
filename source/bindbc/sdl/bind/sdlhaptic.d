@@ -148,7 +148,7 @@ static if(staticBinding) {
         SDL_Haptic* SDL_HapticOpenFromMouse();
         int SDL_JoystickIsHaptic(SDL_Joystick* joystick);
         SDL_Haptic* SDL_HapticOpenFromJoystick(SDL_Joystick* joystick);
-        int SDL_HapticClose(SDL_Haptic* haptic);
+        void SDL_HapticClose(SDL_Haptic* haptic);
         int SDL_HapticNumEffects(SDL_Haptic* haptic);
         int SDL_HapticNumEffectsPlaying(SDL_Haptic* haptic);
         uint SDL_HapticQuery(SDL_Haptic* haptic);
@@ -182,7 +182,7 @@ else {
         alias pSDL_HapticOpenFromMouse = SDL_Haptic* function();
         alias pSDL_JoystickIsHaptic = int function(SDL_Joystick* joystick);
         alias pSDL_HapticOpenFromJoystick = SDL_Haptic* function(SDL_Joystick* joystick);
-        alias pSDL_HapticClose = int function(SDL_Haptic* haptic);
+        alias pSDL_HapticClose = void function(SDL_Haptic* haptic);
         alias pSDL_HapticNumEffects = int function(SDL_Haptic* haptic);
         alias pSDL_HapticNumEffectsPlaying = int function(SDL_Haptic* haptic);
         alias pSDL_HapticQuery = uint function(SDL_Haptic* haptic);

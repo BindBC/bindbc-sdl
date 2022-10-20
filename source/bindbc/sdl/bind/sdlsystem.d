@@ -155,7 +155,7 @@ else {
             }
         }
     }
-    else version(Windows) {
+    version(Windows) {
         static if(sdlSupport >= SDLSupport.sdl201) {
             extern(C) @nogc nothrow {
                 alias pSDL_Direct3D9GetAdapterIndex = int function(int displayIndex);
@@ -198,7 +198,7 @@ else {
             }
         }
     }
-    else version(linux) {
+    version(linux) {
         static if(sdlSupport >= SDLSupport.sdl209) {
             extern(C) @nogc nothrow {
                 alias pSDL_LinuxSetThreadPriority = int function(long threadID, int priority);

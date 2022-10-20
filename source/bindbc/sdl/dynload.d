@@ -706,7 +706,7 @@ SDLSupport loadSDL(const(char)* libName)
             lib.bindSymbol(cast(void**)&SDL_IsDeXMode, "SDL_IsDeXMode");
             lib.bindSymbol(cast(void**)&SDL_AndroidBackButton, "SDL_AndroidBackButton");
         }
-        else version(linux) {
+        version(linux) {
             lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriority, "SDL_LinuxSetThreadPriority");
         }
 
@@ -788,7 +788,7 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_JoystickHasLED, "SDL_JoystickHasLED");
         lib.bindSymbol(cast(void**)&SDL_JoystickSetLED, "SDL_JoystickSetLED");
         lib.bindSymbol(cast(void**)&SDL_OpenURL, "SDL_OpenURL");
-        
+
         version(Android) {
             lib.bindSymbol(cast(void**)&SDL_AndroidRequestPermission, "SDL_AndroidRequestPermission");
         }
@@ -796,7 +796,7 @@ SDLSupport loadSDL(const(char)* libName)
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2014;
     }
-    
+
     static if(sdlSupport >= SDLSupport.sdl2016) {
         lib.bindSymbol(cast(void**)&SDL_GetAudioDeviceSpec, "SDL_GetAudioDeviceSpec");
         lib.bindSymbol(cast(void**)&SDL_GameControllerSendEffect, "SDL_GameControllerSendEffect");
@@ -808,18 +808,18 @@ SDLSupport loadSDL(const(char)* libName)
         lib.bindSymbol(cast(void**)&SDL_SetWindowAlwaysOnTop, "SDL_SetWindowAlwaysOnTop");
         lib.bindSymbol(cast(void**)&SDL_SetWindowKeyboardGrab, "SDL_SetWindowKeyboardGrab");
         lib.bindSymbol(cast(void**)&SDL_GetWindowKeyboardGrab, "SDL_GetWindowKeyboardGrab");
-        
+
         version(Android){
             lib.bindSymbol(cast(void**)&SDL_AndroidShowToast, "SDL_AndroidShowToast");
         }else version(Windows){
             lib.bindSymbol(cast(void**)&SDL_SetWindowsMessageHook, "SDL_SetWindowsMessageHook");
             lib.bindSymbol(cast(void**)&SDL_RenderGetD3D11Device, "SDL_RenderGetD3D11Device");
         }
-        
+
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2016;
     }
-    
+
     static if(sdlSupport >= SDLSupport.sdl2018) {
         lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumble, "SDL_GameControllerHasRumble");
         lib.bindSymbol(cast(void**)&SDL_GameControllerHasRumbleTriggers, "SDL_GameControllerHasRumbleTriggers");
@@ -861,14 +861,14 @@ SDLSupport loadSDL(const(char)* libName)
         }else version(linux){
             lib.bindSymbol(cast(void**)&SDL_LinuxSetThreadPriorityAndPolicy, "SDL_LinuxSetThreadPriorityAndPolicy");
         }
-        
+
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2018;
     }
-    
+
     static if(sdlSupport >= SDLSupport.sdl2020) {
         //no new functions
-        
+
         if(errorCount() != errCount) return SDLSupport.badLibrary;
         else loadedVersion = SDLSupport.sdl2020;
     }

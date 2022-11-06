@@ -208,6 +208,7 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL_mixer 2.0.1     | SDL_Mixer_201    |
 |SDL_mixer 2.0.2     | SDL_Mixer_202    |
 |SDL_mixer 2.0.4     | SDL_Mixer_204    |
+|SDL_mixer 2.6.0, 2.6.1, 2.6.2| SDL_Mixer_260    |
 |--                  | --               |
 |SDL_net 2.0.0       | SDL_Net, SDL_Net_200|
 |SDL_net 2.0.1       | SDL_Net_201      |

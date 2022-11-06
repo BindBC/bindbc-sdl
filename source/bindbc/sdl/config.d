@@ -65,6 +65,7 @@ else version(SDL_Mixer_200) version = BindSDL_Mixer;
 else version(SDL_Mixer_201) version = BindSDL_Mixer;
 else version(SDL_Mixer_202) version = BindSDL_Mixer;
 else version(SDL_Mixer_204) version = BindSDL_Mixer;
+else version(SDL_Mixer_260) version = BindSDL_Mixer;
 version(BindSDL_Mixer) enum bindSDLMixer = true;
 else enum bindSDLMixer = false;
 

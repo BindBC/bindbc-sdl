@@ -27,6 +27,7 @@ static if(staticBinding) {
         SDL_sem* SDL_CreateSemaphore(uint initial_value);
         void SDL_DestroySemaphore(SDL_sem* sem);
         int SDL_SemWait(SDL_sem* sem);
+        int SDL_SemTryWait(SDL_sem* sem);
         int SDL_SemWaitTimeout(SDL_sem* sem, uint ms);
         int SDL_SemPost(SDL_sem* sem);
         uint SDL_SemValue(SDL_sem* sem);
@@ -50,6 +51,7 @@ else {
         alias pSDL_DestroySemaphore = void function(SDL_sem* sem);
 
         alias pSDL_SemWait = int function(SDL_sem* sem);
+        alias pSDL_SemTryWait = int function(SDL_sem* sem);
         alias pSDL_SemWaitTimeout = int function(SDL_sem* sem, uint ms);
         alias pSDL_SemPost = int function(SDL_sem* sem);
         alias pSDL_SemValue = uint function(SDL_sem* sem);
@@ -71,6 +73,7 @@ else {
         pSDL_CreateSemaphore SDL_CreateSemaphore;
         pSDL_DestroySemaphore SDL_DestroySemaphore;
         pSDL_SemWait SDL_SemWait;
+        pSDL_SemWait SDL_SemTryWait;
         pSDL_SemWaitTimeout SDL_SemWaitTimeout;
         pSDL_SemPost SDL_SemPost;
         pSDL_SemValue SDL_SemValue;

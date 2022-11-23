@@ -32,7 +32,6 @@ enum SDLMixerSupport {
 
 enum ubyte SDL_MIXER_MAJOR_VERSION = 2;
 
-//NOTE: Maybe make these into nice CTFE functions?
 version(SDL_Mixer_260) {
     enum sdlMixerSupport = SDLMixerSupport.sdlMixer260;
     enum ubyte SDL_MIXER_MINOR_VERSION = 6;
@@ -188,7 +187,7 @@ extern(C) nothrow {
     alias Mix_EffectDone_t = void function(int,void*);
 
     // These aren't in SDL_mixer.h and are just here as a convenient and
-    // visible means to add the proper attributes these callbacks.
+    // visible means to add the proper attributes to these callbacks.
     alias callbackVI = void function(int);
     alias callbackVPVPUbI = void function(void*,ubyte*,int);
     alias callbackV = void function();
@@ -314,7 +313,7 @@ static if(staticBinding) {
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
             int Mix_OpenAudioDevice(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);
             SDL_bool Mix_HasChunkDecoder(const(char)* name);
-            
+
             // Declared in SDL_mixer.h, but not implemented
             // SDL_bool Mix_HasMusicDecoder(const(char)*);
         }
@@ -474,9 +473,9 @@ else {
         pMix_GetChunk Mix_GetChunk;
         pMix_CloseAudio Mix_CloseAudio;
     }
-    
+
     static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
-        extern(C) @nogc nothrow { //regex /(^[^ ]+) ([0-9A-Za-z_]+)(.*)/ replace with /alias p$2 = $1 function$3/
+        extern(C) @nogc nothrow {
             alias pMix_LoadWAV = Mix_Chunk* function(const(char)* file);
             alias pMix_PlayChannel = int function(int channel, Mix_Chunk* chunk, int loops);
             alias pMix_FadeInChannel = int function(int channel, Mix_Chunk* chunk, int loops, int ms);
@@ -497,8 +496,8 @@ else {
             alias pMix_SetTimidityCfg = int function(const(char)* path);
             alias pMix_GetTimidityCfg = const(char)* function();
         }
-        
-        __gshared { //regex /(^[^ ]+) ([0-9A-Za-z_]+).*/ replace with /p$2 $2;/
+
+        __gshared {
             pMix_LoadWAV Mix_LoadWAV;
             pMix_PlayChannel Mix_PlayChannel;
             pMix_FadeInChannel Mix_FadeInChannel;
@@ -520,7 +519,7 @@ else {
             pMix_GetTimidityCfg Mix_GetTimidityCfg;
         }
     }
-    
+
     static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
         extern(C) @nogc nothrow {
             alias pMix_OpenAudioDevice = int function(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);

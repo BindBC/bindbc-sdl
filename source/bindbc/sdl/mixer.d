@@ -27,26 +27,35 @@ enum SDLMixerSupport {
     sdlMixer201 = 201,
     sdlMixer202 = 202,
     sdlMixer204 = 204,
+    sdlMixer260 = 260,
 }
 
 enum ubyte SDL_MIXER_MAJOR_VERSION = 2;
-enum ubyte SDL_MIXER_MINOR_VERSION = 0;
 
-version(SDL_Mixer_204) {
-    enum sdlMixerSupport = SDLMixerSupport.sdlMixer204;
-    enum ubyte SDL_MIXER_PATCHLEVEL = 4;
-}
-else version(SDL_Mixer_202) {
-    enum sdlMixerSupport = SDLMixerSupport.sdlMixer202;
-    enum ubyte SDL_MIXER_PATCHLEVEL = 2;
-}
-else version(SDL_Mixer_201) {
-    enum sdlMixerSupport = SDLMixerSupport.sdlMixer201;
-    enum ubyte SDL_MIXER_PATCHLEVEL = 1;
+//NOTE: Maybe make these into nice CTFE functions?
+version(SDL_Mixer_260) {
+    enum sdlMixerSupport = SDLMixerSupport.sdlMixer260;
+    enum ubyte SDL_MIXER_MINOR_VERSION = 6;
+    enum ubyte SDL_MIXER_PATCHLEVEL = 0;
 }
 else {
-    enum sdlMixerSupport = SDLMixerSupport.sdlMixer200;
-    enum ubyte SDL_MIXER_PATCHLEVEL = 0;
+    enum ubyte SDL_MIXER_MINOR_VERSION = 0;
+    version(SDL_Mixer_204) {
+        enum sdlMixerSupport = SDLMixerSupport.sdlMixer204;
+        enum ubyte SDL_MIXER_PATCHLEVEL = 4;
+    }
+    else version(SDL_Mixer_202) {
+        enum sdlMixerSupport = SDLMixerSupport.sdlMixer202;
+        enum ubyte SDL_MIXER_PATCHLEVEL = 2;
+    }
+    else version(SDL_Mixer_201) {
+        enum sdlMixerSupport = SDLMixerSupport.sdlMixer201;
+        enum ubyte SDL_MIXER_PATCHLEVEL = 1;
+    }
+    else {
+        enum sdlMixerSupport = SDLMixerSupport.sdlMixer200;
+        enum ubyte SDL_MIXER_PATCHLEVEL = 0;
+    }
 }
 
 alias MIX_MAJOR_VERSION = SDL_MIXER_MAJOR_VERSION;
@@ -96,13 +105,15 @@ else {
 }
 mixin(expandEnum!Mix_InitFlags);
 
-enum {
-    MIX_CHANNELS              = 8,
-    MIX_DEFAULT_FREQUENCY     = 22050,
-    MIX_DEFAULT_CHANNELS      = 2,
-    MIX_MAX_VOLUME            = 128,
-    MIX_CHANNEL_POST          = -2,
+enum MIX_CHANNELS = 8;
+static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
+    enum MIX_DEFAULT_FREQUENCY = 44100;
+} else {
+    enum MIX_DEFAULT_FREQUENCY = 22050;
 }
+enum MIX_DEFAULT_CHANNELS      = 2;
+enum MIX_MAX_VOLUME            = 128;
+enum MIX_CHANNEL_POST          = -2;
 
 version(LittleEndian) {
     enum MIX_DEFAULT_FORMAT = AUDIO_S16LSB;
@@ -184,20 +195,22 @@ extern(C) nothrow {
     alias callbackIPCPV = int function(const(char*),void*);
 }
 
-@nogc nothrow {
-    Mix_Chunk* Mix_LoadWAV(const(char)* file) {
-        pragma(inline, true);
-        return Mix_LoadWAV_RW(SDL_RWFromFile(file,"rb"),1);
-    }
+static if(sdlMixerSupport < SDLMixerSupport.sdlMixer260){
+    @nogc nothrow {
+        Mix_Chunk* Mix_LoadWAV(const(char)* file) {
+            pragma(inline, true);
+            return Mix_LoadWAV_RW(SDL_RWFromFile(file,"rb"),1);
+        }
 
-    int Mix_PlayChannel(int channel,Mix_Chunk* chunk,int loops) {
-        pragma(inline, true);
-        return Mix_PlayChannelTimed(channel,chunk,loops,-1);
-    }
+        int Mix_PlayChannel(int channel,Mix_Chunk* chunk,int loops) {
+            pragma(inline, true);
+            return Mix_PlayChannelTimed(channel,chunk,loops,-1);
+        }
 
-    int Mix_FadeInChannel(int channel,Mix_Chunk* chunk,int loops,int ms) {
-        pragma(inline, true);
-        return Mix_FadeInChannelTimed(channel,chunk,loops,ms,-1);
+        int Mix_FadeInChannel(int channel,Mix_Chunk* chunk,int loops,int ms) {
+            pragma(inline, true);
+            return Mix_FadeInChannelTimed(channel,chunk,loops,ms,-1);
+        }
     }
 }
 
@@ -271,16 +284,37 @@ static if(staticBinding) {
         int Mix_SetMusicCMD(const(char)* command);
         int Mix_SetSynchroValue(int value);
         int Mix_GetSynchroValue();
-        int Mix_SetSoundFonts(const char *paths);
+        int Mix_SetSoundFonts(const(char)* paths);
         const(char)* Mix_GetSoundFonts();
         int Mix_EachSoundFont(callbackIPCPV function_, void *data);
         Mix_Chunk* Mix_GetChunk(int channel);
         void Mix_CloseAudio();
 
+        static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
+            Mix_Chunk* Mix_LoadWAV(const(char)* file);
+            int Mix_PlayChannel(int channel, Mix_Chunk* chunk, int loops);
+            int Mix_FadeInChannel(int channel, Mix_Chunk* chunk, int loops, int ms);
+            SDL_bool Mix_HasMusicDecoder(const(char)* name);
+            const(char)* Mix_GetMusicTitle(const(Mix_Music)* music);
+            const(char)* Mix_GetMusicTitleTag(const(Mix_Music)* music);
+            const(char)* Mix_GetMusicArtistTag(const(Mix_Music)* music);
+            const(char)* Mix_GetMusicAlbumTag(const(Mix_Music)* music);
+            const(char)* Mix_GetMusicCopyrightTag(const(Mix_Music)* music);
+            int Mix_GetMusicVolume(Mix_Music* music);
+            int Mix_MasterVolume(int volume);
+            int Mix_ModMusicJumpToOrder(int order);
+            double Mix_GetMusicPosition(Mix_Music* music);
+            double Mix_MusicDuration(Mix_Music* music);
+            double Mix_GetMusicLoopStartTime(Mix_Music* music);
+            double Mix_GetMusicLoopEndTime(Mix_Music* music);
+            double Mix_GetMusicLoopLengthTime(Mix_Music* music);
+            int Mix_SetTimidityCfg(const(char)* path);
+            const(char)* Mix_GetTimidityCfg();
+        }
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
             int Mix_OpenAudioDevice(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);
             SDL_bool Mix_HasChunkDecoder(const(char)* name);
-
+            
             // Declared in SDL_mixer.h, but not implemented
             // SDL_bool Mix_HasMusicDecoder(const(char)*);
         }
@@ -358,7 +392,7 @@ else {
         alias pMix_SetMusicCMD = int function(const(char)* command);
         alias pMix_SetSynchroValue = int function(int value);
         alias pMix_GetSynchroValue = int function();
-        alias pMix_SetSoundFonts = int function(const char *paths);
+        alias pMix_SetSoundFonts = int function(const(char)* paths);
         alias pMix_GetSoundFonts = const(char)* function();
         alias pMix_EachSoundFont = int function(callbackIPCPV function_, void *data);
         alias pMix_GetChunk = Mix_Chunk* function(int channel);
@@ -440,8 +474,53 @@ else {
         pMix_GetChunk Mix_GetChunk;
         pMix_CloseAudio Mix_CloseAudio;
     }
-
-
+    
+    static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
+        extern(C) @nogc nothrow { //regex /(^[^ ]+) ([0-9A-Za-z_]+)(.*)/ replace with /alias p$2 = $1 function$3/
+            alias pMix_LoadWAV = Mix_Chunk* function(const(char)* file);
+            alias pMix_PlayChannel = int function(int channel, Mix_Chunk* chunk, int loops);
+            alias pMix_FadeInChannel = int function(int channel, Mix_Chunk* chunk, int loops, int ms);
+            alias pMix_HasMusicDecoder = SDL_bool function(const(char)* name);
+            alias pMix_GetMusicTitle = const(char)* function(const Mix_Music* music);
+            alias pMix_GetMusicTitleTag = const(char)* function(const Mix_Music* music);
+            alias pMix_GetMusicArtistTag = const(char)* function(const Mix_Music* music);
+            alias pMix_GetMusicAlbumTag = const(char)* function(const Mix_Music* music);
+            alias pMix_GetMusicCopyrightTag = const(char)* function(const Mix_Music* music);
+            alias pMix_GetMusicVolume = int function(Mix_Music* music);
+            alias pMix_MasterVolume = int function(int volume);
+            alias pMix_ModMusicJumpToOrder = int function(int order);
+            alias pMix_GetMusicPosition = double function(Mix_Music* music);
+            alias pMix_MusicDuration = double function(Mix_Music* music);
+            alias pMix_GetMusicLoopStartTime = double function(Mix_Music* music);
+            alias pMix_GetMusicLoopEndTime = double function(Mix_Music* music);
+            alias pMix_GetMusicLoopLengthTime = double function(Mix_Music* music);
+            alias pMix_SetTimidityCfg = int function(const(char)* path);
+            alias pMix_GetTimidityCfg = const(char)* function();
+        }
+        
+        __gshared { //regex /(^[^ ]+) ([0-9A-Za-z_]+).*/ replace with /p$2 $2;/
+            pMix_LoadWAV Mix_LoadWAV;
+            pMix_PlayChannel Mix_PlayChannel;
+            pMix_FadeInChannel Mix_FadeInChannel;
+            pMix_HasMusicDecoder Mix_HasMusicDecoder;
+            pMix_GetMusicTitle Mix_GetMusicTitle;
+            pMix_GetMusicTitleTag Mix_GetMusicTitleTag;
+            pMix_GetMusicArtistTag Mix_GetMusicArtistTag;
+            pMix_GetMusicAlbumTag Mix_GetMusicAlbumTag;
+            pMix_GetMusicCopyrightTag Mix_GetMusicCopyrightTag;
+            pMix_GetMusicVolume Mix_GetMusicVolume;
+            pMix_MasterVolume Mix_MasterVolume;
+            pMix_ModMusicJumpToOrder Mix_ModMusicJumpToOrder;
+            pMix_GetMusicPosition Mix_GetMusicPosition;
+            pMix_MusicDuration Mix_MusicDuration;
+            pMix_GetMusicLoopStartTime Mix_GetMusicLoopStartTime;
+            pMix_GetMusicLoopEndTime Mix_GetMusicLoopEndTime;
+            pMix_GetMusicLoopLengthTime Mix_GetMusicLoopLengthTime;
+            pMix_SetTimidityCfg Mix_SetTimidityCfg;
+            pMix_GetTimidityCfg Mix_GetTimidityCfg;
+        }
+    }
+    
     static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
         extern(C) @nogc nothrow {
             alias pMix_OpenAudioDevice = int function(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);

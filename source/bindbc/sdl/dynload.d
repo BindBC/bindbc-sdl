@@ -289,6 +289,7 @@ SDLSupport loadSDL(const(char)* libName)
     lib.bindSymbol(cast(void**)&SDL_CreateSemaphore, "SDL_CreateSemaphore");
     lib.bindSymbol(cast(void**)&SDL_DestroySemaphore, "SDL_DestroySemaphore");
     lib.bindSymbol(cast(void**)&SDL_SemWait, "SDL_SemWait");
+    lib.bindSymbol(cast(void**)&SDL_SemTryWait, "SDL_SemTryWait");
     lib.bindSymbol(cast(void**)&SDL_SemWaitTimeout, "SDL_SemWaitTimeout");
     lib.bindSymbol(cast(void**)&SDL_SemPost, "SDL_SemPost");
     lib.bindSymbol(cast(void**)&SDL_SemValue, "SDL_SemValue");

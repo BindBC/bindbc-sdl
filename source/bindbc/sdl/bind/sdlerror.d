@@ -8,23 +8,8 @@ module bindbc.sdl.bind.sdlerror;
 
 import bindbc.sdl.config;
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        void SDL_SetError(const(char)* fmt,...);
-        const(char)* SDL_GetError();
-        void SDL_ClearError();
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_SetError = void function(const(char)* fmt,...);
-        alias pSDL_GetError = const(char)* function();
-        alias pSDL_ClearError = void function();
-    }
-
-    __gshared {
-        pSDL_SetError SDL_SetError;
-        pSDL_GetError SDL_GetError;
-        pSDL_ClearError SDL_ClearError;
-    }
-}
+mixin(makeFnBinds!(
+    [q{void}, q{SDL_SetError}, q{const(char)* fmt, ...}],
+    [q{const(char)*}, q{SDL_GetError}, q{}],
+    [q{void}, q{SDL_ClearError}, q{}],
+));

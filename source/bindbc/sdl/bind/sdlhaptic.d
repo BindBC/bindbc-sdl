@@ -137,104 +137,35 @@ union SDL_HapticEffect {
     SDL_HapticCustom custom;
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        int SDL_NumHaptics();
-        const(char)* SDL_HapticName(int device_index);
-        SDL_Haptic* SDL_HapticOpen(int device_index);
-        int SDL_HapticOpened(int device_index);
-        int SDL_HapticIndex(SDL_Haptic* haptic);
-        int SDL_MouseIsHaptic();
-        SDL_Haptic* SDL_HapticOpenFromMouse();
-        int SDL_JoystickIsHaptic(SDL_Joystick* joystick);
-        SDL_Haptic* SDL_HapticOpenFromJoystick(SDL_Joystick* joystick);
-        void SDL_HapticClose(SDL_Haptic* haptic);
-        int SDL_HapticNumEffects(SDL_Haptic* haptic);
-        int SDL_HapticNumEffectsPlaying(SDL_Haptic* haptic);
-        uint SDL_HapticQuery(SDL_Haptic* haptic);
-        int SDL_HapticNumAxes(SDL_Haptic* haptic);
-        int SDL_HapticEffectSupported(SDL_Haptic* haptic, SDL_HapticEffect* effect);
-        int SDL_HapticNewEffect(SDL_Haptic* haptic, SDL_HapticEffect* effect);
-        int SDL_HapticUpdateEffect(SDL_Haptic* haptic, int effect, SDL_HapticEffect* data);
-        int SDL_HapticRunEffect(SDL_Haptic* haptic, int effect, uint iterations);
-        int SDL_HapticStopEffect(SDL_Haptic* haptic, int effect);
-        int SDL_HapticDestroyEffect(SDL_Haptic* haptic, int effect);
-        int SDL_HapticGetEffectStatus(SDL_Haptic* haptic, int effect);
-        int SDL_HapticSetGain(SDL_Haptic* haptic, int gain);
-        int SDL_HapticSetAutocenter(SDL_Haptic* haptic, int autocenter);
-        int SDL_HapticPause(SDL_Haptic* haptic);
-        int SDL_HapticUnpause(SDL_Haptic* haptic);
-        int SDL_HapticStopAll(SDL_Haptic* haptic);
-        int SDL_HapticRumbleSupported(SDL_Haptic* haptic);
-        int SDL_HapticRumbleInit(SDL_Haptic* haptic);
-        int SDL_HapticRumblePlay(SDL_Haptic* haptic, float strength, uint length);
-        int SDL_HapticRumbleStop(SDL_Haptic* haptic);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_NumHaptics = int function();
-        alias pSDL_HapticName = const(char)* function(int device_index);
-        alias pSDL_HapticOpen = SDL_Haptic* function(int device_index);
-        alias pSDL_HapticOpened = int function(int device_index);
-        alias pSDL_HapticIndex = int function(SDL_Haptic* haptic);
-        alias pSDL_MouseIsHaptic = int function();
-        alias pSDL_HapticOpenFromMouse = SDL_Haptic* function();
-        alias pSDL_JoystickIsHaptic = int function(SDL_Joystick* joystick);
-        alias pSDL_HapticOpenFromJoystick = SDL_Haptic* function(SDL_Joystick* joystick);
-        alias pSDL_HapticClose = void function(SDL_Haptic* haptic);
-        alias pSDL_HapticNumEffects = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticNumEffectsPlaying = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticQuery = uint function(SDL_Haptic* haptic);
-        alias pSDL_HapticNumAxes = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticEffectSupported = int function(SDL_Haptic* haptic, SDL_HapticEffect* effect);
-        alias pSDL_HapticNewEffect = int function(SDL_Haptic* haptic, SDL_HapticEffect* effect);
-        alias pSDL_HapticUpdateEffect = int function(SDL_Haptic* haptic, int effect, SDL_HapticEffect* data);
-        alias pSDL_HapticRunEffect = int function(SDL_Haptic* haptic, int effect, uint iterations);
-        alias pSDL_HapticStopEffect = int function(SDL_Haptic* haptic, int effect);
-        alias pSDL_HapticDestroyEffect = int function(SDL_Haptic* haptic, int effect);
-        alias pSDL_HapticGetEffectStatus = int function(SDL_Haptic* haptic, int effect);
-        alias pSDL_HapticSetGain = int function(SDL_Haptic* haptic, int gain);
-        alias pSDL_HapticSetAutocenter = int function(SDL_Haptic* haptic, int autocenter);
-        alias pSDL_HapticPause = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticUnpause = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticStopAll = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticRumbleSupported = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticRumbleInit = int function(SDL_Haptic* haptic);
-        alias pSDL_HapticRumblePlay = int function(SDL_Haptic* haptic, float strength, uint length);
-        alias pSDL_HapticRumbleStop = int function(SDL_Haptic* haptic);
-    }
-
-    __gshared {
-        pSDL_NumHaptics SDL_NumHaptics;
-        pSDL_HapticName SDL_HapticName;
-        pSDL_HapticOpen SDL_HapticOpen;
-        pSDL_HapticOpened SDL_HapticOpened;
-        pSDL_HapticIndex SDL_HapticIndex;
-        pSDL_MouseIsHaptic SDL_MouseIsHaptic;
-        pSDL_HapticOpenFromMouse SDL_HapticOpenFromMouse;
-        pSDL_JoystickIsHaptic SDL_JoystickIsHaptic;
-        pSDL_HapticOpenFromJoystick SDL_HapticOpenFromJoystick;
-        pSDL_HapticClose SDL_HapticClose;
-        pSDL_HapticNumEffects SDL_HapticNumEffects;
-        pSDL_HapticNumEffectsPlaying SDL_HapticNumEffectsPlaying;
-        pSDL_HapticQuery SDL_HapticQuery;
-        pSDL_HapticNumAxes SDL_HapticNumAxes;
-        pSDL_HapticEffectSupported SDL_HapticEffectSupported;
-        pSDL_HapticNewEffect SDL_HapticNewEffect;
-        pSDL_HapticUpdateEffect SDL_HapticUpdateEffect;
-        pSDL_HapticRunEffect SDL_HapticRunEffect;
-        pSDL_HapticStopEffect SDL_HapticStopEffect;
-        pSDL_HapticDestroyEffect SDL_HapticDestroyEffect;
-        pSDL_HapticGetEffectStatus SDL_HapticGetEffectStatus;
-        pSDL_HapticSetGain SDL_HapticSetGain;
-        pSDL_HapticSetAutocenter SDL_HapticSetAutocenter;
-        pSDL_HapticPause SDL_HapticPause;
-        pSDL_HapticUnpause SDL_HapticUnpause;
-        pSDL_HapticStopAll SDL_HapticStopAll;
-        pSDL_HapticRumbleSupported SDL_HapticRumbleSupported;
-        pSDL_HapticRumbleInit SDL_HapticRumbleInit;
-        pSDL_HapticRumblePlay SDL_HapticRumblePlay;
-        pSDL_HapticRumbleStop SDL_HapticRumbleStop;
-    }
-}
+mixin(makeFnBinds!(
+    [q{int}, q{SDL_NumHaptics}, q{}],
+    [q{const(char)*}, q{SDL_HapticName}, q{int device_index}],
+    [q{SDL_Haptic*}, q{SDL_HapticOpen}, q{int device_index}],
+    [q{int}, q{SDL_HapticOpened}, q{int device_index}],
+    [q{int}, q{SDL_HapticIndex}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_MouseIsHaptic}, q{}],
+    [q{SDL_Haptic*}, q{SDL_HapticOpenFromMouse}, q{}],
+    [q{int}, q{SDL_JoystickIsHaptic}, q{SDL_Joystick* joystick}],
+    [q{SDL_Haptic*}, q{SDL_HapticOpenFromJoystick}, q{SDL_Joystick* joystick}],
+    [q{void}, q{SDL_HapticClose}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticNumEffects}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticNumEffectsPlaying}, q{SDL_Haptic* haptic}],
+    [q{uint}, q{SDL_HapticQuery}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticNumAxes}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticEffectSupported}, q{SDL_Haptic* haptic, SDL_HapticEffect* effect}],
+    [q{int}, q{SDL_HapticNewEffect}, q{SDL_Haptic* haptic, SDL_HapticEffect* effect}],
+    [q{int}, q{SDL_HapticUpdateEffect}, q{SDL_Haptic* haptic, int effect, SDL_HapticEffect* data}],
+    [q{int}, q{SDL_HapticRunEffect}, q{SDL_Haptic* haptic, int effect, uint iterations}],
+    [q{int}, q{SDL_HapticStopEffect}, q{SDL_Haptic* haptic, int effect}],
+    [q{int}, q{SDL_HapticDestroyEffect}, q{SDL_Haptic* haptic, int effect}],
+    [q{int}, q{SDL_HapticGetEffectStatus}, q{SDL_Haptic* haptic, int effect}],
+    [q{int}, q{SDL_HapticSetGain}, q{SDL_Haptic* haptic, int gain}],
+    [q{int}, q{SDL_HapticSetAutocenter}, q{SDL_Haptic* haptic, int autocenter}],
+    [q{int}, q{SDL_HapticPause}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticUnpause}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticStopAll}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticRumbleSupported}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticRumbleInit}, q{SDL_Haptic* haptic}],
+    [q{int}, q{SDL_HapticRumblePlay}, q{SDL_Haptic* haptic, float strength, uint length}],
+    [q{int}, q{SDL_HapticRumbleStop}, q{SDL_Haptic* haptic}],
+));

@@ -12,26 +12,9 @@ import bindbc.sdl.bind.sdlrwops : SDL_RWops;
 
 alias SDL_GestureID = long;
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        int SDL_RecordGesture(SDL_TouchID touchId);
-        int SDL_SaveAllDollarTemplates(SDL_RWops* dst);
-        int SDL_SaveDollarTemplate(SDL_GestureID gestureId, SDL_RWops* dst);
-        int SDL_LoadDollarTemplates(SDL_TouchID touchId,SDL_RWops* src);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_RecordGesture = int function(SDL_TouchID touchId);
-        alias pSDL_SaveAllDollarTemplates = int function(SDL_RWops* dst);
-        alias pSDL_SaveDollarTemplate = int function(SDL_GestureID gestureId, SDL_RWops* dst);
-        alias pSDL_LoadDollarTemplates = int function(SDL_TouchID touchId, SDL_RWops* src);
-    }
-
-    __gshared {
-        pSDL_RecordGesture SDL_RecordGesture;
-        pSDL_SaveAllDollarTemplates SDL_SaveAllDollarTemplates;
-        pSDL_SaveDollarTemplate SDL_SaveDollarTemplate;
-        pSDL_LoadDollarTemplates SDL_LoadDollarTemplates;
-    }
-}
+mixin(makeFnBinds!(
+    [q{int}, q{SDL_RecordGesture}, q{SDL_TouchID touchId}],
+    [q{int}, q{SDL_SaveAllDollarTemplates}, q{SDL_RWops* dst}],
+    [q{int}, q{SDL_SaveDollarTemplate}, q{SDL_GestureID gestureId, SDL_RWops* dst}],
+    [q{int}, q{SDL_LoadDollarTemplates}, q{SDL_TouchID touchId,SDL_RWops* src}],
+));

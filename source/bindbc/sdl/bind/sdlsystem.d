@@ -11,8 +11,10 @@ import bindbc.sdl.bind.sdlrender : SDL_Renderer;
 import bindbc.sdl.bind.sdlstdinc : SDL_bool;
 
 version(Android) {
-    enum int SDL_ANDROID_EXTERNAL_STORAGE_READ  = 0x01;
-    enum int SDL_ANDROID_EXTERNAL_STORAGE_WRITE = 0x02;
+    enum : int {
+        SDL_ANDROID_EXTERNAL_STORAGE_READ  = 0x01,
+        SDL_ANDROID_EXTERNAL_STORAGE_WRITE = 0x02,
+    }
 }
 
 static if(sdlSupport >= SDLSupport.sdl201) {
@@ -25,198 +27,79 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     }
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        version(Android) {
-            void* SDL_AndroidGetJNIEnv();
-            void* SDL_AndroidGetActivity();
-            const(char)* SDL_AndroidGetInternalStoragePath();
-            int SDL_AndroidGetExternalStorageState();
-            const(char)* SDL_AndroidGetExternalStoragePath();
 
-            static if(sdlSupport >= SDLSupport.sdl208) {
-                SDL_bool SDL_IsAndroidTV();
-            }
-            static if(sdlSupport >= SDLSupport.sdl209) {
-                SDL_bool SDL_IsChromebook();
-                SDL_bool SDL_IsDeXMode();
-                void SDL_AndroidBackButton();
-            }
-            static if(sdlSupport >= SDLSupport.sdl2012) {
-                int SDL_GetAndroidSDKVersion();
-            }
-            static if(sdlSupport >= SDLSupport.sdl2014) {
-                SDL_bool SDL_AndroidRequestPermission(const(char)* permission);
-            }
-            static if(sdlSupport >= SDLSupport.sdl2016) {
-                int SDL_AndroidShowToast(const(char)* message, int duration, int gravity, int xoffset, int yoffset);
-            }
-            static if(sdlSupport >= SDLSupport.sdl2022) {
-                int SDL_AndroidSendMessage(uint command, int param);
-            }
-        }
-        else version(Windows) {
-            static if(sdlSupport >= SDLSupport.sdl201) {
-                int SDL_Direct3D9GetAdapterIndex(int displayIndex);
-                IDirect3DDevice9* SDL_RenderGetD3D9Device(SDL_Renderer* renderer);
-            }
-            static if(sdlSupport >= SDLSupport.sdl202) {
-                SDL_bool SDL_DXGIGetOutputInfo(int displayIndex, int* adapterIndex, int* outputIndex);
-            }
-            static if(sdlSupport >= SDLSupport.sdl204) {
-                void SDL_SetWindowsMessageHook(SDL_WindowsMessageHook callback, void* userdata);
-            }
-            static if(sdlSupport >= SDLSupport.sdl2016) {
-                void SDL_RenderGetD3D11Device(SDL_Renderer* renderer);
-            }
-        }
-        else version(linux) {
-            static if(sdlSupport >= SDLSupport.sdl209) {
-                int SDL_LinuxSetThreadPriority(long threadID, int priority);
-            }
-            static if(sdlSupport >= SDLSupport.sdl2018) {
-                int SDL_LinuxSetThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy);
-            }
-        }
+version(Android) {
+    mixin(makeFnBinds!(
+        [q{void*}, q{SDL_AndroidGetJNIEnv}, q{}],
+        [q{void*}, q{SDL_AndroidGetActivity}, q{}],
+        [q{const(char)*}, q{SDL_AndroidGetInternalStoragePath}, q{}],
+        [q{int}, q{SDL_AndroidGetExternalStorageState}, q{}],
+        [q{const(char)*}, q{SDL_AndroidGetExternalStoragePath}, q{}],
+    ));
+
+    static if(sdlSupport >= SDLSupport.sdl208) {
+        mixin(makeFnBinds!(
+            [q{SDL_bool}, q{SDL_IsAndroidTV}, q{}],
+        ));
     }
-}
-else {
-    version(Android) {
-        extern(C) @nogc nothrow {
-            alias pSDL_AndroidGetJNIEnv = void* function();
-            alias pSDL_AndroidGetActivity = void* function();
-            alias pSDL_AndroidGetInternalStoragePath = const(char)* function();
-            alias pSDL_AndroidGetExternalStorageState = int function();
-            alias pSDL_AndroidGetExternalStoragePath = const(char)* function();
-        }
-
-        __gshared {
-            pSDL_AndroidGetJNIEnv SDL_AndroidGetJNIEnv;
-            pSDL_AndroidGetActivity SDL_AndroidGetActivity;
-
-            pSDL_AndroidGetInternalStoragePath SDL_AndroidGetInternalStoragePath;
-            pSDL_AndroidGetExternalStorageState SDL_AndroidGetExternalStorageState;
-            pSDL_AndroidGetExternalStoragePath SDL_AndroidGetExternalStoragePath;
-        }
-        static if(sdlSupport >= SDLSupport.sdl208) {
-            extern(C) @nogc nothrow {
-                alias pSDL_IsAndroidTV = SDL_bool function();
-            }
-
-            __gshared {
-                pSDL_IsAndroidTV SDL_IsAndroidTV;
-            }
-        }
-        static if(sdlSupport >= SDLSupport.sdl209) {
-            extern(C) @nogc nothrow {
-                alias pSDL_IsChromebook = SDL_bool function();
-                alias pSDL_IsDeXMode = SDL_bool function();
-                alias pSDL_AndroidBackButton = void function();
-            }
-
-            __gshared {
-                pSDL_IsChromebook SDL_IsChromebook;
-                pSDL_IsDeXMode SDL_IsDeXMode;
-                pSDL_AndroidBackButton SDL_AndroidBackButton;
-            }
-        }
-        static if(sdlSupport >= SDLSupport.sdl2012) {
-            extern(C) @nogc nothrow {
-                alias pSDL_GetAndroidSDKVersion = int function();
-            }
-
-            __gshared {
-                pSDL_GetAndroidSDKVersion SDL_GetAndroidSDKVersion;
-            }
-        }
-        static if(sdlSupport >= SDLSupport.sdl2014) {
-            extern(C) @nogc nothrow {
-                alias pSDL_AndroidRequestPermission = SDL_bool function(const(char)* permission);
-            }
-            __gshared {
-                pSDL_AndroidRequestPermission SDL_AndroidRequestPermission;
-            }
-        }
-        static if(sdlSupport >= SDLSupport.sdl2016) {
-            extern(C) @nogc nothrow {
-                alias pSDL_AndroidShowToast = int function(const(char)* message, int duration, int gravity, int xoffset, int yoffset);
-            }
-            __gshared {
-                pSDL_AndroidShowToast SDL_AndroidShowToast;
-            }
-        }
-        static if(sdlSupport >= SDLSupport.sdl2022) {
-            extern(C) @nogc nothrow {
-                alias pSDL_AndroidSendMessage = int function(uint command, int param);
-            }
-
-            __gshared {
-                pSDL_AndroidSendMessage SDL_AndroidSendMessage;
-            }
-        }
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        mixin(makeFnBinds!(
+            [q{SDL_bool}, q{SDL_IsChromebook}, q{}],
+            [q{SDL_bool}, q{SDL_IsDeXMode}, q{}],
+            [q{void}, q{SDL_AndroidBackButton}, q{}],
+        ));
     }
-    version(Windows) {
-        static if(sdlSupport >= SDLSupport.sdl201) {
-            extern(C) @nogc nothrow {
-                alias pSDL_Direct3D9GetAdapterIndex = int function(int displayIndex);
-                alias pSDL_RenderGetD3D9Device = IDirect3DDevice9* function(SDL_Renderer* renderer);
-            }
-
-            __gshared {
-                pSDL_Direct3D9GetAdapterIndex SDL_Direct3D9GetAdapterIndex ;
-                pSDL_RenderGetD3D9Device SDL_RenderGetD3D9Device;
-            }
-        }
-
-        static if(sdlSupport >= SDLSupport.sdl202) {
-            extern(C) @nogc nothrow {
-                alias pSDL_DXGIGetOutputInfo = SDL_bool function(int displayIndex, int* adapterIndex, int* outputIndex);
-            }
-
-            __gshared {
-                pSDL_DXGIGetOutputInfo SDL_DXGIGetOutputInfo;
-            }
-        }
-
-        static if(sdlSupport >= SDLSupport.sdl204) {
-            extern(C) @nogc nothrow {
-                alias pSDL_SetWindowsMessageHook = void function(SDL_WindowsMessageHook callback, void* userdata);
-            }
-
-            __gshared {
-                pSDL_SetWindowsMessageHook SDL_SetWindowsMessageHook;
-            }
-        }
-
-        static if(sdlSupport >= SDLSupport.sdl2016) {
-            extern(C) @nogc nothrow {
-                alias pSDL_RenderGetD3D11Device = void function(SDL_Renderer* renderer);
-            }
-
-            __gshared {
-                pSDL_RenderGetD3D11Device SDL_RenderGetD3D11Device;
-            }
-        }
+    static if(sdlSupport >= SDLSupport.sdl2012) {
+        mixin(makeFnBinds!(
+            [q{int}, q{SDL_GetAndroidSDKVersion}, q{}],
+        ));
     }
-    version(linux) {
-        static if(sdlSupport >= SDLSupport.sdl209) {
-            extern(C) @nogc nothrow {
-                alias pSDL_LinuxSetThreadPriority = int function(long threadID, int priority);
-            }
-
-            __gshared {
-                pSDL_LinuxSetThreadPriority SDL_LinuxSetThreadPriority;
-            }
-        }
-
-        static if(sdlSupport >= SDLSupport.sdl2018) {
-            extern(C) @nogc nothrow {
-                alias pSDL_LinuxSetThreadPriorityAndPolicy = int function(long threadID, int sdlPriority, int schedPolicy);
-            }
-
-            __gshared {
-                pSDL_LinuxSetThreadPriorityAndPolicy SDL_LinuxSetThreadPriorityAndPolicy;
-            }
-        }
+    static if(sdlSupport >= SDLSupport.sdl2014) {
+        mixin(makeFnBinds!(
+            [q{SDL_bool}, q{SDL_AndroidRequestPermission}, q{const(char)* permission}],
+        ));
+    }
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        mixin(makeFnBinds!(
+            [q{int}, q{SDL_AndroidShowToast}, q{const(char)* message, int duration, int gravity, int xoffset, int yoffset}],
+        ));
+    }
+    static if(sdlSupport >= SDLSupport.sdl2022) {
+        mixin(makeFnBinds!(
+            [q{int}, q{SDL_AndroidSendMessage}, q{uint command, int param}],
+        ));
+    }
+}else version(Windows) {
+    static if(sdlSupport >= SDLSupport.sdl201) {
+        mixin(makeFnBinds!(
+            [q{int}, q{SDL_Direct3D9GetAdapterIndex}, q{int displayIndex}],
+            [q{IDirect3DDevice9*}, q{SDL_RenderGetD3D9Device}, q{SDL_Renderer* renderer}],
+        ));
+    }
+    static if(sdlSupport >= SDLSupport.sdl202) {
+        mixin(makeFnBinds!(
+            [q{SDL_bool}, q{SDL_DXGIGetOutputInfo}, q{int displayIndex, int* adapterIndex, int* outputIndex}],
+        ));
+    }
+    static if(sdlSupport >= SDLSupport.sdl204) {
+        mixin(makeFnBinds!(
+            [q{void}, q{SDL_SetWindowsMessageHook}, q{SDL_WindowsMessageHook callback, void* userdata}],
+        ));
+    }
+    static if(sdlSupport >= SDLSupport.sdl2016) {
+        mixin(makeFnBinds!(
+            [q{void}, q{SDL_RenderGetD3D11Device}, q{SDL_Renderer* renderer}],
+        ));
+    }
+}else version(linux) {
+    static if(sdlSupport >= SDLSupport.sdl209) {
+        mixin(makeFnBinds!(
+            [q{int}, q{SDL_LinuxSetThreadPriority}, q{long threadID, int priority}],
+        ));
+    }
+    static if(sdlSupport >= SDLSupport.sdl2018) {
+        mixin(makeFnBinds!(
+            [q{int}, q{SDL_LinuxSetThreadPriorityAndPolicy}, q{long threadID, int sdlPriority, int schedPolicy}],
+        ));
     }
 }

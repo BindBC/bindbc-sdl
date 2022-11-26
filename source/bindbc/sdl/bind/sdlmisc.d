@@ -9,13 +9,7 @@ module bindbc.sdl.bind.sdlmisc;
 import bindbc.sdl.config;
 
 static if(sdlSupport >= SDLSupport.sdl2014) {
-
-    static if(staticBinding) {
-        extern(C) @nogc nothrow int SDL_OpenURL(const(char)* url);
-    }
-    else {
-        extern(C) @nogc nothrow alias pSDL_OpenURL = int function(const(char)* url);
-        __gshared pSDL_OpenURL SDL_OpenURL;
-    }
-
+    mixin(makeFnBinds!(
+        [q{int}, q{SDL_OpenURL}, q{const(char)* url}],
+    ));
 }

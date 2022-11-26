@@ -17,17 +17,6 @@ enum SDL_PowerState {
 }
 mixin(expandEnum!SDL_PowerState);
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        SDL_PowerState SDL_GetPowerInfo(int* secs, int* pct);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetPowerInfo = SDL_PowerState function(int* secs, int* pct);
-    }
-
-    __gshared {
-        pSDL_GetPowerInfo SDL_GetPowerInfo;
-    }
-}
+mixin(makeFnBinds!(
+    [q{SDL_PowerState}, q{SDL_GetPowerInfo}, q{int* secs, int* pct}],
+));

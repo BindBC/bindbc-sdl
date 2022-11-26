@@ -21,45 +21,18 @@ bool SDL_TICKS_PASSED(uint A, uint B) {
     return cast(int)(B - A) <= 0;
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        uint SDL_GetTicks();
-        ulong SDL_GetPerformanceCounter();
-        ulong SDL_GetPerformanceFrequency();
-        void SDL_Delay(uint ms);
-        SDL_TimerID SDL_AddTimer(uint interval, SDL_TimerCallback callback, void* param);
-        SDL_bool SDL_RemoveTimer(SDL_TimerID id);
-        
-        static if(sdlSupport >= SDLSupport.sdl2018) {
-            ulong SDL_GetTicks64();
-        }
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetTicks = uint function();
-        alias pSDL_GetPerformanceCounter = ulong function();
-        alias pSDL_GetPerformanceFrequency = ulong function();
-        alias pSDL_Delay = void function(uint ms);
-        alias pSDL_AddTimer = SDL_TimerID function(uint interval, SDL_TimerCallback callback, void* param);
-        alias pSDL_RemoveTimer = SDL_bool function(SDL_TimerID id);
-    }
+mixin(makeFnBinds!(
+    [q{uint}, q{SDL_GetTicks}, q{}],
+    [q{ulong}, q{SDL_GetPerformanceCounter}, q{}],
+    [q{ulong}, q{SDL_GetPerformanceFrequency}, q{}],
+    [q{void}, q{SDL_Delay}, q{uint ms}],
+    [q{SDL_TimerID}, q{SDL_AddTimer}, q{uint interval, SDL_TimerCallback callback, void* param}],
+    [q{SDL_bool}, q{SDL_RemoveTimer}, q{SDL_TimerID id}],
+));
 
-    __gshared {
-        pSDL_GetTicks SDL_GetTicks;
-        pSDL_GetPerformanceCounter SDL_GetPerformanceCounter;
-        pSDL_GetPerformanceFrequency SDL_GetPerformanceFrequency;
-        pSDL_Delay SDL_Delay;
-        pSDL_AddTimer SDL_AddTimer;
-        pSDL_RemoveTimer SDL_RemoveTimer;
-    }
-    
-    static if(sdlSupport >= SDLSupport.sdl2018) {
-        extern(C) @nogc nothrow {
-            alias pSDL_GetTicks64 = ulong function();
-        }
-        __gshared {
-            pSDL_GetTicks64 SDL_GetTicks64;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl2018) {
+    mixin(makeFnBinds!(
+        [q{ulong}, q{SDL_GetTicks64}, q{}],
+    ));
 }
+

@@ -30,17 +30,6 @@ static if(sdlSupport >= SDLSupport.sdl2022) {
 
 enum SDL_FOURCC(char A, char B, char C, char D)  = ((A << 0) | (B << 8) | (C << 16) | (D << 24));
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        void SDL_free(void* mem);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_free = void function(void* mem);
-    }
-
-    __gshared {
-        pSDL_free SDL_free;
-    }
-}
+mixin(makeFnBinds!(
+    [q{void}, q{SDL_free}, q{void* mem}],
+));

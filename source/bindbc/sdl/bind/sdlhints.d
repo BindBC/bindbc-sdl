@@ -206,46 +206,17 @@ mixin(expandEnum!SDL_HintPriority);
 
 extern(C) nothrow alias SDL_HintCallback = void function(void*, const(char)*, const(char)*);
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        SDL_bool SDL_SetHintWithPriority(const(char)* name, const(char)* value, SDL_HintPriority priority);
-        SDL_bool SDL_SetHint(const(char)* name, const(char)* value);
-        const(char)* SDL_GetHint(const(char)* name);
-        void SDL_AddHintCallback(const(char)* name, SDL_HintCallback callback, void* userdata);
-        void SDL_DelHintCallback(const(char)* name, SDL_HintCallback callback, void* userdata);
-        void SDL_ClearHints();
+mixin(makeFnBinds!(
+    [q{SDL_bool}, q{SDL_SetHintWithPriority}, q{const(char)* name, const(char)* value, SDL_HintPriority priority}],
+    [q{SDL_bool}, q{SDL_SetHint}, q{const(char)* name, const(char)* value}],
+    [q{const(char)*}, q{SDL_GetHint}, q{const(char)* name}],
+    [q{void}, q{SDL_AddHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userdata}],
+    [q{void}, q{SDL_DelHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userdata}],
+    [q{void}, q{SDL_ClearHints}, q{}],
+));
 
-        static if(sdlSupport >= SDLSupport.sdl205) {
-            SDL_bool SDL_GetHintBoolean(const(char)* name, SDL_bool default_value);
-        }
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_SetHintWithPriority = SDL_bool function(const(char)* name, const(char)* value, SDL_HintPriority priority);
-        alias pSDL_SetHint = SDL_bool function(const(char)* name, const(char)* value);
-        alias pSDL_GetHint = const(char)* function(const(char)* name);
-        alias pSDL_AddHintCallback = void function(const(char)* name, SDL_HintCallback callback, void* userdata);
-        alias pSDL_DelHintCallback = void function(const(char)* name, SDL_HintCallback callback, void* userdata);
-        alias pSDL_ClearHints = void function();
-    }
-
-    __gshared {
-        pSDL_SetHintWithPriority SDL_SetHintWithPriority;
-        pSDL_SetHint SDL_SetHint;
-        pSDL_GetHint SDL_GetHint;
-        pSDL_AddHintCallback SDL_AddHintCallback;
-        pSDL_DelHintCallback SDL_DelHintCallback;
-        pSDL_ClearHints SDL_ClearHints;
-    }
-
-    static if(sdlSupport >= SDLSupport.sdl205) {
-        extern(C) @nogc nothrow {
-            alias pSDL_GetHintBoolean = SDL_bool function(const(char)* name, SDL_bool default_value);
-        }
-
-        __gshared {
-            pSDL_GetHintBoolean SDL_GetHintBoolean;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl205) {
+    mixin(makeFnBinds!(
+        [q{SDL_bool}, q{SDL_GetHintBoolean}, q{const(char)* name, SDL_bool default_value}],
+    ));
 }

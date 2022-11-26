@@ -20,79 +20,29 @@ struct SDL_Keysym {
     uint unused;
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        SDL_Window* SDL_GetKeyboardFocus();
-        ubyte* SDL_GetKeyboardState(int* numkeys);
-        SDL_Keymod SDL_GetModState();
-        void SDL_SetModState(SDL_Keymod modstate);
-        SDL_Keycode SDL_GetKeyFromScancode(SDL_Scancode scancode);
-        SDL_Scancode SDL_GetScancodeFromKey(SDL_Keycode key);
-        const(char)* SDL_GetScancodeName(SDL_Scancode scancode);
-        SDL_Scancode SDL_GetScancodeFromName(const(char)* name);
-        const(char)* SDL_GetKeyName(SDL_Keycode key);
-        SDL_Keycode SDL_GetKeyFromName(const(char)* name);
-        void SDL_StartTextInput();
-        SDL_bool SDL_IsTextInputActive();
-        void SDL_StopTextInput();
-        void SDL_SetTextInputRect(SDL_Rect*);
-        SDL_bool SDL_HasScreenKeyboardSupport();
-        SDL_bool SDL_IsScreenKeyboardShown(SDL_Window* window);
+mixin(makeFnBinds!(
+    [q{SDL_Window*}, q{SDL_GetKeyboardFocus}, q{}],
+    [q{ubyte*}, q{SDL_GetKeyboardState}, q{int* numkeys}],
+    [q{SDL_Keymod}, q{SDL_GetModState}, q{}],
+    [q{void}, q{SDL_SetModState}, q{SDL_Keymod modstate}],
+    [q{SDL_Keycode}, q{SDL_GetKeyFromScancode}, q{SDL_Scancode scancode}],
+    [q{SDL_Scancode}, q{SDL_GetScancodeFromKey}, q{SDL_Keycode key}],
+    [q{const(char)*}, q{SDL_GetScancodeName}, q{SDL_Scancode scancode}],
+    [q{SDL_Scancode}, q{SDL_GetScancodeFromName}, q{const(char)* name}],
+    [q{const(char)*}, q{SDL_GetKeyName}, q{SDL_Keycode key}],
+    [q{SDL_Keycode}, q{SDL_GetKeyFromName}, q{const(char)* name}],
+    [q{void}, q{SDL_StartTextInput}, q{}],
+    [q{SDL_bool}, q{SDL_IsTextInputActive}, q{}],
+    [q{void}, q{SDL_StopTextInput}, q{}],
+    [q{void}, q{SDL_SetTextInputRect}, q{SDL_Rect*}],
+    [q{SDL_bool}, q{SDL_HasScreenKeyboardSupport}, q{}],
+    [q{SDL_bool}, q{SDL_IsScreenKeyboardShown}, q{SDL_Window* window}],
+));
 
-        static if(sdlSupport == SDLSupport.sdl2022) {
-            void SDL_ClearComposition();
-            SDL_bool SDL_IsTextInputShown();
-        }
-    }
+static if(sdlSupport == SDLSupport.sdl2022) {
+    mixin(makeFnBinds!(
+        [q{void}, q{SDL_ClearComposition}, q{}],
+        [q{SDL_bool}, q{SDL_IsTextInputShown}, q{}],
+    ));
 }
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetKeyboardFocus = SDL_Window* function();
-        alias pSDL_GetKeyboardState = ubyte* function(int* numkeys);
-        alias pSDL_GetModState = SDL_Keymod function();
-        alias pSDL_SetModState = void function(SDL_Keymod modstate);
-        alias pSDL_GetKeyFromScancode = SDL_Keycode function(SDL_Scancode scancode);
-        alias pSDL_GetScancodeFromKey = SDL_Scancode function(SDL_Keycode key);
-        alias pSDL_GetScancodeName = const(char)* function(SDL_Scancode scancode);
-        alias pSDL_GetScancodeFromName = SDL_Scancode function(const(char)* name);
-        alias pSDL_GetKeyName = const(char)* function(SDL_Keycode key);
-        alias pSDL_GetKeyFromName = SDL_Keycode function(const(char)* name);
-        alias pSDL_StartTextInput = void function();
-        alias pSDL_IsTextInputActive = SDL_bool function();
-        alias pSDL_StopTextInput = void function();
-        alias pSDL_SetTextInputRect = void function(SDL_Rect*);
-        alias pSDL_HasScreenKeyboardSupport = SDL_bool function();
-        alias pSDL_IsScreenKeyboardShown = SDL_bool function(SDL_Window* window);
-    }
 
-    __gshared {
-        pSDL_GetKeyboardFocus SDL_GetKeyboardFocus;
-        pSDL_GetKeyboardState SDL_GetKeyboardState;
-        pSDL_GetModState SDL_GetModState;
-        pSDL_SetModState SDL_SetModState;
-        pSDL_GetKeyFromScancode SDL_GetKeyFromScancode;
-        pSDL_GetScancodeFromKey SDL_GetScancodeFromKey;
-        pSDL_GetScancodeName SDL_GetScancodeName;
-        pSDL_GetScancodeFromName SDL_GetScancodeFromName;
-        pSDL_GetKeyName SDL_GetKeyName;
-        pSDL_GetKeyFromName SDL_GetKeyFromName;
-        pSDL_StartTextInput SDL_StartTextInput;
-        pSDL_IsTextInputActive SDL_IsTextInputActive;
-        pSDL_StopTextInput SDL_StopTextInput;
-        pSDL_SetTextInputRect SDL_SetTextInputRect;
-        pSDL_HasScreenKeyboardSupport SDL_HasScreenKeyboardSupport;
-        pSDL_IsScreenKeyboardShown SDL_IsScreenKeyboardShown;
-    }
-
-    static if(sdlSupport >= SDLSupport.sdl2022) {
-        extern(C) @nogc nothrow {
-            alias pSDL_ClearComposition = void function();
-            alias pSDL_IsTextInputShown = SDL_bool function();
-        }
-
-        __gshared {
-            pSDL_ClearComposition SDL_ClearComposition;
-            pSDL_IsTextInputShown SDL_IsTextInputShown;
-        }
-    }
-}

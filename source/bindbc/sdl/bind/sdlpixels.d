@@ -240,56 +240,19 @@ struct SDL_PixelFormat {
     SDL_PixelFormat* next;
 }
 
-static if(staticBinding) {
-  extern(C) @nogc nothrow {
-      const(char)* SDL_GetPixelFormatName(uint format);
-      SDL_bool SDL_PixelFormatEnumToMasks(uint format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask);
-      uint SDL_MasksToPixelFormatEnum(int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask);
-      SDL_PixelFormat* SDL_AllocFormat(uint pixel_format);
-      void SDL_FreeFormat(SDL_PixelFormat* format);
-      SDL_Palette* SDL_AllocPalette(int ncolors);
-      int SDL_SetPixelFormatPalette(SDL_PixelFormat* format,SDL_Palette* palette);
-      int SDL_SetPaletteColors(SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors);
-      void SDL_FreePalette(SDL_Palette* palette);
-      uint SDL_MapRGB(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b);
-      uint SDL_MapRGBA(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a);
-      void SDL_GetRGB(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b);
-      void SDL_GetRGBA(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a);
-      void SDL_CalculateGammaRamp(float gamma, ushort* ramp);
-  }
-}
-else {
-  extern(C) @nogc nothrow {
-      alias pSDL_GetPixelFormatName = const(char)* function(uint pixel_format);
-      alias pSDL_PixelFormatEnumToMasks = SDL_bool function(uint format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask);
-      alias pSDL_MasksToPixelFormatEnum = uint function(int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask);
-      alias pSDL_AllocFormat = SDL_PixelFormat* function(uint format);
-      alias pSDL_FreeFormat = void function(SDL_PixelFormat* format);
-      alias pSDL_AllocPalette = SDL_Palette* function(int ncolors);
-      alias pSDL_SetPixelFormatPalette = int function(SDL_PixelFormat* format,SDL_Palette* palette);
-      alias pSDL_SetPaletteColors = int function(SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors);
-      alias pSDL_FreePalette = void function(SDL_Palette* palette);
-      alias pSDL_MapRGB = uint function(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b);
-      alias pSDL_MapRGBA = uint function(const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a);
-      alias pSDL_GetRGB = void function(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b);
-      alias pSDL_GetRGBA = void function(uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a);
-      alias pSDL_CalculateGammaRamp = void function(float gamma, ushort* ramp);
-  }
-
-  __gshared {
-      pSDL_GetPixelFormatName SDL_GetPixelFormatName;
-      pSDL_PixelFormatEnumToMasks SDL_PixelFormatEnumToMasks;
-      pSDL_MasksToPixelFormatEnum SDL_MasksToPixelFormatEnum;
-      pSDL_AllocFormat SDL_AllocFormat;
-      pSDL_FreeFormat SDL_FreeFormat;
-      pSDL_AllocPalette SDL_AllocPalette;
-      pSDL_SetPixelFormatPalette SDL_SetPixelFormatPalette;
-      pSDL_SetPaletteColors SDL_SetPaletteColors;
-      pSDL_FreePalette SDL_FreePalette;
-      pSDL_MapRGB SDL_MapRGB;
-      pSDL_MapRGBA SDL_MapRGBA;
-      pSDL_GetRGB SDL_GetRGB;
-      pSDL_GetRGBA SDL_GetRGBA;
-      pSDL_CalculateGammaRamp SDL_CalculateGammaRamp;
-  }
-}
+mixin(makeFnBinds!(
+    [q{const(char)*}, q{SDL_GetPixelFormatName}, q{uint format}],
+    [q{SDL_bool}, q{SDL_PixelFormatEnumToMasks}, q{uint format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask}],
+    [q{uint}, q{SDL_MasksToPixelFormatEnum}, q{int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask}],
+    [q{SDL_PixelFormat*}, q{SDL_AllocFormat}, q{uint pixel_format}],
+    [q{void}, q{SDL_FreeFormat}, q{SDL_PixelFormat* format}],
+    [q{SDL_Palette*}, q{SDL_AllocPalette}, q{int ncolors}],
+    [q{int}, q{SDL_SetPixelFormatPalette}, q{SDL_PixelFormat* format,SDL_Palette* palette}],
+    [q{int}, q{SDL_SetPaletteColors}, q{SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors}],
+    [q{void}, q{SDL_FreePalette}, q{SDL_Palette* palette}],
+    [q{uint}, q{SDL_MapRGB}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b}],
+    [q{uint}, q{SDL_MapRGBA}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a}],
+    [q{void}, q{SDL_GetRGB}, q{uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b}],
+    [q{void}, q{SDL_GetRGBA}, q{uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a}],
+    [q{void}, q{SDL_CalculateGammaRamp}, q{float gamma, ushort* ramp}],
+));

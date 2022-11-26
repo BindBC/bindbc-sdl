@@ -81,23 +81,8 @@ enum SDL_VERSIONNUM(ubyte X, ubyte Y, ubyte Z) = X*1000 + Y*100 + Z;
 enum SDL_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
 enum SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        void SDL_GetVersion(SDL_version* ver);
-        const(char)* SDL_GetRevision();
-        int SDL_GetRevisionNumber();
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetVersion = void function(SDL_version* ver);
-        alias pSDL_GetRevision = const(char)* function();
-        alias pSDL_GetRevisionNumber = int function();
-    }
-
-    __gshared {
-        pSDL_GetVersion SDL_GetVersion;
-        pSDL_GetRevision SDL_GetRevision;
-        pSDL_GetRevisionNumber SDL_GetRevisionNumber;
-    }
-}
+mixin(makeFnBinds!(
+    [q{void}, q{SDL_GetVersion}, q{SDL_version* ver}],
+    [q{const(char)*}, q{SDL_GetRevision}, q{}],
+    [q{int}, q{SDL_GetRevisionNumber}, q{}],
+));

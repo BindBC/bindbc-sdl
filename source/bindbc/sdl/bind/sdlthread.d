@@ -20,8 +20,7 @@ static if(sdlSupport >= SDLSupport.sdl209) {
         SDL_THREAD_PRIORITY_HIGH,
         SDL_THREAD_PRIORITY_TIME_CRITICAL,
     }
-}
-else {
+} else {
     enum SDL_ThreadPriority {
         SDL_THREAD_PRIORITY_LOW,
         SDL_THREAD_PRIORITY_NORMAL,
@@ -68,86 +67,45 @@ version(Windows) {
 }
 
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        version(Windows) SDL_Thread* SDL_CreateThread(SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread);
-        else SDL_Thread* SDL_CreateThread(SDL_ThreadFunction,const(char)*,void*);
+version(Windows){
+    mixin(makeFnBinds!(
+        [q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
+    ));
+} else {
+    mixin(makeFnBinds!(
+        [q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction,const(char)*,void*}],
+    ));
+}
 
-        const(char)* SDL_GetThreadName(SDL_Thread* thread);
-        SDL_threadID SDL_ThreadID();
-        SDL_threadID SDL_GetThreadID(SDL_Thread* thread);
-        int SDL_SetThreadPriority(SDL_ThreadPriority priority);
-        void SDL_WaitThread(SDL_Thread* thread, int* status);
-        SDL_TLSID SDL_TLSCreate();
-        void* SDL_TLSGet(SDL_TLSID id);
-        int SDL_TLSSet(SDL_TLSID id,const(void)* value, TLSDestructor destructor);
+mixin(makeFnBinds!(
+    [q{const(char)*}, q{SDL_GetThreadName}, q{SDL_Thread* thread}],
+    [q{SDL_threadID}, q{SDL_ThreadID}, q{}],
+    [q{SDL_threadID}, q{SDL_GetThreadID}, q{SDL_Thread* thread}],
+    [q{int}, q{SDL_SetThreadPriority}, q{SDL_ThreadPriority priority}],
+    [q{void}, q{SDL_WaitThread}, q{SDL_Thread* thread, int* status}],
+    [q{SDL_TLSID}, q{SDL_TLSCreate}, q{}],
+    [q{void*}, q{SDL_TLSGet}, q{SDL_TLSID id}],
+    [q{int}, q{SDL_TLSSet}, q{SDL_TLSID id,const(void)* value, TLSDestructor destructor}],
+));
 
-        static if(sdlSupport >= SDLSupport.sdl202) {
-            void SDL_DetachThread(SDL_Thread* thread);
-        }
-        static if(sdlSupport >= SDLSupport.sdl209) {
-            version(Windows) SDL_Thread* SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread);
-            else SDL_Thread* SDL_CreateThreadWithStackSize(SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data);
-        }
-        static if(sdlSupport >= SDLSupport.sdl2016) {
-            void SDL_TLSCleanup();
-        }
+static if(sdlSupport >= SDLSupport.sdl202) {
+    mixin(makeFnBinds!(
+        [q{void}, q{SDL_DetachThread}, q{SDL_Thread* thread}],
+    ));
+}
+static if(sdlSupport >= SDLSupport.sdl209) {
+    version(Windows){
+        mixin(makeFnBinds!(
+            [q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
+        ));
+    } else {
+        mixin(makeFnBinds!(
+            [q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data}],
+        ));
     }
 }
-else {
-    extern(C) @nogc nothrow {
-        version(Windows)alias pSDL_CreateThread = SDL_Thread* function(SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread);
-        else alias pSDL_CreateThread = SDL_Thread* function(SDL_ThreadFunction fn, const(char)*  name, void* data);
-
-        alias pSDL_GetThreadName = const(char)* function(SDL_Thread* thread);
-        alias pSDL_ThreadID = SDL_threadID function();
-        alias pSDL_GetThreadID = SDL_threadID function(SDL_Thread* thread);
-        alias pSDL_SetThreadPriority = int function(SDL_ThreadPriority priority);
-        alias pSDL_WaitThread = void function(SDL_Thread* thread, int* status);
-        alias pSDL_TLSCreate = SDL_TLSID function();
-        alias pSDL_TLSGet = void* function(SDL_TLSID id);
-        alias pSDL_TLSSet = int function(SDL_TLSID id,const(void)* value, TLSDestructor destructor);
-    }
-
-    __gshared {
-        pSDL_CreateThread SDL_CreateThread;
-        pSDL_GetThreadName SDL_GetThreadName;
-        pSDL_ThreadID SDL_ThreadID;
-        pSDL_GetThreadID SDL_GetThreadID;
-        pSDL_SetThreadPriority SDL_SetThreadPriority;
-        pSDL_WaitThread SDL_WaitThread;
-        pSDL_TLSCreate SDL_TLSCreate;
-        pSDL_TLSGet SDL_TLSGet;
-        pSDL_TLSSet SDL_TLSSet;
-    }
-
-    static if(sdlSupport >= SDLSupport.sdl202) {
-        extern(C) @nogc nothrow {
-            alias pSDL_DetachThread = void function(SDL_Thread* thread);
-        }
-        __gshared {
-            pSDL_DetachThread SDL_DetachThread;
-        }
-    }
-    static if(sdlSupport >= SDLSupport.sdl209) {
-
-        extern(C) @nogc nothrow {
-            version(Windows) alias pSDL_CreateThreadWithStackSize = SDL_Thread* function(SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread);
-            else alias pSDL_CreateThreadWithStackSize = SDL_Thread* function(SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data);
-        }
-
-        __gshared {
-            pSDL_CreateThreadWithStackSize SDL_CreateThreadWithStackSize;
-        }
-    }
-    static if(sdlSupport >= SDLSupport.sdl2016) {
-
-        extern(C) @nogc nothrow {
-            alias pSDL_TLSCleanup = void function();
-        }
-
-        __gshared {
-            pSDL_TLSCleanup SDL_TLSCleanup;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl2016) {
+    mixin(makeFnBinds!(
+        [q{void}, q{SDL_TLSCleanup}, q{}],
+    ));
 }

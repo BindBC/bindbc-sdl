@@ -82,8 +82,7 @@ static if(sdlSupport >= SDLSupport.sdl2022) {
         SDL_USEREVENT = 0x8000,
         SDL_LASTEVENT = 0xFFFF
     }
-}
-else static if(sdlSupport >= SDLSupport.sdl2014) {
+} else static if(sdlSupport >= SDLSupport.sdl2014) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -142,8 +141,7 @@ else static if(sdlSupport >= SDLSupport.sdl2014) {
         SDL_USEREVENT = 0x8000,
         SDL_LASTEVENT = 0xFFFF
     }
-}
-else static if(sdlSupport >= SDLSupport.sdl209) {
+} else static if(sdlSupport >= SDLSupport.sdl209) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -197,8 +195,7 @@ else static if(sdlSupport >= SDLSupport.sdl209) {
         SDL_USEREVENT = 0x8000,
         SDL_LASTEVENT = 0xFFFF
     }
-}
-else static if(sdlSupport >= SDLSupport.sdl205) {
+} else static if(sdlSupport >= SDLSupport.sdl205) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -250,8 +247,7 @@ else static if(sdlSupport >= SDLSupport.sdl205) {
         SDL_USEREVENT = 0x8000,
         SDL_LASTEVENT = 0xFFFF
     }
-}
-else static if(sdlSupport >= SDLSupport.sdl204) {
+} else static if(sdlSupport >= SDLSupport.sdl204) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -300,8 +296,7 @@ else static if(sdlSupport >= SDLSupport.sdl204) {
         SDL_USEREVENT = 0x8000,
         SDL_LASTEVENT = 0xFFFF
     }
-}
-else static if(sdlSupport >= SDLSupport.sdl201) {
+} else static if(sdlSupport >= SDLSupport.sdl201) {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -346,8 +341,7 @@ else static if(sdlSupport >= SDLSupport.sdl201) {
         SDL_USEREVENT = 0x8000,
         SDL_LASTEVENT = 0xFFFF
     }
-}
-else {
+} else {
     enum SDL_EventType {
         SDL_FIRSTEVENT = 0,
         SDL_QUIT = 0x100,
@@ -778,65 +772,22 @@ enum {
     }
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        void SDL_PumpEvents();
-        int SDL_PeepEvents(SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType);
-        SDL_bool SDL_HasEvent(uint type);
-        SDL_bool SDL_HasEvents(uint minType, uint maxType);
-        void SDL_FlushEvent(uint type);
-        void SDL_FlushEvents(uint minType, uint maxType);
-        int SDL_PollEvent(SDL_Event* event);
-        int SDL_WaitEvent(SDL_Event* event);
-        int SDL_WaitEventTimeout(SDL_Event* event, int timeout);
-        int SDL_PushEvent(SDL_Event* event);
-        void SDL_SetEventFilter(SDL_EventFilter filter, void* userdata);
-        SDL_bool SDL_GetEventFilter(SDL_EventFilter* filter, void** userdata);
-        void SDL_AddEventWatch(SDL_EventFilter filter, void* userdata);
-        void SDL_DelEventWatch(SDL_EventFilter filter, void* userdata);
-        void SDL_FilterEvents(SDL_EventFilter filter, void* userdata);
-        ubyte SDL_EventState(uint type, int state);
-        uint SDL_RegisterEvents(int numevents);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_PumpEvents = void function();
-        alias pSDL_PeepEvents = int function(SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType);
-        alias pSDL_HasEvent = SDL_bool function(uint type);
-        alias pSDL_HasEvents = SDL_bool function(uint minType, uint maxType);
-        alias pSDL_FlushEvent = void function(uint type);
-        alias pSDL_FlushEvents = void function(uint minType, uint maxType);
-        alias pSDL_PollEvent = int function(SDL_Event* event);
-        alias pSDL_WaitEvent = int function(SDL_Event* event);
-        alias pSDL_WaitEventTimeout = int function(SDL_Event* event, int timeout);
-        alias pSDL_PushEvent = int function(SDL_Event* event);
-        alias pSDL_SetEventFilter = void function(SDL_EventFilter filter, void* userdata);
-        alias pSDL_GetEventFilter = SDL_bool function(SDL_EventFilter* filter, void** userdata);
-        alias pSDL_AddEventWatch = void function(SDL_EventFilter filter, void* userdata);
-        alias pSDL_DelEventWatch = void function(SDL_EventFilter filter, void* userdata);
-        alias pSDL_FilterEvents = void function(SDL_EventFilter filter, void* userdata);
-        alias pSDL_EventState = ubyte function(uint type, int state);
-        alias pSDL_RegisterEvents = uint function(int numevents);
-    }
-
-    __gshared {
-        pSDL_PumpEvents SDL_PumpEvents;
-        pSDL_PeepEvents SDL_PeepEvents;
-        pSDL_HasEvent SDL_HasEvent;
-        pSDL_HasEvents SDL_HasEvents;
-        pSDL_FlushEvent SDL_FlushEvent;
-        pSDL_FlushEvents SDL_FlushEvents;
-        pSDL_PollEvent SDL_PollEvent;
-        pSDL_WaitEvent SDL_WaitEvent;
-        pSDL_WaitEventTimeout SDL_WaitEventTimeout;
-        pSDL_PushEvent SDL_PushEvent;
-        pSDL_SetEventFilter SDL_SetEventFilter;
-        pSDL_GetEventFilter SDL_GetEventFilter;
-        pSDL_AddEventWatch SDL_AddEventWatch;
-        pSDL_DelEventWatch SDL_DelEventWatch;
-        pSDL_FilterEvents SDL_FilterEvents;
-        pSDL_EventState SDL_EventState;
-        pSDL_RegisterEvents SDL_RegisterEvents;
-    }
-}
+mixin(makeFnBinds!(
+    [q{void}, q{SDL_PumpEvents}, q{}],
+    [q{int}, q{SDL_PeepEvents}, q{SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType}],
+    [q{SDL_bool}, q{SDL_HasEvent}, q{uint type}],
+    [q{SDL_bool}, q{SDL_HasEvents}, q{uint minType, uint maxType}],
+    [q{void}, q{SDL_FlushEvent}, q{uint type}],
+    [q{void}, q{SDL_FlushEvents}, q{uint minType, uint maxType}],
+    [q{int}, q{SDL_PollEvent}, q{SDL_Event* event}],
+    [q{int}, q{SDL_WaitEvent}, q{SDL_Event* event}],
+    [q{int}, q{SDL_WaitEventTimeout}, q{SDL_Event* event, int timeout}],
+    [q{int}, q{SDL_PushEvent}, q{SDL_Event* event}],
+    [q{void}, q{SDL_SetEventFilter}, q{SDL_EventFilter filter, void* userdata}],
+    [q{SDL_bool}, q{SDL_GetEventFilter}, q{SDL_EventFilter* filter, void** userdata}],
+    [q{void}, q{SDL_AddEventWatch}, q{SDL_EventFilter filter, void* userdata}],
+    [q{void}, q{SDL_DelEventWatch}, q{SDL_EventFilter filter, void* userdata}],
+    [q{void}, q{SDL_FilterEvents}, q{SDL_EventFilter filter, void* userdata}],
+    [q{ubyte}, q{SDL_EventState}, q{uint type, int state}],
+    [q{uint}, q{SDL_RegisterEvents}, q{int numevents}],
+));

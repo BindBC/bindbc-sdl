@@ -46,21 +46,8 @@ static if(sdlSupport >= SDLSupport.sdl206) {
     mixin(expandEnum!SDL_BlendFactor);
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        static if(sdlSupport >= SDLSupport.sdl206) {
-            SDL_BlendMode SDL_ComposeCustomBlendMode(SDL_BlendFactor srcColorFactor, SDL_BlendFactor dstColorFactor, SDL_BlendOperation colorOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation);
-        }
-    }
-}
-else {
-    static if(sdlSupport >= SDLSupport.sdl206) {
-        extern(C) @nogc nothrow {
-            alias pSDL_ComposeCustomBlendMode = SDL_BlendMode function(SDL_BlendFactor srcColorFactor, SDL_BlendFactor dstColorFactor, SDL_BlendOperation colorOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation);
-        }
-
-        __gshared {
-            pSDL_ComposeCustomBlendMode SDL_ComposeCustomBlendMode;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl206) {
+    mixin(makeFnBinds!(
+        [q{SDL_BlendMode}, q{SDL_ComposeCustomBlendMode}, q{SDL_BlendFactor srcColorFactor, SDL_BlendFactor dstColorFactor, SDL_BlendOperation colorOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation}],
+    ));
 }

@@ -59,20 +59,7 @@ struct SDL_MessageBoxData {
     const(SDL_MessageBoxColorScheme)* colorScheme;
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        int SDL_ShowMessageBox(const(SDL_MessageBoxData)* messageboxdata, int* buttonid);
-        int SDL_ShowSimpleMessageBox(uint flags, const(char)* title, const(char)* messsage, SDL_Window* window);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_ShowMessageBox = int function(const(SDL_MessageBoxData)* messageboxdata, int* buttonid);
-        alias pSDL_ShowSimpleMessageBox = int function(uint flags, const(char)* title, const(char)* messsage, SDL_Window* window);
-    }
-
-    __gshared {
-        pSDL_ShowMessageBox SDL_ShowMessageBox;
-        pSDL_ShowSimpleMessageBox SDL_ShowSimpleMessageBox;
-    }
-}
+mixin(makeFnBinds!(
+    [q{int}, q{SDL_ShowMessageBox}, q{const(SDL_MessageBoxData)* messageboxdata, int* buttonid}],
+    [q{int}, q{SDL_ShowSimpleMessageBox}, q{uint flags, const(char)* title, const(char)* messsage, SDL_Window* window}],
+));

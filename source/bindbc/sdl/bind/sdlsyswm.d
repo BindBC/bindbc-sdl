@@ -243,17 +243,6 @@ struct SDL_SysWMinfo {
     info_ info;
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        SDL_bool SDL_GetWindowWMInfo(SDL_Window* window, SDL_SysWMinfo* info);
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetWindowWMInfo = SDL_bool function(SDL_Window* window, SDL_SysWMinfo* info);
-    }
-
-    __gshared {
-        pSDL_GetWindowWMInfo SDL_GetWindowWMInfo;
-    }
-}
+mixin(makeFnBinds!(
+    [q{SDL_bool}, q{SDL_GetWindowWMInfo}, q{SDL_Window* window, SDL_SysWMinfo* info}],
+));

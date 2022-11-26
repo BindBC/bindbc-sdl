@@ -32,47 +32,20 @@ static if(sdlSupport >= SDLSupport.sdl2010) {
     enum SDL_MOUSE_TOUCHID = -1L;
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        int SDL_GetNumTouchDevices();
-        SDL_TouchID SDL_GetTouchDevice(int index);
-        int SDL_GetNumTouchFingers(SDL_TouchID touchID);
-        SDL_Finger* SDL_GetTouchFinger(SDL_TouchID touchID, int index);
-    }
-    static if(sdlSupport >= SDLSupport.sdl2010) {
-        SDL_TouchDeviceType SDL_GetTouchDeviceType(SDL_TouchID touchID);
-    }
-    static if(sdlSupport >= SDLSupport.sdl2022) {
-        const(char)* SDL_GetTouchName(int index);
-    }
+mixin(makeFnBinds!(
+    [q{int}, q{SDL_GetNumTouchDevices}, q{}],
+    [q{SDL_TouchID}, q{SDL_GetTouchDevice}, q{int index}],
+    [q{int}, q{SDL_GetNumTouchFingers}, q{SDL_TouchID touchID}],
+    [q{SDL_Finger*}, q{SDL_GetTouchFinger}, q{SDL_TouchID touchID, int index}],
+));
+
+static if(sdlSupport >= SDLSupport.sdl2010) {
+    mixin(makeFnBinds!(
+        [q{SDL_TouchDeviceType}, q{SDL_GetTouchDeviceType}, q{SDL_TouchID touchID}],
+    ));
 }
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetNumTouchDevices = int function();
-        alias pSDL_GetTouchDevice = SDL_TouchID function(int index);
-        alias pSDL_GetNumTouchFingers = int function(SDL_TouchID touchID);
-        alias pSDL_GetTouchFinger = SDL_Finger* function(SDL_TouchID touchID, int index);
-    }
-    __gshared {
-        pSDL_GetNumTouchDevices SDL_GetNumTouchDevices;
-        pSDL_GetTouchDevice SDL_GetTouchDevice;
-        pSDL_GetNumTouchFingers SDL_GetNumTouchFingers;
-        pSDL_GetTouchFinger SDL_GetTouchFinger;
-    }
-    static if(sdlSupport >= SDLSupport.sdl2010) {
-        extern(C) @nogc nothrow {
-            alias pSDL_GetTouchDeviceType = SDL_TouchDeviceType function(SDL_TouchID touchID);
-        }
-        __gshared {
-            pSDL_GetTouchDeviceType SDL_GetTouchDeviceType;
-        }
-    }
-    static if(sdlSupport >= SDLSupport.sdl2010) {
-        extern(C) @nogc nothrow {
-            alias pSDL_GetTouchName = const(char)* function(int index);
-        }
-        __gshared {
-            pSDL_GetTouchName SDL_GetTouchName;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl2022) {
+    mixin(makeFnBinds!(
+        [q{const(char)*}, q{SDL_GetTouchName}, q{int index}],
+    ));
 }

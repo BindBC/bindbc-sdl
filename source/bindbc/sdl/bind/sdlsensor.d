@@ -22,54 +22,19 @@ static if(sdlSupport >= SDLSupport.sdl209) {
 
     enum SDL_STANDARD_GRAVITY = 9.80665f;
 
-    static if(staticBinding) {
-        extern(C) @nogc nothrow {
-            int SDL_NumSensors();
-            const(char)* SDL_SensorGetDeviceName(int device_index);
-            SDL_SensorType SDL_SensorGetDeviceType(int device_index);
-            int SDL_SensorGetDeviceNonPortableType(int device_index);
-            SDL_SensorID SDL_SensorGetDeviceInstanceID(int device_index);
-            SDL_Sensor* SDL_SensorOpen(int device_index);
-            SDL_Sensor* SDL_SensorFromInstanceID(SDL_SensorID instance_id);
-            const(char)* SDL_SensorGetName(SDL_Sensor* sensor);
-            SDL_SensorType SDL_SensorGetType(SDL_Sensor* sensor);
-            int SDL_SensorGetNonPortableType(SDL_Sensor* sensor);
-            int SDL_SensorGetData(SDL_Sensor* sensor, float* data, int num_values);
-            void SDL_SensorClose(SDL_Sensor* sensor);
-            void SDL_SensorUpdate();
-        }
-    }
-    else {
-        extern(C) @nogc nothrow {
-            alias pSDL_NumSensors = int function();
-            alias pSDL_SensorGetDeviceName = const(char)* function(int device_index);
-            alias pSDL_SensorGetDeviceType = SDL_SensorType function(int device_index);
-            alias pSDL_SensorGetDeviceNonPortableType = int function(int device_index);
-            alias pSDL_SensorGetDeviceInstanceID = SDL_SensorID function(int device_index);
-            alias pSDL_SensorOpen = SDL_Sensor* function(int device_index);
-            alias pSDL_SensorFromInstanceID = SDL_Sensor* function(SDL_SensorID instance_id);
-            alias pSDL_SensorGetName = const(char)* function(SDL_Sensor* sensor);
-            alias pSDL_SensorGetType = SDL_SensorType function(SDL_Sensor* sensor);
-            alias pSDL_SensorGetNonPortableType = int function(SDL_Sensor* sensor);
-            alias pSDL_SensorGetData = int function(SDL_Sensor* sensor, float* data, int num_values);
-            alias pSDL_SensorClose = void function(SDL_Sensor* sensor);
-            alias pSDL_SensorUpdate = void function();
-        }
-
-        __gshared {
-            pSDL_NumSensors SDL_NumSensors;
-            pSDL_SensorGetDeviceName SDL_SensorGetDeviceName;
-            pSDL_SensorGetDeviceType SDL_SensorGetDeviceType;
-            pSDL_SensorGetDeviceNonPortableType SDL_SensorGetDeviceNonPortableType;
-            pSDL_SensorGetDeviceInstanceID SDL_SensorGetDeviceInstanceID;
-            pSDL_SensorOpen SDL_SensorOpen;
-            pSDL_SensorFromInstanceID SDL_SensorFromInstanceID;
-            pSDL_SensorGetName SDL_SensorGetName;
-            pSDL_SensorGetType SDL_SensorGetType;
-            pSDL_SensorGetNonPortableType SDL_SensorGetNonPortableType;
-            pSDL_SensorGetData SDL_SensorGetData;
-            pSDL_SensorClose SDL_SensorClose;
-            pSDL_SensorUpdate SDL_SensorUpdate;
-        }
-    }
+    mixin(makeFnBinds!(
+        [q{int}, q{SDL_NumSensors}, q{}],
+        [q{const(char)*}, q{SDL_SensorGetDeviceName}, q{int device_index}],
+        [q{SDL_SensorType}, q{SDL_SensorGetDeviceType}, q{int device_index}],
+        [q{int}, q{SDL_SensorGetDeviceNonPortableType}, q{int device_index}],
+        [q{SDL_SensorID}, q{SDL_SensorGetDeviceInstanceID}, q{int device_index}],
+        [q{SDL_Sensor*}, q{SDL_SensorOpen}, q{int device_index}],
+        [q{SDL_Sensor*}, q{SDL_SensorFromInstanceID}, q{SDL_SensorID instance_id}],
+        [q{const(char)*}, q{SDL_SensorGetName}, q{SDL_Sensor* sensor}],
+        [q{SDL_SensorType}, q{SDL_SensorGetType}, q{SDL_Sensor* sensor}],
+        [q{int}, q{SDL_SensorGetNonPortableType}, q{SDL_Sensor* sensor}],
+        [q{int}, q{SDL_SensorGetData}, q{SDL_Sensor* sensor, float* data, int num_values}],
+        [q{void}, q{SDL_SensorClose}, q{SDL_Sensor* sensor}],
+        [q{void}, q{SDL_SensorUpdate}, q{}],
+    ));
 }

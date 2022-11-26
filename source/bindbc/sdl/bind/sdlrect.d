@@ -79,55 +79,20 @@ static if(sdlSupport >= SDLSupport.sdl2010) {
     }
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        SDL_bool SDL_HasIntersection(const(SDL_Rect)* A, const(SDL_Rect)* B);
-        SDL_bool SDL_IntersectRect(const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result);
-        void SDL_UnionRect(const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result);
-        SDL_bool SDL_EnclosePoints(const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result);
-        SDL_bool SDL_IntersectRectAndLine(const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2);
+mixin(makeFnBinds!(
+    [q{SDL_bool}, q{SDL_HasIntersection}, q{const(SDL_Rect)* A, const(SDL_Rect)* B}],
+    [q{SDL_bool}, q{SDL_IntersectRect}, q{const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result}],
+    [q{void}, q{SDL_UnionRect}, q{const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result}],
+    [q{SDL_bool}, q{SDL_EnclosePoints}, q{const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result}],
+    [q{SDL_bool}, q{SDL_IntersectRectAndLine}, q{const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
+));
 
-        static if(sdlSupport >= SDLSupport.sdl2022) {
-            SDL_bool SDL_HasIntersectionF(const(SDL_FRect)* A, const(SDL_FRect)* B);
-            SDL_bool SDL_IntersectFRect(const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result);
-            SDL_bool SDL_UnionFRect(const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result);
-            SDL_bool SDL_EncloseFPoints(const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result);
-            SDL_bool SDL_IntersectFRectAndLine(const(SDL_FRect)* rect, int* X1, int* Y1, int* X2, int* Y2);
-        }
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_HasIntersection = SDL_bool function(const(SDL_Rect)* A, const(SDL_Rect)* B);
-        alias pSDL_IntersectRect = SDL_bool function(const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result);
-        alias pSDL_UnionRect = void function(const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result);
-        alias pSDL_EnclosePoints = SDL_bool function(const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result);
-        alias pSDL_IntersectRectAndLine = SDL_bool function(const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2);
-    }
-
-    __gshared {
-        pSDL_HasIntersection SDL_HasIntersection;
-        pSDL_IntersectRect SDL_IntersectRect;
-        pSDL_UnionRect SDL_UnionRect;
-        pSDL_EnclosePoints SDL_EnclosePoints;
-        pSDL_IntersectRectAndLine SDL_IntersectRectAndLine;
-    }
-
-    static if(sdlSupport >= SDLSupport.sdl2022) {
-        extern(C) @nogc nothrow {
-            alias pSDL_HasIntersectionF = SDL_bool function(const(SDL_FRect)* A, const(SDL_FRect)* B);
-            alias pSDL_IntersectFRect = SDL_bool function(const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result);
-            alias pSDL_UnionFRect = void function(const(SDL_FRect)* A, const(SDL_FRect)* B,SDL_FRect* result);
-            alias pSDL_EncloseFPoints = SDL_bool function(const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result);
-            alias pSDL_IntersectFRectAndLine = SDL_bool function(const(SDL_FRect)* rect, int* X1, int* Y1, int* X2, int* Y2);
-        }
-
-        __gshared {
-            pSDL_HasIntersectionF SDL_HasIntersectionF;
-            pSDL_IntersectFRect SDL_IntersectFRect;
-            pSDL_UnionFRect SDL_UnionFRect;
-            pSDL_EncloseFPoints SDL_EncloseFPoints;
-            pSDL_IntersectFRectAndLine SDL_IntersectFRectAndLine;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl2022) {
+    mixin(makeFnBinds!(
+        [q{SDL_bool}, q{SDL_HasIntersectionF}, q{const(SDL_FRect)* A, const(SDL_FRect)* B}],
+        [q{SDL_bool}, q{SDL_IntersectFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
+        [q{SDL_bool}, q{SDL_UnionFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
+        [q{SDL_bool}, q{SDL_EncloseFPoints}, q{const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result}],
+        [q{SDL_bool}, q{SDL_IntersectFRectAndLine}, q{const(SDL_FRect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
+    ));
 }

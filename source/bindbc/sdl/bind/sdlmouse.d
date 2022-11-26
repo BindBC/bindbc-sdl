@@ -53,76 +53,27 @@ static if(sdlSupport >= SDLSupport.sdl204) {
     mixin(expandEnum!SDL_MouseWheelDirection);
 }
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        SDL_Window* SDL_GetMouseFocus();
-        uint SDL_GetMouseState(int* x, int* y);
-        uint SDL_GetRelativeMouseState(int* x, int* y);
-        void SDL_WarpMouseInWindow(SDL_Window* window, int x, int y);
-        int SDL_SetRelativeMouseMode(SDL_bool enabled);
-        SDL_bool SDL_GetRelativeMouseMode();
-        SDL_Cursor* SDL_CreateCursor(const(ubyte)* data, const(ubyte)* mask, int w, int h, int hot_x, int hot_y);
-        SDL_Cursor* SDL_CreateColorCursor(SDL_Surface* surface, int hot_x, int hot_y);
-        SDL_Cursor* SDL_CreateSystemCursor(SDL_SystemCursor id);
-        void SDL_SetCursor(SDL_Cursor* cursor);
-        SDL_Cursor* SDL_GetCursor();
-        SDL_Cursor* SDL_GetDefaultCursor();
-        void SDL_FreeCursor(SDL_Cursor* cursor);
-        int SDL_ShowCursor(int toggle);
+mixin(makeFnBinds!(
+    [q{SDL_Window*}, q{SDL_GetMouseFocus}, q{}],
+    [q{uint}, q{SDL_GetMouseState}, q{int* x, int* y}],
+    [q{uint}, q{SDL_GetRelativeMouseState}, q{int* x, int* y}],
+    [q{void}, q{SDL_WarpMouseInWindow}, q{SDL_Window* window, int x, int y}],
+    [q{int}, q{SDL_SetRelativeMouseMode}, q{SDL_bool enabled}],
+    [q{SDL_bool}, q{SDL_GetRelativeMouseMode}, q{}],
+    [q{SDL_Cursor*}, q{SDL_CreateCursor}, q{const(ubyte)* data, const(ubyte)* mask, int w, int h, int hot_x, int hot_y}],
+    [q{SDL_Cursor*}, q{SDL_CreateColorCursor}, q{SDL_Surface* surface, int hot_x, int hot_y}],
+    [q{SDL_Cursor*}, q{SDL_CreateSystemCursor}, q{SDL_SystemCursor id}],
+    [q{void}, q{SDL_SetCursor}, q{SDL_Cursor* cursor}],
+    [q{SDL_Cursor*}, q{SDL_GetCursor}, q{}],
+    [q{SDL_Cursor*}, q{SDL_GetDefaultCursor}, q{}],
+    [q{void}, q{SDL_FreeCursor}, q{SDL_Cursor* cursor}],
+    [q{int}, q{SDL_ShowCursor}, q{int toggle}],
+));
 
-        static if(sdlSupport >= SDLSupport.sdl204) {
-            int SDL_CaptureMouse(SDL_bool enabled);
-            uint SDL_GetGlobalMouseState(int* x, int* y);
-            void SDL_WarpMouseGlobal(int x, int y);
-        }
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_GetMouseFocus = SDL_Window* function();
-        alias pSDL_GetMouseState = uint function(int* x, int* y);
-        alias pSDL_GetRelativeMouseState = uint function(int* x, int* y);
-        alias pSDL_WarpMouseInWindow = void function(SDL_Window* window, int x, int y);
-        alias pSDL_SetRelativeMouseMode = int function(SDL_bool enabled);
-        alias pSDL_GetRelativeMouseMode = SDL_bool function();
-        alias pSDL_CreateCursor = SDL_Cursor* function(const(ubyte)* data, const(ubyte)* mask, int w, int h, int hot_x, int hot_y);
-        alias pSDL_CreateColorCursor = SDL_Cursor* function(SDL_Surface* surface, int hot_x, int hot_y);
-        alias pSDL_CreateSystemCursor = SDL_Cursor* function(SDL_SystemCursor id);
-        alias pSDL_SetCursor = void function(SDL_Cursor* cursor);
-        alias pSDL_GetCursor = SDL_Cursor* function();
-        alias pSDL_GetDefaultCursor = SDL_Cursor* function();
-        alias pSDL_FreeCursor = void function(SDL_Cursor* cursor);
-        alias pSDL_ShowCursor = int function(int toggle);
-    }
-
-    __gshared {
-        pSDL_GetMouseFocus SDL_GetMouseFocus;
-        pSDL_GetMouseState SDL_GetMouseState;
-        pSDL_GetRelativeMouseState SDL_GetRelativeMouseState;
-        pSDL_WarpMouseInWindow SDL_WarpMouseInWindow;
-        pSDL_SetRelativeMouseMode SDL_SetRelativeMouseMode;
-        pSDL_GetRelativeMouseMode SDL_GetRelativeMouseMode;
-        pSDL_CreateCursor SDL_CreateCursor;
-        pSDL_CreateColorCursor SDL_CreateColorCursor;
-        pSDL_CreateSystemCursor SDL_CreateSystemCursor;
-        pSDL_SetCursor SDL_SetCursor;
-        pSDL_GetCursor SDL_GetCursor;
-        pSDL_GetDefaultCursor SDL_GetDefaultCursor;
-        pSDL_FreeCursor SDL_FreeCursor;
-        pSDL_ShowCursor SDL_ShowCursor;
-    }
-
-    static if(sdlSupport >= SDLSupport.sdl204) {
-        extern(C) @nogc nothrow {
-            alias pSDL_CaptureMouse = int function(SDL_bool enabled);
-            alias pSDL_GetGlobalMouseState = uint function(int* x, int* y);
-            alias pSDL_WarpMouseGlobal = void function(int x, int y);
-        }
-
-        __gshared {
-            pSDL_CaptureMouse SDL_CaptureMouse;
-            pSDL_GetGlobalMouseState SDL_GetGlobalMouseState;
-            pSDL_WarpMouseGlobal SDL_WarpMouseGlobal;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl204) {
+    mixin(makeFnBinds!(
+        [q{int}, q{SDL_CaptureMouse}, q{SDL_bool enabled}],
+        [q{uint}, q{SDL_GetGlobalMouseState}, q{int* x, int* y}],
+        [q{void}, q{SDL_WarpMouseGlobal}, q{int x, int y}],
+    ));
 }

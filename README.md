@@ -196,6 +196,8 @@ Following are the supported versions of each SDL library and the corresponding v
 |SDL 2.0.18          | SDL_2018         |
 |SDL 2.0.20          | SDL_2020         |
 |SDL 2.0.22          | SDL_2022         |
+|SDL 2.24.0          | SDL_2240         |
+|SDL 2.26.0          | SDL_2260         |
 |--                  | --               |
 |SDL_image 2.0.0     | SDL_Image, SDL_Image_200|
 |SDL_image 2.0.1     | SDL_Image_201    |

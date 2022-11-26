@@ -26,13 +26,17 @@ enum SDLSupport {
     sdl2018     = 2018,
     sdl2020     = 2020,
     sdl2022     = 2022,
+    sdl2240     = 2240,
+    sdl2260     = 2260,
 }
 
 version(BindBC_Static) version = BindSDL_Static;
 version(BindSDL_Static) enum staticBinding = true;
 else enum staticBinding = false;
 
-version(SDL_2022) enum sdlSupport = SDLSupport.sdl2022;
+version(SDL_2260) enum sdlSupport = SDLSupport.sdl2260;
+else version(SDL_2240) enum sdlSupport = SDLSupport.sdl2240;
+else version(SDL_2022) enum sdlSupport = SDLSupport.sdl2022;
 else version(SDL_2020) enum sdlSupport = SDLSupport.sdl2020;
 else version(SDL_2018) enum sdlSupport = SDLSupport.sdl2018;
 else version(SDL_2016) enum sdlSupport = SDLSupport.sdl2016;
@@ -87,7 +91,35 @@ else enum bindSDLTTF = false;
 enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
     string expandEnum;
     foreach(m;__traits(allMembers, EnumType)) {
-        expandEnum ~= "alias " ~ m ~ " = " ~ fqnEnumType ~ "." ~ m ~ ";";
+        expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
     }
     return expandEnum;
+}();
+
+enum makeFnBinds(fns...) = (){
+    string makeFnBinds = `static if(staticBinding) {
+    extern(C) @nogc nothrow {`;
+    foreach(fn; fns){
+        makeFnBinds ~= `
+        `~fn[0]~` `~fn[1]~`(`~fn[2]~`);`;
+    }
+    makeFnBinds ~= `
+    }
+} else {
+    extern(C) @nogc nothrow {`;
+    foreach(fn; fns){
+        makeFnBinds ~= `
+        alias p`~fn[1]~` = `~fn[0]~` function(`~fn[2]~`);`;
+    }
+    makeFnBinds ~= `
+    }
+    __gshared {`;
+    foreach(fn; fns){
+        makeFnBinds ~= `
+        p`~fn[1]~` `~fn[1]~`;`;
+    }
+    makeFnBinds ~= `
+    }
+}`;
+	return makeFnBinds;
 }();

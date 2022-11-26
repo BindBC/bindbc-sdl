@@ -31,40 +31,15 @@ alias SDL_AssertData = SDL_assert_data;
 
 extern(C) nothrow alias SDL_AssertionHandler = SDL_AssertState function(const(SDL_AssertData)* data, void* userdata);
 
-static if(staticBinding) {
-    extern(C) @nogc nothrow {
-        void SDL_SetAssertionHandler(SDL_AssertionHandler handler, void* userdata);
-        const(SDL_assert_data)* SDL_GetAssertionReport();
-        void SDL_ResetAssertionReport();
+mixin(makeFnBinds!(
+    [q{void},                    q{SDL_SetAssertionHandler},  q{SDL_AssertionHandler handler, void* userdata}],
+    [q{const(SDL_assert_data)*}, q{SDL_GetAssertionReport},   q{}],
+    [q{void},                    q{SDL_ResetAssertionReport}, q{}],
+));
 
-        static if(sdlSupport >= SDLSupport.sdl202) {
-            SDL_AssertionHandler SDL_GetAssertionHandler(void** puserdata);
-            SDL_AssertionHandler SDL_GetDefaultAssertionHandler();
-        }
-    }
-}
-else {
-    extern(C) @nogc nothrow {
-        alias pSDL_SetAssertionHandler = void function(SDL_AssertionHandler handler, void* userdata);
-        alias pSDL_GetAssertionReport = const(SDL_assert_data)* function();
-        alias pSDL_ResetAssertionReport = void function();
-    }
-
-    __gshared {
-        pSDL_SetAssertionHandler SDL_SetAssertionHandler;
-        pSDL_GetAssertionReport SDL_GetAssertionReport;
-        pSDL_ResetAssertionReport SDL_ResetAssertionReport;
-    }
-
-    static if(sdlSupport >= SDLSupport.sdl202) {
-        extern(C) @nogc nothrow {
-            alias pSDL_GetAssertionHandler = SDL_AssertionHandler function(void** puserdata);
-            alias pSDL_GetDefaultAssertionHandler = SDL_AssertionHandler function();
-        }
-
-        __gshared {
-            pSDL_GetAssertionHandler SDL_GetAssertionHandler;
-            pSDL_GetDefaultAssertionHandler SDL_GetDefaultAssertionHandler;
-        }
-    }
+static if(sdlSupport >= SDLSupport.sdl202) {
+    mixin(makeFnBinds!(
+        [q{SDL_AssertionHandler}, q{SDL_GetAssertionHandler},        q{void** puserdata}],
+        [q{SDL_AssertionHandler}, q{SDL_GetDefaultAssertionHandler}, q{}],
+    ));
 }

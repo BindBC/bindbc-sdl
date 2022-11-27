@@ -289,6 +289,14 @@ static if(staticBinding) {
         Mix_Chunk* Mix_GetChunk(int channel);
         void Mix_CloseAudio();
 
+        static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
+            int Mix_OpenAudioDevice(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);
+            SDL_bool Mix_HasChunkDecoder(const(char)* name);
+
+            // Declared in SDL_mixer.h, but not implemented
+            // SDL_bool Mix_HasMusicDecoder(const(char)*);
+        }
+
         static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
             Mix_Chunk* Mix_LoadWAV(const(char)* file);
             int Mix_PlayChannel(int channel, Mix_Chunk* chunk, int loops);
@@ -309,13 +317,6 @@ static if(staticBinding) {
             double Mix_GetMusicLoopLengthTime(Mix_Music* music);
             int Mix_SetTimidityCfg(const(char)* path);
             const(char)* Mix_GetTimidityCfg();
-        }
-        static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
-            int Mix_OpenAudioDevice(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);
-            SDL_bool Mix_HasChunkDecoder(const(char)* name);
-
-            // Declared in SDL_mixer.h, but not implemented
-            // SDL_bool Mix_HasMusicDecoder(const(char)*);
         }
     }
 }
@@ -474,6 +475,22 @@ else {
         pMix_CloseAudio Mix_CloseAudio;
     }
 
+    static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
+        extern(C) @nogc nothrow {
+            alias pMix_OpenAudioDevice = int function(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);
+            alias pMix_HasChunkDecoder = SDL_bool function(const(char)* name);
+
+            // Declared in SDL_mixer.h, but not implemented
+            //alias pMix_HasMusicDecoder = SDL_bool function(const(char)*);
+        }
+
+        __gshared {
+            pMix_OpenAudioDevice Mix_OpenAudioDevice;
+            pMix_HasChunkDecoder Mix_HasChunkDecoder;
+            //pMix_HasMusicDecoder Mix_HasMusicDecoder;
+        }
+    }
+
     static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
         extern(C) @nogc nothrow {
             alias pMix_LoadWAV = Mix_Chunk* function(const(char)* file);
@@ -517,22 +534,6 @@ else {
             pMix_GetMusicLoopLengthTime Mix_GetMusicLoopLengthTime;
             pMix_SetTimidityCfg Mix_SetTimidityCfg;
             pMix_GetTimidityCfg Mix_GetTimidityCfg;
-        }
-    }
-
-    static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202) {
-        extern(C) @nogc nothrow {
-            alias pMix_OpenAudioDevice = int function(int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes);
-            alias pMix_HasChunkDecoder = SDL_bool function(const(char)* name);
-
-            // Declared in SDL_mixer.h, but not implemented
-            //alias pMix_HasMusicDecoder = SDL_bool function(const(char)*);
-        }
-
-        __gshared {
-            pMix_OpenAudioDevice Mix_OpenAudioDevice;
-            pMix_HasChunkDecoder Mix_HasChunkDecoder;
-            //pMix_HasMusicDecoder Mix_HasMusicDecoder;
         }
     }
 
@@ -685,6 +686,31 @@ else {
 
             if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
             else loadedVersion = (sdlMixerSupport >= SDLMixerSupport.sdlMixer204) ? SDLMixerSupport.sdlMixer204 : SDLMixerSupport.sdlMixer202;
+        }
+
+        static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260) {
+            lib.bindSymbol(cast(void**)&Mix_LoadWAV,"Mix_LoadWAV");
+            lib.bindSymbol(cast(void**)&Mix_PlayChannel,"Mix_PlayChannel");
+            lib.bindSymbol(cast(void**)&Mix_FadeInChannel,"Mix_FadeInChannel");
+            lib.bindSymbol(cast(void**)&Mix_HasMusicDecoder,"Mix_HasMusicDecoder");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicTitle,"Mix_GetMusicTitle");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicTitleTag,"Mix_GetMusicTitleTag");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicArtistTag,"Mix_GetMusicArtistTag");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicAlbumTag,"Mix_GetMusicAlbumTag");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicCopyrightTag,"Mix_GetMusicCopyrightTag");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicVolume,"Mix_GetMusicVolume");
+            lib.bindSymbol(cast(void**)&Mix_MasterVolume,"Mix_MasterVolume");
+            lib.bindSymbol(cast(void**)&Mix_ModMusicJumpToOrder,"Mix_ModMusicJumpToOrder");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicPosition,"Mix_GetMusicPosition");
+            lib.bindSymbol(cast(void**)&Mix_MusicDuration,"Mix_MusicDuration");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicLoopStartTime,"Mix_GetMusicLoopStartTime");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicLoopEndTime,"Mix_GetMusicLoopEndTime");
+            lib.bindSymbol(cast(void**)&Mix_GetMusicLoopLengthTime,"Mix_GetMusicLoopLengthTime");
+            lib.bindSymbol(cast(void**)&Mix_SetTimidityCfg,"Mix_SetTimidityCfg");
+            lib.bindSymbol(cast(void**)&Mix_GetTimidityCfg,"Mix_GetTimidityCfg");
+            
+            if(errorCount() != errCount) return SDLMixerSupport.badLibrary;
+            else loadedVersion = SDLMixerSupport.sdlMixer260;
         }
 
         return loadedVersion;

@@ -1,0 +1,3 @@
+- SDL_PATCHLEVEL is no longer explicitly a `ubyte`.
+- `loadedSDLVersion` now returns the desired version rather than the loaded one, the same as `SDL_VERSION`. To see which version was loaded, please use `SDL_GetVersion`.
+- explicit `SDL_EventType.member` will no longer work.

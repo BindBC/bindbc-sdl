@@ -1,40 +1,43 @@
-
-//          Copyright 2018 - 2022 Michael D. Parker
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
-
+/+
+            Copyright 2022 – 2023 Aya Partridge
+          Copyright 2018 - 2022 Michael D. Parker
+ Distributed under the Boost Software License, Version 1.0.
+     (See accompanying file LICENSE_1_0.txt or copy at
+           http://www.boost.org/LICENSE_1_0.txt)
++/
 module bindbc.sdl.config;
 
-enum SDLSupport {
-    noLibrary,
-    badLibrary,
-    sdl200      = 200,
-    sdl201      = 201,
-    sdl202      = 202,
-    sdl203      = 203,
-    sdl204      = 204,
-    sdl205      = 205,
-    sdl206      = 206,
-    sdl207      = 207,
-    sdl208      = 208,
-    sdl209      = 209,
-    sdl2010     = 2010,
-    sdl2012     = 2012,
-    sdl2014     = 2014,
-    sdl2016     = 2016,
-    sdl2018     = 2018,
-    sdl2020     = 2020,
-    sdl2022     = 2022,
-    sdl2240     = 2240,
-    sdl2260     = 2260,
+import bindbc.sdl.bind.sdlversion: SDL_version;
+
+enum SDLSupport{
+	noLibrary,
+	badLibrary,
+	sdl200   = 200,
+	sdl201   = 201,
+	sdl202   = 202,
+	sdl203   = 203,
+	sdl204   = 204,
+	sdl205   = 205,
+	sdl206   = 206,
+	sdl207   = 207,
+	sdl208   = 208,
+	sdl209   = 209,
+	sdl2010  = 2010,
+	sdl2012  = 2012,
+	sdl2014  = 2014,
+	sdl2016  = 2016,
+	sdl2018  = 2018,
+	sdl2020  = 2020,
+	sdl2022  = 2022,
+	sdl2240  = 2240,
+	sdl2260  = 2260,
 }
 
 version(BindBC_Static) version = BindSDL_Static;
 version(BindSDL_Static) enum staticBinding = true;
 else enum staticBinding = false;
 
-version(SDL_2260) enum sdlSupport = SDLSupport.sdl2260;
+version(SDL_2260)      enum sdlSupport = SDLSupport.sdl2260;
 else version(SDL_2240) enum sdlSupport = SDLSupport.sdl2240;
 else version(SDL_2022) enum sdlSupport = SDLSupport.sdl2022;
 else version(SDL_2020) enum sdlSupport = SDLSupport.sdl2020;
@@ -43,15 +46,15 @@ else version(SDL_2016) enum sdlSupport = SDLSupport.sdl2016;
 else version(SDL_2014) enum sdlSupport = SDLSupport.sdl2014;
 else version(SDL_2012) enum sdlSupport = SDLSupport.sdl2012;
 else version(SDL_2010) enum sdlSupport = SDLSupport.sdl2010;
-else version(SDL_209) enum sdlSupport = SDLSupport.sdl209;
-else version(SDL_208) enum sdlSupport = SDLSupport.sdl208;
-else version(SDL_207) enum sdlSupport = SDLSupport.sdl207;
-else version(SDL_206) enum sdlSupport = SDLSupport.sdl206;
-else version(SDL_205) enum sdlSupport = SDLSupport.sdl205;
-else version(SDL_204) enum sdlSupport = SDLSupport.sdl204;
-else version(SDL_203) enum sdlSupport = SDLSupport.sdl203;
-else version(SDL_202) enum sdlSupport = SDLSupport.sdl202;
-else version(SDL_201) enum sdlSupport = SDLSupport.sdl201;
+else version(SDL_209)  enum sdlSupport = SDLSupport.sdl209;
+else version(SDL_208)  enum sdlSupport = SDLSupport.sdl208;
+else version(SDL_207)  enum sdlSupport = SDLSupport.sdl207;
+else version(SDL_206)  enum sdlSupport = SDLSupport.sdl206;
+else version(SDL_205)  enum sdlSupport = SDLSupport.sdl205;
+else version(SDL_204)  enum sdlSupport = SDLSupport.sdl204;
+else version(SDL_203)  enum sdlSupport = SDLSupport.sdl203;
+else version(SDL_202)  enum sdlSupport = SDLSupport.sdl202;
+else version(SDL_201)  enum sdlSupport = SDLSupport.sdl201;
 else enum sdlSupport = SDLSupport.sdl200;
 
 version(SDL_Image) version = BindSDL_Image;
@@ -89,37 +92,51 @@ version(BindSDL_TTF) enum bindSDLTTF = true;
 else enum bindSDLTTF = false;
 
 enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
-    string expandEnum;
-    foreach(m;__traits(allMembers, EnumType)) {
-        expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
-    }
-    return expandEnum;
+	string expandEnum;
+	foreach(m;__traits(allMembers, EnumType)){
+		expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
+	}
+	return expandEnum;
 }();
 
 enum makeFnBinds(fns...) = (){
-    string makeFnBinds = `static if(staticBinding) {
-    extern(C) @nogc nothrow {`;
-    foreach(fn; fns){
-        makeFnBinds ~= `
-        `~fn[0]~` `~fn[1]~`(`~fn[2]~`);`;
-    }
-    makeFnBinds ~= `
-    }
-} else {
-    extern(C) @nogc nothrow {`;
-    foreach(fn; fns){
-        makeFnBinds ~= `
-        alias p`~fn[1]~` = `~fn[0]~` function(`~fn[2]~`);`;
-    }
-    makeFnBinds ~= `
-    }
-    __gshared {`;
-    foreach(fn; fns){
-        makeFnBinds ~= `
-        p`~fn[1]~` `~fn[1]~`;`;
-    }
-    makeFnBinds ~= `
-    }
-}`;
-	return makeFnBinds;
+	string makeFnBinds = `extern(C) @nogc nothrow{`;
+	string[] symbols = [];
+	static if(staticBinding){
+		foreach(fn; fns){
+			makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`);`;
+		}
+	}else{
+		foreach(fn; fns){
+			makeFnBinds ~= "\n\talias p"~fn[1]~` = `~fn[0]~` function(`~fn[2]~`);`;
+		}
+		makeFnBinds ~= "\n}\n\n__gshared {";
+		foreach(fn; fns){
+			makeFnBinds ~= "\n\tp"~fn[1]~` `~fn[1]~`;`;
+			symbols ~= fn[1];
+		}
+	}
+	makeFnBinds ~= "\n}";
+	return [makeFnBinds] ~ symbols;
+}();
+
+enum joinFnBinds(alias list) = (){
+	string joined;
+	string[] symbols;
+	
+	foreach(item; list){
+		joined ~= item[0];
+		static if(!staticBinding){
+			symbols ~= item[1..$];
+		}
+	}
+	
+	static if(!staticBinding){
+		joined ~= "\n\nimport bindbc.loader: SharedLib, bindSymbol;\nvoid bindModuleSymbols(SharedLib lib) @nogc nothrow{";
+		foreach(symbol; symbols){
+			joined ~= "\n\tlib.bindSymbol(cast(void**)&"~symbol~`, "`~symbol~`");`;
+		}
+		joined ~= "\n}";
+	}
+	return joined;
 }();

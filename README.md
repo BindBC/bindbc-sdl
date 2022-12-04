@@ -1,6 +1,10 @@
 # bindbc-sdl
 This project provides both static and dynamic bindings to the [Simple Direct Media Library (SDL)](https://libsdl.org/) and its satellite libraries. They are compatible with `@nogc` and `nothrow` and can be compiled with `-betterC` compatibility. This package is intended as a replacement of [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
+## License
+
+Every binding in the BindBC project is licensed under the [Boost Software License](https://www.boost.org/LICENSE_1_0.txt). If you use these bindings in your project, you must also abide by the license(s) of SDL and any of its satellite libraries that you use.
+
 ## Usage
 __NOTE__: This documentation describes how to use bindbc-sdl. As the maintainer of this library, I do not provide instructions on using the SDL library. However, since this is a direct binding to the SDL API, the existing SDL documentation and tutorials can be adapted to D with few modifications (those being minor differences in the language, such as array declaration syntax). See [the SDL Wiki](https://wiki.libsdl.org/FrontPage) for documentation on the SDL API. [The SDL 2 tutorials from Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/index.php) are a good start for those unfamiliar with the API.
 

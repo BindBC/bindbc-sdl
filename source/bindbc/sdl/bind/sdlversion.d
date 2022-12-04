@@ -1,9 +1,9 @@
 /+
-            Copyright 2022 – 2023 Aya Partridge
-          Copyright 2018 - 2022 Michael D. Parker
- Distributed under the Boost Software License, Version 1.0.
-     (See accompanying file LICENSE_1_0.txt or copy at
-           http://www.boost.org/LICENSE_1_0.txt)
++            Copyright 2022 – 2023 Aya Partridge
++          Copyright 2018 - 2022 Michael D. Parker
++ Distributed under the Boost Software License, Version 1.0.
++     (See accompanying file LICENSE_1_0.txt or copy at
++           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module bindbc.sdl.bind.sdlversion;
 
@@ -13,6 +13,15 @@ struct SDL_version{
 	ubyte major;
 	ubyte minor;
 	ubyte patch;
+	
+	int opCmp(SDL_version x){
+		if(major != x.major)
+			return major - x.major;
+		else if(minor != x.minor)
+			return minor - x.minor;
+		else
+			return patch - x.patch;
+	}
 }
 
 enum SDL_MAJOR_VERSION = 2;
@@ -25,23 +34,25 @@ version(SDL_2260){
 	enum SDL_PATCHLEVEL = 0;
 }else{
 	enum SDL_MINOR_VERSION = 0;
-	     version(SDL_2022) enum SDL_PATCHLEVEL = 22;
-	else version(SDL_2020) enum SDL_PATCHLEVEL = 20;
-	else version(SDL_2018) enum SDL_PATCHLEVEL = 18;
-	else version(SDL_2016) enum SDL_PATCHLEVEL = 16;
-	else version(SDL_2014) enum SDL_PATCHLEVEL = 14;
-	else version(SDL_2012) enum SDL_PATCHLEVEL = 12;
-	else version(SDL_2010) enum SDL_PATCHLEVEL = 10;
-	else version(SDL_209)  enum SDL_PATCHLEVEL = 9;
-	else version(SDL_208)  enum SDL_PATCHLEVEL = 8;
-	else version(SDL_207)  enum SDL_PATCHLEVEL = 7;
-	else version(SDL_206)  enum SDL_PATCHLEVEL = 6;
-	else version(SDL_205)  enum SDL_PATCHLEVEL = 5;
-	else version(SDL_204)  enum SDL_PATCHLEVEL = 4;
-	else version(SDL_203)  enum SDL_PATCHLEVEL = 3;
-	else version(SDL_202)  enum SDL_PATCHLEVEL = 2;
-	else version(SDL_201)  enum SDL_PATCHLEVEL = 1;
-	else                   enum SDL_PATCHLEVEL = 0;
+	enum SDL_PATCHLEVEL = (){
+		version(SDL_2022)      return 22;
+		else version(SDL_2020) return 20;
+		else version(SDL_2018) return 18;
+		else version(SDL_2016) return 16;
+		else version(SDL_2014) return 14;
+		else version(SDL_2012) return 12;
+		else version(SDL_2010) return 10;
+		else version(SDL_209)  return 9;
+		else version(SDL_208)  return 8;
+		else version(SDL_207)  return 7;
+		else version(SDL_206)  return 6;
+		else version(SDL_205)  return 5;
+		else version(SDL_204)  return 4;
+		else version(SDL_203)  return 3;
+		else version(SDL_202)  return 2;
+		else version(SDL_201)  return 1;
+		else                   return 0;
+	}();
 }
 
 void SDL_VERSION(SDL_version* x) @nogc nothrow pure{

@@ -1,95 +1,101 @@
 /+
-            Copyright 2022 – 2023 Aya Partridge
-          Copyright 2018 - 2022 Michael D. Parker
- Distributed under the Boost Software License, Version 1.0.
-     (See accompanying file LICENSE_1_0.txt or copy at
-           http://www.boost.org/LICENSE_1_0.txt)
++            Copyright 2022 – 2023 Aya Partridge
++          Copyright 2018 - 2022 Michael D. Parker
++ Distributed under the Boost Software License, Version 1.0.
++     (See accompanying file LICENSE_1_0.txt or copy at
++           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module bindbc.sdl.config;
 
-import bindbc.sdl.bind.sdlversion: SDL_version;
+import bindbc.sdl.bind.sdlversion: SDL_version, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL;
 
-enum SDLSupport{
-	noLibrary,
-	badLibrary,
-	sdl200   = 200,
-	sdl201   = 201,
-	sdl202   = 202,
-	sdl203   = 203,
-	sdl204   = 204,
-	sdl205   = 205,
-	sdl206   = 206,
-	sdl207   = 207,
-	sdl208   = 208,
-	sdl209   = 209,
-	sdl2010  = 2010,
-	sdl2012  = 2012,
-	sdl2014  = 2014,
-	sdl2016  = 2016,
-	sdl2018  = 2018,
-	sdl2020  = 2020,
-	sdl2022  = 2022,
-	sdl2240  = 2240,
-	sdl2260  = 2260,
+enum SDLSupport: SDL_version{
+	noLibrary = SDL_version(0,0,0),
+	badLibrary = SDL_version(0,0,255),
+	sdl200   = SDL_version(2,0,0),
+	sdl201   = SDL_version(2,0,1),
+	sdl202   = SDL_version(2,0,2),
+	sdl203   = SDL_version(2,0,3),
+	sdl204   = SDL_version(2,0,4),
+	sdl205   = SDL_version(2,0,5),
+	sdl206   = SDL_version(2,0,6),
+	sdl207   = SDL_version(2,0,7),
+	sdl208   = SDL_version(2,0,8),
+	sdl209   = SDL_version(2,0,9),
+	sdl2010  = SDL_version(2,0,10),
+	sdl2012  = SDL_version(2,0,12),
+	sdl2014  = SDL_version(2,0,14),
+	sdl2016  = SDL_version(2,0,16),
+	sdl2018  = SDL_version(2,0,18),
+	sdl2020  = SDL_version(2,0,20),
+	sdl2022  = SDL_version(2,0,22),
+	sdl2240  = SDL_version(2,24,0),
+	sdl2260  = SDL_version(2,26,0),
 }
 
 version(BindBC_Static) version = BindSDL_Static;
 version(BindSDL_Static) enum staticBinding = true;
 else enum staticBinding = false;
 
-version(SDL_2260)      enum sdlSupport = SDLSupport.sdl2260;
-else version(SDL_2240) enum sdlSupport = SDLSupport.sdl2240;
-else version(SDL_2022) enum sdlSupport = SDLSupport.sdl2022;
-else version(SDL_2020) enum sdlSupport = SDLSupport.sdl2020;
-else version(SDL_2018) enum sdlSupport = SDLSupport.sdl2018;
-else version(SDL_2016) enum sdlSupport = SDLSupport.sdl2016;
-else version(SDL_2014) enum sdlSupport = SDLSupport.sdl2014;
-else version(SDL_2012) enum sdlSupport = SDLSupport.sdl2012;
-else version(SDL_2010) enum sdlSupport = SDLSupport.sdl2010;
-else version(SDL_209)  enum sdlSupport = SDLSupport.sdl209;
-else version(SDL_208)  enum sdlSupport = SDLSupport.sdl208;
-else version(SDL_207)  enum sdlSupport = SDLSupport.sdl207;
-else version(SDL_206)  enum sdlSupport = SDLSupport.sdl206;
-else version(SDL_205)  enum sdlSupport = SDLSupport.sdl205;
-else version(SDL_204)  enum sdlSupport = SDLSupport.sdl204;
-else version(SDL_203)  enum sdlSupport = SDLSupport.sdl203;
-else version(SDL_202)  enum sdlSupport = SDLSupport.sdl202;
-else version(SDL_201)  enum sdlSupport = SDLSupport.sdl201;
-else enum sdlSupport = SDLSupport.sdl200;
+enum sdlSupport = (){
+	version(SDL_2260)      return SDLSupport.sdl2260;
+	else version(SDL_2240) return SDLSupport.sdl2240;
+	else version(SDL_2022) return SDLSupport.sdl2022;
+	else version(SDL_2020) return SDLSupport.sdl2020;
+	else version(SDL_2018) return SDLSupport.sdl2018;
+	else version(SDL_2016) return SDLSupport.sdl2016;
+	else version(SDL_2014) return SDLSupport.sdl2014;
+	else version(SDL_2012) return SDLSupport.sdl2012;
+	else version(SDL_2010) return SDLSupport.sdl2010;
+	else version(SDL_209)  return SDLSupport.sdl209;
+	else version(SDL_208)  return SDLSupport.sdl208;
+	else version(SDL_207)  return SDLSupport.sdl207;
+	else version(SDL_206)  return SDLSupport.sdl206;
+	else version(SDL_205)  return SDLSupport.sdl205;
+	else version(SDL_204)  return SDLSupport.sdl204;
+	else version(SDL_203)  return SDLSupport.sdl203;
+	else version(SDL_202)  return SDLSupport.sdl202;
+	else version(SDL_201)  return SDLSupport.sdl201;
+	else                   return SDLSupport.sdl200;
+}();
 
-version(SDL_Image) version = BindSDL_Image;
-else version(SDL_Image_200) version = BindSDL_Image;
-else version(SDL_Image_201) version = BindSDL_Image;
-else version(SDL_Image_202) version = BindSDL_Image;
-else version(SDL_Image_203) version = BindSDL_Image;
-else version(SDL_Image_204) version = BindSDL_Image;
-else version(SDL_Image_205) version = BindSDL_Image;
-version(BindSDL_Image) enum bindSDLImage = true;
-else enum bindSDLImage = false;
+enum bindSDLImage = (){
+	version(SDL_Image)          return true;
+	else version(SDL_Image_200) return true;
+	else version(SDL_Image_201) return true;
+	else version(SDL_Image_202) return true;
+	else version(SDL_Image_203) return true;
+	else version(SDL_Image_204) return true;
+	else version(SDL_Image_205) return true;
+	return false;
+}();
 
-version(SDL_Mixer) version = BindSDL_Mixer;
-else version(SDL_Mixer_200) version = BindSDL_Mixer;
-else version(SDL_Mixer_201) version = BindSDL_Mixer;
-else version(SDL_Mixer_202) version = BindSDL_Mixer;
-else version(SDL_Mixer_204) version = BindSDL_Mixer;
-else version(SDL_Mixer_260) version = BindSDL_Mixer;
-version(BindSDL_Mixer) enum bindSDLMixer = true;
-else enum bindSDLMixer = false;
+enum bindSDLMixer = (){
+	version(SDL_Mixer)          return true;
+	else version(SDL_Mixer_200) return true;
+	else version(SDL_Mixer_201) return true;
+	else version(SDL_Mixer_202) return true;
+	else version(SDL_Mixer_204) return true;
+	else version(SDL_Mixer_260) return true;
+	return false;
+}();
 
-version(SDL_Net) version = BindSDL_Net;
-else version(SDL_Net_200) version = BindSDL_Net;
-else version(SDL_Net_201) version = BindSDL_Net;
-version(BindSDL_Net) enum bindSDLNet = true;
-else enum bindSDLNet = false;
+enum bindSDLNet = (){
+	version(SDL_Net)          return true;
+	else version(SDL_Net_200) return true;
+	else version(SDL_Net_201) return true;
+	return false;
+}();
 
-version(SDL_TTF) version = BindSDL_TTF;
-else version(SDL_TTF_2012) version = BindSDL_TTF;
-else version(SDL_TTF_2013) version = BindSDL_TTF;
-else version(SDL_TTF_2014) version = BindSDL_TTF;
-else version(SDL_TTF_2015) version = BindSDL_TTF;
-else version(SDL_TTF_2018) version = BindSDL_TTF;
-version(BindSDL_TTF) enum bindSDLTTF = true;
-else enum bindSDLTTF = false;
+enum bindSDLTTF = (){
+	version(SDL_TTF)           return true;
+	else version(SDL_TTF_2012) return true;
+	else version(SDL_TTF_2013) return true;
+	else version(SDL_TTF_2014) return true;
+	else version(SDL_TTF_2015) return true;
+	else version(SDL_TTF_2018) return true;
+	return false;
+}();
 
 enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
 	string expandEnum;

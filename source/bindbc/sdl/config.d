@@ -33,9 +33,11 @@ enum SDLSupport: SDL_version{
 	sdl2260  = SDL_version(2,26,0),
 }
 
-version(BindBC_Static) version = BindSDL_Static;
-version(BindSDL_Static) enum staticBinding = true;
-else enum staticBinding = false;
+enum staticBinding = (){
+	version(BindBC_Static)       return true;
+	else version(BindSDL_Static) return true;
+	else return false;
+}();
 
 enum sdlSupport = (){
 	version(SDL_2260)      return SDLSupport.sdl2260;
@@ -67,7 +69,8 @@ enum bindSDLImage = (){
 	else version(SDL_Image_203) return true;
 	else version(SDL_Image_204) return true;
 	else version(SDL_Image_205) return true;
-	return false;
+	else version(SDL_Image_260) static assert(0, "SDL Image not updated for this version yet");
+	else return false;
 }();
 
 enum bindSDLMixer = (){
@@ -77,14 +80,15 @@ enum bindSDLMixer = (){
 	else version(SDL_Mixer_202) return true;
 	else version(SDL_Mixer_204) return true;
 	else version(SDL_Mixer_260) return true;
-	return false;
+	else return false;
 }();
 
 enum bindSDLNet = (){
 	version(SDL_Net)          return true;
 	else version(SDL_Net_200) return true;
 	else version(SDL_Net_201) return true;
-	return false;
+	else version(SDL_Net_220) static assert(0, "SDL Image not updated for this version yet");
+	else return false;
 }();
 
 enum bindSDLTTF = (){
@@ -94,7 +98,8 @@ enum bindSDLTTF = (){
 	else version(SDL_TTF_2014) return true;
 	else version(SDL_TTF_2015) return true;
 	else version(SDL_TTF_2018) return true;
-	return false;
+	else version(SDL_TTF_2200) static assert(0, "SDL Image not updated for this version yet");
+	else return false;
 }();
 
 enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){

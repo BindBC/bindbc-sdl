@@ -7,12 +7,10 @@
 +/
 module bindbc.sdl.dynload;
 
-version(BindBC_Static){}
-else version(BindSDL_Static){}
-else:
+import bindbc.sdl.config;
+static if(!staticBinding):
 
 import bindbc.loader;
-import bindbc.sdl.config;
 import bindbc.sdl.bind;
 
 private{
@@ -21,18 +19,12 @@ private{
 }
 
 @nogc nothrow:
-void unloadSDL(){
-	if(lib != invalidHandle){
-		lib.unload();
-	}
-}
+void unloadSDL(){ if(lib != invalidHandle) lib.unload(); }
 
 //NOTE: Please use `SDL_GetVersion` instead!
 deprecated SDLSupport loadedSDLVersion(){ return loadedVersion; }
 
-bool isSDLLoaded(){
-	return lib != invalidHandle;
-}
+bool isSDLLoaded(){ return lib != invalidHandle; }
 
 SDLSupport loadSDL(){
 	// #1778 prevents me from using static arrays here :(
@@ -61,7 +53,7 @@ SDLSupport loadSDL(){
 			"libSDL2-2.0.so.0",
 			"/usr/local/lib/libSDL2-2.0.so.0",
 		];
-	}else pragma(msg, "bindbc-sdl is not fully supported on this platform, and therefore might not work!");
+	}else static assert(0, "bindbc-sdl does not have library search paths set up for this platform.");
 	
 	SDLSupport ret;
 	foreach(name; libNames){
@@ -95,6 +87,5 @@ SDLSupport loadSDL(const(char)* libName){
 	
 	if(errCount != errorCount()) return SDLSupport.badLibrary;
 	else loadedVersion = sdlSupport; //this is a white lie in order to maintain backwards-compatibility :(
-	
 	return loadedVersion;
 }

@@ -14,7 +14,7 @@ import bindbc.sdl.bind.sdlvideo: SDL_Window;
 mixin(joinFnBinds!((){
 	string[][] ret;
 	static if(sdlSupport >= SDLSupport.sdl206){
-		mixin(makeFnBinds!(
+		ret ~= mixin(makeFnBinds!(
 			[q{SDL_bool}, q{SDL_Vulkan_CreateSurface}, q{SDL_Window* window, void* instance, void* surface}],
 			[q{void}, q{SDL_Vulkan_GetDrawableSize}, q{SDL_Window* window, int* w, int* h}],
 			[q{SDL_bool}, q{SDL_Vulkan_GetInstanceExtensions}, q{SDL_Window* window, uint* pCount, const(char)** pNames}],

@@ -16,49 +16,53 @@ import bindbc.sdl.bind;
 private{
 	SharedLib lib;
 	SDLSupport loadedVersion;
+	enum libNamesCT = (){
+		version(Windows){
+			return [
+				`SDL2_image.dll`,
+				`C:\Windows\System32\SDL2.dll`,
+				`C:\Windows\SysWOW64\SDL2.dll`,
+			];
+		}else version(OSX){
+			return [
+				`libSDL2.dylib`,
+				`/usr/local/lib/libSDL2.dylib`,
+				`/usr/local/lib/libSDL2/libSDL2.dylib`,
+				`../Frameworks/SDL2.framework/SDL2`,
+				`/Library/Frameworks/SDL2.framework/SDL2`,
+				`/System/Library/Frameworks/SDL2.framework/SDL2`,
+				`/opt/local/lib/libSDL2.dylib`,
+			];
+		}else version(Posix){
+			return [
+				`libSDL2.so`,
+				`libSDL2-2.0.so`,
+				`libSDL2-2.0.so.0`,
+				`/usr/lib/libSDL2.so`,
+				`/usr/lib/libSDL2-2.0.so`,
+				`/usr/lib/libSDL2-2.0.so.0`,
+				`/usr/local/lib/libSDL2.so`,
+				`/usr/local/lib/libSDL2-2.0.so`,
+				`/usr/local/lib/libSDL2-2.0.so.0`,
+			];
+		}else static assert(0, "bindbc-sdl does not have library search paths set up for this platform.");
+	}();
 }
 
 @nogc nothrow:
 void unloadSDL(){ if(lib != invalidHandle) lib.unload(); }
 
-//NOTE: Please use `SDL_GetVersion` instead!
-deprecated SDLSupport loadedSDLVersion(){ return loadedVersion; }
+deprecated("Please use `SDL_GetVersion` instead") SDLSupport loadedSDLVersion(){ return loadedVersion; }
 
 bool isSDLLoaded(){ return lib != invalidHandle; }
 
 SDLSupport loadSDL(){
-	// #1778 prevents me from using static arrays here :(
-	version(Windows){
-		const(char)[][1] libNames = [
-			"SDL2.dll",
-		];
-	}
-	else version(OSX){
-		const(char)[][7] libNames = [
-			"libSDL2.dylib",
-			"/usr/local/lib/libSDL2.dylib",
-			"/usr/local/lib/libSDL2/libSDL2.dylib",
-			"../Frameworks/SDL2.framework/SDL2",
-			"/Library/Frameworks/SDL2.framework/SDL2",
-			"/System/Library/Frameworks/SDL2.framework/SDL2",
-			"/opt/local/lib/libSDL2.dylib",
-		];
-	}
-	else version(Posix){
-		const(char)[][6] libNames = [
-			"libSDL2.so",
-			"/usr/local/lib/libSDL2.so",
-			"libSDL2-2.0.so",
-			"/usr/local/lib/libSDL2-2.0.so",
-			"libSDL2-2.0.so.0",
-			"/usr/local/lib/libSDL2-2.0.so.0",
-		];
-	}else static assert(0, "bindbc-sdl does not have library search paths set up for this platform.");
+	const(char)[][libNamesCT.length] libNames = libNamesCT;
 	
 	SDLSupport ret;
 	foreach(name; libNames){
 		ret = loadSDL(name.ptr);
-		//TODO: keep trying until we get the version we want, otherwise default to the highest one
+		//TODO: keep trying until we get the version we want, otherwise default to the highest one?
 		if(ret != SDLSupport.noLibrary && ret != SDLSupport.badLibrary) break;
 	}
 	return ret;
@@ -85,7 +89,6 @@ SDLSupport loadSDL(const(char)* libName){
 		mixin(`bindbc.sdl.bind.sdl`~mod~`.bindModuleSymbols(lib);`);
 	}
 	
-	if(errCount != errorCount()) return SDLSupport.badLibrary;
-	else loadedVersion = sdlSupport; //this is a white lie in order to maintain backwards-compatibility :(
+	if(errCount == errorCount()) loadedVersion = sdlSupport; //this is a white lie in order to maintain backwards-compatibility :(
 	return loadedVersion;
 }

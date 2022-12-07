@@ -1,2 +1,3 @@
 - `loadedSDLVersion` (and equivalents) now returns the desired version rather than the loaded one, the same as `SDL_VERSION`. To see which version was loaded, please use `SDL_GetVersion`.
 - explicit `SDL_EventType.member` will no longer work.
+- dynamic bindings' type aliases (e.g. `pSDL_Init`) are now private.

@@ -102,7 +102,7 @@ enum bindSDLTTF = (){
 	else return false;
 }();
 
-enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
+enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure{
 	string expandEnum;
 	foreach(m;__traits(allMembers, EnumType)){
 		expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
@@ -110,7 +110,7 @@ enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
 	return expandEnum;
 }();
 
-enum makeFnBinds(fns...) = (){
+enum makeFnBinds(fns...) = () nothrow pure{
 	string makeFnBinds = `extern(C) @nogc nothrow{`;
 	string[] symbols = [];
 	static if(staticBinding){
@@ -118,10 +118,11 @@ enum makeFnBinds(fns...) = (){
 			makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`);`;
 		}
 	}else{
+		makeFnBinds = `private `~makeFnBinds;
 		foreach(fn; fns){
 			makeFnBinds ~= "\n\talias p"~fn[1]~` = `~fn[0]~` function(`~fn[2]~`);`;
 		}
-		makeFnBinds ~= "\n}\n\n__gshared {";
+		makeFnBinds ~= "\n}\n\n__gshared{";
 		foreach(fn; fns){
 			makeFnBinds ~= "\n\tp"~fn[1]~` `~fn[1]~`;`;
 			symbols ~= fn[1];
@@ -131,7 +132,7 @@ enum makeFnBinds(fns...) = (){
 	return [makeFnBinds] ~ symbols;
 }();
 
-enum joinFnBinds(alias list) = (){
+enum joinFnBinds(alias list) = () nothrow pure{
 	string joined;
 	string[] symbols;
 	

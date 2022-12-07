@@ -8,7 +8,7 @@
 module bindbc.sdl.image;
 
 import bindbc.sdl.config;
-static if(bindSDLImage):
+// static if(bindSDLImage):
 
 import bindbc.sdl.bind.sdlerror: SDL_GetError, SDL_SetError;
 import bindbc.sdl.bind.sdlrender: SDL_Renderer, SDL_Texture;
@@ -34,18 +34,19 @@ enum SDLImageSupport: SDL_version{
 enum sdlImageSupport = (){
 	version(SDL_Image_260)      return SDLImageSupport.sdlImage260;
 	else version(SDL_Image_205) return SDLImageSupport.sdlImage205;
-	else version(SDL_Image_205) return SDLImageSupport.sdlImage204;
-	else version(SDL_Image_205) return SDLImageSupport.sdlImage203;
-	else version(SDL_Image_205) return SDLImageSupport.sdlImage202;
-	else version(SDL_Image_205) return SDLImageSupport.sdlImage201;
-	else version(SDL_Image_205) return SDLImageSupport.sdlImage200;
+	else version(SDL_Image_204) return SDLImageSupport.sdlImage204;
+	else version(SDL_Image_203) return SDLImageSupport.sdlImage203;
+	else version(SDL_Image_202) return SDLImageSupport.sdlImage202;
+	else version(SDL_Image_201) return SDLImageSupport.sdlImage201;
+	else                        return SDLImageSupport.sdlImage200;
 }();
 
 enum SDL_IMAGE_MAJOR_VERSION = sdlImageSupport.major;
 enum SDL_IMAGE_MINOR_VERSION = sdlImageSupport.minor;
 enum SDL_IMAGE_PATCHLEVEL    = sdlImageSupport.patch;
 
-void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow{
+void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow pure{
+	pragma(inline, true);
 	X.major = SDL_IMAGE_MAJOR_VERSION;
 	X.minor = SDL_IMAGE_MINOR_VERSION;
 	X.patch = SDL_IMAGE_PATCHLEVEL;
@@ -124,47 +125,57 @@ mixin(joinFnBinds!((){
 }()));
 
 static if(!staticBinding):
+import bindbc.loader;
+
 private{
 	SharedLib lib;
 	SDLImageSupport loadedVersion;
+	enum libNamesCT = (){
+		version(Windows){
+			return [
+				`SDL2_image.dll`,
+				`C:\Windows\System32\SDL2_image.dll`,
+				`C:\Windows\SysWOW64\SDL2_image.dll`,
+			];
+		}else version(OSX){
+			return [
+				`libSDL2_image.dylib`,
+				`/usr/local/lib/libSDL2_image.dylib`,
+				`../Frameworks/SDL2_image.framework/SDL2_image`,
+				`/Library/Frameworks/SDL2_image.framework/SDL2_image`,
+				`/System/Library/Frameworks/SDL2_image.framework/SDL2_image`,
+				`/opt/local/lib/libSDL2_image.dylib`,
+			];
+		}else version(Posix){
+			return [
+				`libSDL2_image.so`,
+				`libSDL2_image-2.0.so`,
+				`libSDL2_image-2.0.so.0`,
+				`/usr/lib/libSDL2_image.so`,
+				`/usr/lib/libSDL2_image-2.0.so`,
+				`/usr/lib/libSDL2_image-2.0.so.0`,
+				`/usr/local/lib/libSDL2_image.so`,
+				`/usr/local/lib/libSDL2_image-2.0.so`,
+				`/usr/local/lib/libSDL2_image-2.0.so.0`,
+			];
+		}else static assert(0, "bindbc-sdl image does not have library search paths set up for this platform.");
+	}();
 }
 
 @nogc nothrow:
 void unloadSDLImage(){ if(lib != invalidHandle) lib.unload(); }
 
-deprecated SDLImageSupport loadedSDLImageVersion() { return loadedVersion; }
+deprecated("Please use `IMG_Linked_Version` instead") SDLImageSupport loadedSDLImageVersion() { return loadedVersion; }
 
 bool isSDLImageLoaded(){ return lib != invalidHandle; }
 
 SDLImageSupport loadSDLImage(){
-	version(Windows) {
-		const(char)[][1] libNames = [
-			"SDL2_image.dll"
-		];
-	}else version(OSX) {
-		const(char)[][6] libNames = [
-			"libSDL2_image.dylib",
-			"/usr/local/lib/libSDL2_image.dylib",
-			"../Frameworks/SDL2_image.framework/SDL2_image",
-			"/Library/Frameworks/SDL2_image.framework/SDL2_image",
-			"/System/Library/Frameworks/SDL2_image.framework/SDL2_image",
-			"/opt/local/lib/libSDL2_image.dylib"
-		];
-	}else version(Posix) {
-		const(char)[][6] libNames = [
-			"libSDL2_image.so",
-			"/usr/local/lib/libSDL2_image.so",
-			"libSDL2_image-2.0.so",
-			"/usr/local/lib/libSDL2_image-2.0.so",
-			"libSDL2_image-2.0.so.0",
-			"/usr/local/lib/libSDL2_image-2.0.so.0"
-		];
-	}else static assert(0, "bindbc-sdl does not have library search paths set up for this platform.");
+	const(char)[][libNamesCT.length] libNames = libNamesCT;
 
 	SDLImageSupport ret;
-	foreach(name; libNames) {
+	foreach(name; libNames){
 		ret = loadSDLImage(name.ptr);
-		if(ret != SDLImageSupport.noLibrary) break;
+		if(ret != SDLImageSupport.noLibrary) return ret;
 	}
 	return ret;
 }
@@ -180,8 +191,7 @@ SDLImageSupport loadSDLImage(const(char)* libName){
 	
 	bindModuleSymbols(lib);
 	
-	if(errCount != errorCount()) return SDLImageSupport.badLibrary;
-	else loadedVersion = sdlImageSupport;
+	if(errCount == errorCount()) loadedVersion = sdlImageSupport;
 	return loadedVersion;
 }
 

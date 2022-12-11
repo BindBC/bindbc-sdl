@@ -9,12 +9,12 @@ module bindbc.sdl.bind.sdlloadso;
 
 import bindbc.sdl.config;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{void*}, q{SDL_LoadObject}, q{const(char)* sofile}],
 		[q{void*}, q{SDL_LoadFunction}, q{void* handle,const(char*) name}],
 		[q{void}, q{SDL_UnloadObject}, q{void* handle}],
-	);
+	]);
 	return ret;
 }()));

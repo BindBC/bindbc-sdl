@@ -16,9 +16,9 @@ struct SDL_mutex;
 struct SDL_sem;
 struct SDL_cond;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_mutex*}, q{SDL_CreateMutex}, q{}],
 		[q{int}, q{SDL_LockMutex}, q{SDL_mutex* mutex}],
 		[q{int}, q{SDL_TryLockMutex}, q{SDL_mutex* mutex}],
@@ -39,6 +39,6 @@ mixin(joinFnBinds!((){
 		[q{int}, q{SDL_CondBroadcast}, q{SDL_cond* cond}],
 		[q{int}, q{SDL_CondWait}, q{SDL_cond* cond,SDL_mutex*}],
 		[q{int}, q{SDL_CondWaitTimeout}, q{SDL_cond* cond, SDL_mutex* mutex, uint ms}],
-	);
+	]);
 	return ret;
 }()));

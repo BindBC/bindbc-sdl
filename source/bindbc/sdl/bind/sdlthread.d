@@ -7,28 +7,22 @@
 +/
 module bindbc.sdl.bind.sdlthread;
 
-import core.stdc.config: c_ulong;
 import bindbc.sdl.config;
 
 struct SDL_Thread;
 alias SDL_threadID = c_ulong;
 alias SDL_TLSID = uint;
 
-static if(sdlSupport >= SDLSupport.sdl209){
-	enum SDL_ThreadPriority{
-		SDL_THREAD_PRIORITY_LOW,
-		SDL_THREAD_PRIORITY_NORMAL,
-		SDL_THREAD_PRIORITY_HIGH,
-		SDL_THREAD_PRIORITY_TIME_CRITICAL,
-	}
-}else{
-	enum SDL_ThreadPriority{
-		SDL_THREAD_PRIORITY_LOW,
-		SDL_THREAD_PRIORITY_NORMAL,
-		SDL_THREAD_PRIORITY_HIGH,
-	}
+alias SDL_ThreadPriority = int;
+enum: SDL_ThreadPriority{
+	SDL_THREAD_PRIORITY_LOW,
+	SDL_THREAD_PRIORITY_NORMAL,
+	SDL_THREAD_PRIORITY_HIGH,
 }
-mixin(expandEnum!SDL_ThreadPriority);
+static if(sdlSupport >= SDLSupport.sdl209)
+enum: SDL_ThreadPriority{
+	SDL_THREAD_PRIORITY_TIME_CRITICAL,
+};
 
 extern(C) nothrow{
 	alias SDL_ThreadFunction = int function(void*);
@@ -45,21 +39,21 @@ version(Windows){
 	*/
 	private{
 		import core.stdc.stdint: uintptr_t;
-
+		
 		extern(Windows) alias btex_fptr = uint function(void*);
 		extern(C) @nogc nothrow{
 			uintptr_t _beginthreadex(void*,uint,btex_fptr,void*,uint,uint*);
 			void _endthreadex(uint);
-
+			
 			alias pfnSDL_CurrentBeginThread = uintptr_t function(void*,uint,btex_fptr,void*,uint,uint*);
 			alias pfnSDL_CurrentEndThread = void function(uint);
 		}
 	}
-
+	
 	SDL_Thread* SDL_CreateThreadImpl(SDL_ThreadFunction fn, const(char)* name, void* data){
 		return SDL_CreateThread(fn, name, data, &_beginthreadex, &_endthreadex);
 	}
-
+	
 	static if(sdlSupport >= SDLSupport.sdl209){
 		SDL_Thread* SDL_CreateThreadWithStackSizeImpl(SDL_ThreadFunction fn, const(char)* name, const(size_t) stackSize, void* data){
 			return SDL_CreateThreadWithStackSize(fn, name, stackSize, data, &_beginthreadex, &_endthreadex);
@@ -67,18 +61,18 @@ version(Windows){
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
 	version(Windows){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
-		);
+		]);
 	}else{
-		ret ~= makeFnBinds!(
-			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction,const(char)*,void*}],
-		);
+		ret ~= makeFnBinds([
+			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data}],
+		]);
 	}
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{const(char)*}, q{SDL_GetThreadName}, q{SDL_Thread* thread}],
 		[q{SDL_threadID}, q{SDL_ThreadID}, q{}],
 		[q{SDL_threadID}, q{SDL_GetThreadID}, q{SDL_Thread* thread}],
@@ -87,27 +81,27 @@ mixin(joinFnBinds!((){
 		[q{SDL_TLSID}, q{SDL_TLSCreate}, q{}],
 		[q{void*}, q{SDL_TLSGet}, q{SDL_TLSID id}],
 		[q{int}, q{SDL_TLSSet}, q{SDL_TLSID id,const(void)* value, TLSDestructor destructor}],
-	);
+	]);
 	static if(sdlSupport >= SDLSupport.sdl202){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_DetachThread}, q{SDL_Thread* thread}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl209){
 		version(Windows){
-			ret ~= makeFnBinds!(
+			ret ~= makeFnBinds([
 				[q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
-			);
-		} else{
-			ret ~= makeFnBinds!(
+			]);
+		}else{
+			ret ~= makeFnBinds([
 				[q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const(size_t) stacksize, void* data}],
-			);
+			]);
 		}
 	}
 	static if(sdlSupport >= SDLSupport.sdl2016){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_TLSCleanup}, q{}],
-		);
+		]);
 	}
 	return ret;
 }()));

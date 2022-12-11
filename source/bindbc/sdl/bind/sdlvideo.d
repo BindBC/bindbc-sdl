@@ -74,275 +74,162 @@ enum uint SDL_WINDOWPOS_CENTERED = SDL_WINDOWPOS_CENTERED_DISPLAY(0);
 	uint SDL_WINDOWPOS_ISCENTERED(uint x){ return (x & 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK; }
 }
 
-static if(sdlSupport >= SDLSupport.sdl2018){
-	enum SDL_WindowEventID: ubyte{
-		SDL_WINDOWEVENT_NONE,
-		SDL_WINDOWEVENT_SHOWN,
-		SDL_WINDOWEVENT_HIDDEN,
-		SDL_WINDOWEVENT_EXPOSED,
-		SDL_WINDOWEVENT_MOVED,
-		SDL_WINDOWEVENT_RESIZED,
-		SDL_WINDOWEVENT_SIZE_CHANGED,
-		SDL_WINDOWEVENT_MINIMIZED,
-		SDL_WINDOWEVENT_MAXIMIZED,
-		SDL_WINDOWEVENT_RESTORED,
-		SDL_WINDOWEVENT_ENTER,
-		SDL_WINDOWEVENT_LEAVE,
-		SDL_WINDOWEVENT_FOCUS_GAINED,
-		SDL_WINDOWEVENT_FOCUS_LOST,
-		SDL_WINDOWEVENT_CLOSE,
-		SDL_WINDOWEVENT_TAKE_FOCUS,
-		SDL_WINDOWEVENT_HIT_TEST,
-		SDL_WINDOWEVENT_ICCPROF_CHANGED,
-		SDL_WINDOWEVENT_DISPLAY_CHANGED,
-	}
-}else static if(sdlSupport >= SDLSupport.sdl205){
-	enum SDL_WindowEventID: ubyte{
-		SDL_WINDOWEVENT_NONE,
-		SDL_WINDOWEVENT_SHOWN,
-		SDL_WINDOWEVENT_HIDDEN,
-		SDL_WINDOWEVENT_EXPOSED,
-		SDL_WINDOWEVENT_MOVED,
-		SDL_WINDOWEVENT_RESIZED,
-		SDL_WINDOWEVENT_SIZE_CHANGED,
-		SDL_WINDOWEVENT_MINIMIZED,
-		SDL_WINDOWEVENT_MAXIMIZED,
-		SDL_WINDOWEVENT_RESTORED,
-		SDL_WINDOWEVENT_ENTER,
-		SDL_WINDOWEVENT_LEAVE,
-		SDL_WINDOWEVENT_FOCUS_GAINED,
-		SDL_WINDOWEVENT_FOCUS_LOST,
-		SDL_WINDOWEVENT_CLOSE,
-		SDL_WINDOWEVENT_TAKE_FOCUS,
-		SDL_WINDOWEVENT_HIT_TEST,
-	}
-}else{
-	enum SDL_WindowEventID: ubyte{
-		SDL_WINDOWEVENT_NONE,
-		SDL_WINDOWEVENT_SHOWN,
-		SDL_WINDOWEVENT_HIDDEN,
-		SDL_WINDOWEVENT_EXPOSED,
-		SDL_WINDOWEVENT_MOVED,
-		SDL_WINDOWEVENT_RESIZED,
-		SDL_WINDOWEVENT_SIZE_CHANGED,
-		SDL_WINDOWEVENT_MINIMIZED,
-		SDL_WINDOWEVENT_MAXIMIZED,
-		SDL_WINDOWEVENT_RESTORED,
-		SDL_WINDOWEVENT_ENTER,
-		SDL_WINDOWEVENT_LEAVE,
-		SDL_WINDOWEVENT_FOCUS_GAINED,
-		SDL_WINDOWEVENT_FOCUS_LOST,
-		SDL_WINDOWEVENT_CLOSE,
-	}
+alias SDL_WindowEventID = ubyte;
+enum: SDL_WindowEventID{
+	SDL_WINDOWEVENT_NONE             = 0,
+	SDL_WINDOWEVENT_SHOWN            = 1,
+	SDL_WINDOWEVENT_HIDDEN           = 2,
+	SDL_WINDOWEVENT_EXPOSED          = 3,
+	SDL_WINDOWEVENT_MOVED            = 4,
+	SDL_WINDOWEVENT_RESIZED          = 5,
+	SDL_WINDOWEVENT_SIZE_CHANGED     = 6,
+	SDL_WINDOWEVENT_MINIMIZED        = 7,
+	SDL_WINDOWEVENT_MAXIMIZED        = 8,
+	SDL_WINDOWEVENT_RESTORED         = 9,
+	SDL_WINDOWEVENT_ENTER            = 10,
+	SDL_WINDOWEVENT_LEAVE            = 11,
+	SDL_WINDOWEVENT_FOCUS_GAINED     = 12,
+	SDL_WINDOWEVENT_FOCUS_LOST       = 13,
+	SDL_WINDOWEVENT_CLOSE            = 14,
 }
-mixin(expandEnum!SDL_WindowEventID);
+static if(sdlSupport >= SDLSupport.sdl205)
+enum: SDL_WindowEventID{
+	SDL_WINDOWEVENT_TAKE_FOCUS       = 15,
+	SDL_WINDOWEVENT_HIT_TEST         = 16,
+};
+static if(sdlSupport >= SDLSupport.sdl2018)
+enum: SDL_WindowEventID{
+	SDL_WINDOWEVENT_ICCPROF_CHANGED  = 17,
+	SDL_WINDOWEVENT_DISPLAY_CHANGED  = 18,
+};
 
-static if(sdlSupport >= SDLSupport.sdl2014){
-	enum SDL_DisplayEventID{
-		SDL_DISPLAYEVENT_NONE,
-		SDL_DISPLAYEVENT_ORIENTATION,
-		SDL_DISPLAYEVENT_CONNECTED,
-		SDL_DISPLAYEVENT_DISCONNECTED,
+static if(sdlSupport >= SDLSupport.sdl209){
+	alias SDL_DisplayEventID = int;
+	enum: SDL_DisplayEventID{
+		SDL_DISPLAYEVENT_NONE          = 0,
+		SDL_DISPLAYEVENT_ORIENTATION   = 1,
 	}
-	mixin(expandEnum!SDL_DisplayEventID);
-}else static if(sdlSupport >= SDLSupport.sdl209){
-	enum SDL_DisplayEventID{
-		SDL_DISPLAYEVENT_NONE,
-		SDL_DISPLAYEVENT_ORIENTATION,
-	}
-	mixin(expandEnum!SDL_DisplayEventID);
+	static if(sdlSupport >= SDLSupport.sdl2014)
+	enum: SDL_DisplayEventID{
+		SDL_DISPLAYEVENT_CONNECTED     = 2,
+		SDL_DISPLAYEVENT_DISCONNECTED  = 3,
+	};
 }
 
 static if(sdlSupport >= SDLSupport.sdl209){
-	enum SDL_DisplayOrientation{
-		SDL_ORIENTATION_UNKNOWN,
-		SDL_ORIENTATION_LANDSCAPE,
-		SDL_ORIENTATION_LANDSCAPE_FLIPPED,
-		SDL_ORIENTATION_PORTRAIT,
-		SDL_ORIENTATION_PORTRAIT_FLIPPED,
+	alias SDL_DisplayOrientation = int;
+	enum: SDL_DisplayOrientation{
+		SDL_ORIENTATION_UNKNOWN            = 0,
+		SDL_ORIENTATION_LANDSCAPE          = 1,
+		SDL_ORIENTATION_LANDSCAPE_FLIPPED  = 2,
+		SDL_ORIENTATION_PORTRAIT           = 3,
+		SDL_ORIENTATION_PORTRAIT_FLIPPED   = 4,
 	}
-	mixin(expandEnum!SDL_DisplayOrientation);
 }
 
 static if(sdlSupport >= SDLSupport.sdl2016){
-	enum SDL_FlashOperation{
-		SDL_FLASH_CANCEL,
-		SDL_FLASH_BRIEFLY,
-		SDL_FLASH_UNTIL_FOCUSED,
+	alias SDL_FlashOperation = int;
+	enum: SDL_FlashOperation{
+		SDL_FLASH_CANCEL         = 0,
+		SDL_FLASH_BRIEFLY        = 1,
+		SDL_FLASH_UNTIL_FOCUSED  = 2,
 	}
-	mixin(expandEnum!SDL_FlashOperation);
 }
 
 alias SDL_GLContext = void*;
 
-static if(sdlSupport >= SDLSupport.sdl206){
-	enum SDL_GLattr{
-		SDL_GL_RED_SIZE,
-		SDL_GL_GREEN_SIZE,
-		SDL_GL_BLUE_SIZE,
-		SDL_GL_ALPHA_SIZE,
-		SDL_GL_BUFFER_SIZE,
-		SDL_GL_DOUBLEBUFFER,
-		SDL_GL_DEPTH_SIZE,
-		SDL_GL_STENCIL_SIZE,
-		SDL_GL_ACCUM_RED_SIZE,
-		SDL_GL_ACCUM_GREEN_SIZE,
-		SDL_GL_ACCUM_BLUE_SIZE,
-		SDL_GL_ACCUM_ALPHA_SIZE,
-		SDL_GL_STEREO,
-		SDL_GL_MULTISAMPLEBUFFERS,
-		SDL_GL_MULTISAMPLESAMPLES,
-		SDL_GL_ACCELERATED_VISUAL,
-		SDL_GL_RETAINED_BACKING,
-		SDL_GL_CONTEXT_MAJOR_VERSION,
-		SDL_GL_CONTEXT_MINOR_VERSION,
-		SDL_GL_CONTEXT_EGL,
-		SDL_GL_CONTEXT_FLAGS,
-		SDL_GL_CONTEXT_PROFILE_MASK,
-		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
-		SDL_GL_FRAMEBUFFER_SRGB_CAPABLE,
-		SDL_GL_RELEASE_BEHAVIOR,
-		SDL_GL_CONTEXT_RESET_NOTIFICATION,
-		SDL_GL_CONTEXT_NO_ERROR,
-	}
+alias SDL_GLattr = int;
+enum: SDL_GLattr{
+	SDL_GL_RED_SIZE                    = 0,
+	SDL_GL_GREEN_SIZE                  = 1,
+	SDL_GL_BLUE_SIZE                   = 2,
+	SDL_GL_ALPHA_SIZE                  = 3,
+	SDL_GL_BUFFER_SIZE                 = 4,
+	SDL_GL_DOUBLEBUFFER                = 5,
+	SDL_GL_DEPTH_SIZE                  = 6,
+	SDL_GL_STENCIL_SIZE                = 7,
+	SDL_GL_ACCUM_RED_SIZE              = 8,
+	SDL_GL_ACCUM_GREEN_SIZE            = 9,
+	SDL_GL_ACCUM_BLUE_SIZE             = 10,
+	SDL_GL_ACCUM_ALPHA_SIZE            = 11,
+	SDL_GL_STEREO                      = 12,
+	SDL_GL_MULTISAMPLEBUFFERS          = 13,
+	SDL_GL_MULTISAMPLESAMPLES          = 14,
+	SDL_GL_ACCELERATED_VISUAL          = 15,
+	SDL_GL_RETAINED_BACKING            = 16,
+	SDL_GL_CONTEXT_MAJOR_VERSION       = 17,
+	SDL_GL_CONTEXT_MINOR_VERSION       = 18,
+	SDL_GL_CONTEXT_EGL                 = 19,
+	SDL_GL_CONTEXT_FLAGS               = 20,
+	SDL_GL_CONTEXT_PROFILE_MASK        = 21,
+	SDL_GL_SHARE_WITH_CURRENT_CONTEXT  = 22,
 }
-else static if(sdlSupport >= SDLSupport.sdl204){
-	enum SDL_GLattr{
-		SDL_GL_RED_SIZE,
-		SDL_GL_GREEN_SIZE,
-		SDL_GL_BLUE_SIZE,
-		SDL_GL_ALPHA_SIZE,
-		SDL_GL_BUFFER_SIZE,
-		SDL_GL_DOUBLEBUFFER,
-		SDL_GL_DEPTH_SIZE,
-		SDL_GL_STENCIL_SIZE,
-		SDL_GL_ACCUM_RED_SIZE,
-		SDL_GL_ACCUM_GREEN_SIZE,
-		SDL_GL_ACCUM_BLUE_SIZE,
-		SDL_GL_ACCUM_ALPHA_SIZE,
-		SDL_GL_STEREO,
-		SDL_GL_MULTISAMPLEBUFFERS,
-		SDL_GL_MULTISAMPLESAMPLES,
-		SDL_GL_ACCELERATED_VISUAL,
-		SDL_GL_RETAINED_BACKING,
-		SDL_GL_CONTEXT_MAJOR_VERSION,
-		SDL_GL_CONTEXT_MINOR_VERSION,
-		SDL_GL_CONTEXT_EGL,
-		SDL_GL_CONTEXT_FLAGS,
-		SDL_GL_CONTEXT_PROFILE_MASK,
-		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
-		SDL_GL_FRAMEBUFFER_SRGB_CAPABLE,
-		SDL_GL_RELEASE_BEHAVIOR,
-	}
+static if(sdlSupport >= SDLSupport.sdl201)
+enum: SDL_GLattr{
+	SDL_GL_FRAMEBUFFER_SRGB_CAPABLE    = 23,
 }
-else static if(sdlSupport >= SDLSupport.sdl201){
-	enum SDL_GLattr{
-		SDL_GL_RED_SIZE,
-		SDL_GL_GREEN_SIZE,
-		SDL_GL_BLUE_SIZE,
-		SDL_GL_ALPHA_SIZE,
-		SDL_GL_BUFFER_SIZE,
-		SDL_GL_DOUBLEBUFFER,
-		SDL_GL_DEPTH_SIZE,
-		SDL_GL_STENCIL_SIZE,
-		SDL_GL_ACCUM_RED_SIZE,
-		SDL_GL_ACCUM_GREEN_SIZE,
-		SDL_GL_ACCUM_BLUE_SIZE,
-		SDL_GL_ACCUM_ALPHA_SIZE,
-		SDL_GL_STEREO,
-		SDL_GL_MULTISAMPLEBUFFERS,
-		SDL_GL_MULTISAMPLESAMPLES,
-		SDL_GL_ACCELERATED_VISUAL,
-		SDL_GL_RETAINED_BACKING,
-		SDL_GL_CONTEXT_MAJOR_VERSION,
-		SDL_GL_CONTEXT_MINOR_VERSION,
-		SDL_GL_CONTEXT_EGL,
-		SDL_GL_CONTEXT_FLAGS,
-		SDL_GL_CONTEXT_PROFILE_MASK,
-		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
-		SDL_GL_FRAMEBUFFER_SRGB_CAPABLE,
-	}
+static if(sdlSupport >= SDLSupport.sdl204)
+enum: SDL_GLattr{
+	SDL_GL_FRAMEBUFFER_SRGB_CAPABLE    = 24,
+	SDL_GL_RELEASE_BEHAVIOR            = 25,
 }
-else{
-	enum SDL_GLattr{
-		SDL_GL_RED_SIZE,
-		SDL_GL_GREEN_SIZE,
-		SDL_GL_BLUE_SIZE,
-		SDL_GL_ALPHA_SIZE,
-		SDL_GL_BUFFER_SIZE,
-		SDL_GL_DOUBLEBUFFER,
-		SDL_GL_DEPTH_SIZE,
-		SDL_GL_STENCIL_SIZE,
-		SDL_GL_ACCUM_RED_SIZE,
-		SDL_GL_ACCUM_GREEN_SIZE,
-		SDL_GL_ACCUM_BLUE_SIZE,
-		SDL_GL_ACCUM_ALPHA_SIZE,
-		SDL_GL_STEREO,
-		SDL_GL_MULTISAMPLEBUFFERS,
-		SDL_GL_MULTISAMPLESAMPLES,
-		SDL_GL_ACCELERATED_VISUAL,
-		SDL_GL_RETAINED_BACKING,
-		SDL_GL_CONTEXT_MAJOR_VERSION,
-		SDL_GL_CONTEXT_MINOR_VERSION,
-		SDL_GL_CONTEXT_EGL,
-		SDL_GL_CONTEXT_FLAGS,
-		SDL_GL_CONTEXT_PROFILE_MASK,
-		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
-	}
+static if(sdlSupport >= SDLSupport.sdl206)
+enum: SDL_GLattr{
+	SDL_GL_CONTEXT_RESET_NOTIFICATION  = 26,
+	SDL_GL_CONTEXT_NO_ERROR            = 27,
 }
-mixin(expandEnum!SDL_GLattr);
 
-enum SDL_GLprofile {
+alias SDL_GLprofile = int;
+enum: SDL_GLprofile{
 	SDL_GL_CONTEXT_PROFILE_CORE             = 0x0001,
 	SDL_GL_CONTEXT_PROFILE_COMPATIBILITY    = 0x0002,
 	SDL_GL_CONTEXT_PROFILE_ES               = 0x0004,
 }
-mixin(expandEnum!SDL_GLprofile);
 
-enum{
+alias SDL_GLcontextFlag = int;
+enum: SDL_GLcontextFlag{
 	SDL_GL_CONTEXT_DEBUG_FLAG                 = 0x0001,
 	SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG    = 0x0002,
 	SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG         = 0x0004,
 	SDL_GL_CONTEXT_RESET_ISOLATION_FLAG       = 0x0008,
 }
-alias SDL_GLcontextFlag = int;
 
 static if(sdlSupport >= SDLSupport.sdl204){
-	enum SDL_GLcontextReleaseFlag{
+	alias SDL_GLcontextReleaseFlag = int;
+	enum: SDL_GLcontextReleaseFlag{
 		SDL_GL_CONTEXT_RELEASE_BEHAVIOR_NONE     = 0x0000,
 		SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH    = 0x0001,
 	}
-	mixin(expandEnum!SDL_GLcontextReleaseFlag);
-
-	enum SDL_HitTestResult{
-		SDL_HITTEST_NORMAL,
-		SDL_HITTEST_DRAGGABLE,
-		SDL_HITTEST_RESIZE_TOPLEFT,
-		SDL_HITTEST_RESIZE_TOP,
-		SDL_HITTEST_RESIZE_TOPRIGHT,
-		SDL_HITTEST_RESIZE_RIGHT,
-		SDL_HITTEST_RESIZE_BOTTOMRIGHT,
-		SDL_HITTEST_RESIZE_BOTTOM,
-		SDL_HITTEST_RESIZE_BOTTOMLEFT,
-		SDL_HITTEST_RESIZE_LEFT,
+	
+	alias SDL_HitTestResult = int;
+	enum: SDL_HitTestResult{
+		SDL_HITTEST_NORMAL              = 0,
+		SDL_HITTEST_DRAGGABLE           = 1,
+		SDL_HITTEST_RESIZE_TOPLEFT      = 2,
+		SDL_HITTEST_RESIZE_TOP          = 3,
+		SDL_HITTEST_RESIZE_TOPRIGHT     = 4,
+		SDL_HITTEST_RESIZE_RIGHT        = 5,
+		SDL_HITTEST_RESIZE_BOTTOMRIGHT  = 6,
+		SDL_HITTEST_RESIZE_BOTTOM       = 7,
+		SDL_HITTEST_RESIZE_BOTTOMLEFT   = 8,
+		SDL_HITTEST_RESIZE_LEFT         = 9,
 	}
-	mixin(expandEnum!SDL_HitTestResult);
-
+	
 	import bindbc.sdl.bind.sdlrect: SDL_Point;
 	extern(C) nothrow alias SDL_HitTest = SDL_HitTestResult function(SDL_Window*,const(SDL_Point)*,void*);
 }
 
 static if(sdlSupport >= SDLSupport.sdl206){
-	enum SDL_GLContextResetNotification{
+	alias SDL_GLContextResetNotification = int;
+	enum: SDL_GLContextResetNotification{
 		SDL_GL_CONTEXT_RESET_NO_NOTIFICATION    = 0x0000,
 		SDL_GL_CONTEXT_RESET_LOSE_CONTEXT       = 0x0001,
 	}
-	mixin(expandEnum!SDL_GLContextResetNotification);
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_GetNumVideoDrivers}, q{}],
 		[q{const(char)*}, q{SDL_GetVideoDriver}, q{int index}],
 		[q{int}, q{SDL_VideoInit}, q{const(char)* driver_name}],
@@ -413,26 +300,26 @@ mixin(joinFnBinds!((){
 		[q{int}, q{SDL_GL_GetSwapInterval}, q{}],
 		[q{void}, q{SDL_GL_SwapWindow}, q{SDL_Window* window}],
 		[q{void}, q{SDL_GL_DeleteContext}, q{SDL_GLContext context}],
-	);
+	]);
 	static if(sdlSupport >= SDLSupport.sdl201){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_GL_GetDrawableSize}, q{SDL_Window* window, int* w, int* h}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl202){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_GL_ResetAttributes}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl204){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_GetDisplayDPI}, q{int displayIndex, float* ddpi, float* hdpi, float* vdpi}],
 			[q{SDL_Window*}, q{SDL_GetGrabbedWindow}, q{}],
 			[q{int}, q{SDL_SetWindowHitTest}, q{SDL_Window* window, SDL_HitTest callback, void* callback_data}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl205){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_GetDisplayUsableBounds}, q{int displayIndex, SDL_Rect* rect}],
 			[q{int}, q{SDL_GetWindowBordersSize}, q{SDL_Window* window, int* top, int* left, int* bottom, int* right}],
 			[q{int}, q{SDL_GetWindowOpacity}, q{SDL_Window* window, float* opacity}],
@@ -440,29 +327,29 @@ mixin(joinFnBinds!((){
 			[q{int}, q{SDL_SetWindowModalFor}, q{SDL_Window* modal_window, SDL_Window* parent_window}],
 			[q{int}, q{SDL_SetWindowOpacity}, q{SDL_Window* window, float opacity}],
 			[q{void}, q{SDL_SetWindowResizable}, q{SDL_Window* window, SDL_bool resizable}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl209){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_DisplayOrientation}, q{SDL_GetDisplayOrientation}, q{int displayIndex}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2016){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_FlashWindow}, q{SDL_Window* window, SDL_FlashOperation operation}],
 			[q{void}, q{SDL_SetWindowAlwaysOnTop}, q{SDL_Window* window, SDL_bool on_top}],
 			[q{void}, q{SDL_SetWindowKeyboardGrab}, q{SDL_Window* window, SDL_bool grabbed}],
 			[q{SDL_bool}, q{SDL_GetWindowKeyboardGrab}, q{SDL_Window * window}],
 			[q{void}, q{SDL_SetWindowMouseGrab}, q{SDL_Window* window, SDL_bool grabbed}],
 			[q{SDL_bool}, q{SDL_GetWindowMouseGrab}, q{SDL_Window* window}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void*}, q{SDL_GetWindowICCProfile}, q{SDL_Window* window, size_t* size}],
 			[q{int}, q{SDL_SetWindowMouseRect}, q{SDL_Window* window, const(SDL_Rect)* rect}],
 			[q{const(SDL_Rect)*}, q{SDL_GetWindowMouseRect}, q{SDL_Window* window}],
-		);
+		]);
 	}
 	return ret;
 }()));

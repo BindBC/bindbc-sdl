@@ -10,12 +10,12 @@ module bindbc.sdl.bind.sdlclipboard;
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_SetClipboardText}, q{const(char)* text}],
 		[q{char*}, q{SDL_GetClipboardText}, q{}],
 		[q{SDL_bool}, q{SDL_HasClipboardText}, q{}],
-	);
+	]);
 	return ret;
 }()));

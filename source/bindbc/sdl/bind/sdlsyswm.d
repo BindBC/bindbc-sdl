@@ -7,105 +7,46 @@
 +/
 module bindbc.sdl.bind.sdlsyswm;
 
-import core.stdc.config: c_long;
 import bindbc.sdl.config;
+
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 import bindbc.sdl.bind.sdlversion: SDL_version;
 import bindbc.sdl.bind.sdlvideo: SDL_Window;
 
-
-static if(sdlSupport >= SDLSupport.sdl2012){
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-		SDL_SYSWM_WAYLAND,
-		SDL_SYSWM_MIR,
-		SDL_SYSWM_WINRT,
-		SDL_SYSWM_ANDROID,
-		SDL_SYSWM_VIVANTE,
-		SDL_SYSWM_OS2,
-		SDL_SYSWM_HAIKU,
-	}
-}else static if(sdlSupport >= SDLSupport.sdl206){
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-		SDL_SYSWM_WAYLAND,
-		SDL_SYSWM_MIR,
-		SDL_SYSWM_WINRT,
-		SDL_SYSWM_ANDROID,
-		SDL_SYSWM_VIVANTE,
-		SDL_SYSWM_OS2,
-	}
-}else static if(sdlSupport >= SDLSupport.sdl205){
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-		SDL_SYSWM_WAYLAND,
-		SDL_SYSWM_MIR,
-		SDL_SYSWM_WINRT,
-		SDL_SYSWM_ANDROID,
-		SDL_SYSWM_VIVANTE,
-	}
-}else static if(sdlSupport >= SDLSupport.sdl204){
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-		SDL_SYSWM_WAYLAND,
-		SDL_SYSWM_MIR,
-		SDL_SYSWM_WINRT,
-		SDL_SYSWM_ANDROID,
-	}
-}else static if(sdlSupport >= SDLSupport.sdl203){
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-		SDL_SYSWM_WAYLAND,
-		SDL_SYSWM_MIR,
-		SDL_SYSWM_WINRT,
-	}
-}else static if(sdlSupport >= SDLSupport.sdl202){
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-		SDL_SYSWM_WAYLAND,
-		SDL_SYSWM_MIR,
-	}
-}else{
-	enum SDL_SYSWM_TYPE{
-		SDL_SYSWM_UNKNOWN,
-		SDL_SYSWM_WINDOWS,
-		SDL_SYSWM_X11,
-		SDL_SYSWM_DIRECTFB,
-		SDL_SYSWM_COCOA,
-		SDL_SYSWM_UIKIT,
-	}
+alias SDL_SYSWM_TYPE = int;
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_UNKNOWN,
+	SDL_SYSWM_WINDOWS,
+	SDL_SYSWM_X11,
+	SDL_SYSWM_DIRECTFB,
+	SDL_SYSWM_COCOA,
+	SDL_SYSWM_UIKIT,
 }
-mixin(expandEnum!SDL_SYSWM_TYPE);
+static if(sdlSupport >= SDLSupport.sdl202)
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_WAYLAND,
+	SDL_SYSWM_MIR,
+}
+static if(sdlSupport >= SDLSupport.sdl203)
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_WINRT,
+}
+static if(sdlSupport >= SDLSupport.sdl204)
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_ANDROID,
+}
+static if(sdlSupport >= SDLSupport.sdl205)
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_VIVANTE,
+}
+static if(sdlSupport >= SDLSupport.sdl206)
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_OS2,
+}
+static if(sdlSupport >= SDLSupport.sdl2012)
+enum: SDL_SYSWM_TYPE{
+	SDL_SYSWM_HAIKU,
+}
 
 version(Windows){
 	// I don't want to import core.sys.windows.windows just for these
@@ -169,8 +110,10 @@ struct SDL_SysWMinfo{
 		version(Windows){
 			struct win_{
 				void* window;
-				static if(sdlSupport >= SDLSupport.sdl204) void* hdc;
-				static if(sdlSupport >= SDLSupport.sdl206) void* hinstance;
+				static if(sdlSupport >= SDLSupport.sdl204)
+					void* hdc;
+				static if(sdlSupport >= SDLSupport.sdl206)
+					void* hinstance;
 			}
 			win_ win;
 		}else version(OSX){
@@ -230,10 +173,10 @@ struct SDL_SysWMinfo{
 	info_ info;
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_bool}, q{SDL_GetWindowWMInfo}, q{SDL_Window* window, SDL_SysWMinfo* info}],
-	);
+	]);
 	return ret;
 }()));

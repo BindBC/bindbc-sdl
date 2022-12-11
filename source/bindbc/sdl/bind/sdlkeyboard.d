@@ -8,6 +8,7 @@
 module bindbc.sdl.bind.sdlkeyboard;
 
 import bindbc.sdl.config;
+
 import bindbc.sdl.bind.sdlkeycode: SDL_Keycode, SDL_Keymod;
 import bindbc.sdl.bind.sdlrect: SDL_Rect;
 import bindbc.sdl.bind.sdlscancode: SDL_Scancode;
@@ -21,9 +22,9 @@ struct SDL_Keysym{
 	uint unused;
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_Window*}, q{SDL_GetKeyboardFocus}, q{}],
 		[q{ubyte*}, q{SDL_GetKeyboardState}, q{int* numkeys}],
 		[q{SDL_Keymod}, q{SDL_GetModState}, q{}],
@@ -40,13 +41,12 @@ mixin(joinFnBinds!((){
 		[q{void}, q{SDL_SetTextInputRect}, q{SDL_Rect*}],
 		[q{SDL_bool}, q{SDL_HasScreenKeyboardSupport}, q{}],
 		[q{SDL_bool}, q{SDL_IsScreenKeyboardShown}, q{SDL_Window* window}],
-	);
-
-	static if(sdlSupport == SDLSupport.sdl2022){
-		ret ~= makeFnBinds!(
+	]);
+	static if(sdlSupport >= SDLSupport.sdl2022){
+		ret ~= makeFnBind!([
 			[q{void}, q{SDL_ClearComposition}, q{}],
 			[q{SDL_bool}, q{SDL_IsTextInputShown}, q{}],
-		);
+		]);
 	}
 	return ret;
 }()));

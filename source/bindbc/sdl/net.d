@@ -18,6 +18,7 @@ enum SDLNetSupport {
 	badLibrary,
 	sdlNet200 = 200,
 	sdlNet201 = 201,
+	sdlNet220 = 220,
 }
 
 enum ubyte SDL_NET_MAJOR_VERSION = 2;

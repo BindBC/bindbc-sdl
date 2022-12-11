@@ -8,9 +8,10 @@
 module bindbc.sdl.bind.sdltimer;
 
 import bindbc.sdl.config;
+
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
-extern(C) nothrow alias SDL_TimerCallback = uint function(uint interval, void* param);
+alias SDL_TimerCallback = extern(C) uint function(uint interval, void* param) nothrow;
 alias SDL_TimerID = int;
 
 // This was added to SDL 2.0.1 as a macro, but it's
@@ -21,20 +22,20 @@ bool SDL_TICKS_PASSED(uint A, uint B) @nogc nothrow pure{
 	return cast(int)(B - A) <= 0;
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{uint}, q{SDL_GetTicks}, q{}],
 		[q{ulong}, q{SDL_GetPerformanceCounter}, q{}],
 		[q{ulong}, q{SDL_GetPerformanceFrequency}, q{}],
 		[q{void}, q{SDL_Delay}, q{uint ms}],
 		[q{SDL_TimerID}, q{SDL_AddTimer}, q{uint interval, SDL_TimerCallback callback, void* param}],
 		[q{SDL_bool}, q{SDL_RemoveTimer}, q{SDL_TimerID id}],
-	);
+	]);
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{ulong}, q{SDL_GetTicks64}, q{}],
-		);
+		]);
 	}
 	return ret;
 }()));

@@ -9,19 +9,19 @@ module bindbc.sdl.bind.sdlpower;
 
 import bindbc.sdl.config;
 
-enum SDL_PowerState{
+alias SDL_PowerState = int;
+enum: SDL_PowerState{
 	SDL_POWERSTATE_UNKNOWN,
 	SDL_POWERSTATE_ON_BATTERY,
 	SDL_POWERSTATE_NO_BATTERY,
 	SDL_POWERSTATE_CHARGING,
 	SDL_POWERSTATE_CHARGED,
 }
-mixin(expandEnum!SDL_PowerState);
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_PowerState}, q{SDL_GetPowerInfo}, q{int* secs, int* pct}],
-	);
+	]);
 	return ret;
 }()));

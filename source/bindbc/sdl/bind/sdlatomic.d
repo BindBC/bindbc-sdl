@@ -11,6 +11,7 @@ version(SDL_No_Atomics){}
 else:
 
 import bindbc.sdl.config;
+
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
 alias SDL_SpinLock = int;
@@ -41,9 +42,9 @@ SDL_bool SDL_AtomicDecRef(SDL_atomic_t* a){
 	return cast(SDL_bool)(SDL_AtomicAdd(a, -1) == 1);
 
 }
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_bool}, q{SDL_AtomicTryLock}, q{SDL_SpinLock* lock}],
 		[q{void}, q{SDL_AtomicLock}, q{SDL_SpinLock* lock}],
 		[q{void}, q{SDL_AtomicUnlock}, q{SDL_SpinLock* lock}],
@@ -51,54 +52,54 @@ mixin(joinFnBinds!((){
 		// the GCC macros in SDL_atomic.h. I'll have to investigate.
 		[q{SDL_bool}, q{SDL_AtomicCAS}, q{SDL_atomic_t* a, int oldval, int newval}],
 		[q{SDL_bool}, q{SDL_AtomicCASPtr}, q{void** a, void* oldval, void* newval}],
-	);
+	]);
 	static if(sdlSupport >= SDLSupport.sdl203){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_AtomicSet}, q{SDL_atomic_t* a, int v}],
 			[q{int}, q{SDL_AtomicGet}, q{SDL_atomic_t* a}],
 			[q{int}, q{SDL_AtomicAdd}, q{SDL_atomic_t* a, int v}],
 			[q{void*}, q{SDL_AtomicSetPtr}, q{void** a, void* v}],
 			[q{void*}, q{SDL_AtomicGetPtr}, q{void** a}],
-		);
-	}else{
-		ret ~= [q{
-			int SDL_AtomicSet(SDL_atomic_t* a, int v){
-				pragma(inline, true);
-				int value;
-				do{
-					value = a.value;
-				}while(!SDL_AtomicCAS(a, value, v));
-				return value;
-			}
-			int SDL_AtomicGet(SDL_atomic_t* a){
-				pragma(inline, true);
-				int value = a.value;
-				SDL_CompilerBarrier();
-				return value;
-			}
-			int SDL_AtomicAdd(SDL_atomic_t* a, int v){
-				pragma(inline, true);
-				int value;
-				do{
-					value = a.value;
-				}while(!SDL_AtomicCAS(a, value, value + v));
-				return value;
-			}
-			void* SDL_AtomicSetPtr(void** a, void* v){
-				pragma(inline, true);
-				void* value;
-				do{
-					value = *a;
-				}while(!SDL_AtomicCASPtr(a, value, v));
-				return value;
-			}
-			void* SDL_AtomicGetPtr(void** a){
-				pragma(inline, true);
-				void* value = *a;
-				SDL_CompilerBarrier();
-				return value;
-			}
-		}];
+		]);
 	}
 	return ret;
 }()));
+
+static if(sdlSupport < SDLSupport.sdl203){
+	int SDL_AtomicSet(SDL_atomic_t* a, int v){
+		pragma(inline, true);
+		int value;
+		do{
+			value = a.value;
+		}while(!SDL_AtomicCAS(a, value, v));
+		return value;
+	}
+	int SDL_AtomicGet(SDL_atomic_t* a){
+		pragma(inline, true);
+		int value = a.value;
+		SDL_CompilerBarrier();
+		return value;
+	}
+	int SDL_AtomicAdd(SDL_atomic_t* a, int v){
+		pragma(inline, true);
+		int value;
+		do{
+			value = a.value;
+		}while(!SDL_AtomicCAS(a, value, value + v));
+		return value;
+	}
+	void* SDL_AtomicSetPtr(void** a, void* v){
+		pragma(inline, true);
+		void* value;
+		do{
+			value = *a;
+		}while(!SDL_AtomicCASPtr(a, value, v));
+		return value;
+	}
+	void* SDL_AtomicGetPtr(void** a){
+		pragma(inline, true);
+		void* value = *a;
+		SDL_CompilerBarrier();
+		return value;
+	}
+}

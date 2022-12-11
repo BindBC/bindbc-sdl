@@ -10,27 +10,27 @@ module bindbc.sdl.config;
 import bindbc.sdl.bind.sdlversion: SDL_version, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL;
 
 enum SDLSupport: SDL_version{
-	noLibrary = SDL_version(0,0,0),
-	badLibrary = SDL_version(0,0,255),
-	sdl200   = SDL_version(2,0,0),
-	sdl201   = SDL_version(2,0,1),
-	sdl202   = SDL_version(2,0,2),
-	sdl203   = SDL_version(2,0,3),
-	sdl204   = SDL_version(2,0,4),
-	sdl205   = SDL_version(2,0,5),
-	sdl206   = SDL_version(2,0,6),
-	sdl207   = SDL_version(2,0,7),
-	sdl208   = SDL_version(2,0,8),
-	sdl209   = SDL_version(2,0,9),
-	sdl2010  = SDL_version(2,0,10),
-	sdl2012  = SDL_version(2,0,12),
-	sdl2014  = SDL_version(2,0,14),
-	sdl2016  = SDL_version(2,0,16),
-	sdl2018  = SDL_version(2,0,18),
-	sdl2020  = SDL_version(2,0,20),
-	sdl2022  = SDL_version(2,0,22),
-	sdl2240  = SDL_version(2,24,0),
-	sdl2260  = SDL_version(2,26,0),
+	noLibrary   = SDL_version(0,0,0),
+	badLibrary  = SDL_version(0,0,255),
+	sdl200      = SDL_version(2,0,0),
+	sdl201      = SDL_version(2,0,1),
+	sdl202      = SDL_version(2,0,2),
+	sdl203      = SDL_version(2,0,3),
+	sdl204      = SDL_version(2,0,4),
+	sdl205      = SDL_version(2,0,5),
+	sdl206      = SDL_version(2,0,6),
+	sdl207      = SDL_version(2,0,7),
+	sdl208      = SDL_version(2,0,8),
+	sdl209      = SDL_version(2,0,9),
+	sdl2010     = SDL_version(2,0,10),
+	sdl2012     = SDL_version(2,0,12),
+	sdl2014     = SDL_version(2,0,14),
+	sdl2016     = SDL_version(2,0,16),
+	sdl2018     = SDL_version(2,0,18),
+	sdl2020     = SDL_version(2,0,20),
+	sdl2022     = SDL_version(2,0,22),
+	sdl2240     = SDL_version(2,24,0),
+	sdl2260     = SDL_version(2,26,0),
 }
 
 enum staticBinding = (){
@@ -102,7 +102,14 @@ enum bindSDLTTF = (){
 	else return false;
 }();
 
-enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure{
+version(WebAssembly){
+	alias c_long = long;
+	alias c_ulong = ulong;
+}else{
+	public import core.stdc.config: c_long, c_ulong;
+}
+
+deprecated("Please update this type to use type aliases!") enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure{
 	string expandEnum;
 	foreach(m;__traits(allMembers, EnumType)){
 		expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
@@ -110,38 +117,43 @@ enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow p
 	return expandEnum;
 }();
 
-enum makeFnBinds(fns...) = () nothrow pure{
-	string makeFnBinds = `extern(C) @nogc nothrow{`;
-	string[] symbols = [];
+/*regex: function decl => makeFnBinds decl
+^[ \t]*([A-Za-z0-9_()*]+) (\w+) ?\(([A-Za-z0-9_()*, .=]*)\);
+\t\t[q{$1}, q{$2}, q{$3}],
+*/
+package enum makeFnBinds = (string[3][] fns) nothrow pure{
+	string makeFnBinds = ``;
+	string[] symbols;
 	static if(staticBinding){
 		foreach(fn; fns){
 			makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`);`;
 		}
 	}else{
-		makeFnBinds = `private `~makeFnBinds;
 		foreach(fn; fns){
-			makeFnBinds ~= "\n\talias p"~fn[1]~` = `~fn[0]~` function(`~fn[2]~`);`;
-		}
-		makeFnBinds ~= "\n}\n\n__gshared{";
-		foreach(fn; fns){
-			makeFnBinds ~= "\n\tp"~fn[1]~` `~fn[1]~`;`;
+			makeFnBinds ~= "\n\t"~fn[0]~` function(`~fn[2]~`) `~fn[1]~`;`;
 			symbols ~= fn[1];
 		}
 	}
-	makeFnBinds ~= "\n}";
 	return [makeFnBinds] ~ symbols;
-}();
+};
 
-enum joinFnBinds(alias list) = () nothrow pure{
-	string joined;
+package enum joinFnBinds = (string[][] list) nothrow pure{
+	string joined = `extern(C) @nogc nothrow`;
 	string[] symbols;
 	
-	foreach(item; list){
-		joined ~= item[0];
-		static if(!staticBinding){
+	static if(staticBinding){
+		joined ~= `{`;
+		foreach(item; list){
+			joined ~= item[0];
+		}
+	}else{
+		joined ~= " __gshared{";
+		foreach(item; list){
+			joined ~= item[0];
 			symbols ~= item[1..$];
 		}
 	}
+	joined ~= "\n}";
 	
 	static if(!staticBinding){
 		joined ~= "\n\nimport bindbc.loader: SharedLib, bindSymbol;\nvoid bindModuleSymbols(SharedLib lib) @nogc nothrow{";
@@ -150,5 +162,6 @@ enum joinFnBinds(alias list) = () nothrow pure{
 		}
 		joined ~= "\n}";
 	}
+	
 	return joined;
-}();
+};

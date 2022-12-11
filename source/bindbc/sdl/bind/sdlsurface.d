@@ -15,10 +15,10 @@ import bindbc.sdl.bind.sdlpixels: SDL_Palette, SDL_PixelFormat;
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
 enum{
-	SDL_SWSURFACE = 0,
-	SDL_PREALLOC = 0x00000001,
-	SDL_RLEACCEL = 0x00000002,
-	SDL_DONTFREE = 0x00000004,
+	SDL_SWSURFACE  = 0,
+	SDL_PREALLOC   = 0x00000001,
+	SDL_RLEACCEL   = 0x00000002,
+	SDL_DONTFREE   = 0x00000004,
 }
 
 bool SDL_MUSTLOCK(const(SDL_Surface)* S) @nogc nothrow pure{
@@ -42,7 +42,7 @@ struct SDL_Surface{
 	int refcount;
 }
 
-extern(C) nothrow alias SDL_blit = int function(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect);
+alias SDL_blit = extern(C) int function(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect) nothrow;
 
 @nogc nothrow{
 	SDL_Surface* SDL_LoadBMP(const(char)* file){
@@ -57,18 +57,18 @@ extern(C) nothrow alias SDL_blit = int function(SDL_Surface* src, SDL_Rect* srcr
 }
 
 static if(sdlSupport >= SDLSupport.sdl208){
-	enum SDL_YUV_CONVERSION_MODE{
+	alias SDL_YUV_CONVERSION_MODE = int;
+	enum: SDL_YUV_CONVERSION_MODE{
 		SDL_YUV_CONVERSION_JPEG,
 		SDL_YUV_CONVERSION_BT601,
 		SDL_YUV_CONVERSION_BT709,
 		SDL_YUV_CONVERSION_AUTOMATIC,
 	}
-	mixin(expandEnum!SDL_YUV_CONVERSION_MODE);
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_Surface*}, q{SDL_CreateRGBSurface}, q{uint flags, int width, int height, int depth, uint Rmask, uint Gmask, uint Bmask, uint Amask}],
 		[q{SDL_Surface*}, q{SDL_CreateRGBSurfaceFrom}, q{void* pixels, int width, int height, int depth, int pitch, uint Rmask, uint Gmask, uint Bmask, uint Amask}],
 		[q{void}, q{SDL_FreeSurface}, q{SDL_Surface* surface}],
@@ -98,43 +98,44 @@ mixin(joinFnBinds!((){
 		[q{int}, q{SDL_SoftStretch}, q{SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, const(SDL_Rect)* dstrect}],
 		[q{int}, q{SDL_UpperBlitScaled}, q{SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, SDL_Rect* dstrect}],
 		[q{int}, q{SDL_LowerBlitScaled}, q{SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect}],
-	);
-
+	]);
+	ret ~= [q{
+		alias SDL_BlitSurface = SDL_UpperBlit;
+		alias SDL_BlitScaled = SDL_UpperBlitScaled;
+	}];
+	
 	static if(sdlSupport >= SDLSupport.sdl205){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_Surface*}, q{SDL_CreateRGBSurfaceWithFormat}, q{uint flags, int width, int height, int depth, uint format}],
 			[q{SDL_Surface*}, q{SDL_CreateRGBSurfaceWithFormatFrom}, q{void* pixels, int width, int height, int depth, int pitch, uint format}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl205){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_Surface*}, q{SDL_DuplicateSurface}, q{SDL_Surface* surface}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl208){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_SetYUVConversionMode}, q{SDL_YUV_CONVERSION_MODE mode}],
 			[q{SDL_YUV_CONVERSION_MODE}, q{SDL_GetYUVConversionMode}, q{}],
 			[q{SDL_YUV_CONVERSION_MODE}, q{SDL_GetYUVConversionModeForResolution}, q{int width, int height}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl209){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasColorKey}, q{SDL_Surface* surface}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2016){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_SoftStretchLinear}, q{SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, const(SDL_Rect)* dstrect}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_PremultiplyAlpha}, q{int width, int height, uint src_format, const(void)* src, int src_pitch, uint dst_format, void* dst, int dst_pitch}],
-		);
+		]);
 	}
 	return ret;
 }()));
-
-alias SDL_BlitSurface = SDL_UpperBlit;
-alias SDL_BlitScaled = SDL_UpperBlitScaled;

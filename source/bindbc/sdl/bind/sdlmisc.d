@@ -9,12 +9,12 @@ module bindbc.sdl.bind.sdlmisc;
 
 import bindbc.sdl.config;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
 	static if(sdlSupport >= SDLSupport.sdl2014){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_OpenURL}, q{const(char)* url}],
-		);
+		]);
 	}
 	return ret;
 }()));

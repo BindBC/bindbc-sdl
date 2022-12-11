@@ -20,30 +20,22 @@ private{
 		version(Windows){
 			return [
 				`SDL2_image.dll`,
-				`C:\Windows\System32\SDL2.dll`,
-				`C:\Windows\SysWOW64\SDL2.dll`,
 			];
 		}else version(OSX){
 			return [
 				`libSDL2.dylib`,
+				`/usr/lib/libSDL2.dylib`,
 				`/usr/local/lib/libSDL2.dylib`,
-				`/usr/local/lib/libSDL2/libSDL2.dylib`,
 				`../Frameworks/SDL2.framework/SDL2`,
 				`/Library/Frameworks/SDL2.framework/SDL2`,
 				`/System/Library/Frameworks/SDL2.framework/SDL2`,
-				`/opt/local/lib/libSDL2.dylib`,
+				`/opt/homebrew/lib/libSDL2.dylib`,
 			];
 		}else version(Posix){
 			return [
 				`libSDL2.so`,
 				`libSDL2-2.0.so`,
 				`libSDL2-2.0.so.0`,
-				`/usr/lib/libSDL2.so`,
-				`/usr/lib/libSDL2-2.0.so`,
-				`/usr/lib/libSDL2-2.0.so.0`,
-				`/usr/local/lib/libSDL2.so`,
-				`/usr/local/lib/libSDL2-2.0.so`,
-				`/usr/local/lib/libSDL2-2.0.so.0`,
 			];
 		}else static assert(0, "bindbc-sdl does not have library search paths set up for this platform.");
 	}();

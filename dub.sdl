@@ -1,5 +1,5 @@
 name "bindbc-sdl"
-description "Dynamic and static bindings to SDL2 and its satellite libraries, compatible with -betterC, @nogc, and nothrow."
+description "Static & dynamic bindings to SDL and its extension libraries, compatible with BetterC, @nogc and nothrow."
 homepage ""
 authors "Mike Parker" "Aya Partridge"
 license "Boost"

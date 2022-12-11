@@ -8,13 +8,15 @@
 module bindbc.sdl.bind.sdlmouse;
 
 import bindbc.sdl.config;
+
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 import bindbc.sdl.bind.sdlsurface: SDL_Surface;
 import bindbc.sdl.bind.sdlvideo: SDL_Window;
 
 struct SDL_Cursor;
 
-enum SDL_SystemCursor{
+alias SDL_SystemCursor = int;
+enum: SDL_SystemCursor{
 	SDL_SYSTEM_CURSOR_ARROW,
 	SDL_SYSTEM_CURSOR_IBEAM,
 	SDL_SYSTEM_CURSOR_WAIT,
@@ -27,9 +29,8 @@ enum SDL_SystemCursor{
 	SDL_SYSTEM_CURSOR_SIZEALL,
 	SDL_SYSTEM_CURSOR_NO,
 	SDL_SYSTEM_CURSOR_HAND,
-	SDL_NUM_SYSTEM_CURSORS
+	SDL_NUM_SYSTEM_CURSORS,
 }
-mixin(expandEnum!SDL_SystemCursor);
 
 enum SDL_BUTTON(ubyte x) = 1 << (x-1);
 
@@ -47,16 +48,16 @@ enum: ubyte{
 }
 
 static if(sdlSupport >= SDLSupport.sdl204){
-	enum SDL_MouseWheelDirection{
+	alias SDL_MouseWheelDirection = int;
+	enum: SDL_MouseWheelDirection{
 		SDL_MOUSEWHEEL_NORMAL,
 		SDL_MOUSEWHEEL_FLIPPED,
 	}
-	mixin(expandEnum!SDL_MouseWheelDirection);
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_Window*}, q{SDL_GetMouseFocus}, q{}],
 		[q{uint}, q{SDL_GetMouseState}, q{int* x, int* y}],
 		[q{uint}, q{SDL_GetRelativeMouseState}, q{int* x, int* y}],
@@ -71,14 +72,14 @@ mixin(joinFnBinds!((){
 		[q{SDL_Cursor*}, q{SDL_GetDefaultCursor}, q{}],
 		[q{void}, q{SDL_FreeCursor}, q{SDL_Cursor* cursor}],
 		[q{int}, q{SDL_ShowCursor}, q{int toggle}],
-	);
+	]);
 	
 	static if(sdlSupport >= SDLSupport.sdl204){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_CaptureMouse}, q{SDL_bool enabled}],
 			[q{uint}, q{SDL_GetGlobalMouseState}, q{int* x, int* y}],
 			[q{void}, q{SDL_WarpMouseGlobal}, q{int x, int y}],
-		);
+		]);
 	}
 	return ret;
 }()));

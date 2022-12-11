@@ -36,15 +36,17 @@ void SDL_VERSION(SDL_version* x) @nogc nothrow pure{
 }
 
 enum SDL_VERSIONNUM(ubyte X, ubyte Y, ubyte Z) = X*1000 + Y*100 + Z;
-deprecated enum SDL_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+
+deprecated("Please use SDL_VERSION_ATLEAST or SDL_VERSION instead.") enum SDL_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+
 enum SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{void}, q{SDL_GetVersion}, q{SDL_version* ver}],
 		[q{const(char)*}, q{SDL_GetRevision}, q{}],
 		[q{int}, q{SDL_GetRevisionNumber}, q{}], //NOTE: this function is deprecated
-	);
+	]);
 	return ret;
 }()));

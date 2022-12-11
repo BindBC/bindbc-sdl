@@ -9,13 +9,13 @@ module bindbc.sdl.bind.sdlfilesystem;
 
 import bindbc.sdl.config;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
 	static if(sdlSupport >= SDLSupport.sdl201){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{char*}, q{SDL_GetBasePath}, q{}],
 			[q{char*}, q{SDL_GetPrefPath}, q{const(char)* org, const(char)* app}],
-		);
+		]);
 	}
 	return ret;
 }()));

@@ -9,15 +9,15 @@ module bindbc.sdl.bind.sdlassert;
 
 import bindbc.sdl.config;
 
-enum SDL_assert_state: uint{
-	SDL_ASSERTION_RETRY = 0,
-	SDL_ASSERTION_BREAK = 1,
-	SDL_ASSERTION_ABORT = 2,
-	SDL_ASSERTION_IGNORE = 3,
-	SDL_ASSERTION_ALWAYS_IGNORE = 4
+alias SDL_assert_state = uint;
+enum: SDL_assert_state{
+	SDL_ASSERTION_RETRY          = 0,
+	SDL_ASSERTION_BREAK          = 1,
+	SDL_ASSERTION_ABORT          = 2,
+	SDL_ASSERTION_IGNORE         = 3,
+	SDL_ASSERTION_ALWAYS_IGNORE  = 4
 }
 alias SDL_AssertState = SDL_assert_state;
-mixin(expandEnum!SDL_AssertState);
 
 struct SDL_assert_data{
 	int always_ignore;
@@ -32,18 +32,18 @@ alias SDL_AssertData = SDL_assert_data;
 
 extern(C) nothrow alias SDL_AssertionHandler = SDL_AssertState function(const(SDL_AssertData)* data, void* userdata);
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{void}, q{SDL_SetAssertionHandler}, q{SDL_AssertionHandler handler, void* userdata}],
 		[q{const(SDL_assert_data)*}, q{SDL_GetAssertionReport}, q{}],
 		[q{void}, q{SDL_ResetAssertionReport}, q{}],
-	);
-	static if(sdlSupport >= SDLSupport.sdl202) {
-		ret ~= makeFnBinds!(
+	]);
+	static if(sdlSupport >= SDLSupport.sdl202){
+		ret ~= makeFnBinds([
 			[q{SDL_AssertionHandler}, q{SDL_GetAssertionHandler}, q{void** puserdata}],
 			[q{SDL_AssertionHandler}, q{SDL_GetDefaultAssertionHandler}, q{}],
-		);
+		]);
 	}
 	return ret;
 }()));

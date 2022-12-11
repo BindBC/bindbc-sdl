@@ -10,11 +10,11 @@ module bindbc.sdl.bind.sdlcpuinfo;
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
-enum  SDL_CACHELINE_SIZE = 128;
+enum SDL_CACHELINE_SIZE = 128;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_GetCPUCount}, q{}],
 		[q{int}, q{SDL_GetCPUCacheLineSize}, q{}],
 		[q{SDL_bool}, q{SDL_HasRDTSC}, q{}],
@@ -26,48 +26,48 @@ mixin(joinFnBinds!((){
 		[q{SDL_bool}, q{SDL_HasSSE3}, q{}],
 		[q{SDL_bool}, q{SDL_HasSSE41}, q{}],
 		[q{SDL_bool}, q{SDL_HasSSE42}, q{}],
-	);
+	]);
 	static if(sdlSupport >= SDLSupport.sdl201){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_GetSystemRAM}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl202){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasAVX}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl204){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasAVX2}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl206){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasNEON}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl209){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasAVX512F}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2010){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{size_t}, q{SDL_SIMDGetAlignment}, q{}],
 			[q{void*}, q{SDL_SIMDAlloc}, q{const(size_t) len}],
 			[q{void}, q{SDL_SIMDFree}, q{void*}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2012){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasARMSIMD}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2014){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void*}, q{SDL_SIMDRealloc}, q{void* mem, const(size_t) len}],
-		);
+		]);
 	}
 	return ret;
 }()));

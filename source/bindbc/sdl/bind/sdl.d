@@ -36,14 +36,14 @@ static if(sdlSupport >= SDLSupport.sdl209){
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_Init}, q{uint flags}],
 		[q{int}, q{SDL_InitSubSystem}, q{uint flags}],
 		[q{void}, q{SDL_QuitSubSystem}, q{uint flags}],
 		[q{uint}, q{SDL_WasInit}, q{uint flags}],
 		[q{void}, q{SDL_Quit}, q{}],
-	);
+	]);
 	return ret;
 }()));

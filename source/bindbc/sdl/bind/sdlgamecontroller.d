@@ -16,53 +16,35 @@ import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
 struct SDL_GameController;
 
-static if(sdlSupport >= SDLSupport.sdl2016){
-	enum SDL_GameControllerType{
+static if(sdlSupport >= SDLSupport.sdl2012){
+	alias SDL_GameControllerType = int;
+	enum: SDL_GameControllerType{
 		SDL_CONTROLLER_TYPE_UNKNOWN = 0,
 		SDL_CONTROLLER_TYPE_XBOX360,
 		SDL_CONTROLLER_TYPE_XBOXONE,
 		SDL_CONTROLLER_TYPE_PS3,
 		SDL_CONTROLLER_TYPE_PS4,
 		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+	}
+	static if(sdlSupport >= SDLSupport.sdl2014):
+	enum: SDL_GameControllerType{
 		SDL_CONTROLLER_TYPE_VIRTUAL,
 		SDL_CONTROLLER_TYPE_PS5,
+	}
+	static if(sdlSupport >= SDLSupport.sdl2016):
+	enum: SDL_GameControllerType{
 		SDL_CONTROLLER_TYPE_AMAZON_LUNA,
-		SDL_CONTROLLER_TYPE_GOOGLE_STADIA
+		SDL_CONTROLLER_TYPE_GOOGLE_STADIA,
 	}
-	mixin(expandEnum!SDL_GameControllerType);
-}
-else static if(sdlSupport >= SDLSupport.sdl2014){
-	enum SDL_GameControllerType{
-		SDL_CONTROLLER_TYPE_UNKNOWN = 0,
-		SDL_CONTROLLER_TYPE_XBOX360,
-		SDL_CONTROLLER_TYPE_XBOXONE,
-		SDL_CONTROLLER_TYPE_PS3,
-		SDL_CONTROLLER_TYPE_PS4,
-		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
-		SDL_CONTROLLER_TYPE_VIRTUAL,
-		SDL_CONTROLLER_TYPE_PS5
-	}
-	mixin(expandEnum!SDL_GameControllerType);
-}
-else static if(sdlSupport >= SDLSupport.sdl2012){
-	enum SDL_GameControllerType{
-		SDL_CONTROLLER_TYPE_UNKNOWN = 0,
-		SDL_CONTROLLER_TYPE_XBOX360,
-		SDL_CONTROLLER_TYPE_XBOXONE,
-		SDL_CONTROLLER_TYPE_PS3,
-		SDL_CONTROLLER_TYPE_PS4,
-		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
-	}
-	mixin(expandEnum!SDL_GameControllerType);
 }
 
-enum SDL_GameControllerBindType{
-	SDL_CONTROLLER_BINDTYPE_NONE = 0,
-	SDL_CONTROLLER_BINDTYPE_BUTTON,
-	SDL_CONTROLLER_BINDTYPE_AXIS,
-	SDL_CONTROLLER_BINDTYPE_HAT,
+alias SDL_GameControllerBindType = int;
+enum: SDL_GameControllerBindType{
+	SDL_CONTROLLER_BINDTYPE_NONE    = 0,
+	SDL_CONTROLLER_BINDTYPE_BUTTON  = 1,
+	SDL_CONTROLLER_BINDTYPE_AXIS    = 2,
+	SDL_CONTROLLER_BINDTYPE_HAT     = 3,
 }
-mixin(expandEnum!SDL_GameControllerBindType);
 
 struct SDL_GameControllerButtonBind{
 	SDL_GameControllerBindType bindType;
@@ -79,7 +61,8 @@ struct SDL_GameControllerButtonBind{
 	alias hat = value.hat;
 }
 
-enum SDL_GameControllerAxis{
+alias SDL_GameControllerAxis = int;
+enum: SDL_GameControllerAxis{
 	SDL_CONTROLLER_AXIS_INVALID = -1,
 	SDL_CONTROLLER_AXIS_LEFTX,
 	SDL_CONTROLLER_AXIS_LEFTY,
@@ -87,71 +70,53 @@ enum SDL_GameControllerAxis{
 	SDL_CONTROLLER_AXIS_RIGHTY,
 	SDL_CONTROLLER_AXIS_TRIGGERLEFT,
 	SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
-	SDL_CONTROLLER_AXIS_MAX
+	SDL_CONTROLLER_AXIS_MAX,
 }
-mixin(expandEnum!SDL_GameControllerAxis);
 
-static if(sdlSupport >= SDLSupport.sdl2014){
-	enum SDL_GameControllerButton{
-		SDL_CONTROLLER_BUTTON_INVALID = -1,
-		SDL_CONTROLLER_BUTTON_A,
-		SDL_CONTROLLER_BUTTON_B,
-		SDL_CONTROLLER_BUTTON_X,
-		SDL_CONTROLLER_BUTTON_Y,
-		SDL_CONTROLLER_BUTTON_BACK,
-		SDL_CONTROLLER_BUTTON_GUIDE,
-		SDL_CONTROLLER_BUTTON_START,
-		SDL_CONTROLLER_BUTTON_LEFTSTICK,
-		SDL_CONTROLLER_BUTTON_RIGHTSTICK,
-		SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
-		SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
-		SDL_CONTROLLER_BUTTON_DPAD_UP,
-		SDL_CONTROLLER_BUTTON_DPAD_DOWN,
-		SDL_CONTROLLER_BUTTON_DPAD_LEFT,
-		SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
-		SDL_CONTROLLER_BUTTON_MISC1,
-		SDL_CONTROLLER_BUTTON_PADDLE1,
-		SDL_CONTROLLER_BUTTON_PADDLE2,
-		SDL_CONTROLLER_BUTTON_PADDLE3,
-		SDL_CONTROLLER_BUTTON_PADDLE4,
-		SDL_CONTROLLER_BUTTON_TOUCHPAD,
-		SDL_CONTROLLER_BUTTON_MAX,
-	}
+alias SDL_GameControllerButton = int;
+enum: SDL_GameControllerButton{
+	SDL_CONTROLLER_BUTTON_INVALID        = -1,
+	SDL_CONTROLLER_BUTTON_A              = 0,
+	SDL_CONTROLLER_BUTTON_B              = 1,
+	SDL_CONTROLLER_BUTTON_X              = 2,
+	SDL_CONTROLLER_BUTTON_Y              = 3,
+	SDL_CONTROLLER_BUTTON_BACK           = 4,
+	SDL_CONTROLLER_BUTTON_GUIDE          = 5,
+	SDL_CONTROLLER_BUTTON_START          = 6,
+	SDL_CONTROLLER_BUTTON_LEFTSTICK      = 7,
+	SDL_CONTROLLER_BUTTON_RIGHTSTICK     = 8,
+	SDL_CONTROLLER_BUTTON_LEFTSHOULDER   = 9,
+	SDL_CONTROLLER_BUTTON_RIGHTSHOULDER  = 10,
+	SDL_CONTROLLER_BUTTON_DPAD_UP        = 12,
+	SDL_CONTROLLER_BUTTON_DPAD_DOWN      = 13,
+	SDL_CONTROLLER_BUTTON_DPAD_LEFT      = 14,
+	SDL_CONTROLLER_BUTTON_DPAD_RIGHT     = 15,
 }
-else{
-	enum SDL_GameControllerButton{
-		SDL_CONTROLLER_BUTTON_INVALID = -1,
-		SDL_CONTROLLER_BUTTON_A,
-		SDL_CONTROLLER_BUTTON_B,
-		SDL_CONTROLLER_BUTTON_X,
-		SDL_CONTROLLER_BUTTON_Y,
-		SDL_CONTROLLER_BUTTON_BACK,
-		SDL_CONTROLLER_BUTTON_GUIDE,
-		SDL_CONTROLLER_BUTTON_START,
-		SDL_CONTROLLER_BUTTON_LEFTSTICK,
-		SDL_CONTROLLER_BUTTON_RIGHTSTICK,
-		SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
-		SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
-		SDL_CONTROLLER_BUTTON_DPAD_UP,
-		SDL_CONTROLLER_BUTTON_DPAD_DOWN,
-		SDL_CONTROLLER_BUTTON_DPAD_LEFT,
-		SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
-		SDL_CONTROLLER_BUTTON_MAX,
-	}
+static if(sdlSupport >= SDLSupport.sdl2014)
+enum: SDL_GameControllerButton{
+	SDL_CONTROLLER_BUTTON_MISC1          = 16,
+	SDL_CONTROLLER_BUTTON_PADDLE1        = 17,
+	SDL_CONTROLLER_BUTTON_PADDLE2        = 18,
+	SDL_CONTROLLER_BUTTON_PADDLE3        = 19,
+	SDL_CONTROLLER_BUTTON_PADDLE4        = 20,
+	SDL_CONTROLLER_BUTTON_TOUCHPAD       = 21,
+	SDL_CONTROLLER_BUTTON_MAX            = 22,
 }
-mixin(expandEnum!SDL_GameControllerButton);
+else
+enum: SDL_GameControllerButton{
+	SDL_CONTROLLER_BUTTON_MAX            = 16,
+}
 
 static if(sdlSupport >= SDLSupport.sdl202){
-	@nogc nothrow
-	int SDL_GameControllerAddMappingsFromFile(const(char)* file){
+	int SDL_GameControllerAddMappingsFromFile(const(char)* file) @nogc nothrow{
 		pragma(inline, true);
 		return SDL_GameControllerAddMappingsFromRW(SDL_RWFromFile(file,"rb"),1);
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_GameControllerAddMapping}, q{const(char)* mappingString}],
 		[q{char*}, q{SDL_GameControllerMappingForGUID}, q{SDL_JoystickGUID guid}],
 		[q{char*}, q{SDL_GameControllerMapping}, q{SDL_GameController* gamecontroller}],
@@ -172,48 +137,47 @@ mixin(joinFnBinds!((){
 		[q{SDL_GameControllerButtonBind}, q{SDL_GameControllerGetBindForButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
 		[q{ubyte}, q{SDL_GameControllerGetButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
 		[q{void}, q{SDL_GameControllerClose}, q{SDL_GameController* gamecontroller}],
-	);
-
+	]);
 	static if(sdlSupport >= SDLSupport.sdl202){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_GameControllerAddMappingsFromRW}, q{SDL_RWops* rw, int freerw}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl204){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_GameController*}, q{SDL_GameControllerFromInstanceID}, q{SDL_JoystickID joyid}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl206){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{ushort}, q{SDL_GameControllerGetProduct}, q{SDL_GameController* gamecontroller}],
 			[q{ushort}, q{SDL_GameControllerGetProductVersion}, q{SDL_GameController* gamecontroller}],
 			[q{ushort}, q{SDL_GameControllerGetVendor}, q{SDL_GameController* gamecontroller}],
 			[q{char*}, q{SDL_GameControllerMappingForIndex}, q{int mapping_index}],
 			[q{int}, q{SDL_GameControllerNumMappings}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl209){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{char*}, q{SDL_GameControllerMappingForDeviceIndex}, q{int joystick_index}],
 			[q{int}, q{SDL_GameControllerRumble}, q{SDL_GameController* gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2010){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_GameControllerGetPlayerIndex}, q{SDL_GameController* gamecontroller}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2012){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_GameControllerType}, q{SDL_GameControllerTypeForIndex}, q{int joystick_index}],
 			[q{SDL_GameController*}, q{SDL_GameControllerFromPlayerIndex}, q{int player_index}],
 			[q{SDL_GameControllerType}, q{SDL_GameControllerGetType}, q{SDL_GameController* gamecontroller}],
 			[q{void}, q{SDL_GameControllerSetPlayerIndex}, q{SDL_GameController* gamecontroller, int player_index}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2014){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_GameControllerHasAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
 			[q{SDL_bool}, q{SDL_GameControllerHasButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
 			[q{int}, q{SDL_GameControllerGetNumTouchpads}, q{SDL_GameController* gamecontroller}],
@@ -226,21 +190,21 @@ mixin(joinFnBinds!((){
 			[q{int}, q{SDL_GameControllerRumbleTriggers}, q{SDL_GameController* gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms}],
 			[q{SDL_bool}, q{SDL_GameControllerHasLED}, q{SDL_GameController* gamecontroller}],
 			[q{int}, q{SDL_GameControllerSetLED}, q{SDL_GameController* gamecontroller, ubyte red, ubyte green, ubyte blue}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2016){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_GameControllerSendEffect}, q{SDL_GameController* gamecontroller, const(void)* data, int size}],
 			[q{float}, q{SDL_GameControllerGetSensorDataRate}, q{SDL_GameController* gamecontroller, SDL_SensorType type}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_GameControllerHasRumble}, q{SDL_GameController* gamecontroller}],
 			[q{SDL_bool}, q{SDL_GameControllerHasRumbleTriggers}, q{SDL_GameController* gamecontroller}],
 			[q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
 			[q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
-		);
+		]);
 	}
 	return ret;
 }()));

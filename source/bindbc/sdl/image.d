@@ -20,15 +20,15 @@ alias IMG_SetError = SDL_SetError;
 alias IMG_GetError = SDL_GetError;
 
 enum SDLImageSupport: SDL_version{
-	noLibrary = SDL_version(0,0,0),
-	badLibrary = SDL_version(0,0,255),
-	sdlImage200 = SDL_version(2,0,0),
-	sdlImage201 = SDL_version(2,0,1),
-	sdlImage202 = SDL_version(2,0,2),
-	sdlImage203 = SDL_version(2,0,3),
-	sdlImage204 = SDL_version(2,0,4),
-	sdlImage205 = SDL_version(2,0,5),
-	sdlImage260 = SDL_version(2,6,0),
+	noLibrary    = SDL_version(0,0,0),
+	badLibrary   = SDL_version(0,0,255),
+	sdlImage200  = SDL_version(2,0,0),
+	sdlImage201  = SDL_version(2,0,1),
+	sdlImage202  = SDL_version(2,0,2),
+	sdlImage203  = SDL_version(2,0,3),
+	sdlImage204  = SDL_version(2,0,4),
+	sdlImage205  = SDL_version(2,0,5),
+	sdlImage260  = SDL_version(2,6,0),
 }
 
 enum sdlImageSupport = (){
@@ -52,8 +52,7 @@ void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow pure{
 	X.patch = SDL_IMAGE_PATCHLEVEL;
 }
 
-// These were implemented in SDL_image 2.0.2, but are fine for all versions.
-enum SDL_IMAGE_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL);
+deprecated("Please use SDL_IMAGE_VERSION_ATLEAST or SDL_IMAGE_VERSION instead.") enum SDL_IMAGE_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL);
 enum SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_IMAGE_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
 
 enum{
@@ -63,20 +62,20 @@ enum{
 	IMG_INIT_WEBP  = 0x0000_0008,
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{IMG_Init}, q{int flags}],
 		[q{int}, q{IMG_Quit}, q{}],
 		[q{const(SDL_version)*}, q{IMG_Linked_Version}, q{}],
 		[q{SDL_Surface*}, q{IMG_LoadTyped_RW}, q{SDL_RWops* src, int freesrc, const(char)* type}],
 		[q{SDL_Surface*}, q{IMG_Load}, q{const(char)* file}],
 		[q{SDL_Surface*}, q{IMG_Load_RW}, q{SDL_RWops* src, int freesrc}],
-
+		
 		[q{SDL_Texture*}, q{IMG_LoadTexture}, q{SDL_Renderer* renderer, const(char)* file}],
 		[q{SDL_Texture*}, q{IMG_LoadTexture_RW}, q{SDL_Renderer* renderer, SDL_RWops* src, int freesrc}],
 		[q{SDL_Texture*}, q{IMG_LoadTextureTyped_RW}, q{SDL_Renderer* renderer, SDL_RWops* src, int freesrc, const(char)* type}],
-
+		
 		[q{int}, q{IMG_isICO}, q{SDL_RWops* src}],
 		[q{int}, q{IMG_isCUR}, q{SDL_RWops* src}],
 		[q{int}, q{IMG_isBMP}, q{SDL_RWops* src}],
@@ -91,7 +90,7 @@ mixin(joinFnBinds!((){
 		[q{int}, q{IMG_isXPM}, q{SDL_RWops* src}],
 		[q{int}, q{IMG_isXV}, q{SDL_RWops* src}],
 		[q{int}, q{IMG_isWEBP}, q{SDL_RWops* src}],
-
+		
 		[q{SDL_Surface*}, q{IMG_LoadICO_RW}, q{SDL_RWops* src}],
 		[q{SDL_Surface*}, q{IMG_LoadCUR_RW}, q{SDL_RWops* src}],
 		[q{SDL_Surface*}, q{IMG_LoadBMP_RW}, q{SDL_RWops* src}],
@@ -107,19 +106,19 @@ mixin(joinFnBinds!((){
 		[q{SDL_Surface*}, q{IMG_LoadXPM_RW}, q{SDL_RWops* src}],
 		[q{SDL_Surface*}, q{IMG_LoadXV_RW}, q{SDL_RWops* src}],
 		[q{SDL_Surface*}, q{IMG_LoadWEBP_RW}, q{SDL_RWops* src}],
-
+		
 		[q{SDL_Surface*}, q{IMG_ReadXPMFromArray}, q{char** xpm}],
-
+		
 		[q{int}, q{IMG_SavePNG}, q{SDL_Surface* surface, const(char)* file}],
 		[q{int}, q{IMG_SavePNG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freedst}],
-	);
+	]);
 	static if(sdlImageSupport >= SDLImageSupport.sdlImage202){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{IMG_isSVG}, q{SDL_RWops* src}],
 			[q{SDL_Surface*}, q{IMG_LoadSVG}, q{SDL_RWops* src}],
 			[q{int}, q{IMG_SaveJPG}, q{SDL_Surface* surface, const(char)* file, int quality}],
 			[q{int}, q{IMG_SaveJPG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freedst, int quality}],
-		);
+		]);
 	}
 	return ret;
 }()));
@@ -134,8 +133,6 @@ private{
 		version(Windows){
 			return [
 				`SDL2_image.dll`,
-				`C:\Windows\System32\SDL2_image.dll`,
-				`C:\Windows\SysWOW64\SDL2_image.dll`,
 			];
 		}else version(OSX){
 			return [
@@ -182,7 +179,7 @@ SDLImageSupport loadSDLImage(){
 
 SDLImageSupport loadSDLImage(const(char)* libName){
 	lib = load(libName);
-	if(lib == invalidHandle) {
+	if(lib == invalidHandle){
 		return SDLImageSupport.noLibrary;
 	}
 	

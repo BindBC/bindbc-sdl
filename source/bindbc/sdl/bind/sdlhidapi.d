@@ -11,9 +11,9 @@ import bindbc.sdl.config;
 
 static if(sdlSupport >= SDLSupport.sdl2018){
 	import bindbc.sdl.bind.sdlstdinc: SDL_bool;
-
+	
 	struct SDL_hid_device;
-
+	
 	struct SDL_hid_device_info{
 		char* path;
 		ushort vendor_id;
@@ -32,17 +32,17 @@ static if(sdlSupport >= SDLSupport.sdl2018){
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_hid_init}, q{}],
 			[q{int}, q{SDL_hid_exit}, q{}],
 			[q{uint}, q{SDL_hid_device_change_count}, q{}],
 			[q{SDL_hid_device_info*}, q{SDL_hid_enumerate}, q{ushort vendor_id, ushort product_id}],
 			[q{void}, q{SDL_hid_free_enumeration}, q{SDL_hid_device_info* devs}],
 			[q{SDL_hid_device*}, q{SDL_hid_open}, q{ushort vendor_id, ushort product_id, const(dchar)* serial_number}],
-			[q{SDL_hid_device*}, q{SDL_hid_open_path}, q{const(char)* path, int bExclusive = false}],
+			[q{SDL_hid_device*}, q{SDL_hid_open_path}, q{const(char)* path, int bExclusive=false}],
 			[q{int}, q{SDL_hid_write}, q{SDL_hid_device* dev, const(ubyte*) data, size_t length}],
 			[q{int}, q{SDL_hid_read_timeout}, q{SDL_hid_device* dev, ubyte* data, size_t length, int milliseconds}],
 			[q{int}, q{SDL_hid_read}, q{SDL_hid_device* dev, ubyte* data, size_t length}],
@@ -54,7 +54,7 @@ mixin(joinFnBinds!((){
 			[q{int}, q{SDL_hid_get_serial_number_string}, q{SDL_hid_device* dev, dchar* string_, size_t maxlen}],
 			[q{int}, q{SDL_hid_get_indexed_string}, q{SDL_hid_device* dev, int string_index, dchar* string_, size_t maxlen}],
 			[q{void}, q{SDL_hid_ble_scan}, q{SDL_bool active}],
-		);
+		]);
 	}
 	return ret;
 }()));

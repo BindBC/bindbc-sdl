@@ -9,12 +9,12 @@ module bindbc.sdl.bind.sdlerror;
 
 import bindbc.sdl.config;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{void}, q{SDL_SetError}, q{const(char)* fmt, ...}],
 		[q{const(char)*}, q{SDL_GetError}, q{}],
 		[q{void}, q{SDL_ClearError}, q{}],
-	);
+	]);
 	return ret;
 }()));

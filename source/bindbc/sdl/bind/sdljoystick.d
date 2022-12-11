@@ -31,7 +31,8 @@ enum: ubyte{
 }
 
 static if(sdlSupport >= SDLSupport.sdl204){
-	enum SDL_JoystickPowerLevel{
+	alias SDL_JoystickPowerLevel = int;
+	enum: SDL_JoystickPowerLevel{
 		SDL_JOYSTICK_POWER_UNKNOWN = -1,
 		SDL_JOYSTICK_POWER_EMPTY,
 		SDL_JOYSTICK_POWER_LOW,
@@ -40,7 +41,6 @@ static if(sdlSupport >= SDLSupport.sdl204){
 		SDL_JOYSTICK_POWER_WIRED,
 		SDL_JOYSTICK_POWER_MAX
 	}
-	mixin(expandEnum!SDL_JoystickPowerLevel);
 }
 
 static if(sdlSupport >= SDLSupport.sdl2014){
@@ -48,7 +48,8 @@ static if(sdlSupport >= SDLSupport.sdl2014){
 }
 
 static if(sdlSupport >= SDLSupport.sdl206){
-	enum SDL_JoystickType{
+	alias SDL_JoystickType = int;
+	enum: SDL_JoystickType{
 		SDL_JOYSTICK_TYPE_UNKNOWN,
 		SDL_JOYSTICK_TYPE_GAMECONTROLLER,
 		SDL_JOYSTICK_TYPE_WHEEL,
@@ -60,7 +61,6 @@ static if(sdlSupport >= SDLSupport.sdl206){
 		SDL_JOYSTICK_TYPE_ARCADE_PAD,
 		SDL_JOYSTICK_TYPE_THROTTLE,
 	}
-	mixin(expandEnum!SDL_JoystickType);
 
 	enum{
 		SDL_JOYSTICK_AXIS_MAX = 32767,
@@ -68,9 +68,9 @@ static if(sdlSupport >= SDLSupport.sdl206){
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_NumJoysticks}, q{}],
 		[q{const(char)*}, q{SDL_JoystickNameForIndex}, q{int device_index}],
 		[q{SDL_JoystickGUID}, q{SDL_JoystickGetDeviceGUID}, q{int device_index}],
@@ -92,16 +92,16 @@ mixin(joinFnBinds!((){
 		[q{int}, q{SDL_JoystickGetBall}, q{SDL_Joystick* joystick, int ball, int* dx, int* dy}],
 		[q{ubyte}, q{SDL_JoystickGetButton}, q{SDL_Joystick* joystick, int button}],
 		[q{void}, q{SDL_JoystickClose}, q{SDL_Joystick* joystick}],
-	);
+	]);
 
 	static if(sdlSupport >= SDLSupport.sdl204){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_JoystickPowerLevel}, q{SDL_JoystickCurrentPowerLevel}, q{SDL_Joystick* joystick}],
 			[q{SDL_Joystick*}, q{SDL_JoystickFromInstanceID}, q{SDL_JoystickID instance_id}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl206){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_JoystickGetAxisInitialState}, q{SDL_Joystick* joystick, int axis, short* state}],
 			[q{ushort}, q{SDL_JoystickGetDeviceProduct}, q{int device_index}],
 			[q{ushort}, q{SDL_JoystickGetDeviceProductVersion}, q{int device_index}],
@@ -112,33 +112,33 @@ mixin(joinFnBinds!((){
 			[q{ushort}, q{SDL_JoystickGetProductVersion}, q{SDL_Joystick* joystick}],
 			[q{SDL_JoystickType}, q{SDL_JoystickGetType}, q{SDL_Joystick* joystick}],
 			[q{ushort}, q{SDL_JoystickGetVendor}, q{SDL_Joystick* joystick}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl207){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_LockJoysticks}, q{}],
 			[q{void}, q{SDL_UnlockJoysticks}, q{}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl209){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_JoystickRumble}, q{SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2010){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_JoystickGetDevicePlayerIndex}, q{int device_index}],
 			[q{int}, q{SDL_JoystickGetPlayerIndex}, q{SDL_Joystick* joystick}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2012){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_Joystick*}, q{SDL_JoystickFromPlayerIndex}, q{int}],
 			[q{void}, q{SDL_JoystickSetPlayerIndex}, q{SDL_Joystick* joystick,int}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2014){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_JoystickAttachVirtual}, q{SDL_JoystickType type, int naxes, int nbuttons, int nhats}],
 			[q{int}, q{SDL_JoystickDetachVirtual}, q{int device_index}],
 			[q{SDL_bool}, q{SDL_JoystickIsVirtual}, q{int device_index}],
@@ -149,18 +149,18 @@ mixin(joinFnBinds!((){
 			[q{int}, q{SDL_JoystickRumbleTriggers}, q{SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms}],
 			[q{SDL_bool}, q{SDL_JoystickHasLED}, q{SDL_Joystick* joystick}],
 			[q{int}, q{SDL_JoystickSetLED}, q{SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2016){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_JoystickSendEffect}, q{SDL_Joystick* joystick, const(void)*data, int size}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_JoystickHasRumble}, q{SDL_Joystick* joystick}],
 			[q{SDL_bool}, q{SDL_JoystickHasRumbleTriggers}, q{SDL_Joystick* joystick}],
-		);
+		]);
 	}
 	return ret;
 }()));

@@ -8,6 +8,7 @@
 module bindbc.sdl.bind.sdlrender;
 
 import bindbc.sdl.config;
+
 import bindbc.sdl.bind.sdlblendmode: SDL_BlendMode;
 import bindbc.sdl.bind.sdlrect;
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
@@ -15,13 +16,13 @@ import bindbc.sdl.bind.sdlsurface: SDL_Surface;
 import bindbc.sdl.bind.sdlvideo: SDL_Window;
 import bindbc.sdl.bind.sdlpixels: SDL_Color;
 
-enum: uint{
-	SDL_RENDERER_SOFTWARE = 0x00000001,
-	SDL_RENDERER_ACCELERATED = 0x00000002,
-	SDL_RENDERER_PRESENTVSYNC = 0x00000004,
-	SDL_RENDERER_TARGETTEXTURE = 0x00000008,
-}
 alias SDL_RendererFlags = uint;
+enum: SDL_RendererFlags{
+	SDL_RENDERER_SOFTWARE       = 0x00000001,
+	SDL_RENDERER_ACCELERATED    = 0x00000002,
+	SDL_RENDERER_PRESENTVSYNC   = 0x00000004,
+	SDL_RENDERER_TARGETTEXTURE  = 0x00000008,
+}
 
 struct SDL_RendererInfo{
 	const(char)* name;
@@ -33,12 +34,12 @@ struct SDL_RendererInfo{
 }
 
 static if(sdlSupport >= SDLSupport.sdl2012){
-	enum SDL_ScaleMode{
+	alias SDL_ScaleMode = int;
+	enum: SDL_ScaleMode{
 		SDL_ScaleModeNearest,
 		SDL_ScaleModeLinear,
 		SDL_ScaleModeBest,
 	}
-	mixin(expandEnum!SDL_ScaleMode);
 }
 
 static if(sdlSupport >= SDLSupport.sdl2018){
@@ -49,33 +50,33 @@ static if(sdlSupport >= SDLSupport.sdl2018){
 	}
 }
 
-enum SDL_TextureAccess{
+alias SDL_TextureAccess = int;
+enum: SDL_TextureAccess{
 	SDL_TEXTUREACCESS_STATIC,
 	SDL_TEXTUREACCESS_STREAMING,
 	SDL_TEXTUREACCESS_TARGET,
 }
-mixin(expandEnum!SDL_TextureAccess);
 
-enum SDL_TextureModulate{
-	SDL_TEXTUREMODULATE_NONE = 0x00000000,
-	SDL_TEXTUREMODULATE_COLOR = 0x00000001,
-	SDL_TEXTUREMODULATE_ALPHA = 0x00000002
+alias SDL_TextureModulate = int;
+enum: SDL_TextureModulate{
+	SDL_TEXTUREMODULATE_NONE   = 0x00000000,
+	SDL_TEXTUREMODULATE_COLOR  = 0x00000001,
+	SDL_TEXTUREMODULATE_ALPHA  = 0x00000002
 }
-mixin(expandEnum!SDL_TextureModulate);
 
-enum SDL_RendererFlip{
-	SDL_FLIP_NONE = 0x00000000,
-	SDL_FLIP_HORIZONTAL = 0x00000001,
-	SDL_FLIP_VERTICAL = 0x00000002,
+alias SDL_RendererFlip = int;
+enum: SDL_RendererFlip{
+	SDL_FLIP_NONE        = 0x00000000,
+	SDL_FLIP_HORIZONTAL  = 0x00000001,
+	SDL_FLIP_VERTICAL    = 0x00000002,
 }
-mixin(expandEnum!SDL_RendererFlip);
 
 struct SDL_Renderer;
 struct SDL_Texture;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{int}, q{SDL_GetNumRenderDrivers}, q{}],
 		[q{int}, q{SDL_GetRenderDriverInfo}, q{int index, SDL_RendererInfo* info}],
 		[q{int}, q{SDL_CreateWindowAndRenderer}, q{int width, int height, uint window_flags, SDL_Window** window, SDL_Renderer** renderer}],
@@ -128,31 +129,31 @@ mixin(joinFnBinds!((){
 		[q{void}, q{SDL_DestroyRenderer}, q{SDL_Renderer* renderer}],
 		[q{int}, q{SDL_GL_BindTexture}, q{SDL_Texture* texture, float* texw, float* texh}],
 		[q{int}, q{SDL_GL_UnbindTexture}, q{SDL_Texture* texture}],
-	);
+	]);
 	static if(sdlSupport >= SDLSupport.sdl201){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_UpdateYUVTexture}, q{SDL_Texture* texture ,const(SDL_Rect)* rect, const(ubyte)* Yplane, int Ypitch, const(ubyte)* Uplane, int Upitch, const(ubyte)* Vplane, int Vpitch}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl204){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_RenderIsClipEnabled}, q{SDL_Renderer* renderer}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl205){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_RenderGetIntegerScale}, q{SDL_Renderer* renderer}],
 			[q{int}, q{SDL_RenderSetIntegerScale}, q{SDL_Renderer* renderer,SDL_bool}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl208){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void*}, q{SDL_RenderGetMetalLayer}, q{SDL_Renderer* renderer}],
 			[q{void*}, q{SDL_RenderGetMetalCommandEncoder}, q{SDL_Renderer* renderer}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2010){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_RenderDrawPointF}, q{SDL_Renderer* renderer, float x, float y}],
 			[q{int}, q{SDL_RenderDrawPointsF}, q{SDL_Renderer* renderer, const(SDL_FPoint)* points, int count}],
 			[q{int}, q{SDL_RenderDrawLineF}, q{SDL_Renderer* renderer, float x1, float y1, float x2, float y2}],
@@ -164,43 +165,43 @@ mixin(joinFnBinds!((){
 			[q{int}, q{SDL_RenderCopyF}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Rect)* srcrect, const(SDL_FRect)* dstrect}],
 			[q{int}, q{SDL_RenderCopyExF}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Rect)* srcrect, const(SDL_FRect)* dstrect, const(double) angle, const(SDL_FPoint)* center, const(SDL_RendererFlip) flip}],
 			[q{int}, q{SDL_RenderFlush}, q{SDL_Renderer* renderer}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2012){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_SetTextureScaleMode}, q{SDL_Texture* texture, SDL_ScaleMode scaleMode}],
 			[q{int}, q{SDL_GetTextureScaleMode}, q{SDL_Texture* texture, SDL_ScaleMode* scaleMode}],
 			[q{int}, q{SDL_LockTextureToSurface}, q{SDL_Texture* texture, const(SDL_Rect)* rect,SDL_Surface** surface}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2016){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_UpdateNVTexture}, q{SDL_Texture* texture, const(SDL_Rect)* rect, const(ubyte)* Yplane, int Ypitch, const(ubyte)* UVplane, int UVpitch}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2018){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_SetTextureUserData}, q{SDL_Texture* texture, void* userdata}],
 			[q{void*}, q{SDL_GetTextureUserData}, q{SDL_Texture* texture}],
 			[q{void}, q{SDL_RenderWindowToLogical}, q{SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY}],
 			[q{void}, q{SDL_RenderLogicalToWindow}, q{SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY}],
 			[q{int}, q{SDL_RenderGeometry}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Vertex)* vertices, int num_vertices, const(int)* indices, int num_indices}],
 			[q{int}, q{SDL_RenderSetVSync}, q{SDL_Renderer* renderer, int vsync}],
-		);
+		]);
 	}
 	static if(sdlSupport < SDLSupport.sdl2020){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_RenderGeometryRaw}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(int)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices}],
-		);
+		]);
 	}else{
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_RenderGeometryRaw}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2022){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_Window*}, q{SDL_RenderGetWindow}, q{SDL_Renderer* renderer}],
-		);
+		]);
 	}
 	return ret;
 }()));

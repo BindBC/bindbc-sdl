@@ -83,24 +83,24 @@ static if(sdlSupport >= SDLSupport.sdl2010){
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_bool}, q{SDL_HasIntersection}, q{const(SDL_Rect)* A, const(SDL_Rect)* B}],
 		[q{SDL_bool}, q{SDL_IntersectRect}, q{const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result}],
 		[q{void}, q{SDL_UnionRect}, q{const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result}],
 		[q{SDL_bool}, q{SDL_EnclosePoints}, q{const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result}],
 		[q{SDL_bool}, q{SDL_IntersectRectAndLine}, q{const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
-	);
+	]);
 
 	static if(sdlSupport >= SDLSupport.sdl2022){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasIntersectionF}, q{const(SDL_FRect)* A, const(SDL_FRect)* B}],
 			[q{SDL_bool}, q{SDL_IntersectFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
 			[q{SDL_bool}, q{SDL_UnionFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
 			[q{SDL_bool}, q{SDL_EncloseFPoints}, q{const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result}],
 			[q{SDL_bool}, q{SDL_IntersectFRectAndLine}, q{const(SDL_FRect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
-		);
+		]);
 	}
 	return ret;
 }()));

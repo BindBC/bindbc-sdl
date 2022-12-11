@@ -7,12 +7,14 @@
 +/
 module bindbc.sdl.bind.sdllog;
 
-import core.stdc.stdarg: va_list;
+version(WebAssembly){
+}else import core.stdc.stdarg: va_list;
 import bindbc.sdl.config;
 
 enum SDL_MAX_LOG_MESSAGE = 4096;
 
-enum SDL_LogCategory{
+alias SDL_LogCategory = int;
+enum: SDL_LogCategory{
 	SDL_LOG_CATEGORY_APPLICATION,
 	SDL_LOG_CATEGORY_ERROR,
 	SDL_LOG_CATEGORY_ASSERT,
@@ -22,7 +24,7 @@ enum SDL_LogCategory{
 	SDL_LOG_CATEGORY_RENDER,
 	SDL_LOG_CATEGORY_INPUT,
 	SDL_LOG_CATEGORY_TEST,
-
+	
 	SDL_LOG_CATEGORY_RESERVED1,
 	SDL_LOG_CATEGORY_RESERVED2,
 	SDL_LOG_CATEGORY_RESERVED3,
@@ -33,27 +35,26 @@ enum SDL_LogCategory{
 	SDL_LOG_CATEGORY_RESERVED8,
 	SDL_LOG_CATEGORY_RESERVED9,
 	SDL_LOG_CATEGORY_RESERVED10,
-
-	SDL_LOG_CATEGORY_CUSTOM
+	
+	SDL_LOG_CATEGORY_CUSTOM,
 }
-mixin(expandEnum!SDL_LogCategory);
 
-enum SDL_LogPriority{
+alias SDL_LogPriority = int;
+enum: SDL_LogPriority{
 	SDL_LOG_PRIORITY_VERBOSE = 1,
 	SDL_LOG_PRIORITY_DEBUG,
 	SDL_LOG_PRIORITY_INFO,
 	SDL_LOG_PRIORITY_WARN,
 	SDL_LOG_PRIORITY_ERROR,
 	SDL_LOG_PRIORITY_CRITICAL,
-	SDL_NUM_LOG_PRIORITIES
+	SDL_NUM_LOG_PRIORITIES,
 }
-mixin(expandEnum!SDL_LogPriority);
 
-extern(C) nothrow alias SDL_LogOutputFunction = void function(void*, int, SDL_LogPriority, const(char)*);
+alias SDL_LogOutputFunction = extern(C) void function(void*,int,SDL_LogPriority,const(char)*) nothrow;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{void}, q{SDL_LogSetAllPriority}, q{SDL_LogPriority priority}],
 		[q{void}, q{SDL_LogSetPriority}, q{int,SDL_LogPriority priority}],
 		[q{SDL_LogPriority}, q{SDL_LogGetPriority}, q{int category}],
@@ -66,9 +67,14 @@ mixin(joinFnBinds!((){
 		[q{void}, q{SDL_LogError}, q{int category, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogCritical}, q{int category, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogMessage}, q{int category,SDL_LogPriority, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogMessageV}, q{int category,SDL_LogPriority, const(char)* fmt, va_list ap}],
 		[q{void}, q{SDL_LogGetOutputFunction}, q{SDL_LogOutputFunction callback, void** userdata}],
 		[q{void}, q{SDL_LogSetOutputFunction}, q{SDL_LogOutputFunction callback,void* userdata}],
-	);
+	]);
+	version(WebAssembly){
+	}else{
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_LogMessageV}, q{int category,SDL_LogPriority, const(char)* fmt, va_list ap}],
+		]);
+	}
 	return ret;
 }()));

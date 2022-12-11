@@ -9,10 +9,10 @@ module bindbc.sdl.bind.sdlplatform;
 
 import bindbc.sdl.config;
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{const(char)*}, q{SDL_GetPlatform}, q{}],
-	);
+	]);
 	return ret;
 }()));

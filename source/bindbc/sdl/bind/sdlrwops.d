@@ -7,17 +7,18 @@
 +/
 module bindbc.sdl.bind.sdlrwops;
 
-import core.stdc.stdio: FILE;
+version(WebAssembly){
+}else import core.stdc.stdio: FILE;
 import bindbc.sdl.config;
 import bindbc.sdl.bind.sdlstdinc: SDL_bool;
 
 enum: uint{
-	SDL_RWOPS_UNKNOWN = 0,
-	SDL_RWOPS_WINFILE = 1,
-	SDL_RWOPS_STDFILE = 2,
-	SDL_RWOPS_JNIFILE = 3,
-	SDL_RWOPS_MEMORY = 4,
-	SDL_RWOPS_MEMORY_RO = 5,
+	SDL_RWOPS_UNKNOWN    = 0,
+	SDL_RWOPS_WINFILE    = 1,
+	SDL_RWOPS_STDFILE    = 2,
+	SDL_RWOPS_JNIFILE    = 3,
+	SDL_RWOPS_MEMORY     = 4,
+	SDL_RWOPS_MEMORY_RO  = 5,
 }
 
 struct SDL_RWops{
@@ -28,9 +29,9 @@ struct SDL_RWops{
 		size_t function(SDL_RWops*, const(void)*, size_t, size_t) write;
 		int function(SDL_RWops*) close;
 	}
-
+	
 	uint type;
-
+	
 	union Hidden{
 		// version(Android)
 		version(Windows){
@@ -46,20 +47,23 @@ struct SDL_RWops{
 			}
 			Windowsio windowsio;
 		}
-
-		struct Stdio{
-			int autoclose;
-			FILE* fp;
+		
+		version(WebAssembly){
+		}else{
+			struct Stdio{
+				int autoclose;
+				FILE* fp;
+			}
+			Stdio stdio;
 		}
-		Stdio stdio;
-
+		
 		struct Mem{
 			ubyte* base;
 			ubyte* here;
 			ubyte* stop;
 		}
 		Mem mem;
-
+		
 		struct Unknown{
 			void* data1;
 			void* data2;
@@ -87,18 +91,16 @@ static if(sdlSupport < SDLSupport.sdl2010){
 }
 
 static if(sdlSupport >= SDLSupport.sdl206){
-	@nogc nothrow
-	void* SDL_LoadFile(const(char)* filename, size_t datasize){
+	void* SDL_LoadFile(const(char)* filename, size_t datasize) @nogc nothrow{
 		pragma(inline, true);
 		return SDL_LoadFile_RW(SDL_RWFromFile(filename, "rb"), datasize, 1);
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{SDL_RWops*}, q{SDL_RWFromFile}, q{const(char)* file, const(char)* mode}],
-		[q{SDL_RWops*}, q{SDL_RWFromFP}, q{FILE* ffp, SDL_bool autoclose}],
 		[q{SDL_RWops*}, q{SDL_RWFromMem}, q{void* mem, int size}],
 		[q{SDL_RWops*}, q{SDL_RWFromConstMem}, q{const(void)* mem, int size}],
 		[q{SDL_RWops*}, q{SDL_AllocRW}, q{}],
@@ -117,21 +119,27 @@ mixin(joinFnBinds!((){
 		[q{size_t}, q{SDL_WriteBE32}, q{SDL_RWops* context,uint value}],
 		[q{size_t}, q{SDL_WriteLE64}, q{SDL_RWops* context,ulong value}],
 		[q{size_t}, q{SDL_WriteBE64}, q{SDL_RWops* context,ulong value}],
-	);
+	]);
+	version(WebAssembly){
+	}else{
+		ret ~= makeFnBinds([
+			[q{SDL_RWops*}, q{SDL_RWFromFP}, q{FILE* ffp, SDL_bool autoclose}],
+		]);
+	}
 	static if(sdlSupport >= SDLSupport.sdl206){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{void*}, q{SDL_LoadFile_RW}, q{SDL_RWops* context, size_t datasize, int freesrc}],
-		);
+		]);
 	}
 	static if(sdlSupport >= SDLSupport.sdl2010){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{long}, q{SDL_RWsize}, q{SDL_RWops* context}],
 			[q{long}, q{SDL_RWseek}, q{SDL_RWops* context, long offset, int whence}],
 			[q{long}, q{SDL_RWtell}, q{SDL_RWops* context}],
 			[q{size_t}, q{SDL_RWread}, q{SDL_RWops* context, void* ptr, size_t size, size_t maxnum}],
 			[q{size_t}, q{SDL_RWwrite}, q{SDL_RWops* context, const(void)* ptr, size_t size, size_t num}],
 			[q{int}, q{SDL_RWclose}, q{SDL_RWops* context}],
-		);
+		]);
 	}
 	return ret;
 }()));

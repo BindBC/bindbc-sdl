@@ -11,23 +11,23 @@ import bindbc.sdl.config;
 
 static if(sdlSupport >= SDLSupport.sdl209){
 	struct SDL_Sensor;
-	alias int SDL_SensorID;
+	alias SDL_SensorID = int;
 	
-	enum SDL_SensorType{
+	alias SDL_SensorType = int;
+	enum: SDL_SensorType{
 		SDL_SENSOR_INVALID = -1,
 		SDL_SENSOR_UNKNOWN,
 		SDL_SENSOR_ACCEL,
 		SDL_SENSOR_GYRO,
 	}
-	mixin(expandEnum!SDL_SensorType);
 	
 	enum SDL_STANDARD_GRAVITY = 9.80665f;
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
 	static if(sdlSupport >= SDLSupport.sdl209){
-		ret ~= makeFnBinds!(
+		ret ~= makeFnBinds([
 			[q{int}, q{SDL_NumSensors}, q{}],
 			[q{const(char)*}, q{SDL_SensorGetDeviceName}, q{int device_index}],
 			[q{SDL_SensorType}, q{SDL_SensorGetDeviceType}, q{int device_index}],
@@ -41,7 +41,7 @@ mixin(joinFnBinds!((){
 			[q{int}, q{SDL_SensorGetData}, q{SDL_Sensor* sensor, float* data, int num_values}],
 			[q{void}, q{SDL_SensorClose}, q{SDL_Sensor* sensor}],
 			[q{void}, q{SDL_SensorUpdate}, q{}],
-		);
+		]);
 	}
 	return ret;
 }()));

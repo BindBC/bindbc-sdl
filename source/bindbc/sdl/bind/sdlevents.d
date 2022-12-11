@@ -9,20 +9,21 @@ module bindbc.sdl.bind.sdlevents;
 
 import bindbc.sdl.config;
 
-import bindbc.sdl.bind.sdlgesture,
-	bindbc.sdl.bind.sdljoystick,
-	bindbc.sdl.bind.sdlkeyboard,
-	bindbc.sdl.bind.sdlkeycode,
-	bindbc.sdl.bind.sdlstdinc,
-	bindbc.sdl.bind.sdlsyswm,
-	bindbc.sdl.bind.sdltouch,
-	bindbc.sdl.bind.sdlvideo;
+import bindbc.sdl.bind.sdlgesture;
+import bindbc.sdl.bind.sdljoystick;
+import bindbc.sdl.bind.sdlkeyboard;
+import bindbc.sdl.bind.sdlkeycode;
+import bindbc.sdl.bind.sdlstdinc;
+import bindbc.sdl.bind.sdlsyswm;
+import bindbc.sdl.bind.sdltouch;
+import bindbc.sdl.bind.sdlvideo;
 
 enum{
 	SDL_RELEASED  = 0,
 	SDL_PRESSED   = 1,
 }
 
+alias SDL_EventType = int;
 enum{
 	SDL_FIRSTEVENT = 0,
 	SDL_QUIT = 0x100,
@@ -66,47 +67,40 @@ enum{
 	SDL_USEREVENT = 0x8000,
 	SDL_LASTEVENT = 0xFFFF,
 }
-static if(sdlSupport >= SDLSupport.sdl201){
-	enum{
-		SDL_RENDER_TARGETS_RESET = 0x2000,
-	}
-}
-static if(sdlSupport >= SDLSupport.sdl204){
-	enum{
-		SDL_KEYMAPCHANGED,
-		SDL_AUDIODEVICEADDED = 0x1100,
-		SDL_AUDIODEVICEREMOVED,
-		SDL_RENDER_DEVICE_RESET,
-	}
-}
-static if(sdlSupport >= SDLSupport.sdl205){
-	enum{
-		SDL_DROPTEXT,
-		SDL_DROPBEGIN,
-		SDL_DROPCOMPLETE,
-	}
-}
-static if(sdlSupport >= SDLSupport.sdl209){
-	enum{
-		SDL_DISPLAYEVENT = 0x150,
-		SDL_SENSORUPDATE = 0x1200,
-	}
-}
-static if(sdlSupport >= SDLSupport.sdl2014){
-	enum{
-		SDL_LOCALECHANGED,
-		SDL_CONTROLLERTOUCHPADDOWN,
-		SDL_CONTROLLERTOUCHPADMOTION,
-		SDL_CONTROLLERTOUCHPADUP,
-		SDL_CONTROLLERSENSORUPDATE,
-	}
-}
-static if(sdlSupport >= SDLSupport.sdl2022){
-	enum{
-		SDL_TEXTEDITING_EXT,
-	}
-}
-alias SDL_EventType = int;
+static if(sdlSupport >= SDLSupport.sdl201)
+enum{
+	SDL_RENDER_TARGETS_RESET = 0x2000,
+};
+static if(sdlSupport >= SDLSupport.sdl204)
+enum{
+	SDL_KEYMAPCHANGED,
+	SDL_AUDIODEVICEADDED = 0x1100,
+	SDL_AUDIODEVICEREMOVED,
+	SDL_RENDER_DEVICE_RESET,
+};
+static if(sdlSupport >= SDLSupport.sdl205)
+enum{
+	SDL_DROPTEXT,
+	SDL_DROPBEGIN,
+	SDL_DROPCOMPLETE,
+};
+static if(sdlSupport >= SDLSupport.sdl209)
+enum{
+	SDL_DISPLAYEVENT = 0x150,
+	SDL_SENSORUPDATE = 0x1200,
+};
+static if(sdlSupport >= SDLSupport.sdl2014)
+enum{
+	SDL_LOCALECHANGED,
+	SDL_CONTROLLERTOUCHPADDOWN,
+	SDL_CONTROLLERTOUCHPADMOTION,
+	SDL_CONTROLLERTOUCHPADUP,
+	SDL_CONTROLLERSENSORUPDATE,
+};
+static if(sdlSupport >= SDLSupport.sdl2022)
+enum{
+	SDL_TEXTEDITING_EXT,
+};
 
 struct SDL_CommonEvent{
 	SDL_EventType type;
@@ -197,11 +191,10 @@ struct SDL_MouseButtonEvent{
 	uint which;
 	ubyte button;
 	ubyte state;
-	static if(sdlSupport == SDLSupport.sdl200){
+	static if(sdlSupport <= SDLSupport.sdl200){
 		ubyte padding1;
 		ubyte padding2;
-	}
-	else{
+	}else{
 		ubyte clicks;
 		ubyte padding1;
 	}
@@ -314,7 +307,7 @@ static if(sdlSupport >= SDLSupport.sdl2014){
 		float y;
 		float pressure;
 	}
-
+	
 	struct SDL_ControllerSensorEvent{
 		uint type;
 		uint timestamp;
@@ -346,7 +339,7 @@ struct SDL_TouchFingerEvent{
 	float dx;
 	float dy;
 	float pressure;
-
+	
 	static if(sdlSupport >= SDLSupport.sdl2012){
 		uint windowID;
 	}
@@ -457,25 +450,25 @@ union SDL_Event{
 	SDL_MultiGestureEvent mgesture;
 	SDL_DollarGestureEvent dgesture;
 	SDL_DropEvent drop;
-
+	
 	ubyte[56] padding;
 }
 
-enum SDL_eventaction{
+alias SDL_eventaction = int;
+enum: SDL_eventaction{
 	SDL_ADDEVENT,
 	SDL_PEEKEVENT,
-	SDL_GETEVENT
+	SDL_GETEVENT,
 }
 alias SDL_EventAction = SDL_eventaction;
-mixin(expandEnum!SDL_EventAction);
 
-extern(C) nothrow alias SDL_EventFilter = int function(void* userdata, SDL_Event* event);
+alias SDL_EventFilter = extern(C) int function(void* userdata, SDL_Event* event) nothrow;
 
 enum{
-	SDL_QUERY = -1,
-	SDL_IGNORE = 0,
-	SDL_DISABLE = 0,
-	SDL_ENABLE = 1,
+	SDL_QUERY    = -1,
+	SDL_IGNORE   = 0,
+	SDL_DISABLE  = 0,
+	SDL_ENABLE   = 1,
 }
 
 @nogc nothrow{
@@ -492,9 +485,9 @@ enum{
 	}
 }
 
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{void}, q{SDL_PumpEvents}, q{}],
 		[q{int}, q{SDL_PeepEvents}, q{SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType}],
 		[q{SDL_bool}, q{SDL_HasEvent}, q{uint type}],
@@ -512,7 +505,7 @@ mixin(joinFnBinds!((){
 		[q{void}, q{SDL_FilterEvents}, q{SDL_EventFilter filter, void* userdata}],
 		[q{ubyte}, q{SDL_EventState}, q{uint type, int state}],
 		[q{uint}, q{SDL_RegisterEvents}, q{int numevents}],
-	);
+	]);
 	return ret;
 }()));
 

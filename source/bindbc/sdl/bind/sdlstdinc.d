@@ -27,8 +27,44 @@ deprecated("Please use `uint` instead.") alias Uint32 = uint;
 deprecated("Please use `long` instead.") alias Sint64 = long;
 deprecated("Please use `ulong` instead.") alias Uint64 = ulong;
 
-static if(sdlSupport >= SDLSupport.sdl2022){
-	enum SDL_FLT_EPSILON = 1.1920928955078125e-07F;
+enum SDL_FLT_EPSILON = 1.1920928955078125e-07F;
+
+version(Win32){
+	enum{
+		SDL_PRIs64 = "I64d",
+		SDL_PRIu64 = "I64u",
+		SDL_PRIx64 = "I64x",
+		SDL_PRIX64 = "I64X",
+	}
+}else{
+	enum linuxAndLP64 = (){
+		version(linux){
+			version(D_LP64){
+				return true;
+			}else return false;
+		}else return false;
+	}();
+	
+	static if(linuxAndLP64)
+	enum{
+		SDL_PRIs64 = "ld",
+		SDL_PRIu64 = "lu",
+		SDL_PRIx64 = "lx",
+		SDL_PRIX64 = "lX",
+	}
+	else
+	enum{
+		SDL_PRIs64 = "lld",
+		SDL_PRIu64 = "llu",
+		SDL_PRIx64 = "llx",
+		SDL_PRIX64 = "llX",
+	}
+}
+enum{
+	SDL_PRIs32 = "d",
+	SDL_PRIu32 = "u",
+	SDL_PRIx32 = "x",
+	SDL_PRIX32 = "X",
 }
 
 extern(C) @nogc nothrow{
@@ -50,9 +86,14 @@ enum: size_t{
 struct SDL_iconv_t;
 
 @nogc nothrow pragma(inline, true){
+	int SDL_arraysize(T)(T array){ return array.sizeof/array[0].sizeof; }
+	
 	dchar SDL_FOURCC(char A, char B, char C, char D) pure{
 		return (A << 0) | (B << 8) | (C << 16) | (D << 24);
 	}
+	
+	T* SDL_stack_alloc(T)(size_t count){ return cast(T*)SDL_malloc(T.sizeof*count); }
+	void SDL_stack_free(void* data){ SDL_free(data); }
 	
 	T SDL_min(T)(T x, T y) pure{ return ((x) < (y)) ? (x) : (y); }
 	T SDL_max(T)(T x, T y) pure{ return ((x) > (y)) ? (x) : (y); }

@@ -70,7 +70,7 @@ SDLSupport loadSDL(const(char)* libName){
 	loadedVersion = SDLSupport.badLibrary;
 	
 	static foreach(mod; [
-		`assert`, `atomic`, `audio`, `blendmode`, `clipboard`, `cpuinfo`,
+		``, `assert`, `atomic`, `audio`, `blendmode`, `clipboard`, `cpuinfo`,
 		`error`, `events`, `filesystem`, `gamecontroller`, `gesture`,
 		`haptic`, `hidapi`, `hints`, `joystick`, `keyboard`, `keycode`,
 		`loadso`, `log`, `messagebox`, `misc`, `mouse`, `mutex`, `pixels`,

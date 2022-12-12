@@ -159,6 +159,7 @@ package enum joinFnBinds = (string[][] list) nothrow pure{
 		joined ~= "\n\nimport bindbc.loader: SharedLib, bindSymbol;\nvoid bindModuleSymbols(SharedLib lib) @nogc nothrow{";
 		foreach(symbol; symbols){
 			joined ~= "\n\tlib.bindSymbol(cast(void**)&"~symbol~`, "`~symbol~`");`;
+			//joined ~= "\n\tassert("~symbol~` != null);`;
 		}
 		joined ~= "\n}";
 	}

@@ -12,9 +12,9 @@ To use any of the supported SDL libraries, add bindbc-sdl as a dependency to you
 
 __dub.json__
 ```
-dependencies {
+"dependencies": {
     "bindbc-sdl": "~>1.2.0",
-}
+},
 "versions": [
     "SDL_Image",
     "SDL_TTF"

@@ -170,14 +170,15 @@ enum: SDL_GLattr{
 }
 static if(sdlSupport >= SDLSupport.sdl204)
 enum: SDL_GLattr{
-	SDL_GL_FRAMEBUFFER_SRGB_CAPABLE    = 24,
-	SDL_GL_RELEASE_BEHAVIOR            = 25,
+	deprecated("Please use `SDL_GL_CONTEXT_RELEASE_BEHAVIOR` instead.") SDL_GL_RELEASE_BEHAVIOR = 24,
+	SDL_GL_CONTEXT_RELEASE_BEHAVIOR    = 24,
 }
 static if(sdlSupport >= SDLSupport.sdl206)
 enum: SDL_GLattr{
-	SDL_GL_CONTEXT_RESET_NOTIFICATION  = 26,
-	SDL_GL_CONTEXT_NO_ERROR            = 27,
+	SDL_GL_CONTEXT_RESET_NOTIFICATION  = 25,
+	SDL_GL_CONTEXT_NO_ERROR            = 26,
 }
+//	next: SDL_GL_FLOATBUFFERS
 
 alias SDL_GLprofile = int;
 enum: SDL_GLprofile{
@@ -216,7 +217,7 @@ static if(sdlSupport >= SDLSupport.sdl204){
 	}
 	
 	import bindbc.sdl.bind.sdlrect: SDL_Point;
-	extern(C) nothrow alias SDL_HitTest = SDL_HitTestResult function(SDL_Window*,const(SDL_Point)*,void*);
+	alias SDL_HitTest = extern(C) SDL_HitTestResult function(SDL_Window*,const(SDL_Point)*,void*) nothrow;
 }
 
 static if(sdlSupport >= SDLSupport.sdl206){

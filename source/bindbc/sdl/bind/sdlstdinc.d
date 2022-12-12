@@ -82,7 +82,7 @@ mixin(joinFnBinds((){
 		[q{char*}, q{SDL_getenv}, q{const(char)* name}],
 		[q{int}, q{SDL_setenv}, q{const(char)* name, const(char)* value, int overwrite}],
 		[q{void}, q{SDL_qsort}, q{void* base, size_t nmemb, size_t size, int function(const(void)*, const(void)*) compare}],
-		[q{void*}, q{SDL_bsearch}, q{const(void)* key, const(void)* base, size_t nmemb, size_t size, int function(const(void)* , const(void)* ) compare}],
+		[q{void*}, q{SDL_bsearch}, q{const(void)* key, const(void)* base, size_t nmemb, size_t size, int function(const(void)*, const(void)*) compare}],
 		[q{int}, q{SDL_abs}, q{int x}],
 		[q{int}, q{SDL_isalpha}, q{int x}],
 		[q{int}, q{SDL_isalnum}, q{int x}],

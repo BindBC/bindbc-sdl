@@ -43,7 +43,7 @@ mixin(joinFnBinds((){
 		[q{SDL_bool}, q{SDL_IsScreenKeyboardShown}, q{SDL_Window* window}],
 	]);
 	static if(sdlSupport >= SDLSupport.sdl2022){
-		ret ~= makeFnBind!([
+		ret ~= makeFnBinds([
 			[q{void}, q{SDL_ClearComposition}, q{}],
 			[q{SDL_bool}, q{SDL_IsTextInputShown}, q{}],
 		]);

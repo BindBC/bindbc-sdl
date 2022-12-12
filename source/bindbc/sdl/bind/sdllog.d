@@ -56,7 +56,7 @@ mixin(joinFnBinds((){
 	string[][] ret;
 	ret ~= makeFnBinds([
 		[q{void}, q{SDL_LogSetAllPriority}, q{SDL_LogPriority priority}],
-		[q{void}, q{SDL_LogSetPriority}, q{int,SDL_LogPriority priority}],
+		[q{void}, q{SDL_LogSetPriority}, q{int category, SDL_LogPriority priority}],
 		[q{SDL_LogPriority}, q{SDL_LogGetPriority}, q{int category}],
 		[q{void}, q{SDL_LogResetPriorities}, q{}],
 		[q{void}, q{SDL_Log}, q{const(char)* fmt, ...}],
@@ -66,14 +66,14 @@ mixin(joinFnBinds((){
 		[q{void}, q{SDL_LogWarn}, q{int category, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogError}, q{int category, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogCritical}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogMessage}, q{int category,SDL_LogPriority, const(char)* fmt, ...}],
+		[q{void}, q{SDL_LogMessage}, q{int category, SDL_LogPriority priority, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogGetOutputFunction}, q{SDL_LogOutputFunction callback, void** userdata}],
-		[q{void}, q{SDL_LogSetOutputFunction}, q{SDL_LogOutputFunction callback,void* userdata}],
+		[q{void}, q{SDL_LogSetOutputFunction}, q{SDL_LogOutputFunction callback, void* userdata}],
 	]);
 	version(WebAssembly){
 	}else{
 		ret ~= makeFnBinds([
-			[q{void}, q{SDL_LogMessageV}, q{int category,SDL_LogPriority, const(char)* fmt, va_list ap}],
+			[q{void}, q{SDL_LogMessageV}, q{int category, SDL_LogPriority priority, const(char)* fmt, va_list ap}],
 		]);
 	}
 	return ret;

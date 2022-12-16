@@ -10,93 +10,100 @@ module bindbc.sdl.mixer;
 import bindbc.sdl.config;
 static if(bindSDLMixer):
 
-import bindbc.sdl.bind.sdlaudio: AUDIO_S16LSB, SDL_MIX_MAXVOLUME;
-import bindbc.sdl.bind.sdlerror: SDL_GetError, SDL_SetError, SDL_ClearError;
-import bindbc.sdl.bind.sdlrwops: SDL_RWops, SDL_RWFromFile;
-import bindbc.sdl.bind.sdlstdinc: SDL_bool;
-import bindbc.sdl.bind.sdlversion: SDL_version, SDL_VERSIONNUM;
-
-alias Mix_SetError = SDL_SetError;
-alias Mix_GetError = SDL_GetError;
-alias Mix_ClearError = SDL_ClearError;
+import bindbc.sdl.bind.audio: AUDIO_S16LSB, SDL_MIX_MAXVOLUME;
+import bindbc.sdl.bind.error: SDL_GetError, SDL_SetError, SDL_ClearError, SDL_OutOfMemory;
+import bindbc.sdl.bind.rwops: SDL_RWops, SDL_RWFromFile;
+import bindbc.sdl.bind.stdinc: SDL_bool;
+import bindbc.sdl.bind.version_: SDL_version, SDL_VERSIONNUM;
 
 enum SDLMixerSupport: SDL_version{
-	noLibrary = SDL_version(0,0,0),
-	badLibrary = SDL_version(0,0,255),
-	sdlMixer200 = SDL_version(2,0,0),
-	sdlMixer201 = SDL_version(2,0,1),
-	sdlMixer202 = SDL_version(2,0,2),
-	sdlMixer204 = SDL_version(2,0,4),
-	sdlMixer260 = SDL_version(2,6,0),
+	noLibrary   = SDL_version(0,0,0),
+	badLibrary  = SDL_version(0,0,255),
+	v2_0_0      = SDL_version(2,0,0),
+	v2_0_1      = SDL_version(2,0,1),
+	v2_0_2      = SDL_version(2,0,2),
+	v2_0_4      = SDL_version(2,0,4),
+	v2_6        = SDL_version(2,6,0),
+	
+	deprecated("Please use `v2_0_0` instead") sdlMixer200 = SDL_version(2,0,0),
+	deprecated("Please use `v2_0_1` instead") sdlMixer201 = SDL_version(2,0,1),
+	deprecated("Please use `v2_0_2` instead") sdlMixer202 = SDL_version(2,0,2),
+	deprecated("Please use `v2_0_4` instead") sdlMixer204 = SDL_version(2,0,4),
+	deprecated("Please use `v2_6` instead")   sdlMixer260 = SDL_version(2,6,0),
 }
 
 enum sdlMixerSupport = (){
-	version(SDL_Mixer_260)      return SDLMixerSupport.sdlMixer260;
-	else version(SDL_Mixer_204) return SDLMixerSupport.sdlMixer204;
-	else version(SDL_Mixer_202) return SDLMixerSupport.sdlMixer202;
-	else version(SDL_Mixer_201) return SDLMixerSupport.sdlMixer201;
-	else                        return SDLMixerSupport.sdlMixer200;
+	version(SDL_Mixer_260)      return SDLMixerSupport.v2_6; //NOTE: deprecated, remove this in bindbc-sdl 2.0
+	else version(SDL_Mixer_2_6) return SDLMixerSupport.v2_6;
+	else version(SDL_Mixer_204) return SDLMixerSupport.v2_0_4;
+	else version(SDL_Mixer_202) return SDLMixerSupport.v2_0_2;
+	else version(SDL_Mixer_201) return SDLMixerSupport.v2_0_1;
+	else                        return SDLMixerSupport.v2_0_0;
 }();
 
 enum SDL_MIXER_MAJOR_VERSION = sdlMixerSupport.major;
 enum SDL_MIXER_MINOR_VERSION = sdlMixerSupport.minor;
 enum SDL_MIXER_PATCHLEVEL    = sdlMixerSupport.patch;
 
-deprecated alias MIX_MAJOR_VERSION = SDL_MIXER_MAJOR_VERSION;
-deprecated alias MIX_MINOR_VERSION = SDL_MIXER_MINOR_VERSION;
-deprecated alias MIX_PATCH_LEVEL   = SDL_MIXER_PATCHLEVEL;
+deprecated("Please use `SDL_MIXER_MAJOR_VERSION` instead") alias MIX_MAJOR_VERSION = SDL_MIXER_MAJOR_VERSION;
+deprecated("Please use `SDL_MIXER_MINOR_VERSION` instead") alias MIX_MINOR_VERSION = SDL_MIXER_MINOR_VERSION;
+deprecated("Please use `SDL_MIXER_PATCHLEVEL` instead")    alias MIX_PATCH_LEVEL   = SDL_MIXER_PATCHLEVEL;
 
-void SDL_MIXER_VERSION(SDL_version* X) @nogc nothrow pure{
-	pragma(inline, true);
+pragma(inline, true) void SDL_MIXER_VERSION(SDL_version* X) @nogc nothrow pure{
 	X.major = SDL_MIXER_MAJOR_VERSION;
 	X.minor = SDL_MIXER_MINOR_VERSION;
 	X.patch = SDL_MIXER_PATCHLEVEL;
 }
-alias SDL_MIX_VERSION = SDL_MIX_MAXVOLUME;
 
 // These were implemented in SDL_mixer 2.0.2, but are fine for all versions.
-deprecated enum SDL_MIXER_COMPILEDVERSION = SDL_VERSIONNUM!(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL);
-enum SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_MIXER_COMPILEDVERSION >= SDL_VERSIONNUM!(X, Y, Z);
+deprecated("Please use SDL_MIXER_VERSION_ATLEAST or SDL_MIXER_VERSION instead")
+	enum SDL_MIXER_COMPILEDVERSION = SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL);
+
+pragma(inline, true) @nogc nothrow{
+	bool SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_version(X, Y, Z); }
+}
+deprecated("Please use the non-template variant instead."){
+	enum SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_version(X, Y, Z);
+}
 
 alias Mix_InitFlags = int;
 enum: Mix_InitFlags{
-	MIX_INIT_FLAC            = 0x0000_0001,
-	MIX_INIT_MOD             = 0x0000_0002,
-	MIX_INIT_MP3             = 0x0000_0008,
-	MIX_INIT_OGG             = 0x0000_0010,
+	MIX_INIT_FLAC        = 0x0000_0001,
+	MIX_INIT_MOD         = 0x0000_0002,
+	MIX_INIT_MP3         = 0x0000_0008,
+	MIX_INIT_OGG         = 0x0000_0010,
 }
-static if(sdlMixerSupport < SDLMixerSupport.sdlMixer202){
-	enum: Mix_InitFlags{
-		MIX_INIT_MODPLUG     = 0x0000_0004,
-		MIX_INIT_FLUIDSYNTH  = 0x0000_0020,
-	}
-}else{ //sdlMixerSupport >= SDLMixerSupport.sdlMixer202
-	enum: Mix_InitFlags{
-		MIX_INIT_MID         = 0x0000_0020,
-	}
+static if(sdlMixerSupport < SDLMixerSupport.v2_0_2)
+enum: Mix_InitFlags{
+	MIX_INIT_MODPLUG     = 0x0000_0004,
+	MIX_INIT_FLUIDSYNTH  = 0x0000_0020,
 }
-static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer204){
-	enum: Mix_InitFlags{
-		MIX_INIT_OPUS        = 0x0000_0040,
-	}
+else //sdlMixerSupport >= SDLMixerSupport.v2_0_2
+enum: Mix_InitFlags{
+	MIX_INIT_MID         = 0x0000_0020,
+}
+static if(sdlMixerSupport >= SDLMixerSupport.v2_0_4)
+enum: Mix_InitFlags{
+	MIX_INIT_OPUS        = 0x0000_0040,
 }
 
 enum MIX_CHANNELS = 8;
+
 enum MIX_DEFAULT_FREQUENCY = (){
-	static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260)
+	static if(sdlMixerSupport >= SDLMixerSupport.v2_6)
 		return 44100;
 	else
 		return 22050;
 }();
 
-enum MIX_DEFAULT_CHANNELS = 2;
-enum MIX_MAX_VOLUME = 128;
-enum MIX_CHANNEL_POST = -2;
-
 enum MIX_DEFAULT_FORMAT = (){
 	version(LittleEndian) return AUDIO_S16LSB;
 	else                  return AUDIO_S16MSB;
 }();
+
+enum MIX_DEFAULT_CHANNELS = 2;
+
+alias MIX_MAX_VOLUME = SDL_MIX_MAXVOLUME;
 
 struct Mix_Chunk{
 	int allocated;
@@ -106,7 +113,7 @@ struct Mix_Chunk{
 }
 
 alias Mix_Fading = int;
-enum: int{
+enum: Mix_Fading{
 	MIX_NO_FADING,
 	MIX_FADING_OUT,
 	MIX_FADING_IN,
@@ -114,35 +121,38 @@ enum: int{
 
 alias Mix_MusicType = int;
 enum: Mix_MusicType{
-	MUS_NONE,
-	MUS_CMD,
-	MUS_WAV,
-	MUS_MOD,
-	MUS_MID,
-	MUS_OGG,
-	MUS_MP3,
+	MUS_NONE            = 0,
+	MUS_CMD             = 1,
+	MUS_WAV             = 2,
+	MUS_MOD             = 3,
+	MUS_MID             = 4,
+	MUS_OGG             = 5,
+	MUS_MP3             = 6,
+	
+	MUS_FLAC            = 8,
 }
-static if(sdlMixerSupport < SDLMixerSupport.sdlMixer202){
-	enum: Mix_MusicType{
-		MUS_MP3_MAD,
-		MUS_MODPLUG,
-	}
-}else{ //sdlMixerSupport >= SDLMixerSupport.sdlMixer202
-	enum: Mix_MusicType{
-		MUS_MP3_MAD_UNUSED,
-		MUS_MODPLUG_UNUSED,
-	}
+static if(sdlMixerSupport < SDLMixerSupport.v2_0_2)
+enum: Mix_MusicType{
+	MUS_MP3_MAD         = 7,
+	MUS_MODPLUG         = 9,
 }
-static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer204){
-	enum Mix_MusicType{
-		MUS_OPUS,
-	}
+else //sdlMixerSupport >= SDLMixerSupport.v2_0_2
+enum: Mix_MusicType{
+	MUS_MP3_MAD_UNUSED  = 7,
+	MUS_MODPLUG_UNUSED  = 9,
+}
+static if(sdlMixerSupport >= SDLMixerSupport.v2_0_4)
+enum: Mix_MusicType{
+	MUS_OPUS            = 10,
 }
 
 struct Mix_Music;
+
+enum MIX_CHANNEL_POST = -2;
+
 enum MIX_EFFECTSMAXSPEED = "MIX_EFFECTSMAXSPEED";
 
-extern(C) nothrow {
+extern(C) nothrow{
 	alias Mix_EffectFunc_t = void function(int,void*,int,void*);
 	alias Mix_EffectDone_t = void function(int,void*);
 
@@ -154,29 +164,33 @@ extern(C) nothrow {
 	alias callbackIPCPV = int function(const(char*),void*);
 }
 
-static if(sdlMixerSupport < SDLMixerSupport.sdlMixer260){
-	@nogc nothrow{
+alias Mix_SetError = SDL_SetError;
+
+alias Mix_GetError = SDL_GetError;
+
+alias Mix_ClearError = SDL_ClearError;
+
+alias Mix_OutOfMemory = SDL_OutOfMemory;
+
+static if(sdlMixerSupport < SDLMixerSupport.v2_6){
+	pragma(inline, true) @nogc nothrow{
 		Mix_Chunk* Mix_LoadWAV(const(char)* file){
-			pragma(inline, true);
-			return Mix_LoadWAV_RW(SDL_RWFromFile(file,"rb"),1);
+			return Mix_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1);
 		}
 
-		int Mix_PlayChannel(int channel,Mix_Chunk* chunk,int loops){
-			pragma(inline, true);
-			return Mix_PlayChannelTimed(channel,chunk,loops,-1);
+		int Mix_PlayChannel(int channel, Mix_Chunk* chunk, int loops){
+			return Mix_PlayChannelTimed(channel, chunk, loops, -1);
 		}
 
-		int Mix_FadeInChannel(int channel,Mix_Chunk* chunk,int loops,int ms){
-			pragma(inline, true);
-			return Mix_FadeInChannelTimed(channel,chunk,loops,ms,-1);
+		int Mix_FadeInChannel(int channel, Mix_Chunk* chunk, int loops, int ms){
+			return Mix_FadeInChannelTimed(channel, chunk, loops, ms, -1);
 		}
 	}
 }
 
-
-mixin(joinFnBinds!((){
+mixin(joinFnBinds((){
 	string[][] ret;
-	ret ~= makeFnBinds!(
+	ret ~= makeFnBinds([
 		[q{const(SDL_version)*}, q{Mix_Linked_Version}, q{}],
 		[q{int}, q{Mix_Init}, q{int flags}],
 		[q{void}, q{Mix_Quit}, q{}],
@@ -247,20 +261,20 @@ mixin(joinFnBinds!((){
 		[q{int}, q{Mix_GetSynchroValue}, q{}],
 		[q{int}, q{Mix_SetSoundFonts}, q{const(char)* paths}],
 		[q{const(char)*}, q{Mix_GetSoundFonts}, q{}],
-		[q{int}, q{Mix_EachSoundFont}, q{callbackIPCPV function_, void *data}],
+		[q{int}, q{Mix_EachSoundFont}, q{callbackIPCPV function_, void* data}],
 		[q{Mix_Chunk*}, q{Mix_GetChunk}, q{int channel}],
 		[q{void}, q{Mix_CloseAudio}, q{}],
-	);
-	static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer202){
-		ret ~= makeFnBinds!(
+	]);
+	static if(sdlMixerSupport >= SDLMixerSupport.v2_0_2){
+		ret ~= makeFnBinds([
 			[q{int}, q{Mix_OpenAudioDevice}, q{int frequency, ushort format, int channels, int chunksize, const(char)* device, int allowed_changes}],
 			[q{SDL_bool}, q{Mix_HasChunkDecoder}, q{const(char)* name}],
 			// Declared in SDL_mixer.h, but not implemented:
 			// [q{SDL_bool}, q{Mix_HasMusicDecoder}, q{const(char)*}],
-		);
+		]);
 	}
-	static if(sdlMixerSupport >= SDLMixerSupport.sdlMixer260){
-		ret ~= makeFnBinds!(
+	static if(sdlMixerSupport >= SDLMixerSupport.v2_6){
+		ret ~= makeFnBinds([
 			[q{Mix_Chunk*}, q{Mix_LoadWAV}, q{const(char)* file}],
 			[q{int}, q{Mix_PlayChannel}, q{int channel, Mix_Chunk* chunk, int loops}],
 			[q{int}, q{Mix_FadeInChannel}, q{int channel, Mix_Chunk* chunk, int loops, int ms}],
@@ -280,7 +294,7 @@ mixin(joinFnBinds!((){
 			[q{double}, q{Mix_GetMusicLoopLengthTime}, q{Mix_Music* music}],
 			[q{int}, q{Mix_SetTimidityCfg}, q{const(char)* path}],
 			[q{const(char)*}, q{Mix_GetTimidityCfg}, q{}],
-		);
+		]);
 	}
 	return ret;
 }()));
@@ -295,65 +309,35 @@ private{
 		version(Windows){
 			return [
 				`SDL2_image.dll`,
-				`C:\Windows\System32\SDL2.dll`,
-				`C:\Windows\SysWOW64\SDL2.dll`,
 			];
 		}else version(OSX){
 			return [
 				`libSDL2_mixer.dylib`,
-				`/usr/local/lib/libSDL2_mixer.dylib`,
-				`/usr/local/lib/libSDL2/libSDL2_mixer.dylib`,
-				`../Frameworks/SDL2_mixer.framework/SDL2_mixer`,
-				`/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,
-				`/System/Library/Frameworks/SDL2.framework/SDL2_mixer`,
-				`/opt/local/lib/libSDL2_mixer.dylib`,
+// 				`/usr/local/lib/libSDL2_mixer.dylib`,
+// 				`/usr/local/lib/libSDL2/libSDL2_mixer.dylib`,
+// 				`../Frameworks/SDL2_mixer.framework/SDL2_mixer`,
+// 				`/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,
+// 				`/System/Library/Frameworks/SDL2.framework/SDL2_mixer`,
+// 				`/opt/local/lib/libSDL2_mixer.dylib`,
 			];
 		}else version(Posix){
 			return [
 				`libSDL2_mixer.so`,
 				`libSDL2-2.0_mixer.so`,
 				`libSDL2-2.0_mixer.so.0`,
-				`/usr/lib/libSDL2_mixer.so`,
-				`/usr/lib/libSDL2-2.0_mixer.so`,
-				`/usr/lib/libSDL2-2.0_mixer.so.0`,
-				`/usr/local/lib/libSDL2_mixer.so`,
-				`/usr/local/lib/libSDL2-2.0_mixer.so`,
-				`/usr/local/lib/libSDL2-2.0_mixer.so.0`,
+// 				`/usr/lib/libSDL2_mixer.so`,
+// 				`/usr/lib/libSDL2-2.0_mixer.so`,
+// 				`/usr/lib/libSDL2-2.0_mixer.so.0`,
+// 				`/usr/local/lib/libSDL2_mixer.so`,
+// 				`/usr/local/lib/libSDL2-2.0_mixer.so`,
+// 				`/usr/local/lib/libSDL2-2.0_mixer.so.0`,
 			];
 		}else static assert(0, "bindbc-sdl mixer does not have library search paths set up for this platform.");
 	}();
 }
 
 @nogc nothrow:
-void unloadSDLMixer(){ if(lib != invalidHandle) lib.unload(); }
+deprecated("Please use `Mix_Linked_Version` instead")
+	SDLMixerSupport loadedSDLMixerVersion(){ return loadedVersion; }
 
-deprecated("Please use `Mix_Linked_Version` instead") SDLMixerSupport loadedSDLMixerVersion(){ return loadedVersion; }
-
-bool isSDLMixerLoaded(){ return lib != invalidHandle; }
-
-
-SDLMixerSupport loadSDLMixer(){
-	const(char)[][libNamesCT.length] libNames = libNamesCT;
-
-	SDLMixerSupport ret;
-	foreach(name; libNames){
-		ret = loadSDLMixer(name.ptr);
-		if(ret != SDLMixerSupport.noLibrary) break;
-	}
-	return ret;
-}
-
-SDLMixerSupport loadSDLMixer(const(char)* libName){
-	lib = load(libName);
-	if(lib == invalidHandle){
-		return SDLMixerSupport.noLibrary;
-	}
-
-	auto errCount = errorCount();
-	loadedVersion = SDLMixerSupport.badLibrary;
-	
-	bindModuleSymbols(lib);
-	
-	if(errCount == errorCount()) loadedVersion = sdlImageSupport;
-	return loadedVersion;
-}
+mixin(makeDynloadFns("Mixer", [__MODULE__]));

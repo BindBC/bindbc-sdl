@@ -8,14 +8,14 @@
 module bindbc.sdl.dynload;
 
 import bindbc.sdl.config;
-static if(!staticBinding):
 
+static if(!staticBinding):
 import bindbc.loader;
 import bindbc.sdl.bind;
 
 private{
 	SharedLib lib;
-	SDLSupport loadedVersion;
+	SDLSupport loadedVersion; //NOTE: get rid of these in 2.0.0
 	enum libNamesCT = (){
 		version(Windows){
 			return [
@@ -24,63 +24,75 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2.dylib`,
-				`/usr/lib/libSDL2.dylib`,
-				`/usr/local/lib/libSDL2.dylib`,
-				`../Frameworks/SDL2.framework/SDL2`,
-				`/Library/Frameworks/SDL2.framework/SDL2`,
-				`/System/Library/Frameworks/SDL2.framework/SDL2`,
-				`/opt/homebrew/lib/libSDL2.dylib`,
+// 				`/usr/lib/libSDL2.dylib`,
+// 				`/usr/local/lib/libSDL2.dylib`,
+// 				`../Frameworks/SDL2.framework/SDL2`,
+// 				`/Library/Frameworks/SDL2.framework/SDL2`,
+// 				`/System/Library/Frameworks/SDL2.framework/SDL2`,
+// 				`/opt/homebrew/lib/libSDL2.dylib`,
 			];
 		}else version(Posix){
 			return [
 				`libSDL2.so`,
 				`libSDL2-2.0.so`,
 				`libSDL2-2.0.so.0`,
+// 				`/usr/lib/libSDL2.so`,
+// 				`/usr/lib/libSDL2-2.0.so`,
+// 				`/usr/lib/libSDL2-2.0.so.0`,
+// 				`/usr/local/lib/libSDL2.so`,
+// 				`/usr/local/lib/libSDL2-2.0.so`,
+// 				`/usr/local/lib/libSDL2-2.0.so.0`,
 			];
 		}else static assert(0, "bindbc-sdl does not have library search paths set up for this platform.");
 	}();
 }
 
 @nogc nothrow:
-void unloadSDL(){ if(lib != invalidHandle) lib.unload(); }
+deprecated("Please use `SDL_GetVersion` instead")
+	SDLSupport loadedSDLVersion(){ return loadedVersion; }
 
-deprecated("Please use `SDL_GetVersion` instead") SDLSupport loadedSDLVersion(){ return loadedVersion; }
-
-bool isSDLLoaded(){ return lib != invalidHandle; }
-
-SDLSupport loadSDL(){
-	const(char)[][libNamesCT.length] libNames = libNamesCT;
-	
-	SDLSupport ret;
-	foreach(name; libNames){
-		ret = loadSDL(name.ptr);
-		//TODO: keep trying until we get the version we want, otherwise default to the highest one?
-		if(ret != SDLSupport.noLibrary && ret != SDLSupport.badLibrary) break;
-	}
-	return ret;
-}
-
-SDLSupport loadSDL(const(char)* libName){
-	lib = load(libName);
-	if(lib == invalidHandle){
-		return SDLSupport.noLibrary;
-	}
-	
-	auto errCount = errorCount();
-	loadedVersion = SDLSupport.badLibrary;
-	
-	static foreach(mod; [
-		``, `assert`, `atomic`, `audio`, `blendmode`, `clipboard`, `cpuinfo`,
-		`error`, `events`, `filesystem`, `gamecontroller`, `gesture`,
-		`haptic`, `hidapi`, `hints`, `joystick`, `keyboard`, `keycode`,
-		`loadso`, `log`, `messagebox`, `misc`, `mouse`, `mutex`, `pixels`,
-		`platform`, `power`, `rect`, `render`, `rwops`, `scancode`, `sensor`,
-		`shape`, `stdinc`, `surface`, `system`, `syswm`, `thread`, `timer`,
-		`touch`, `version`, `video`, `vulkan`
-	]){
-		mixin(`bindbc.sdl.bind.sdl`~mod~`.bindModuleSymbols(lib);`);
-	}
-	
-	if(errCount == errorCount()) loadedVersion = sdlSupport; //this is a white lie in order to maintain backwards-compatibility :(
-	return loadedVersion;
-}
+mixin(makeDynloadFns("", [
+	"bindbc.sdl.bind",
+	"bindbc.sdl.bind.assert_",
+	"bindbc.sdl.bind.atomic",
+	"bindbc.sdl.bind.audio",
+	"bindbc.sdl.bind.blendmode",
+	"bindbc.sdl.bind.clipboard",
+	"bindbc.sdl.bind.cpuinfo",
+	"bindbc.sdl.bind.error",
+	"bindbc.sdl.bind.events",
+	"bindbc.sdl.bind.filesystem",
+	"bindbc.sdl.bind.gamecontroller",
+	"bindbc.sdl.bind.gesture",
+	"bindbc.sdl.bind.haptic",
+	"bindbc.sdl.bind.hidapi",
+	"bindbc.sdl.bind.hints",
+	"bindbc.sdl.bind.joystick",
+	"bindbc.sdl.bind.keyboard",
+	"bindbc.sdl.bind.keycode",
+	"bindbc.sdl.bind.loadso",
+	"bindbc.sdl.bind.log",
+	"bindbc.sdl.bind.messagebox",
+	"bindbc.sdl.bind.misc",
+	"bindbc.sdl.bind.mouse",
+	"bindbc.sdl.bind.mutex",
+	"bindbc.sdl.bind.pixels",
+	"bindbc.sdl.bind.platform",
+	"bindbc.sdl.bind.power",
+	"bindbc.sdl.bind.rect",
+	"bindbc.sdl.bind.render",
+	"bindbc.sdl.bind.rwops",
+	"bindbc.sdl.bind.scancode",
+	"bindbc.sdl.bind.sensor",
+	"bindbc.sdl.bind.shape",
+	"bindbc.sdl.bind.stdinc",
+	"bindbc.sdl.bind.surface",
+	"bindbc.sdl.bind.system",
+	"bindbc.sdl.bind.syswm",
+	"bindbc.sdl.bind.thread",
+	"bindbc.sdl.bind.timer",
+	"bindbc.sdl.bind.touch",
+	"bindbc.sdl.bind.version_",
+	"bindbc.sdl.bind.video",
+	"bindbc.sdl.bind.vulkan",
+]));

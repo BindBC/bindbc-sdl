@@ -7,47 +7,87 @@
 +/
 module bindbc.sdl.bind;
 
+import bindbc.sdl.config;
+
+enum: uint{
+	SDL_INIT_TIMER           = 0x0000_0001,
+	SDL_INIT_AUDIO           = 0x0000_0010,
+	SDL_INIT_VIDEO           = 0x0000_0020,
+	SDL_INIT_JOYSTICK        = 0x0000_0200,
+	SDL_INIT_HAPTIC          = 0x0000_1000,
+	SDL_INIT_GAMECONTROLLER  = 0x0000_2000,
+	SDL_INIT_EVENTS          = 0x0000_4000,
+	SDL_INIT_NOPARACHUTE     = 0x0010_0000,
+}
+static if(sdlSupport >= SDLSupport.v2_0_9){
+	enum: uint{
+		SDL_INIT_SENSOR      = 0x0000_8000,
+		SDL_INIT_EVERYTHING  =
+			SDL_INIT_TIMER    | SDL_INIT_AUDIO  | SDL_INIT_VIDEO |
+			SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER |
+			SDL_INIT_EVENTS   | SDL_INIT_SENSOR,
+	}
+}else{
+	enum: uint{
+		SDL_INIT_EVERYTHING  =
+			SDL_INIT_TIMER    | SDL_INIT_AUDIO  | SDL_INIT_VIDEO |
+			SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER |
+			SDL_INIT_EVENTS,
+	}
+}
+
+mixin(joinFnBinds((){
+	string[][] ret;
+	ret ~= makeFnBinds([
+		[q{int}, q{SDL_Init}, q{uint flags}],
+		[q{int}, q{SDL_InitSubSystem}, q{uint flags}],
+		[q{void}, q{SDL_QuitSubSystem}, q{uint flags}],
+		[q{uint}, q{SDL_WasInit}, q{uint flags}],
+		[q{void}, q{SDL_Quit}, q{}],
+	]);
+	return ret;
+}()));
+
 public import
-	bindbc.sdl.bind.sdl,
-	bindbc.sdl.bind.sdlassert,
-	bindbc.sdl.bind.sdlatomic,
-	bindbc.sdl.bind.sdlaudio,
-	bindbc.sdl.bind.sdlblendmode,
-	bindbc.sdl.bind.sdlclipboard,
-	bindbc.sdl.bind.sdlcpuinfo,
-	bindbc.sdl.bind.sdlerror,
-	bindbc.sdl.bind.sdlevents,
-	bindbc.sdl.bind.sdlfilesystem,
-	bindbc.sdl.bind.sdlgamecontroller,
-	bindbc.sdl.bind.sdlgesture,
-	bindbc.sdl.bind.sdlhidapi,
-	bindbc.sdl.bind.sdlhaptic,
-	bindbc.sdl.bind.sdlhints,
-	bindbc.sdl.bind.sdljoystick,
-	bindbc.sdl.bind.sdlkeyboard,
-	bindbc.sdl.bind.sdlkeycode,
-	bindbc.sdl.bind.sdlloadso,
-	bindbc.sdl.bind.sdllog,
-	bindbc.sdl.bind.sdlmessagebox,
-	bindbc.sdl.bind.sdlmisc,
-	bindbc.sdl.bind.sdlmouse,
-	bindbc.sdl.bind.sdlmutex,
-	bindbc.sdl.bind.sdlpixels,
-	bindbc.sdl.bind.sdlplatform,
-	bindbc.sdl.bind.sdlpower,
-	bindbc.sdl.bind.sdlrect,
-	bindbc.sdl.bind.sdlrender,
-	bindbc.sdl.bind.sdlrwops,
-	bindbc.sdl.bind.sdlscancode,
-	bindbc.sdl.bind.sdlsensor,
-	bindbc.sdl.bind.sdlshape,
-	bindbc.sdl.bind.sdlstdinc,
-	bindbc.sdl.bind.sdlsurface,
-	bindbc.sdl.bind.sdlsystem,
-	bindbc.sdl.bind.sdlsyswm,
-	bindbc.sdl.bind.sdlthread,
-	bindbc.sdl.bind.sdltimer,
-	bindbc.sdl.bind.sdltouch,
-	bindbc.sdl.bind.sdlversion,
-	bindbc.sdl.bind.sdlvideo,
-	bindbc.sdl.bind.sdlvulkan;
+	bindbc.sdl.bind.assert_,
+	bindbc.sdl.bind.atomic,
+	bindbc.sdl.bind.audio,
+	bindbc.sdl.bind.blendmode,
+	bindbc.sdl.bind.clipboard,
+	bindbc.sdl.bind.cpuinfo,
+	bindbc.sdl.bind.error,
+	bindbc.sdl.bind.events,
+	bindbc.sdl.bind.filesystem,
+	bindbc.sdl.bind.gamecontroller,
+	bindbc.sdl.bind.gesture,
+	bindbc.sdl.bind.hidapi,
+	bindbc.sdl.bind.haptic,
+	bindbc.sdl.bind.hints,
+	bindbc.sdl.bind.joystick,
+	bindbc.sdl.bind.keyboard,
+	bindbc.sdl.bind.keycode,
+	bindbc.sdl.bind.loadso,
+	bindbc.sdl.bind.log,
+	bindbc.sdl.bind.messagebox,
+	bindbc.sdl.bind.misc,
+	bindbc.sdl.bind.mouse,
+	bindbc.sdl.bind.mutex,
+	bindbc.sdl.bind.pixels,
+	bindbc.sdl.bind.platform,
+	bindbc.sdl.bind.power,
+	bindbc.sdl.bind.rect,
+	bindbc.sdl.bind.render,
+	bindbc.sdl.bind.rwops,
+	bindbc.sdl.bind.scancode,
+	bindbc.sdl.bind.sensor,
+	bindbc.sdl.bind.shape,
+	bindbc.sdl.bind.stdinc,
+	bindbc.sdl.bind.surface,
+	bindbc.sdl.bind.system,
+	bindbc.sdl.bind.syswm,
+	bindbc.sdl.bind.thread,
+	bindbc.sdl.bind.timer,
+	bindbc.sdl.bind.touch,
+	bindbc.sdl.bind.version_,
+	bindbc.sdl.bind.video,
+	bindbc.sdl.bind.vulkan;

@@ -1,5 +1,10 @@
-# bindbc-sdl
-This project provides both static and dynamic bindings to the [Simple Direct Media Library (SDL)](https://libsdl.org/) and its satellite libraries. They are compatible with `@nogc` and `nothrow` and can be compiled with `-betterC` compatibility. This package is intended as a replacement of [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
+<div align="center" width="100%">
+	<img alt="BindBC SDL logo" width="50%" src="https://raw.githubusercontent.com/BindBC/bindbc-branding/master/logo_wide_sdl.png"/>
+</div>
+
+# BindBC SDL
+This project provides a set of both static and dynamic bindings to
+[SDL (Simple Direct Media Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow` and can be compiled with `-betterC` compatibility. This package is intended as a replacement of [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
 ## License
 
@@ -44,7 +49,7 @@ To load the shared libraries, you need to call the appropriate load function. Th
 
 * `SDLsupport.noLibrary` indicating that the library failed to load (it couldn't be found)
 * `SDLsupport.badLibrary` indicating that one or more symbols in the library failed to load
-* a member of `SDLsupport` indicating a version number that matches the version of SDL that bindbc-sdl was configured at compile-time to load. By default, that is `SDLsupport.sdl200`, but can be configured via a version identifier (see below). This value will match the global manifest constant, `sdlSupport`.
+* a member of `SDLsupport` indicating a version number that matches the version of SDL that bindbc-sdl was configured at compile-time to load. By default, that is `SDLsupport.v2_0_0`, but can be configured via a version identifier (see below). This value will match the global manifest constant, `sdlSupport`.
 
 ```d
 import bindbc.sdl;

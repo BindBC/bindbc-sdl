@@ -7,15 +7,13 @@
 +/
 module bindbc.sdl;
 
-public import
-	bindbc.sdl.config,
-	bindbc.sdl.bind;
+public import bindbc.sdl.config;
+public import sdl;
 
-static if(!staticBinding) public import bindbc.sdl.dynload;
-static if(bindSDLImage) public import bindbc.sdl.image;
-static if(bindSDLMixer) public import bindbc.sdl.mixer;
-static if(bindSDLNet) public import bindbc.sdl.net;
-static if(bindSDLTTF) public import bindbc.sdl.ttf;
+static if(bindSDLImage) public import sdl_image;
+static if(bindSDLMixer) public import sdl_mixer;
+static if(bindSDLNet)   public import sdl_net;
+static if(bindSDLTTF)   public import sdl_ttf;
 
 /*
 Putting this here allows me to match the SDL_thread.h interface without any

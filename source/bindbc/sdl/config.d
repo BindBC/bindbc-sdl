@@ -7,7 +7,7 @@
 +/
 module bindbc.sdl.config;
 
-import bindbc.sdl.bind.version_: SDL_version, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL;
+import sdl.version_: SDL_version, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL;
 
 enum SDLSupport: SDL_version{
 	noLibrary   = SDL_version(0,0,0),
@@ -140,7 +140,7 @@ deprecated("Please update this type to use type aliases!") enum expandEnum(EnumT
 ^[ \t]*([A-Za-z0-9_()*]+) (\w+) ?\(([A-Za-z0-9_()*, .=]*)\);
 \t\t[q{$1}, q{$2}, q{$3}],
 */
-package enum makeFnBinds = (string[3][] fns) nothrow pure{
+enum makeFnBinds = (string[3][] fns) nothrow pure{
 	string makeFnBinds = ``;
 	string[] symbols;
 	static if(staticBinding){
@@ -161,7 +161,7 @@ package enum makeFnBinds = (string[3][] fns) nothrow pure{
 	return [makeFnBinds] ~ symbols;
 };
 
-package enum joinFnBinds = (string[][] list) nothrow pure{
+enum joinFnBinds = (string[][] list) nothrow pure{
 	string joined = `extern(C) @nogc nothrow`;
 	string[] symbols;
 	
@@ -191,7 +191,7 @@ package enum joinFnBinds = (string[][] list) nothrow pure{
 	return joined;
 };
 
-package enum makeDynloadFns = (string name, string[] bindModules) nothrow pure{
+enum makeDynloadFns = (string name, string[] bindModules) nothrow pure{
 	string dynloadFns = `
 void unloadSDL`~name~`(){ if(lib != invalidHandle) lib.unload(); }
 

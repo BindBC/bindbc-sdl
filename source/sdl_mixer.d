@@ -49,7 +49,7 @@ deprecated("Please use `SDL_MIXER_MAJOR_VERSION` instead") alias MIX_MAJOR_VERSI
 deprecated("Please use `SDL_MIXER_MINOR_VERSION` instead") alias MIX_MINOR_VERSION = SDL_MIXER_MINOR_VERSION;
 deprecated("Please use `SDL_MIXER_PATCHLEVEL` instead")    alias MIX_PATCH_LEVEL   = SDL_MIXER_PATCHLEVEL;
 
-pragma(inline, true) void SDL_MIXER_VERSION(SDL_version* X) @nogc nothrow pure{
+pragma(inline, true) void SDL_MIXER_VERSION(SDL_version* X) @nogc nothrow pure @safe{
 	X.major = SDL_MIXER_MAJOR_VERSION;
 	X.minor = SDL_MIXER_MINOR_VERSION;
 	X.patch = SDL_MIXER_PATCHLEVEL;
@@ -62,7 +62,7 @@ deprecated("Please use SDL_MIXER_VERSION_ATLEAST or SDL_MIXER_VERSION instead")
 pragma(inline, true) @nogc nothrow{
 	bool SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_version(X, Y, Z); }
 }
-deprecated("Please use the non-template variant instead."){
+deprecated("Please use the non-template variant instead"){
 	enum SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_version(X, Y, Z);
 }
 
@@ -332,7 +332,7 @@ private{
 // 				`/usr/local/lib/libSDL2-2.0_mixer.so`,
 // 				`/usr/local/lib/libSDL2-2.0_mixer.so.0`,
 			];
-		}else static assert(0, "bindbc-sdl mixer does not have library search paths set up for this platform.");
+		}else static assert(0, "bindbc-sdl mixer does not have library search paths set up for this platform");
 	}();
 }
 

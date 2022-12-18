@@ -10,25 +10,24 @@ module sdl.joystick;
 import bindbc.sdl.config;
 
 import sdl.stdinc: SDL_bool;
+import sdl.guid: SDL_GUID;
 
 struct SDL_Joystick;
 
-struct SDL_JoystickGUID{
-	ubyte[16] data;
-}
+alias SDL_JoystickGUID = SDL_GUID;
 
 alias SDL_JoystickID = int;
 
 enum: ubyte{
-	SDL_HAT_CENTERED = 0x00,
-	SDL_HAT_UP = 0x01,
-	SDL_HAT_RIGHT = 0x02,
-	SDL_HAT_DOWN = 0x04,
-	SDL_HAT_LEFT = 0x08,
-	SDL_HAT_RIGHTUP = (SDL_HAT_RIGHT|SDL_HAT_UP),
-	SDL_HAT_RIGHTDOWN = (SDL_HAT_RIGHT|SDL_HAT_DOWN),
-	SDL_HAT_LEFTUP = (SDL_HAT_LEFT|SDL_HAT_UP),
-	SDL_HAT_LEFTDOWN = (SDL_HAT_LEFT|SDL_HAT_DOWN),
+	SDL_HAT_CENTERED   = 0x00,
+	SDL_HAT_UP         = 0x01,
+	SDL_HAT_RIGHT      = 0x02,
+	SDL_HAT_DOWN       = 0x04,
+	SDL_HAT_LEFT       = 0x08,
+	SDL_HAT_RIGHTUP    = (SDL_HAT_RIGHT | SDL_HAT_UP),
+	SDL_HAT_RIGHTDOWN  = (SDL_HAT_RIGHT | SDL_HAT_DOWN),
+	SDL_HAT_LEFTUP     = (SDL_HAT_LEFT  | SDL_HAT_UP),
+	SDL_HAT_LEFTDOWN   = (SDL_HAT_LEFT  | SDL_HAT_DOWN),
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_4){
@@ -48,8 +47,34 @@ static if(sdlSupport >= SDLSupport.v2_0_14){
 	enum SDL_IPHONE_MAX_GFORCE = 5.0;
 }
 
+static if(sdlSupport >= SDLSupport.v2_24){
+	struct SDL_VirtualJoystickDesc{
+		ushort version_; //NOTE: the original variable's name is `version`
+		ushort type;
+		ushort naxes;
+		ushort nbuttons;
+		ushort nhats;
+		ushort vendor_id;
+		ushort product_id;
+		ushort padding;
+		uint button_mask;
+		uint axis_mask;
+		const(char)* name;
+
+		void* userdata;
+		void function(void* userdata) Update;
+		void function(void* userdata, int player_index) SetPlayerIndex;
+		int function(void* userdata, ushort low_frequency_rumble, ushort high_frequency_rumble) Rumble;
+		int function(void* userdata, ushort left_rumble, ushort right_rumble) RumbleTriggers;
+		int function(void* userdata, ubyte red, ubyte green, ubyte blue) SetLED;
+		int function(void* userdata, const(void)* data, int size) SendEffect;
+	}
+	
+	enum ushort SDL_VIRTUAL_JOYSTICK_DESC_VERSION = 1;
+}
+
 static if(sdlSupport >= SDLSupport.v2_0_6){
-	alias SDL_JoystickType = int;
+	alias SDL_JoystickType = ushort;
 	enum: SDL_JoystickType{
 		SDL_JOYSTICK_TYPE_UNKNOWN,
 		SDL_JOYSTICK_TYPE_GAMECONTROLLER,
@@ -123,7 +148,7 @@ mixin(joinFnBinds((){
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_9){
 		ret ~= makeFnBinds([
-			[q{int}, q{SDL_JoystickRumble}, q{SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms}],
+			[q{int}, q{SDL_JoystickRumble}, q{SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble,  duration_ms}],
 		]);
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_10){
@@ -147,7 +172,7 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_JoystickSetVirtualButton}, q{SDL_Joystick* joystick, int button, ubyte value}],
 			[q{int}, q{SDL_JoystickSetVirtualHat}, q{SDL_Joystick* joystick, int hat, ubyte value}],
 			[q{const(char)*}, q{SDL_JoystickGetSerial}, q{SDL_Joystick* joystick}],
-			[q{int}, q{SDL_JoystickRumbleTriggers}, q{SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms}],
+			[q{int}, q{SDL_JoystickRumbleTriggers}, q{SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble,  duration_ms}],
 			[q{SDL_bool}, q{SDL_JoystickHasLED}, q{SDL_Joystick* joystick}],
 			[q{int}, q{SDL_JoystickSetLED}, q{SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue}],
 		]);
@@ -161,6 +186,14 @@ mixin(joinFnBinds((){
 		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_JoystickHasRumble}, q{SDL_Joystick* joystick}],
 			[q{SDL_bool}, q{SDL_JoystickHasRumbleTriggers}, q{SDL_Joystick* joystick}],
+		]);
+	}
+	static if(sdlSupport >= SDLSupport.v2_24){
+		ret ~= makeFnBinds([
+			[q{const(char)*}, q{SDL_JoystickPathForIndex}, q{int device_index}],
+			[q{int}, q{SDL_JoystickAttachVirtualEx}, q{const(SDL_VirtualJoystickDesc)* desc}],
+			[q{const(char)*}, q{SDL_JoystickPath}, q{SDL_Joystick* joystick}],
+			[q{ushort}, q{SDL_JoystickGetFirmwareVersion}, q{SDL_Joystick* joystick}],
 		]);
 	}
 	return ret;

@@ -19,22 +19,29 @@ struct SDL_GameController;
 static if(sdlSupport >= SDLSupport.v2_0_12){
 	alias SDL_GameControllerType = int;
 	enum: SDL_GameControllerType{
-		SDL_CONTROLLER_TYPE_UNKNOWN = 0,
-		SDL_CONTROLLER_TYPE_XBOX360,
-		SDL_CONTROLLER_TYPE_XBOXONE,
-		SDL_CONTROLLER_TYPE_PS3,
-		SDL_CONTROLLER_TYPE_PS4,
-		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+		SDL_CONTROLLER_TYPE_UNKNOWN                         = 0,
+		SDL_CONTROLLER_TYPE_XBOX360                         = 1,
+		SDL_CONTROLLER_TYPE_XBOXONE                         = 2,
+		SDL_CONTROLLER_TYPE_PS3                             = 3,
+		SDL_CONTROLLER_TYPE_PS4                             = 4,
+		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO             = 5,
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_14):
 	enum: SDL_GameControllerType{
-		SDL_CONTROLLER_TYPE_VIRTUAL,
-		SDL_CONTROLLER_TYPE_PS5,
+		SDL_CONTROLLER_TYPE_VIRTUAL                         = 6,
+		SDL_CONTROLLER_TYPE_PS5                             = 7,
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_16):
 	enum: SDL_GameControllerType{
-		SDL_CONTROLLER_TYPE_AMAZON_LUNA,
-		SDL_CONTROLLER_TYPE_GOOGLE_STADIA,
+		SDL_CONTROLLER_TYPE_AMAZON_LUNA                     = 8,
+		SDL_CONTROLLER_TYPE_GOOGLE_STADIA                   = 9,
+	}
+	static if(sdlSupport >= SDLSupport.v2_24):
+	enum: SDL_GameControllerType{
+		SDL_CONTROLLER_TYPE_NVIDIA_SHIELD                   = 10,
+		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_LEFT     = 11,
+		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT    = 12,
+		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR     = 13,
 	}
 }
 
@@ -109,7 +116,7 @@ enum: SDL_GameControllerButton{
 
 static if(sdlSupport >= SDLSupport.v2_0_2){
 	pragma(inline, true) int SDL_GameControllerAddMappingsFromFile(const(char)* file) @nogc nothrow{
-		return SDL_GameControllerAddMappingsFromRW(SDL_RWFromFile(file,"rb"),1);
+		return SDL_GameControllerAddMappingsFromRW(SDL_RWFromFile(file, "rb"), 1);
 	}
 }
 
@@ -203,6 +210,13 @@ mixin(joinFnBinds((){
 			[q{SDL_bool}, q{SDL_GameControllerHasRumbleTriggers}, q{SDL_GameController* gamecontroller}],
 			[q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
 			[q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
+		]);
+	}
+	static if(sdlSupport >= SDLSupport.v2_24){
+		ret ~= makeFnBinds([
+			[q{const(char)*}, q{SDL_GameControllerPathForIndex}, q{int joystick_index}],
+			[q{const(char)*}, q{SDL_GameControllerPath}, q{SDL_GameController* gamecontroller}],
+			[q{ushort}, q{SDL_GameControllerGetFirmwareVersion}, q{SDL_GameController* gamecontroller}],
 		]);
 	}
 	return ret;

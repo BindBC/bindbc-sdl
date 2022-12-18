@@ -9,7 +9,6 @@ module bindbc.sdl;
 
 public import bindbc.sdl.config;
 public import sdl;
-
 static if(bindSDLImage) public import sdl_image;
 static if(bindSDLMixer) public import sdl_mixer;
 static if(bindSDLNet)   public import sdl_net;

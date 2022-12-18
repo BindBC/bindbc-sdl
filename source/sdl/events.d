@@ -101,6 +101,19 @@ static if(sdlSupport >= SDLSupport.v2_0_22)
 enum: SDL_EventType{
 	SDL_TEXTEDITING_EXT           = 0x305,
 }
+static if(sdlSupport >= SDLSupport.v2_24)
+enum: SDL_EventType{
+	SDL_JOYBATTERYUPDATED         = 0x607,
+}
+
+static if(sdlSupport >= SDLSupport.v2_24){
+	struct SDL_JoyBatteryEvent{
+		uint type;
+		uint timestamp;
+		SDL_JoystickID which;
+		SDL_JoystickPowerLevel level;
+	}
+}
 
 struct SDL_CommonEvent{
 	SDL_EventType type;
@@ -339,7 +352,6 @@ struct SDL_TouchFingerEvent{
 	float dx;
 	float dy;
 	float pressure;
-	
 	static if(sdlSupport >= SDLSupport.v2_0_12){
 		uint windowID;
 	}
@@ -430,6 +442,9 @@ union SDL_Event{
 	SDL_JoyHatEvent jhat;
 	SDL_JoyButtonEvent jbutton;
 	SDL_JoyDeviceEvent jdevice;
+	static if(sdlSupport >= SDLSupport.v2_24){
+		SDL_JoyBatteryEvent jbattery;
+	}
 	SDL_ControllerAxisEvent caxis;
 	SDL_ControllerButtonEvent cbutton;
 	SDL_ControllerDeviceEvent cdevice;

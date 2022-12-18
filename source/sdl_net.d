@@ -35,7 +35,7 @@ enum SDL_NET_MAJOR_VERSION = sdlNetSupport.major;
 enum SDL_NET_MINOR_VERSION = sdlNetSupport.minor;
 enum SDL_NET_PATCHLEVEL    = sdlNetSupport.patch;
 
-pragma(inline, true) void SDL_NET_VERSION(SDLNet_version* X) @nogc nothrow pure{
+pragma(inline, true) void SDL_NET_VERSION(SDLNet_version* X) @nogc nothrow pure @safe{
 	X.major = SDL_NET_MAJOR_VERSION;
 	X.minor = SDL_NET_MINOR_VERSION;
 	X.patch = SDL_NET_PATCHLEVEL;

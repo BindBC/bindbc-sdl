@@ -276,7 +276,14 @@ static if(sdlSupport >= SDLSupport.v2_0_6)
 enum: SDL_Scancode{
 	SDL_SCANCODE_AUDIOREWIND = 285,
 	SDL_SCANCODE_AUDIOFASTFORWARD = 286,
-};
+}
+static if(sdlSupport >= SDLSupport.v2_0_6)
+enum: SDL_Scancode{
+	SDL_SCANCODE_SOFTLEFT = 287,
+	SDL_SCANCODE_SOFTRIGHT = 288,
+	SDL_SCANCODE_CALL = 289,
+	SDL_SCANCODE_ENDCALL = 290,
+}
 
 mixin(joinFnBinds((){
 	string[][] ret;

@@ -87,7 +87,7 @@ enum bindSDLImage = (){
 	else version(SDL_Image_203) return true;
 	else version(SDL_Image_204) return true;
 	else version(SDL_Image_205) return true;
-	else version(SDL_Image_2_6) return true;//static assert(0, "SDL Image not updated for this version yet");
+	else version(SDL_Image_2_6) return true;
 	else return false;
 }();
 
@@ -128,7 +128,7 @@ version(WebAssembly){
 	public import core.stdc.config: c_long, c_ulong;
 }
 
-deprecated("Please update this type to use type aliases!") enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure{
+deprecated("Please update this type to use type aliases!") enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure @safe{
 	string expandEnum;
 	foreach(m;__traits(allMembers, EnumType)){
 		expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
@@ -140,7 +140,7 @@ deprecated("Please update this type to use type aliases!") enum expandEnum(EnumT
 ^[ \t]*([A-Za-z0-9_()*]+) (\w+) ?\(([A-Za-z0-9_()*, .=]*)\);
 \t\t[q{$1}, q{$2}, q{$3}],
 */
-enum makeFnBinds = (string[3][] fns) nothrow pure{
+enum makeFnBinds = (string[3][] fns) nothrow pure @safe{
 	string makeFnBinds = ``;
 	string[] symbols;
 	static if(staticBinding){
@@ -161,7 +161,7 @@ enum makeFnBinds = (string[3][] fns) nothrow pure{
 	return [makeFnBinds] ~ symbols;
 };
 
-enum joinFnBinds = (string[][] list) nothrow pure{
+enum joinFnBinds = (string[][] list) nothrow pure @safe{
 	string joined = `extern(C) @nogc nothrow`;
 	string[] symbols;
 	
@@ -191,7 +191,7 @@ enum joinFnBinds = (string[][] list) nothrow pure{
 	return joined;
 };
 
-enum makeDynloadFns = (string name, string[] bindModules) nothrow pure{
+enum makeDynloadFns = (string name, string[] bindModules) nothrow pure @safe{
 	string dynloadFns = `
 void unloadSDL`~name~`(){ if(lib != invalidHandle) lib.unload(); }
 
@@ -225,7 +225,7 @@ SDL`~name~`Support loadSDL`~name~`(const(char)* libName){
 	
 	dynloadFns ~= `
 	
-	if(errCount == errorCount()) loadedVersion = sdl`~name~`Support; //this is a white lie in order to maintain backwards-compatibility :(
+	if(errCount == errorCount()) loadedVersion = sdl`~name~`Support; //this is a white-lie in order to maintain backwards-compatibility :(
 	return loadedVersion;
 }`;
 	

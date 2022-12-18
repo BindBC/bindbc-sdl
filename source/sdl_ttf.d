@@ -47,7 +47,7 @@ enum SDL_MIXER_MAJOR_VERSION = sdlTTFSupport.major;
 enum SDL_MIXER_MINOR_VERSION = sdlTTFSupport.minor;
 enum SDL_MIXER_PATCHLEVEL    = sdlTTFSupport.patch;
 
-pragma(inline, true) void SDL_TTF_VERSION(SDL_version* X) @nogc nothrow pure{
+pragma(inline, true) void SDL_TTF_VERSION(SDL_version* X) @nogc nothrow pure @safe{
 	X.major = SDL_TTF_MAJOR_VERSION;
 	X.minor = SDL_TTF_MINOR_VERSION;
 	X.patch = SDL_TTF_PATCHLEVEL;
@@ -245,7 +245,7 @@ private{
 // 				`/usr/local/lib/libSDL2-2.0_ttf.so`,
 // 				`/usr/local/lib/libSDL2-2.0_ttf.so.0`,
 			];
-		}else static assert(0, "bindbc-sdl ttf does not have library search paths set up for this platform.");
+		}else static assert(0, "bindbc-sdl ttf does not have library search paths set up for this platform");
 	}();
 }
 

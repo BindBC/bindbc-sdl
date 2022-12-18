@@ -38,7 +38,6 @@ mixin(joinFnBinds((){
 		[q{void}, q{SDL_StartTextInput}, q{}],
 		[q{SDL_bool}, q{SDL_IsTextInputActive}, q{}],
 		[q{void}, q{SDL_StopTextInput}, q{}],
-		[q{void}, q{SDL_SetTextInputRect}, q{SDL_Rect*}],
 		[q{SDL_bool}, q{SDL_HasScreenKeyboardSupport}, q{}],
 		[q{SDL_bool}, q{SDL_IsScreenKeyboardShown}, q{SDL_Window* window}],
 	]);
@@ -46,6 +45,16 @@ mixin(joinFnBinds((){
 		ret ~= makeFnBinds([
 			[q{void}, q{SDL_ClearComposition}, q{}],
 			[q{SDL_bool}, q{SDL_IsTextInputShown}, q{}],
+		]);
+	}
+	static if(sdlSupport >= SDLSupport.v2_24){
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_SetTextInputRect}, q{const(SDL_Rect)* rect}],
+			[q{void}, q{SDL_ResetKeyboard}, q{}],
+		]);
+	}else{
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_SetTextInputRect}, q{SDL_Rect* rect}], //`rect` was non-const before 2.24
 		]);
 	}
 	return ret;

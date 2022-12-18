@@ -28,17 +28,52 @@ so I'll import it rather than copy/paste it. I'll change it if it somehow
 becomes a problem in the future.
 */
 import core.atomic: atomicFence;
+
 alias SDL_CompilerBarrier = atomicFence!();
+
 alias SDL_MemoryBarrierRelease = SDL_CompilerBarrier;
+
 alias SDL_MemoryBarrierAcquire = SDL_CompilerBarrier;
 
 pragma(inline, true) nothrow @nogc{
 	int SDL_AtomicIncRef(SDL_atomic_t* a){
 		return SDL_AtomicAdd(a, 1);
 	}
-
 	SDL_bool SDL_AtomicDecRef(SDL_atomic_t* a){
 		return cast(SDL_bool)(SDL_AtomicAdd(a, -1) == 1);
+	}
+	static if(sdlSupport < SDLSupport.v2_0_3){
+		int SDL_AtomicSet(SDL_atomic_t* a, int v){
+			int value;
+			do{
+				value = a.value;
+			}while(!SDL_AtomicCAS(a, value, v));
+			return value;
+		}
+		int SDL_AtomicGet(SDL_atomic_t* a){
+			int value = a.value;
+			SDL_CompilerBarrier();
+			return value;
+		}
+		int SDL_AtomicAdd(SDL_atomic_t* a, int v){
+			int value;
+			do{
+				value = a.value;
+			}while(!SDL_AtomicCAS(a, value, value + v));
+			return value;
+		}
+		void* SDL_AtomicSetPtr(void** a, void* v){
+			void* value;
+			do{
+				value = *a;
+			}while(!SDL_AtomicCASPtr(a, value, v));
+			return value;
+		}
+		void* SDL_AtomicGetPtr(void** a){
+			void* value = *a;
+			SDL_CompilerBarrier();
+			return value;
+		}
 	}
 }
 
@@ -64,42 +99,3 @@ mixin(joinFnBinds((){
 	}
 	return ret;
 }()));
-
-static if(sdlSupport < SDLSupport.v2_0_3){
-	int SDL_AtomicSet(SDL_atomic_t* a, int v){
-		pragma(inline, true);
-		int value;
-		do{
-			value = a.value;
-		}while(!SDL_AtomicCAS(a, value, v));
-		return value;
-	}
-	int SDL_AtomicGet(SDL_atomic_t* a){
-		pragma(inline, true);
-		int value = a.value;
-		SDL_CompilerBarrier();
-		return value;
-	}
-	int SDL_AtomicAdd(SDL_atomic_t* a, int v){
-		pragma(inline, true);
-		int value;
-		do{
-			value = a.value;
-		}while(!SDL_AtomicCAS(a, value, value + v));
-		return value;
-	}
-	void* SDL_AtomicSetPtr(void** a, void* v){
-		pragma(inline, true);
-		void* value;
-		do{
-			value = *a;
-		}while(!SDL_AtomicCASPtr(a, value, v));
-		return value;
-	}
-	void* SDL_AtomicGetPtr(void** a){
-		pragma(inline, true);
-		void* value = *a;
-		SDL_CompilerBarrier();
-		return value;
-	}
-}

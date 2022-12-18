@@ -11,6 +11,7 @@ version(WebAssembly){
 }else import core.stdc.stdarg: va_list;
 import bindbc.sdl.config;
 
+//NOTE: as-of SDL 2.24, there is no longer a max log message length
 enum SDL_MAX_LOG_MESSAGE = 4096;
 
 alias SDL_LogCategory = int;

@@ -34,16 +34,16 @@ pragma(inline, true) void SDL_VERSION(SDL_version* X) @nogc nothrow pure @safe{
 	X.patch = SDL_PATCHLEVEL;
 }
 
-deprecated("Please use SDL_version() instead.")
+deprecated("Please use SDL_version() instead")
 	enum SDL_VERSIONNUM(ubyte X, ubyte Y, ubyte Z) = X*1000 + Y*100 + Z;
 
-deprecated("Please use SDL_VERSION_ATLEAST or SDL_version() instead.")
+deprecated("Please use SDL_VERSION_ATLEAST or SDL_version() instead")
 	enum SDL_COMPILEDVERSION = SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
 
 pragma(inline, true) @nogc nothrow{
 	bool SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL) >= SDL_version(X, Y, Z); }
 }
-deprecated("Please use the non-template variant instead."){
+deprecated("Please use the non-template variant instead"){
 	enum SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL) >= SDL_version(X, Y, Z);
 }
 

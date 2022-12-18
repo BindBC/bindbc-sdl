@@ -187,7 +187,10 @@ enum: SDL_GLattr{
 	SDL_GL_CONTEXT_RESET_NOTIFICATION  = 25,
 	SDL_GL_CONTEXT_NO_ERROR            = 26,
 }
-//	next: SDL_GL_FLOATBUFFERS
+static if(sdlSupport >= SDLSupport.v2_0_6)
+enum: SDL_GLattr{
+	SDL_GL_FLOATBUFFERS                = 27,
+}
 
 alias SDL_GLprofile = int;
 enum: SDL_GLprofile{
@@ -359,6 +362,12 @@ mixin(joinFnBinds((){
 			[q{void*}, q{SDL_GetWindowICCProfile}, q{SDL_Window* window, size_t* size}],
 			[q{int}, q{SDL_SetWindowMouseRect}, q{SDL_Window* window, const(SDL_Rect)* rect}],
 			[q{const(SDL_Rect)*}, q{SDL_GetWindowMouseRect}, q{SDL_Window* window}],
+		]);
+	}
+	static if(sdlSupport >= SDLSupport.v2_24){
+		ret ~= makeFnBinds([
+			[q{int}, q{SDL_GetPointDisplayIndex}, q{const(SDL_Point)* point}],
+			[q{int}, q{SDL_GetRectDisplayIndex}, q{const(SDL_Rect)* rect}],
 		]);
 	}
 	return ret;

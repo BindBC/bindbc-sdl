@@ -9,7 +9,6 @@ module sdl.rect;
 
 import bindbc.sdl.config;
 
-import std.math: fabs;
 import sdl.stdinc;
 
 struct SDL_Point{
@@ -33,51 +32,40 @@ static if(sdlSupport >= SDLSupport.v2_0_10){
 	}
 }
 
-@nogc nothrow pure{
+pragma(inline, true) @nogc nothrow pure{
 	// This macro was added to SDL_rect.h in 2.0.4, but hurts nothing to implement for all versions.
 	bool SDL_PointInRect(const(SDL_Point)* p, const(SDL_Rect)* r){
-		pragma(inline, true);
 		return (
 			(p.x >= r.x) && (p.x < (r.x + r.w)) &&
 			(p.y >= r.y) && (p.y < (r.y + r.h))
 		);
 	}
-
 	bool SDL_RectEmpty(const(SDL_Rect)* r){
-		pragma(inline, true);
 		return !r || (r.w <= 0) || (r.h <= 0);
 	}
-
 	bool SDL_RectEquals(const(SDL_Rect)* a, const(SDL_Rect)* b){
-		pragma(inline, true);
 		return a && b &&
 			(a.x == b.x) && (a.y == b.y) &&
 			(a.w == b.w) && (a.h == b.h);
 	}
-
 	static if(sdlSupport >= SDLSupport.v2_0_22){
+		import std.math: fabs;
+		
 		bool SDL_PointInFRect(const(SDL_FPoint)* p, const(SDL_FRect)* r){
-			pragma(inline, true);
 			return (
 				(p.x >= r.x) && (p.x < (r.x + r.w)) &&
 				(p.y >= r.y) && (p.y < (r.y + r.h))
 			);
 		}
-
 		bool SDL_FRectEmpty(const(SDL_FRect)* x){
-			pragma(inline, true);
 			return !x || (x.w <= 0) || (x.h <= 0);
 		}
-
-		bool SDL_FRectEqualsEpsilon(const(SDL_FRect)* a, const(SDL_FRect)* b, const(float) epsilon){
-			pragma(inline, true);
+		bool SDL_FRectEqualsEpsilon(const(SDL_FRect)* a, const(SDL_FRect)* b, const float epsilon){
 			return a && b && ((a == b) ||
 				(fabs(a.x - b.x) <= epsilon) && (fabs(a.y - b.y) <= epsilon) &&
 				(fabs(a.w - b.w) <= epsilon) && (fabs(a.h - b.h) <= epsilon));
 		}
-
 		bool SDL_FRectEquals(const(SDL_FRect)* a, const(SDL_FRect)* b){
-			pragma(inline, true);
 			return SDL_FRectEqualsEpsilon(a, b, SDL_FLT_EPSILON);
 		}
 	}

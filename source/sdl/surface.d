@@ -22,8 +22,7 @@ enum{
 	SDL_DONTFREE   = 0x00000004,
 }
 
-bool SDL_MUSTLOCK(const(SDL_Surface)* S) @nogc nothrow pure{
-	pragma(inline, true);
+pragma(inline, true) bool SDL_MUSTLOCK(const(SDL_Surface)* S) @nogc nothrow pure{
 	return (S.flags & SDL_RLEACCEL) != 0;
 }
 

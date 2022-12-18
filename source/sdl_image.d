@@ -49,8 +49,7 @@ enum SDL_IMAGE_MAJOR_VERSION = sdlImageSupport.major;
 enum SDL_IMAGE_MINOR_VERSION = sdlImageSupport.minor;
 enum SDL_IMAGE_PATCHLEVEL    = sdlImageSupport.patch;
 
-void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow pure{
-	pragma(inline, true);
+pragma(inline, true) void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow pure @safe{
 	X.major = SDL_IMAGE_MAJOR_VERSION;
 	X.minor = SDL_IMAGE_MINOR_VERSION;
 	X.patch = SDL_IMAGE_PATCHLEVEL;
@@ -62,7 +61,7 @@ deprecated("Please use SDL_IMAGE_VERSION_ATLEAST or SDL_IMAGE_VERSION instead")
 pragma(inline, true) @nogc nothrow{
 	bool SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(X, Y, Z); }
 }
-deprecated("Please use the non-template variant instead."){
+deprecated("Please use the non-template variant instead"){
 	enum SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(X, Y, Z);
 }
 
@@ -79,12 +78,14 @@ enum: IMG_InitFlags{
 	IMG_INIT_AVIF  = 0x0000_0020,
 }
 
-struct IMG_Animation{
-	int w, h;
-	int count;
-	SDL_Surface** frames;
-	int* delays;
-};
+static if(sdlImageSupport >= SDLImageSupport.v2_6){
+	struct IMG_Animation{
+		int w, h;
+		int count;
+		SDL_Surface** frames;
+		int* delays;
+	}
+}
 
 alias IMG_SetError = SDL_SetError;
 
@@ -204,7 +205,7 @@ private{
 // 				`/usr/local/lib/libSDL2_image-2.0.so`,
 // 				`/usr/local/lib/libSDL2_image-2.0.so.0`,
 			];
-		}else static assert(0, "bindbc-sdl image does not have library search paths set up for this platform.");
+		}else static assert(0, "bindbc-sdl image does not have library search paths set up for this platform");
 	}();
 }
 

@@ -69,5 +69,11 @@ mixin(joinFnBinds((){
 			[q{void*}, q{SDL_SIMDRealloc}, q{void* mem, const(size_t) len}],
 		]);
 	}
+	static if(sdlSupport >= SDLSupport.v2_24){
+		ret ~= makeFnBinds([
+			[q{SDL_bool}, q{SDL_HasLSX}, q{}],
+			[q{SDL_bool}, q{SDL_HasLASX}, q{}],
+		]);
+	}
 	return ret;
 }()));

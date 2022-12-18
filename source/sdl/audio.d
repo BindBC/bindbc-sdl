@@ -183,5 +183,10 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_GetAudioDeviceSpec}, q{int index, int iscapture, SDL_AudioSpec *spec}],
 		]);
 	}
+	static if(sdlSupport >= SDLSupport.v2_24){
+		ret ~= makeFnBinds([
+			[q{int}, q{SDL_GetDefaultAudioInfo}, q{char** name, SDL_AudioSpec* spec, int iscapture}],
+		]);
+	}
 	return ret;
 }()));

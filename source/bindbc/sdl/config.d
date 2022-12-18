@@ -117,7 +117,7 @@ enum bindSDLTTF = (){
 	else version(SDL_TTF_2014) return true;
 	else version(SDL_TTF_2015) return true;
 	else version(SDL_TTF_2018) return true;
-	else version(SDL_TTF_2_20) static assert(0, "SDL Image not updated for this version yet");
+	else version(SDL_TTF_2_20) return true;
 	else return false;
 }();
 

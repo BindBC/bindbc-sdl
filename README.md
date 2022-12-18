@@ -323,7 +323,7 @@ Pass the `BindSDL_Static` version to the compiler and link with the appropriate 
 
 When using the compiler command line or a build system that doesn't support DUB, this is the only option. The `-version=BindSDL_Static` option should be passed to the compiler when building your program. All of the required C libraries, as well as the bindbc-sdl static libraries, must also be passed to the compiler on the command line or via your build system's configuration.
 
-> __NOTE__:
+> __Note__:
 >
 > The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program, i.e., those maintained in [the BindBC GitHub organization](https://github.com/BindBC). Some third-party BindBC packages may support it as well.
 

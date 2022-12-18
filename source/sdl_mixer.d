@@ -332,7 +332,7 @@ private{
 // 				`/usr/local/lib/libSDL2-2.0_mixer.so`,
 // 				`/usr/local/lib/libSDL2-2.0_mixer.so.0`,
 			];
-		}else static assert(0, "bindbc-sdl mixer does not have library search paths set up for this platform");
+		}else static assert(0, "BindBC SDL_mixer does not have library search paths set up for this platform");
 	}();
 }
 

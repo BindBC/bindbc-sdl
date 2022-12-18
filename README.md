@@ -19,7 +19,7 @@ By default, bindbc-sdl is configured to compile as dynamic bindings that are not
 
 When using DUB to manage your project, the static bindings can be enabled via a DUB `subConfiguration` statement in your project's package file. `-betterC` compatibility is also enabled via subconfigurations.
 
-To use any of the supported SDL libraries, add bindbc-sdl as a dependency to your project's package config file and include the appropriate version for any of the satellite libraries you want to use. For example, the following is configured to use `SDL_image` and `SDL_ttf`, in addition to the base SDL binding, as dynamic bindings that are not `-betterC` compatible:
+To use any of the supported SDL libraries, add bindbc-sdl as a dependency to your project's package config file and include the appropriate version for any of the satellite libraries you want to use. For example, the following is configured to use `SDL_image` and SDL_ttf, in addition to the base SDL binding, as dynamic bindings that are not `-betterC` compatible:
 
 __dub.json__
 ```
@@ -186,62 +186,118 @@ The satellite libraries provide similar functions, e.g., `loadedSDLImageVersion`
 
 For most use cases, it's probably not necessary to check for `SDLSupport.badLibrary` or `SDLSupport.noLibrary`. The bindbc-loader package provides [a means to fetch error information](https://github.com/BindBC/bindbc-loader#error-handling) regarding load failures. This information can be written to a log file before aborting the program.
 
-Following are the supported versions of each SDL library and the corresponding version IDs to pass to the compiler.
+## Versions
+Following are the supported versions of each SDL_* library and the corresponding version identifiers to pass to the compiler.
 
-| Library & Version  | Version ID       |
-|--------------------|------------------|
-|SDL 2.0.0           | Default          |
-|SDL 2.0.1           | SDL_201          |
-|SDL 2.0.2           | SDL_202          |
-|SDL 2.0.3           | SDL_203          |
-|SDL 2.0.4           | SDL_204          |
-|SDL 2.0.5           | SDL_205          |
-|SDL 2.0.6           | SDL_206          |
-|SDL 2.0.7           | SDL_207          |
-|SDL 2.0.8           | SDL_208          |
-|SDL 2.0.9           | SDL_209          |
-|SDL 2.0.10          | SDL_2010         |
-|SDL 2.0.12          | SDL_2012         |
-|SDL 2.0.14          | SDL_2014         |
-|SDL 2.0.16          | SDL_2016         |
-|SDL 2.0.18          | SDL_2018         |
-|SDL 2.0.20          | SDL_2020         |
-|SDL 2.0.22          | SDL_2022         |
-|SDL 2.24.X          | SDL_2240         |
-|SDL 2.26.X          | SDL_2260         |
-|--                  | --               |
-|SDL_image 2.0.0     | SDL_Image, SDL_Image_200|
-|SDL_image 2.0.1     | SDL_Image_201    |
-|SDL_image 2.0.2     | SDL_Image_202    |
-|SDL_image 2.0.3     | SDL_Image_203    |
-|SDL_image 2.0.4     | SDL_Image_204    |
-|SDL_image 2.0.5     | SDL_Image_205    |
-|--                  | --               |
-|SDL_mixer 2.0.0     | SDL_Mixer, SDL_Mixer_200|
-|SDL_mixer 2.0.1     | SDL_Mixer_201    |
-|SDL_mixer 2.0.2     | SDL_Mixer_202    |
-|SDL_mixer 2.0.4     | SDL_Mixer_204    |
-|SDL_mixer 2.6.X     | SDL_Mixer_260    |
-|--                  | --               |
-|SDL_net 2.0.0       | SDL_Net, SDL_Net_200|
-|SDL_net 2.0.1       | SDL_Net_201      |
-|--                  | --               |
-|SDL_ttf 2.0.12      | SDL_TTF, SDL_TTF_2012|
-|SDL_ttf 2.0.13      | SDL_TTF_2013     |
-|SDL_ttf 2.0.14      | SDL_TTF_2014     |
-|SDL_ttf 2.0.15      | SDL_TTF_2015     |
-|SDL_ttf 2.0.18      | SDL_TTF_2018     |
-|SDL_ttf 2.0.18      | SDL_TTF_2018     |
+### SDL versions
+<details>
+	<summary>Expand table</summary>
 
-__Note__: Beginning with SDL 2.0.10, all releases are even numbered (2.0.12, 2.0.14, etc.). Odd numbered versions, beginning with 2.0.11, are development versions, which are not supported by bindbc-sdl. The same is true for SDL_mixer beginning with version 2.0.4 (there is no public release of SDL_mixer 2.0.3).
+| Version     | Version identifier |
+|-------------|--------------------|
+| 2.0.0       | Default            |
+| 2.0.1       | SDL_201            |
+| 2.0.2       | SDL_202            |
+| 2.0.3       | SDL_203            |
+| 2.0.4       | SDL_204            |
+| 2.0.5       | SDL_205            |
+| 2.0.6       | SDL_206            |
+| 2.0.7       | SDL_207            |
+| 2.0.8       | SDL_208            |
+| 2.0.9       | SDL_209            |
+| 2.0.10      | SDL_2010           |
+| 2.0.12      | SDL_2012           |
+| 2.0.14      | SDL_2014           |
+| 2.0.16      | SDL_2016           |
+| 2.0.18      | SDL_2018           |
+| 2.0.20      | SDL_2020           |
+| 2.0.22      | SDL_2022           |
+| 2.24.X      | SDL_2_24           |
+| 2.26.X      | SDL_2_26           |
 
-__Note__: There are no differences in the public API between SDL_image versions 2.0.0 and 2.0.1, and then between versions 2.0.2, 2.0.3, 2.0.4, and 2.0.5, other than the value of `SDL_IMAGE_PATCHLEVEL`.
+> __Warning__
+> [SDL's file-system API](https://wiki.libsdl.org/CategoryFilesystem) was added in 2.0.1. However, a bug on Windows prevented `SDL_GetPrefPath` from creating a path when it doesn't exist. When using this API on Windows it's fine to compile with `SDL_201`, just make sure to ship SDL 2.0.2 or later with your app on Windows and _verify_ that the [linked SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later using `SDL_GetVersion`. Alternatively, you can compile your app with `SDL_202` on Windows and `SDL_201` on other platforms, thereby guaranteeing an error on Windows if the user does not have SDL 2.0.2 or higher.
 
-__Note__: There are no differences in the public API between SDL_net versions 2.0.0 and 2.0.1 other than the value of `SDL_NET_PATCHLEVEL`.
+> __Note__
+> Starting from SDL 2.0.10, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
 
-__Note__: There are no differences in the public API between SDL_ttf versions 2.0.14 and 2.0.15 other than the value of `SDL_TTF_PATCHLEVEL`.
+</details>
 
-__Note__: [SDL's Filesystem](https://wiki.libsdl.org/CategoryFilesystem) API was added in SDL 2.0.1. However, there was a bug on Windows that prevented `SDL_GetPrefPath` from creating the path when it doesn't exist. When using this API on Windows, it's fine to compile with `SDL_201`&mdash;just make sure to ship SDL 2.0.2 or later with your app on Windows and _verify_ that [the loaded SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later via the `SDL_GetVersion` function. Alternatively, you can compile your app with version `SDL_202` on Windows and `SDL_201` on other platforms, thereby guaranteeing errors if the user does not have at least SDL 2.0.2 or higher on Windows.
+---
+### SDL_image versions
+<details>
+	<summary>Expand table</summary>
+
+| Version | Version identifier | Public API changed |
+|---------|--------------------|--------------------|
+| 2.0.0   | `SDL_Image_200`    | N/A                |
+| 2.0.1   | `SDL_Image_201`    | :x:                |
+| 2.0.2   | `SDL_Image_202`    | :heavy_check_mark: |
+| 2.0.3   | `SDL_Image_203`    | :x:                |
+| 2.0.4   | `SDL_Image_204`    | :x:                |
+| 2.0.5   | `SDL_Image_205`    | :x:                |
+| 2.6.X   | `SDL_Image_2_6`    | :heavy_check_mark: |
+
+> __Note__
+> Starting from SDL_image 2.6.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
+
+</details>
+
+---
+### SDL_mixer versions
+<details>
+	<summary>Expand table</summary>
+
+| Version | Version identifier | Public API changed |
+|---------|--------------------|--------------------|
+| 2.0.0   | `SDL_Mixer_200`    | N/A                |
+| 2.0.1   | `SDL_Mixer_201`    | :heavy_check_mark: |
+| 2.0.2   | `SDL_Mixer_202`    | :heavy_check_mark: |
+| 2.0.4   | `SDL_Mixer_204`    | :heavy_check_mark: |
+| 2.6.X   | `SDL_Mixer_2_6`    | :heavy_check_mark: |
+
+> __Note__
+> Starting from SDL_mixer 2.0.4, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
+
+</details>
+
+---
+### SDL_net versions
+<details>
+	<summary>Expand table</summary>
+<background>
+
+| Version | Version identifier | Public API changed |
+|---------|--------------------|--------------------|
+| 2.0.0   | `SDL_Net_200`      | N/A                |
+| 2.0.1   | `SDL_Net_201`      | :x:                |
+| 2.2.X   | `SDL_Net_2_2`      | :x:                |
+
+> __Note__
+> Starting from SDL_net 2.2.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
+
+</details>
+
+---
+### SDL_ttf versions
+<details>
+	<summary>Expand table</summary>
+
+| Version | Version identifier | Public API changed |
+|---------|--------------------|--------------------|
+| 2.0.12  | `SDL_TTF_2012`     | N/A                |
+| 2.0.13  | `SDL_TTF_2013`     | :x:                |
+| 2.0.14  | `SDL_TTF_2014`     | :heavy_check_mark: |
+| 2.0.15  | `SDL_TTF_2015`     | :x:                |
+| 2.0.18  | `SDL_TTF_2018`     | :heavy_check_mark: |
+| 2.20.X  | `SDL_TTF_2_20`     | :heavy_check_mark: |
+
+> __Note__
+> Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
+
+</details>
+
+---
 
 ## The static bindings
 First things first: static _bindings_ do not require static _linking_. The static bindings have a link-time dependency on either the shared _or_ static SDL libraries and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
@@ -344,7 +400,7 @@ First, make sure the non-system libraries on which the SDL libraries depend (suc
 
 Second, you'll want to add your subdirectory path to the Windows DLL search path. This can be accomplished via the function `setCustomLoaderSearchPath` in bindbc.loader. For details on and a full example of how to properly use this function, see the section of the bindbc.loader README titled ["Default Windows search path"](https://github.com/BindBC/bindbc-loader#default-windows-search-path).
 
-The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset the default search path. Bear in mind that some of the satellite libraries load their dependencies lazily. For example, `SDL_image` will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialized.
+The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset the default search path. Bear in mind that some of the satellite libraries load their dependencies lazily. For example, SDL_image will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialized.
 
 ```d
 import bindbc.loader,

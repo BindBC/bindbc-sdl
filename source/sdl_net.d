@@ -202,7 +202,7 @@ private{
 // 				`/usr/local/lib/libSDL2_net-2.0.so`,
 // 				`/usr/local/lib/libSDL2_net-2.0.so.0`,
 			];
-		}else static assert(0, "bindbc-sdl net does not have library search paths set up for this platform");
+		}else static assert(0, "BindBC SDL_net does not have library search paths set up for this platform");
 	}();
 }
 

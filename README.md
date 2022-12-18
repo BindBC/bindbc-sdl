@@ -216,9 +216,11 @@ Following are the supported versions of each SDL_* library and the corresponding
 | 2.26.X      | SDL_2_26           |
 
 > __Warning__
+>
 > [SDL's file-system API](https://wiki.libsdl.org/CategoryFilesystem) was added in 2.0.1. However, a bug on Windows prevented `SDL_GetPrefPath` from creating a path when it doesn't exist. When using this API on Windows it's fine to compile with `SDL_201`, just make sure to ship SDL 2.0.2 or later with your app on Windows and _verify_ that the [linked SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later using `SDL_GetVersion`. Alternatively, you can compile your app with `SDL_202` on Windows and `SDL_201` on other platforms, thereby guaranteeing an error on Windows if the user does not have SDL 2.0.2 or higher.
 
 > __Note__
+>
 > Starting from SDL 2.0.10, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
 
 </details>

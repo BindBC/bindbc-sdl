@@ -215,6 +215,8 @@ Following are the supported versions of each SDL_* library and the corresponding
 | 2.24.X      | SDL_2_24           |
 | 2.26.X      | SDL_2_26           |
 
+</details>
+
 > __Warning__
 >
 > [SDL's file-system API](https://wiki.libsdl.org/CategoryFilesystem) was added in 2.0.1. However, a bug on Windows prevented `SDL_GetPrefPath` from creating a path when it doesn't exist. When using this API on Windows it's fine to compile with `SDL_201`, just make sure to ship SDL 2.0.2 or later with your app on Windows and _verify_ that the [linked SDL version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later using `SDL_GetVersion`. Alternatively, you can compile your app with `SDL_202` on Windows and `SDL_201` on other platforms, thereby guaranteeing an error on Windows if the user does not have SDL 2.0.2 or higher.
@@ -222,8 +224,6 @@ Following are the supported versions of each SDL_* library and the corresponding
 > __Note__
 >
 > Starting from SDL 2.0.10, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
-
-</details>
 
 ---
 ### SDL_image versions
@@ -240,11 +240,11 @@ Following are the supported versions of each SDL_* library and the corresponding
 | 2.0.5   | `SDL_Image_205`    | :x:                |
 | 2.6.X   | `SDL_Image_2_6`    | :heavy_check_mark: |
 
+</details>
+
 > __Note__
 >
 > Starting from SDL_image 2.6.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
-
-</details>
 
 ---
 ### SDL_mixer versions
@@ -259,11 +259,11 @@ Following are the supported versions of each SDL_* library and the corresponding
 | 2.0.4   | `SDL_Mixer_204`    | :heavy_check_mark: |
 | 2.6.X   | `SDL_Mixer_2_6`    | :heavy_check_mark: |
 
+</details>
+
 > __Note__
 >
 > Starting from SDL_mixer 2.0.4, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
-
-</details>
 
 ---
 ### SDL_net versions
@@ -277,11 +277,11 @@ Following are the supported versions of each SDL_* library and the corresponding
 | 2.0.1   | `SDL_Net_201`      | :x:                |
 | 2.2.X   | `SDL_Net_2_2`      | :x:                |
 
+</details>
+
 > __Note__
 >
 > Starting from SDL_net 2.2.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
-
-</details>
 
 ---
 ### SDL_ttf versions
@@ -297,11 +297,11 @@ Following are the supported versions of each SDL_* library and the corresponding
 | 2.0.18  | `SDL_TTF_2018`     | :heavy_check_mark: |
 | 2.20.X  | `SDL_TTF_2_20`     | :heavy_check_mark: |
 
+</details>
+
 > __Note__
 >
 > Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
-
-</details>
 
 ---
 

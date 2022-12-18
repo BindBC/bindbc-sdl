@@ -196,5 +196,10 @@ mixin(joinFnBinds((){
 			[q{ushort}, q{SDL_JoystickGetFirmwareVersion}, q{SDL_Joystick* joystick}],
 		]);
 	}
+	static if(sdlSupport >= SDLSupport.v2_26){
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_GetJoystickGUIDInfo}, q{SDL_JoystickGUID guid, ushort* vendor, ushort* product, ushort* version_, ushort* crc16}],
+		]);
+	}
 	return ret;
 }()));

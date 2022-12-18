@@ -16,10 +16,17 @@ static if(sdlSupport >= SDLSupport.v2_0_9){
 	
 	alias SDL_SensorType = int;
 	enum: SDL_SensorType{
-		SDL_SENSOR_INVALID = -1,
-		SDL_SENSOR_UNKNOWN,
-		SDL_SENSOR_ACCEL,
-		SDL_SENSOR_GYRO,
+		SDL_SENSOR_INVALID    = -1,
+		SDL_SENSOR_UNKNOWN    = 0,
+		SDL_SENSOR_ACCEL      = 1,
+		SDL_SENSOR_GYRO       = 2,
+	}
+	static if(sdlSupport >= SDLSupport.v2_26)
+	enum: SDL_SensorType{
+		SDL_SENSOR_ACCEL_L    = 3,
+		SDL_SENSOR_GYRO_L     = 4,
+		SDL_SENSOR_ACCEL_R    = 5,
+		SDL_SENSOR_GYRO_R     = 6,
 	}
 	
 	enum SDL_STANDARD_GRAVITY = 9.80665f;
@@ -42,6 +49,11 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_SensorGetData}, q{SDL_Sensor* sensor, float* data, int num_values}],
 			[q{void}, q{SDL_SensorClose}, q{SDL_Sensor* sensor}],
 			[q{void}, q{SDL_SensorUpdate}, q{}],
+		]);
+	}
+	static if(sdlSupport >= SDLSupport.v2_26){
+		ret ~= makeFnBinds([
+			int SDL_SensorGetDataWithTimestamp(SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values);
 		]);
 	}
 	return ret;

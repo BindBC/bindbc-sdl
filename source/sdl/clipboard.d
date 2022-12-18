@@ -17,5 +17,12 @@ mixin(joinFnBinds((){
 		[q{char*}, q{SDL_GetClipboardText}, q{}],
 		[q{SDL_bool}, q{SDL_HasClipboardText}, q{}],
 	]);
+	static if(sdlSupport >= SDLSupport.v2_26){
+		ret ~= makeFnBinds([
+			[q{int}, q{SDL_SetPrimarySelectionText}, q{const(char)* text}],
+			[q{char*}, q{SDL_GetPrimarySelectionText}, q{}],
+			[q{SDL_bool}, q{SDL_HasPrimarySelectionText}, q{}],
+		]);
+	}
 	return ret;
 }()));

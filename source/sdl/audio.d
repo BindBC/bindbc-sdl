@@ -123,7 +123,7 @@ static if(sdlSupport >= SDLSupport.v2_0_7){
 }
 
 pragma(inline, true) SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audio_buf, uint* len) @nogc nothrow{
-	return SDL_LoadWAV_RW(SDL_RWFromFile(file,"rb"),1,spec,audio_buf,len);
+	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, len);
 }
 
 mixin(joinFnBinds((){
@@ -169,7 +169,7 @@ mixin(joinFnBinds((){
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_7){
 		ret ~= makeFnBinds([
-			[q{SDL_AudioStream*}, q{SDL_NewAudioStream}, q{const(SDL_AudioFormat) src_format, const(ubyte) src_channels, const(int) src_rate, const(SDL_AudioFormat) dst_format, const(ubyte) dst_channels, const(int) dst_rate}],
+			[q{SDL_AudioStream*}, q{SDL_NewAudioStream}, q{const SDL_AudioFormat src_format, const ubyte src_channels, const int src_rate, const SDL_AudioFormat dst_format, const ubyte dst_channels, const int dst_rate}],
 			[q{int}, q{SDL_AudioStreamPut}, q{SDL_AudioStream* stream, const(void)* buf, int len}],
 			[q{int}, q{SDL_AudioStreamGet}, q{SDL_AudioStream* stream, void* buf, int len}],
 			[q{int}, q{SDL_AudioStreamAvailable}, q{SDL_AudioStream* stream}],

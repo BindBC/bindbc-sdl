@@ -229,6 +229,10 @@ struct SDL_MouseWheelEvent{
 		float preciseX;
 		float preciseY;
 	}
+	static if(sdlSupport >= SDLSupport.v2_26){
+		int mouseX;
+		int mouseY;
+	}
 }
 
 struct SDL_JoyAxisEvent{
@@ -327,6 +331,9 @@ static if(sdlSupport >= SDLSupport.v2_0_14){
 		SDL_JoystickID which;
 		int sensor;
 		float[3] data;
+		static if(sdlSupport >= SDLSupport.v2_26){
+			ulong timestamp_us;
+		}
 	}
 }
 
@@ -394,6 +401,9 @@ struct SDL_SensorEvent{
 	uint timestamp;
 	int which;
 	float[6] data;
+	static if(sdlSupport >= SDLSupport.v2_26){
+		ulong timestamp_us;
+	}
 }
 
 struct SDL_QuitEvent{

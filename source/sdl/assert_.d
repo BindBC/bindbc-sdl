@@ -22,10 +22,10 @@ alias SDL_AssertState = SDL_assert_state;
 struct SDL_assert_data{
 	int always_ignore;
 	uint trigger_count;
-	const(char) *condition;
-	const(char) *filename;
+	const(char)* condition;
+	const(char)* filename;
 	int linenum;
-	const(char) *function_;
+	const(char)* function_;
 	const(SDL_assert_data) *next;
 }
 alias SDL_AssertData = SDL_assert_data;

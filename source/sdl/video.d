@@ -370,5 +370,10 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_GetRectDisplayIndex}, q{const(SDL_Rect)* rect}],
 		]);
 	}
+	static if(sdlSupport >= SDLSupport.v2_26){
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_GetWindowSizeInPixels}, q{SDL_Window* window, int* w, int* h}],
+		]);
+	}
 	return ret;
 }()));

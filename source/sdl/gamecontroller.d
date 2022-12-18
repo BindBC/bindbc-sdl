@@ -219,5 +219,10 @@ mixin(joinFnBinds((){
 			[q{ushort}, q{SDL_GameControllerGetFirmwareVersion}, q{SDL_GameController* gamecontroller}],
 		]);
 	}
+	static if(sdlSupport >= SDLSupport.v2_26){
+		ret ~= makeFnBinds([
+			[q{int}, q{SDL_GameControllerGetSensorDataWithTimestamp}, q{SDL_GameController* gamecontroller, SDL_SensorType type, ulong* timestamp, float* data, int num_values}],
+		]);
+	}
 	return ret;
 }()));

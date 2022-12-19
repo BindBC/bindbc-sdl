@@ -8,6 +8,7 @@
 module sdl.loadso;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 mixin(joinFnBinds((){
 	string[][] ret;

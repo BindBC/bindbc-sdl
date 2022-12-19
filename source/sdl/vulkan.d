@@ -8,6 +8,8 @@
 module sdl.vulkan;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
+
 import sdl.stdinc: SDL_bool;
 import sdl.video: SDL_Window;
 

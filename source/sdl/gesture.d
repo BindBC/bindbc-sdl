@@ -8,6 +8,8 @@
 module sdl.gesture;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
+
 import sdl.touch: SDL_TouchID;
 import sdl.rwops: SDL_RWops;
 

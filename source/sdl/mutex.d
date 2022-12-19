@@ -8,6 +8,7 @@
 module sdl.mutex;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 enum SDL_MUTEX_TIMEOUT = 1;
 enum SDL_MUTEX_MAXWAIT = uint.max;

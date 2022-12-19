@@ -8,6 +8,7 @@
 module sdl.video;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.rect: SDL_Rect;
 import sdl.stdinc: SDL_bool;

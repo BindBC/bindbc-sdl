@@ -8,6 +8,7 @@
 module sdl.sensor;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 static if(sdlSupport >= SDLSupport.v2_0_9){
 	struct SDL_Sensor;
@@ -53,7 +54,7 @@ mixin(joinFnBinds((){
 	}
 	static if(sdlSupport >= SDLSupport.v2_26){
 		ret ~= makeFnBinds([
-			int SDL_SensorGetDataWithTimestamp(SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values);
+			[q{int}, q{SDL_SensorGetDataWithTimestamp}, q{SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values}],
 		]);
 	}
 	return ret;

@@ -8,6 +8,7 @@
 module sdl.system;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.render: SDL_Renderer;
 import sdl.stdinc: SDL_bool;
@@ -135,5 +136,6 @@ mixin(joinFnBinds((){
 				[q{int}, q{SDL_AndroidSendMessage}, q{uint command, int param}],
 			]);
 		}
+	}
 	return ret;
 }()));

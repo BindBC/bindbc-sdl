@@ -8,6 +8,7 @@
 module sdl.blendmode;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 // SDL_BlendMode
 alias SDL_BlendMode = int;

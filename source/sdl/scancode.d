@@ -8,6 +8,7 @@
 module sdl.scancode;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 alias SDL_Scancode = int;
 enum: SDL_Scancode{

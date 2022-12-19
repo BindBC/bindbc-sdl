@@ -8,6 +8,7 @@
 module sdl.rect;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.stdinc;
 

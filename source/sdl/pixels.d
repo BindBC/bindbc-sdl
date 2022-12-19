@@ -8,6 +8,7 @@
 module sdl.pixels;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.stdinc: SDL_FOURCC, SDL_bool;
 

@@ -8,6 +8,7 @@
 module sdl.gamecontroller;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.joystick;
 import sdl.rwops;

@@ -8,6 +8,8 @@
 module sdl.audio;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
+
 import sdl.rwops;
 
 enum: ushort{
@@ -47,13 +49,24 @@ version(LittleEndian){
 	alias AUDIO_F32SYS  = AUDIO_F32MSB;
 }
 
-enum SDL_AUDIO_BITSIZE(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_BITSIZE;
-enum SDL_AUDIO_ISFLOAT(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_DATATYPE;
-enum SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x)     = x & SDL_AUDIO_MASK_ENDIAN;
-enum SDL_AUDIO_ISSIGNED(SDL_AudioFormat x)        = x & SDL_AUDIO_MASK_SIGNED;
-enum SDL_AUDIO_ISINT(SDL_AudioFormat x)           = !SDL_AUDIO_ISFLOAT!x;
-enum SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x)  = !SDL_AUDIO_ISBIGENDIAN!x;
-enum SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x)      = !SDL_AUDIO_ISSIGNED!x;
+pragma(inline, true) nothrow @nogc pure @safe{
+	SDL_AudioFormat SDL_AUDIO_BITSIZE(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_BITSIZE); }
+	SDL_AudioFormat SDL_AUDIO_ISFLOAT(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_DATATYPE); }
+	SDL_AudioFormat SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_ENDIAN); }
+	SDL_AudioFormat SDL_AUDIO_ISSIGNED(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_SIGNED); }
+	bool SDL_AUDIO_ISINT(SDL_AudioFormat x){ return !SDL_AUDIO_ISFLOAT(x); }
+	bool SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x){ return !SDL_AUDIO_ISBIGENDIAN(x); }
+	bool SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x){ return !SDL_AUDIO_ISSIGNED(x); }
+}
+deprecated("Please use the non-template variant instead"){
+	enum SDL_AUDIO_BITSIZE(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_BITSIZE;
+	enum SDL_AUDIO_ISFLOAT(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_DATATYPE;
+	enum SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x)     = x & SDL_AUDIO_MASK_ENDIAN;
+	enum SDL_AUDIO_ISSIGNED(SDL_AudioFormat x)        = x & SDL_AUDIO_MASK_SIGNED;
+	enum SDL_AUDIO_ISINT(SDL_AudioFormat x)           = !SDL_AUDIO_ISFLOAT(x);
+	enum SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x)  = !SDL_AUDIO_ISBIGENDIAN(x);
+	enum SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x)      = !SDL_AUDIO_ISSIGNED(x);
+}
 
 enum{
 	SDL_AUDIO_ALLOW_FREQUENCY_CHANGE  = 0x00000001,

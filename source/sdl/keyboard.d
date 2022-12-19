@@ -8,6 +8,7 @@
 module sdl.keyboard;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.keycode: SDL_Keycode, SDL_Keymod;
 import sdl.rect: SDL_Rect;

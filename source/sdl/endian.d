@@ -7,6 +7,7 @@
 module sdl.endian;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.stdinc;
 

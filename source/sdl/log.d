@@ -7,9 +7,11 @@
 +/
 module sdl.log;
 
+import bindbc.sdl.config;
+import bindbc.sdl.codegen;
+
 version(WebAssembly){
 }else import core.stdc.stdarg: va_list;
-import bindbc.sdl.config;
 
 //NOTE: as-of SDL 2.24, there is no longer a max log message length
 enum SDL_MAX_LOG_MESSAGE = 4096;

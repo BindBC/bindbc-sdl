@@ -1,6 +1,0 @@
-- `loadedSDLVersion` (and equivalents) now returns the desired version rather than the loaded one, the same as `SDL_VERSION`. To see which version was loaded, please use `SDL_GetVersion`.
-- explicit `EnumType.member` will no longer work because all enum types are now type aliases.
-- dynamic bindings' type aliases (e.g. `pSDL_Init`) no longer exist.
-- all SDL binding files are now in `sdl.*` instead of `bindbc.sdl.bind.*`.
-- SDL Net functions use `TCPsocket` and `UDPsocket` instead of `void*` now. 
-- dynamic function bindings no longer use function pointers. For example, `auto x = SDL_Init;` will now call `SDL_Init` and will make `typeof(x)` be `int` instead of `int function(uint)`. If you relied on getting references this way in your code, please use use the address-of operator (`&`) instead. (e.g. `auto x = &SDL_Init;`) This also means that if your code manually set the function pointers (i.e. `SDL_Init = &myFn;`) then it will no longer work.

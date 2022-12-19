@@ -8,6 +8,7 @@
 module sdl.rwops;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 version(WebAssembly){
 }else import core.stdc.stdio: FILE;

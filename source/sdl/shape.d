@@ -8,6 +8,7 @@
 module sdl.shape;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.pixels: SDL_Color;
 import sdl.stdinc: SDL_bool;

@@ -8,6 +8,7 @@
 module sdl.messagebox;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.video: SDL_Window;
 

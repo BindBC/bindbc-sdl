@@ -8,6 +8,7 @@
 module sdl.events;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.gesture;
 import sdl.joystick;

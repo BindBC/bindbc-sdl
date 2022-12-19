@@ -8,6 +8,7 @@
 module sdl.error;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 pragma(inline, true) @nogc nothrow{
 	int  SDL_OutOfMemory(){                return SDL_Error(SDL_ENOMEM); }

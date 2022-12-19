@@ -8,6 +8,8 @@
 module sdl.cpuinfo;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
+
 import sdl.stdinc: SDL_bool;
 
 enum SDL_CACHELINE_SIZE = 128;

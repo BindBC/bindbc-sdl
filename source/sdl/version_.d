@@ -8,6 +8,7 @@
 module sdl.version_;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 struct SDL_version{
 	ubyte major;

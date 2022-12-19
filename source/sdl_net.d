@@ -9,6 +9,7 @@ module sdl_net;
 
 import bindbc.sdl.config;
 static if(bindSDLNet):
+import bindbc.sdl.codegen;
 
 import sdl.version_: SDL_version;
 

@@ -19,6 +19,22 @@ By default, bindbc-sdl is configured to compile as dynamic bindings that are not
 
 When using DUB to manage your project, the static bindings can be enabled via a DUB `subConfiguration` statement in your project's package file. `-betterC` compatibility is also enabled via subconfigurations.
 
+## Special Platforms
+Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/version.html#predefined-versions), meaning that we've had to use custom version identifiers for them.
+If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub `versions`, or supply them in `-version` to your compiler.
+
+|Version identifier| Platform name            |
+|------------------|--------------------------|
+| DirectFB         | DirectFB                 |
+| Dreamcast        | Dreamcast                |
+| OS2              | Operating System/2       |
+| PSP              | PlayStation Portable     |
+| RISCOS           | RISC OS                  |
+| Vivante          | Vivante                  |
+| WinRT            | Windows RT               |
+
+## Configurations
+
 |      ┌      |     D      |   BetterC   |
 |-------------|------------|-------------|
 | **Dynamic** | `dynamic`  | `dynamicBC` |
@@ -28,12 +44,12 @@ To use any of the supported SDL libraries, add bindbc-sdl as a dependency to you
 
 __dub.json__
 ```json
-dependencies {
+"dependencies:" {
 	"bindbc-sdl": "~>1.3.0",
 },
 "versions": [
 	"SDL_Image_2_6",
-	"SDL_TTF_2_20"
+	"SDL_TTF_2_20",
 ],
 ```
 
@@ -140,9 +156,11 @@ By default, each bindbc-sdl binding is configured to compile bindings for the lo
 __dub.json__
 ```json
 "dependencies": {
-	"bindbc-sdl": "~>1.3.0"
+	"bindbc-sdl": "~>1.3.0",
 },
-"versions": ["SDL_204"],
+"versions": [
+	"SDL_204",
+],
 ```
 
 __dub.sdl__
@@ -199,27 +217,27 @@ Following are the supported versions of each SDL_* library and the corresponding
 <details>
 	<summary><h2>SDL versions</h2></summary>
 
-| Version     | Version identifier |
-|-------------|--------------------|
-| 2.0.0       | (default)          |
-| 2.0.1       | `SDL_201`          |
-| 2.0.2       | `SDL_202`          |
-| 2.0.3       | `SDL_203`          |
-| 2.0.4       | `SDL_204`          |
-| 2.0.5       | `SDL_205`          |
-| 2.0.6       | `SDL_206`          |
-| 2.0.7       | `SDL_207`          |
-| 2.0.8       | `SDL_208`          |
-| 2.0.9       | `SDL_209`          |
-| 2.0.10      | `SDL_2010`         |
-| 2.0.12      | `SDL_2012`         |
-| 2.0.14      | `SDL_2014`         |
-| 2.0.16      | `SDL_2016`         |
-| 2.0.18      | `SDL_2018`         |
-| 2.0.20      | `SDL_2020`         |
-| 2.0.22      | `SDL_2022`         |
-| 2.24.X      | `SDL_2_24`         |
-| 2.26.X      | `SDL_2_26`         |
+| Version     |Version identifier|
+|-------------|------------------|
+| 2.0.0       |(default)         |
+| 2.0.1       |`SDL_201`         |
+| 2.0.2       |`SDL_202`         |
+| 2.0.3       |`SDL_203`         |
+| 2.0.4       |`SDL_204`         |
+| 2.0.5       |`SDL_205`         |
+| 2.0.6       |`SDL_206`         |
+| 2.0.7       |`SDL_207`         |
+| 2.0.8       |`SDL_208`         |
+| 2.0.9       |`SDL_209`         |
+| 2.0.10      |`SDL_2010`        |
+| 2.0.12      |`SDL_2012`        |
+| 2.0.14      |`SDL_2014`        |
+| 2.0.16      |`SDL_2016`        |
+| 2.0.18      |`SDL_2018`        |
+| 2.0.20      |`SDL_2020`        |
+| 2.0.22      |`SDL_2022`        |
+| 2.24.X      |`SDL_2_24`        |
+| 2.26.X      |`SDL_2_26`        |
 
 </details>
 
@@ -234,15 +252,15 @@ Following are the supported versions of each SDL_* library and the corresponding
 <details>
 	<summary><h2>SDL_image versions</h2></summary>
 
-| Version | Version identifier | Public API changed |
-|---------|--------------------|--------------------|
-| 2.0.0   | `SDL_Image_200`    | N/A                |
-| 2.0.1   | `SDL_Image_201`    | :x:                |
-| 2.0.2   | `SDL_Image_202`    | :heavy_check_mark: |
-| 2.0.3   | `SDL_Image_203`    | :x:                |
-| 2.0.4   | `SDL_Image_204`    | :x:                |
-| 2.0.5   | `SDL_Image_205`    | :x:                |
-| 2.6.X   | `SDL_Image_2_6`    | :heavy_check_mark: |
+| Version |Version identifier| Public API changed |
+|---------|------------------|--------------------|
+| 2.0.0   |`SDL_Image_200`   | N/A                |
+| 2.0.1   |`SDL_Image_201`   | :x:                |
+| 2.0.2   |`SDL_Image_202`   | :heavy_check_mark: |
+| 2.0.3   |`SDL_Image_203`   | :x:                |
+| 2.0.4   |`SDL_Image_204`   | :x:                |
+| 2.0.5   |`SDL_Image_205`   | :x:                |
+| 2.6.X   |`SDL_Image_2_6`   | :heavy_check_mark: |
 
 </details>
 
@@ -253,13 +271,13 @@ Following are the supported versions of each SDL_* library and the corresponding
 <details>
 	<summary><h2>SDL_mixer versions</h2></summary>
 
-| Version | Version identifier | Public API changed |
-|---------|--------------------|--------------------|
-| 2.0.0   | `SDL_Mixer_200`    | N/A                |
-| 2.0.1   | `SDL_Mixer_201`    | :heavy_check_mark: |
-| 2.0.2   | `SDL_Mixer_202`    | :heavy_check_mark: |
-| 2.0.4   | `SDL_Mixer_204`    | :heavy_check_mark: |
-| 2.6.X   | `SDL_Mixer_2_6`    | :heavy_check_mark: |
+| Version |Version identifier| Public API changed |
+|---------|------------------|--------------------|
+| 2.0.0   |`SDL_Mixer_200`   | N/A                |
+| 2.0.1   |`SDL_Mixer_201`   | :heavy_check_mark: |
+| 2.0.2   |`SDL_Mixer_202`   | :heavy_check_mark: |
+| 2.0.4   |`SDL_Mixer_204`   | :heavy_check_mark: |
+| 2.6.X   |`SDL_Mixer_2_6`   | :heavy_check_mark: |
 
 </details>
 
@@ -271,11 +289,11 @@ Following are the supported versions of each SDL_* library and the corresponding
 	<summary><h2>SDL_net versions</h2></summary>
 <background>
 
-| Version | Version identifier | Public API changed |
-|---------|--------------------|--------------------|
-| 2.0.0   | `SDL_Net_200`      | N/A                |
-| 2.0.1   | `SDL_Net_201`      | :x:                |
-| 2.2.X   | `SDL_Net_2_2`      | :x:                |
+| Version |Version identifier| Public API changed |
+|---------|------------------|--------------------|
+| 2.0.0   |`SDL_Net_200`     | N/A                |
+| 2.0.1   |`SDL_Net_201`     | :x:                |
+| 2.2.X   |`SDL_Net_2_2`     | :x:                |
 
 </details>
 
@@ -286,22 +304,20 @@ Following are the supported versions of each SDL_* library and the corresponding
 <details>
 	<summary><h2>SDL_ttf versions</h2></summary>
 
-| Version | Version identifier | Public API changed |
-|---------|--------------------|--------------------|
-| 2.0.12  | `SDL_TTF_2012`     | N/A                |
-| 2.0.13  | `SDL_TTF_2013`     | :x:                |
-| 2.0.14  | `SDL_TTF_2014`     | :heavy_check_mark: |
-| 2.0.15  | `SDL_TTF_2015`     | :x:                |
-| 2.0.18  | `SDL_TTF_2018`     | :heavy_check_mark: |
-| 2.20.X  | `SDL_TTF_2_20`     | :heavy_check_mark: |
+| Version |Version identifier| Public API changed |
+|---------|------------------|--------------------|
+| 2.0.12  |`SDL_TTF_2012`    | N/A                |
+| 2.0.13  |`SDL_TTF_2013`    | :x:                |
+| 2.0.14  |`SDL_TTF_2014`    | :heavy_check_mark: |
+| 2.0.15  |`SDL_TTF_2015`    | :x:                |
+| 2.0.18  |`SDL_TTF_2018`    | :heavy_check_mark: |
+| 2.20.X  |`SDL_TTF_2_20`    | :heavy_check_mark: |
 
 </details>
 
 > __Note__
 >
 > Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC SDL.
-
----
 
 ## The static bindings
 First things first: static _bindings_ do not require static _linking_. The static bindings have a link-time dependency on either the shared _or_ static SDL libraries and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
@@ -323,7 +339,7 @@ When using the compiler command line or a build system that doesn't support DUB,
 
 > __Note__
 >
-> The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program, i.e., those maintained in [the BindBC GitHub organization](https://github.com/BindBC). Some third-party BindBC packages may support it as well.
+> The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organization](https://github.com/BindBC)) Some third-party BindBC packages may support it as well.
 
 For example, when using the static bindings for SDL and SDL_image with DUB:
 
@@ -332,13 +348,19 @@ __dub.json__
 "dependencies": {
 	"bindbc-sdl": "~>1.3.0"
 },
-"versions": ["BindSDL_Static", "SDL_Image"],
-"libs": ["SDL2", "SDL2_image"]
+"versions": [
+	"BindSDL_Static",
+	"SDL_Image",
+],
+"libs": [
+	"SDL2", "SDL2_image",
+],
 ```
 
 __dub.sdl__
 ```sdl
 dependency "bindbc-sdl" version="~>1.3.0"
+
 versions "BindSDL_Static" "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```
@@ -349,21 +371,25 @@ Instead of using DUB's `versions` directive, a `subConfiguration` can be used. E
 __dub.json__
 ```json
 "dependencies": {
-	"bindbc-sdl": "~>1.3.0"
+	"bindbc-sdl": "~>1.3.0",
 },
 "subConfigurations": {
-	"bindbc-sdl": "static"
+	"bindbc-sdl": "static",
 },
 "versions": [
-	"SDL_Image"
+	"SDL_Image",
 ],
-"libs": ["SDL2", "SDL2_image"],
+"libs": [
+	"SDL2",
+	"SDL2_image",
+],
 ```
 
 __dub.sdl__
 ```sdl
 dependency "bindbc-sdl" version="~>1.3.0"
 subConfiguration "bindbc-sdl" "static"
+
 versions "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```
@@ -376,21 +402,25 @@ This has the benefit of completely excluding from the build any source modules r
 __dub.json__
 ```json
 "dependencies": {
-	"bindbc-sdl": "~>1.3.0"
+	"bindbc-sdl": "~>1.3.0",
 },
 "subConfigurations": {
-	"bindbc-sdl": "staticBC"
+	"bindbc-sdl": "staticBC",
 },
 "versions": [
-	"SDL_Image"
+	"SDL_Image",
 ],
-"libs": ["SDL2", "SDL2_image"],
+"libs": [
+	"SDL2",
+	"SDL2_image",
+],
 ```
 
 __dub.sdl__
 ```sdl
 dependency "bindbc-sdl" version="~>1.3.0"
 subConfiguration "bindbc-sdl" "staticBC"
+
 versions "SDL_Image"
 libs "SDL2" "SDL2_image"
 ```

@@ -8,6 +8,7 @@
 module sdl;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 enum: uint{
 	SDL_INIT_TIMER           = 0x0000_0001,

@@ -8,6 +8,7 @@
 module sdl.keycode;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.scancode;
 
@@ -16,8 +17,9 @@ enum SDLK_SCANCODE_MASK = 1<<30;
 pragma(inline, true) nothrow @nogc pure @safe{
 	SDL_Keycode SDL_SCANCODE_TO_KEYCODE(SDL_Scancode x){ return x | SDLK_SCANCODE_MASK; }
 }
-deprecated("Please use the non-template variant instead")
+deprecated("Please use the non-template variant instead"){
 	enum SDL_SCANCODE_TO_KEYCODE(SDL_Scancode x) = x | SDLK_SCANCODE_MASK;
+}
 
 alias SDL_Keycode = int;
 enum: SDL_Keycode{

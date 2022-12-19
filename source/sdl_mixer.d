@@ -9,6 +9,7 @@ module sdl_mixer;
 
 import bindbc.sdl.config;
 static if(bindSDLMixer):
+import bindbc.sdl.codegen;
 
 import sdl.audio: AUDIO_S16LSB, SDL_MIX_MAXVOLUME;
 import sdl.error: SDL_GetError, SDL_SetError, SDL_ClearError, SDL_OutOfMemory;

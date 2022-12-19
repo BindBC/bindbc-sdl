@@ -8,6 +8,7 @@
 module sdl.stdinc;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 version(WebAssembly){
 }else import core.stdc.stdarg: va_list;

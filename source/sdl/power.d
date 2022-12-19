@@ -8,6 +8,7 @@
 module sdl.power;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 alias SDL_PowerState = int;
 enum: SDL_PowerState{

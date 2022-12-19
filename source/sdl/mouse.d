@@ -8,6 +8,7 @@
 module sdl.mouse;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.stdinc: SDL_bool;
 import sdl.surface: SDL_Surface;

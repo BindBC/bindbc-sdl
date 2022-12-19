@@ -9,6 +9,7 @@ module sdl_ttf;
 
 import bindbc.sdl.config;
 static if(bindSDLTTF):
+import bindbc.sdl.codegen;
 
 import sdl.sdlerror: SDL_GetError, SDL_SetError;
 import sdl.sdlpixels: SDL_Color;

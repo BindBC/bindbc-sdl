@@ -9,6 +9,7 @@ module sdl_image;
 
 import bindbc.sdl.config;
 static if(bindSDLImage):
+import bindbc.sdl.codegen;
 
 import sdl.error: SDL_GetError, SDL_SetError;
 import sdl.render: SDL_Renderer, SDL_Texture;

@@ -7,6 +7,7 @@
 module sdl.guid;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 struct SDL_GUID{
 	ubyte[16] data;

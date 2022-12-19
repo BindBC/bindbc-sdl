@@ -8,6 +8,7 @@
 module sdl.render;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.blendmode: SDL_BlendMode;
 import sdl.rect;

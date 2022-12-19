@@ -8,6 +8,7 @@
 module sdl.hints;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.stdinc: SDL_bool;
 

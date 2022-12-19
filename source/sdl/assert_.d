@@ -8,6 +8,7 @@
 module sdl.assert_;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 alias SDL_assert_state = uint;
 enum: SDL_assert_state{

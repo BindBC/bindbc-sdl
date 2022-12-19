@@ -8,6 +8,7 @@
 module sdl.joystick;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 import sdl.stdinc: SDL_bool;
 import sdl.guid: SDL_GUID;

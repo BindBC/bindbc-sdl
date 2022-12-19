@@ -8,6 +8,7 @@
 module sdl.thread;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 struct SDL_Thread;
 alias SDL_threadID = c_ulong;

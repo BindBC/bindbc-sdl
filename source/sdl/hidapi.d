@@ -8,6 +8,7 @@
 module sdl.hidapi;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 static if(sdlSupport >= SDLSupport.v2_0_18){
 	import sdl.stdinc: SDL_bool;

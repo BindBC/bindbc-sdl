@@ -8,6 +8,7 @@
 module sdl.touch;
 
 import bindbc.sdl.config;
+import bindbc.sdl.codegen;
 
 alias SDL_TouchID = long;
 alias SDL_FingerID = long;

@@ -230,7 +230,7 @@ static if(sdlSupport >= SDLSupport.v2_0_4){
 	}
 	
 	import sdl.rect: SDL_Point;
-	alias SDL_HitTest = extern(C) SDL_HitTestResult function(SDL_Window*,const(SDL_Point)*,void*) nothrow;
+	alias SDL_HitTest = extern(C) SDL_HitTestResult function(SDL_Window* win, const(SDL_Point)* area, void* data) nothrow;
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_6){

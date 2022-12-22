@@ -25,17 +25,19 @@ If you intend to compile for any of these platforms, please add the correspondin
 
 | Version identifier    | Platform                     |
 |-----------------------|------------------------------|
-| `DirectFB`            | DirectFB                     |
+| `DirectFB`            | DirectFB                     |used
 | `Dreamcast`           | Dreamcast                    |
 | `Emscripten_Pthreads` | Emscripten with pthreads     |
+| `KMSDRM`              | KMS/DRM                      |used
+| `Mir`                 | Mir-server                   |used
 | `NGage`               | N-Gage                       |
-| `OS2`                 | Operating System/2           |
+| `OS2`                 | Operating System/2           |used
 | `PSP`                 | PlayStation Portable         |
 | `RISCOS`              | RISC OS                      |
 | `UWP`                 | Windows Runtime              |
-| `Vivante`             | Vivante                      |
+| `Vivante`             | Vivante                      |used
 | `WinGDK`              | Windows Game Development Kit |
-| `WinRT`               | Windows RT                   |
+| `WinRT`               | Windows RT                   |used
 | `XboxOne`             | Xbox One                     |
 | `XboxSeries`          | Xbox Series X/S              |
 

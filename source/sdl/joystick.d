@@ -149,7 +149,7 @@ mixin(joinFnBinds((){
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_9){
 		ret ~= makeFnBinds([
-			[q{int}, q{SDL_JoystickRumble}, q{SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble,  duration_ms}],
+			[q{int}, q{SDL_JoystickRumble}, q{SDL_Joystick* joystick, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms}],
 		]);
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_10){
@@ -173,7 +173,7 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_JoystickSetVirtualButton}, q{SDL_Joystick* joystick, int button, ubyte value}],
 			[q{int}, q{SDL_JoystickSetVirtualHat}, q{SDL_Joystick* joystick, int hat, ubyte value}],
 			[q{const(char)*}, q{SDL_JoystickGetSerial}, q{SDL_Joystick* joystick}],
-			[q{int}, q{SDL_JoystickRumbleTriggers}, q{SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble,  duration_ms}],
+			[q{int}, q{SDL_JoystickRumbleTriggers}, q{SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms}],
 			[q{SDL_bool}, q{SDL_JoystickHasLED}, q{SDL_Joystick* joystick}],
 			[q{int}, q{SDL_JoystickSetLED}, q{SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue}],
 		]);

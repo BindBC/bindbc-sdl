@@ -14,6 +14,10 @@ import sdl.stdinc: SDL_bool;
 import sdl.version_: SDL_version;
 import sdl.video: SDL_Window;
 
+version(Windows){
+	import core.sys.windows.windef: HWND, UINT, WPARAM, LPARAM, HDC, HINSTANCE;
+}
+
 alias SDL_SYSWM_TYPE = int;
 enum: SDL_SYSWM_TYPE{
 	SDL_SYSWM_UNKNOWN     = 0,
@@ -61,8 +65,7 @@ struct SDL_SysWMmsg{
 	SDL_version version_;
 	SDL_SYSWM_TYPE subsystem;
 	union _Msg{
-		version(SDL_VIDEO_DRIVER_WINDOWS){
-			import core.sys.windows.windef;
+		version(Windows){
 			struct _Win{
 				HWND hwnd;
 				UINT msg;
@@ -107,11 +110,11 @@ struct SDL_SysWMmsg{
 		}
 		static if(sdlSupport >= SDLSupport.v2_0_14) version(OS2){
 			struct _OS2{
-				BOOL fFrame;
-				HWND hwnd;
-				ULONG msg;
-				MPARAM mp1;
-				MPARAM mp2;
+				c_ulong fFrame; //BOOL fFrame;
+				c_ulong hwnd; //HWND hwnd;
+				c_ulong msg; //ULONG msg;
+				void* mp1; //MPARAM mp1;
+				void* mp2; //MPARAM mp2;
 			}
 			_OS2 os2;
 		}
@@ -124,71 +127,111 @@ struct SDL_SysWMinfo{
 	SDL_version version_;
 	SDL_SYSWM_TYPE subsystem;
 
-	union info_{
+	union _Info{
 		version(Windows){
-			struct win_{
-				void* window;
-				static if(sdlSupport >= SDLSupport.v2_0_4)
-					void* hdc;
-				static if(sdlSupport >= SDLSupport.v2_0_6)
-					void* hinstance;
+			struct _Win{
+				HWND window;
+				static if(sdlSupport >= SDLSupport.v2_0_4):
+				HDC hdc;
+				static if(sdlSupport >= SDLSupport.v2_0_6):
+				HINSTANCE hinstance;
 			}
-			win_ win;
-		}else version(OSX){
-			struct cocoa_{
-				void* window;
-			}
-			cocoa_ cocoa;
-			
-			struct uikit_{
-				void *window;
-			}
-			uikit_ uikit;
-		}else version(linux){
-			struct dfb_{
-				void *dfb;
-				void *window;
-				void *surface;
-			}
-			dfb_ dfb;
-			
-			static if(sdlSupport >= SDLSupport.v2_0_2){
-				struct mir_{
-					void *connection;
-					void *surface;
-				}
-				mir_ mir;
-			}
+			_Win win;
 		}
-		version(Posix){
-			struct x11_{
+		version(WinRT){
+			struct _WinRT{
+				void* window;
+			}
+			_WinRT winrt;
+		}
+		version(linux){
+			struct _X11{
 				void* display;
 				uint window;
 			}
-			x11_ x11;
-			
-			static if(sdlSupport >= SDLSupport.v2_0_2){
-				struct wl_{
-					void *display;
-					void *surface;
-					void *shell_surface;
-				}
-				wl_ wl;
-			}
+			_X11 x11;
 		}
-		static if(sdlSupport >= SDLSupport.v2_0_4){
-			version(Android){
-				struct android_{
-					void* window;
-					void* surface;
-				}
-				android_ android;
+		version(DirectFB){
+			struct _DFB{
+				void* dfb;
+				void* window;
+				void* surface;
 			}
+			_DFB dfb;
+		}
+		version(OSX){
+			struct _Cocoa{
+				void* window;
+			}
+			_Cocoa cocoa;
+		}
+		version(iOS){
+			struct _UIKit{
+				void* window;
+				static if(sdlSupport >= SDLSupport.v2_0_){
+					uint framebuffer;
+					uint colorbuffer;
+					uint resolveFramebuffer;
+				}
+			}
+			_UIKit uikit;
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_2){
+			struct _WL{
+				void* display;
+				void* surface;
+				void* shell_surface;
+				static if(sdlSupport >= SDLSupport.v2_0_16):
+				void* egl_window;
+				void* xdg_surface;
+				static if(sdlSupport >= SDLSupport.v2_0_18):
+				void* xdg_toplevel;
+				static if(sdlSupport >= SDLSupport.v2_0_22):
+				void* xdg_popup;
+				void* xdg_positioner;
+			}
+			_WL wl;
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_2) version(Mir){
+			struct _Mir{
+				void* connection;
+				void* surface;
+			}
+			_Mir mir;
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_4) version(Android){
+			struct _Android{
+				void* window;
+				void* surface;
+			}
+			_Android android;
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_14) version(OS2){
+			struct _OS2{
+				void* hwnd; //HWND hwnd;
+				void* hwndFrame; //HWND hwndFrame;
+			}
+			_OS2 os2;
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_5) version(Vivante){
+			struct _Vivante{
+				void* display;
+				void* window;
+			}
+			_Vivante vivante;
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_16) version(KMSDRM){
+			struct _KMSDRM{
+				int dev_index;
+				int drm_fd;
+				void* gbm_dev;
+			}
+			_KMSDRM kmsdrm;
 		}
 		static if(sdlSupport >= SDLSupport.v2_0_6) ubyte[64] dummy;
 		else int dummy;
 	}
-	info_ info;
+	_Info info;
 }
 
 mixin(joinFnBinds((){

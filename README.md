@@ -20,18 +20,24 @@ By default, bindbc-sdl is configured to compile as dynamic bindings that are not
 When using DUB to manage your project, the static bindings can be enabled via a DUB `subConfiguration` statement in your project's package file. `-betterC` compatibility is also enabled via subconfigurations.
 
 ## Special Platforms
-Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/version.html#predefined-versions), meaning that we've had to use custom version identifiers for them.
+Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/version.html#predefined-versions), meaning that I've had to use custom version identifiers for them.
 If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub `versions`, or supply them in `-version` to your compiler.
 
-|Version identifier| Platform name            |
-|------------------|--------------------------|
-| DirectFB         | DirectFB                 |
-| Dreamcast        | Dreamcast                |
-| OS2              | Operating System/2       |
-| PSP              | PlayStation Portable     |
-| RISCOS           | RISC OS                  |
-| Vivante          | Vivante                  |
-| WinRT            | Windows RT               |
+| Version identifier    | Platform                     |
+|-----------------------|------------------------------|
+| `DirectFB`            | DirectFB                     |
+| `Dreamcast`           | Dreamcast                    |
+| `Emscripten_Pthreads` | Emscripten with pthreads     |
+| `NGage`               | N-Gage                       |
+| `OS2`                 | Operating System/2           |
+| `PSP`                 | PlayStation Portable         |
+| `RISCOS`              | RISC OS                      |
+| `UWP`                 | Windows Runtime              |
+| `Vivante`             | Vivante                      |
+| `WinGDK`              | Windows Game Development Kit |
+| `WinRT`               | Windows RT                   |
+| `XboxOne`             | Xbox One                     |
+| `XboxSeries`          | Xbox Series X/S              |
 
 ## Configurations
 

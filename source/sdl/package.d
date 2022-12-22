@@ -104,7 +104,7 @@ private{
 	enum libNamesCT = (){
 		version(Windows){
 			return [
-				`SDL2_image.dll`,
+				`SDL2.dll`,
 			];
 		}else version(OSX){
 			return [

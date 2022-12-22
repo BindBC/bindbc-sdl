@@ -60,60 +60,64 @@ enum: SDL_SYSWM_TYPE{
 struct SDL_SysWMmsg{
 	SDL_version version_;
 	SDL_SYSWM_TYPE subsystem;
-	union msg_{
+	union _Msg{
 		version(SDL_VIDEO_DRIVER_WINDOWS){
 			import core.sys.windows.windef;
-			struct Win_{
+			struct _Win{
 				HWND hwnd;
 				UINT msg;
 				WPARAM wParam;
 				LPARAM lParam;
 			}
-			Win_ win;
+			_Win win;
 		}
-		version(linux)
-			struct X11_{
-				XEvent event;
+		version(linux){
+			struct _X11{
+				//XEvent event;
+				int pad1;
+				c_long[24] pad2;
 			}
-			X11_ x11;
+			_X11 x11;
 		}
 		version(DirectFB){
-			struct dfb_{
-				DFBEvent event;
+			struct _DFB{
+				//DFBEvent event;
+				int clazz; //DFBEventClass clazz;
+				void* pad;
 			}
-			dfb_ dfb;
+			_DFB dfb;
 		}
 		version(OSX){
-			struct cocoa_{
+			struct _Cocoa{
 				int dummy;
 			}
-			cocoa_ cocoa;
+			_Cocoa cocoa;
 		}
 		version(iOS){
-			struct uikit_{
+			struct _UIKit{
 				int dummy;
 			}
-			uikit_ uikit;
+			_UIKit uikit;
 		}
 		static if(sdlSupport >= SDLSupport.v2_0_5) version(Vivante){
-			struct vivante_{
+			struct _Vivante{
 				int dummy;
 			}
-			vivante_ vivante;
+			_Vivante vivante;
 		}
 		static if(sdlSupport >= SDLSupport.v2_0_14) version(OS2){
-			struct os2_{
+			struct _OS2{
 				BOOL fFrame;
 				HWND hwnd;
 				ULONG msg;
 				MPARAM mp1;
 				MPARAM mp2;
 			}
-			os2_ os2;
+			_OS2 os2;
 		}
 		int dummy;
 	}
-	msg_ msg;
+	_Msg msg;
 }
 
 struct SDL_SysWMinfo{

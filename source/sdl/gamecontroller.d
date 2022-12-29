@@ -18,7 +18,7 @@ import sdl.stdinc: SDL_bool;
 struct SDL_GameController;
 
 static if(sdlSupport >= SDLSupport.v2_0_12){
-	alias SDL_GameControllerType = int;
+	alias SDL_GameControllerType = uint;
 	enum: SDL_GameControllerType{
 		SDL_CONTROLLER_TYPE_UNKNOWN                         = 0,
 		SDL_CONTROLLER_TYPE_XBOX360                         = 1,
@@ -46,7 +46,7 @@ static if(sdlSupport >= SDLSupport.v2_0_12){
 	}
 }
 
-alias SDL_GameControllerBindType = int;
+alias SDL_GameControllerBindType = uint;
 enum: SDL_GameControllerBindType{
 	SDL_CONTROLLER_BINDTYPE_NONE    = 0,
 	SDL_CONTROLLER_BINDTYPE_BUTTON  = 1,
@@ -56,17 +56,16 @@ enum: SDL_GameControllerBindType{
 
 struct SDL_GameControllerButtonBind{
 	SDL_GameControllerBindType bindType;
-	union value{
+	union Value_{
 		int button;
 		int axis;
-		struct hat{
+		struct Hat_{
 			int hat;
 			int hat_mask;
 		}
+		Hat_ hat;
 	}
-	alias button = value.button;
-	alias axis = value.axis;
-	alias hat = value.hat;
+	Value_ value;
 }
 
 alias SDL_GameControllerAxis = int;

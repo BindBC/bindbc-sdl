@@ -50,8 +50,6 @@ pragma(inline, true) @nogc nothrow pure{
 			(a.w == b.w) && (a.h == b.h);
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_22){
-		import std.math: fabs;
-		
 		bool SDL_PointInFRect(const(SDL_FPoint)* p, const(SDL_FRect)* r){
 			return (
 				(p.x >= r.x) && (p.x < (r.x + r.w)) &&
@@ -62,6 +60,7 @@ pragma(inline, true) @nogc nothrow pure{
 			return !x || (x.w <= 0) || (x.h <= 0);
 		}
 		bool SDL_FRectEqualsEpsilon(const(SDL_FRect)* a, const(SDL_FRect)* b, const float epsilon){
+			import core.math: fabs;
 			return a && b && ((a == b) ||
 				(fabs(a.x - b.x) <= epsilon) && (fabs(a.y - b.y) <= epsilon) &&
 				(fabs(a.w - b.w) <= epsilon) && (fabs(a.h - b.h) <= epsilon));
@@ -81,14 +80,13 @@ mixin(joinFnBinds((){
 		[q{SDL_bool}, q{SDL_EnclosePoints}, q{const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result}],
 		[q{SDL_bool}, q{SDL_IntersectRectAndLine}, q{const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
 	]);
-
 	static if(sdlSupport >= SDLSupport.v2_0_22){
 		ret ~= makeFnBinds([
 			[q{SDL_bool}, q{SDL_HasIntersectionF}, q{const(SDL_FRect)* A, const(SDL_FRect)* B}],
 			[q{SDL_bool}, q{SDL_IntersectFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
 			[q{SDL_bool}, q{SDL_UnionFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
 			[q{SDL_bool}, q{SDL_EncloseFPoints}, q{const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result}],
-			[q{SDL_bool}, q{SDL_IntersectFRectAndLine}, q{const(SDL_FRect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
+			[q{SDL_bool}, q{SDL_IntersectFRectAndLine}, q{const(SDL_FRect)* rect, float* X1, float* Y1, float* X2, float* Y2}],
 		]);
 	}
 	return ret;

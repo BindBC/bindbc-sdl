@@ -10,7 +10,7 @@ module sdl.keyboard;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-import sdl.keycode: SDL_Keycode, SDL_Keymod;
+import sdl.keycode: SDL_KeyCode, SDL_Keymod;
 import sdl.rect: SDL_Rect;
 import sdl.scancode: SDL_Scancode;
 import sdl.stdinc: SDL_bool;
@@ -18,7 +18,7 @@ import sdl.video: SDL_Window;
 
 struct SDL_Keysym{
 	SDL_Scancode scancode;
-	SDL_Keycode sym;
+	SDL_KeyCode sym;
 	ushort mod;
 	uint unused;
 }
@@ -30,12 +30,12 @@ mixin(joinFnBinds((){
 		[q{ubyte*}, q{SDL_GetKeyboardState}, q{int* numkeys}],
 		[q{SDL_Keymod}, q{SDL_GetModState}, q{}],
 		[q{void}, q{SDL_SetModState}, q{SDL_Keymod modstate}],
-		[q{SDL_Keycode}, q{SDL_GetKeyFromScancode}, q{SDL_Scancode scancode}],
-		[q{SDL_Scancode}, q{SDL_GetScancodeFromKey}, q{SDL_Keycode key}],
+		[q{SDL_KeyCode}, q{SDL_GetKeyFromScancode}, q{SDL_Scancode scancode}],
+		[q{SDL_Scancode}, q{SDL_GetScancodeFromKey}, q{SDL_KeyCode key}],
 		[q{const(char)*}, q{SDL_GetScancodeName}, q{SDL_Scancode scancode}],
 		[q{SDL_Scancode}, q{SDL_GetScancodeFromName}, q{const(char)* name}],
-		[q{const(char)*}, q{SDL_GetKeyName}, q{SDL_Keycode key}],
-		[q{SDL_Keycode}, q{SDL_GetKeyFromName}, q{const(char)* name}],
+		[q{const(char)*}, q{SDL_GetKeyName}, q{SDL_KeyCode key}],
+		[q{SDL_KeyCode}, q{SDL_GetKeyFromName}, q{const(char)* name}],
 		[q{void}, q{SDL_StartTextInput}, q{}],
 		[q{SDL_bool}, q{SDL_IsTextInputActive}, q{}],
 		[q{void}, q{SDL_StopTextInput}, q{}],

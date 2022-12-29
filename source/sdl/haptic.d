@@ -33,17 +33,16 @@ enum: ushort{
 	SDL_HAPTIC_PAUSE         = 1U<<15,
 }
 
-enum{
+enum: uint{
 	SDL_HAPTIC_POLAR = 0,
 	SDL_HAPTIC_CARTESIAN = 1,
 	SDL_HAPTIC_SPHERICAL = 2,
 	SDL_HAPTIC_INFINITY = 4294967295U,
 }
 static if(sdlSupport >= SDLSupport.v2_0_14)
-enum{
+enum: uint{
 	SDL_HAPTIC_STEERING_AXIS = 3,
 }
-
 
 struct SDL_HapticDirection{
 	ubyte type;
@@ -53,11 +52,15 @@ struct SDL_HapticDirection{
 struct SDL_HapticConstant{
 	ushort type;
 	SDL_HapticDirection direction;
+	
 	uint length;
 	ushort delay;
+	
 	ushort button;
 	ushort interval;
+	
 	short level;
+	
 	ushort attack_length;
 	ushort attack_level;
 	ushort fade_length;
@@ -67,14 +70,18 @@ struct SDL_HapticConstant{
 struct SDL_HapticPeriodic{
 	ushort type;
 	SDL_HapticDirection direction;
+	
 	uint length;
-	uint delay;
+	ushort delay;
+	
 	ushort button;
 	ushort interval;
+	
 	ushort period;
 	short magnitude;
 	short offset;
 	ushort phase;
+	
 	ushort attack_length;
 	ushort attack_level;
 	ushort fade_length;
@@ -84,27 +91,34 @@ struct SDL_HapticPeriodic{
 struct SDL_HapticCondition{
 	ushort type;
 	SDL_HapticDirection direciton;
+	
 	uint length;
 	ushort delay;
+	
 	ushort button;
 	ushort interval;
+	
 	ushort[3] right_sat;
 	ushort[3] left_sat;
 	short[3] right_coeff;
 	short[3] left_coeff;
 	ushort[3] deadband;
-	ushort[3] center;
+	short[3] center;
 }
 
 struct SDL_HapticRamp{
 	ushort type;
 	SDL_HapticDirection direction;
+	
 	uint length;
 	ushort delay;
+	
 	ushort button;
 	ushort interval;
+	
 	short start;
 	short end;
+	
 	ushort attack_length;
 	ushort attack_level;
 	ushort fade_length;
@@ -113,7 +127,9 @@ struct SDL_HapticRamp{
 
 struct SDL_HapticLeftRight{
 	ushort type;
+	
 	uint length;
+	
 	ushort large_magnitude;
 	ushort small_magnitude;
 }
@@ -121,14 +137,18 @@ struct SDL_HapticLeftRight{
 struct SDL_HapticCustom{
 	ushort type;
 	SDL_HapticDirection direction;
+	
 	uint length;
 	ushort delay;
+	
 	ushort button;
 	ushort interval;
+	
 	ubyte channels;
 	ushort period;
 	ushort samples;
 	ushort* data;
+	
 	ushort attack_length;
 	ushort attack_level;
 	ushort fade_length;

@@ -22,7 +22,9 @@ enum makeFnBinds = (string[3][] fns) nothrow pure @safe{
 	}else{
 		foreach(fn; fns){
 			makeFnBinds ~= "\n\tprivate "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
-			if(fn[0] == "void"){
+			if(fn[0] == "void" && fn[2].length > 3 && fn[2][$-3..$] == "..."){
+				makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ debug{import std.stdio;writeln("I AM A GREAT COOL: ",*__traits(parameters));pragma(msg,"GOOD!");}}`;
+			}else if(fn[0] == "void"){
 				makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ _`~fn[1]~`(__traits(parameters)); }`;
 			}else{
 				makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ return _`~fn[1]~`(__traits(parameters)); }`;

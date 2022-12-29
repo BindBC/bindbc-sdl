@@ -88,7 +88,7 @@ static if(sdlSupport >= SDLSupport.v2_0_6){
 		SDL_JOYSTICK_TYPE_ARCADE_PAD,
 		SDL_JOYSTICK_TYPE_THROTTLE,
 	}
-
+	
 	enum{
 		SDL_JOYSTICK_AXIS_MAX = 32767,
 		SDL_JOYSTICK_AXIS_MIN = -32768,
@@ -120,7 +120,6 @@ mixin(joinFnBinds((){
 		[q{ubyte}, q{SDL_JoystickGetButton}, q{SDL_Joystick* joystick, int button}],
 		[q{void}, q{SDL_JoystickClose}, q{SDL_Joystick* joystick}],
 	]);
-
 	static if(sdlSupport >= SDLSupport.v2_0_4){
 		ret ~= makeFnBinds([
 			[q{SDL_JoystickPowerLevel}, q{SDL_JoystickCurrentPowerLevel}, q{SDL_Joystick* joystick}],

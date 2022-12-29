@@ -19,6 +19,25 @@ enum: ushort{
 	SDL_AUDIO_MASK_SIGNED    = 1<<15,
 }
 
+pragma(inline, true) nothrow @nogc pure @safe{
+	SDL_AudioFormat SDL_AUDIO_BITSIZE(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_BITSIZE); }
+	SDL_AudioFormat SDL_AUDIO_ISFLOAT(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_DATATYPE); }
+	SDL_AudioFormat SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_ENDIAN); }
+	SDL_AudioFormat SDL_AUDIO_ISSIGNED(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_SIGNED); }
+	bool SDL_AUDIO_ISINT(SDL_AudioFormat x){ return !SDL_AUDIO_ISFLOAT(x); }
+	bool SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x){ return !SDL_AUDIO_ISBIGENDIAN(x); }
+	bool SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x){ return !SDL_AUDIO_ISSIGNED(x); }
+}
+deprecated("Please use the non-template variant instead"){
+	enum SDL_AUDIO_BITSIZE(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_BITSIZE;
+	enum SDL_AUDIO_ISFLOAT(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_DATATYPE;
+	enum SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x)     = x & SDL_AUDIO_MASK_ENDIAN;
+	enum SDL_AUDIO_ISSIGNED(SDL_AudioFormat x)        = x & SDL_AUDIO_MASK_SIGNED;
+	enum SDL_AUDIO_ISINT(SDL_AudioFormat x)           = !SDL_AUDIO_ISFLOAT(x);
+	enum SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x)  = !SDL_AUDIO_ISBIGENDIAN(x);
+	enum SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x)      = !SDL_AUDIO_ISSIGNED(x);
+}
+
 alias SDL_AudioFormat = ushort;
 enum: SDL_AudioFormat{
 	AUDIO_U8      = 0x0008,
@@ -47,25 +66,6 @@ version(LittleEndian){
 	alias AUDIO_S16SYS  = AUDIO_S16MSB;
 	alias AUDIO_S32SYS  = AUDIO_S32MSB;
 	alias AUDIO_F32SYS  = AUDIO_F32MSB;
-}
-
-pragma(inline, true) nothrow @nogc pure @safe{
-	SDL_AudioFormat SDL_AUDIO_BITSIZE(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_BITSIZE); }
-	SDL_AudioFormat SDL_AUDIO_ISFLOAT(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_DATATYPE); }
-	SDL_AudioFormat SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_ENDIAN); }
-	SDL_AudioFormat SDL_AUDIO_ISSIGNED(SDL_AudioFormat x){ return cast(SDL_AudioFormat)(x & SDL_AUDIO_MASK_SIGNED); }
-	bool SDL_AUDIO_ISINT(SDL_AudioFormat x){ return !SDL_AUDIO_ISFLOAT(x); }
-	bool SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x){ return !SDL_AUDIO_ISBIGENDIAN(x); }
-	bool SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x){ return !SDL_AUDIO_ISSIGNED(x); }
-}
-deprecated("Please use the non-template variant instead"){
-	enum SDL_AUDIO_BITSIZE(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_BITSIZE;
-	enum SDL_AUDIO_ISFLOAT(SDL_AudioFormat x)         = x & SDL_AUDIO_MASK_DATATYPE;
-	enum SDL_AUDIO_ISBIGENDIAN(SDL_AudioFormat x)     = x & SDL_AUDIO_MASK_ENDIAN;
-	enum SDL_AUDIO_ISSIGNED(SDL_AudioFormat x)        = x & SDL_AUDIO_MASK_SIGNED;
-	enum SDL_AUDIO_ISINT(SDL_AudioFormat x)           = !SDL_AUDIO_ISFLOAT(x);
-	enum SDL_AUDIO_ISLITTLEENDIAN(SDL_AudioFormat x)  = !SDL_AUDIO_ISBIGENDIAN(x);
-	enum SDL_AUDIO_ISUNSIGNED(SDL_AudioFormat x)      = !SDL_AUDIO_ISSIGNED(x);
 }
 
 enum{
@@ -124,20 +124,20 @@ alias SDL_AudioDeviceID = uint;
 
 alias SDL_AudioStatus = int;
 enum: SDL_AudioStatus{
-	SDL_AUDIO_STOPPED = 0,
-	SDL_AUDIO_PLAYING,
-	SDL_AUDIO_PAUSED,
-}
-
-enum SDL_MIX_MAXVOLUME = 128;
-
-static if(sdlSupport >= SDLSupport.v2_0_7){
-	struct SDL_AudioStream;
+	SDL_AUDIO_STOPPED  = 0,
+	SDL_AUDIO_PLAYING  = 1,
+	SDL_AUDIO_PAUSED   = 2,
 }
 
 pragma(inline, true) SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audio_buf, uint* len) @nogc nothrow{
 	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, len);
 }
+
+static if(sdlSupport >= SDLSupport.v2_0_7){
+	struct SDL_AudioStream;
+}
+
+enum SDL_MIX_MAXVOLUME = 128;
 
 mixin(joinFnBinds((){
 	string[][] ret;

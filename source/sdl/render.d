@@ -34,20 +34,20 @@ struct SDL_RendererInfo{
 	int max_texture_height;
 }
 
+static if(sdlSupport >= SDLSupport.v2_0_18){
+	struct SDL_Vertex{
+		SDL_FPoint position;
+		SDL_Color color;
+		SDL_FPoint tex_coord;
+	}
+}
+
 static if(sdlSupport >= SDLSupport.v2_0_12){
 	alias SDL_ScaleMode = int;
 	enum: SDL_ScaleMode{
 		SDL_ScaleModeNearest,
 		SDL_ScaleModeLinear,
 		SDL_ScaleModeBest,
-	}
-}
-
-static if(sdlSupport >= SDLSupport.v2_0_18){
-	struct SDL_Vertex{
-		SDL_FPoint position;
-		SDL_Color color;
-		SDL_FPoint tex_coord;
 	}
 }
 
@@ -73,6 +73,7 @@ enum: SDL_RendererFlip{
 }
 
 struct SDL_Renderer;
+
 struct SDL_Texture;
 
 mixin(joinFnBinds((){

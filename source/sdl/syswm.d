@@ -176,7 +176,7 @@ struct SDL_SysWMinfo{
 			}
 			_UIKit uikit;
 		}
-		static if(sdlSupport >= SDLSupport.v2_0_2){
+		static if(sdlSupport >= SDLSupport.v2_0_2) version(Wayland){
 			struct _WL{
 				void* display;
 				void* surface;

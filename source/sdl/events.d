@@ -19,12 +19,12 @@ import sdl.syswm;
 import sdl.touch;
 import sdl.video;
 
-enum{
+enum: ubyte{
 	SDL_RELEASED  = 0,
 	SDL_PRESSED   = 1,
 }
 
-alias SDL_EventType = int;
+alias SDL_EventType = uint;
 enum: SDL_EventType{
 	SDL_FIRSTEVENT                = 0,
 	SDL_QUIT                      = 0x100,
@@ -105,15 +105,6 @@ enum: SDL_EventType{
 static if(sdlSupport >= SDLSupport.v2_24)
 enum: SDL_EventType{
 	SDL_JOYBATTERYUPDATED         = 0x607,
-}
-
-static if(sdlSupport >= SDLSupport.v2_24){
-	struct SDL_JoyBatteryEvent{
-		uint type;
-		uint timestamp;
-		SDL_JoystickID which;
-		SDL_JoystickPowerLevel level;
-	}
 }
 
 struct SDL_CommonEvent{
@@ -284,6 +275,15 @@ struct SDL_JoyDeviceEvent{
 	SDL_EventType type;
 	uint timestamp;
 	int which;
+}
+
+static if(sdlSupport >= SDLSupport.v2_24){
+	struct SDL_JoyBatteryEvent{
+		SDL_EventType type;
+		uint timestamp;
+		SDL_JoystickID which;
+		SDL_JoystickPowerLevel level;
+	}
 }
 
 struct SDL_ControllerAxisEvent{
@@ -480,7 +480,7 @@ union SDL_Event{
 	ubyte[56] padding;
 }
 
-alias SDL_eventaction = int;
+alias SDL_eventaction = uint;
 enum: SDL_eventaction{
 	SDL_ADDEVENT,
 	SDL_PEEKEVENT,

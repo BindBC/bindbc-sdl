@@ -15,12 +15,12 @@ version(WebAssembly){
 import sdl.stdinc: SDL_bool;
 
 enum: uint{
-	SDL_RWOPS_UNKNOWN    = 0,
-	SDL_RWOPS_WINFILE    = 1,
-	SDL_RWOPS_STDFILE    = 2,
-	SDL_RWOPS_JNIFILE    = 3,
-	SDL_RWOPS_MEMORY     = 4,
-	SDL_RWOPS_MEMORY_RO  = 5,
+	SDL_RWOPS_UNKNOWN    = 0U,
+	SDL_RWOPS_WINFILE    = 1U,
+	SDL_RWOPS_STDFILE    = 2U,
+	SDL_RWOPS_JNIFILE    = 3U,
+	SDL_RWOPS_MEMORY     = 4U,
+	SDL_RWOPS_MEMORY_RO  = 5U,
 }
 
 struct SDL_RWops{
@@ -31,48 +31,54 @@ struct SDL_RWops{
 		size_t function(SDL_RWops*, const(void)*, size_t, size_t) write;
 		int function(SDL_RWops*) close;
 	}
-	
 	uint type;
-	
-	union Hidden{
-		// version(Android)
-		version(Windows){
-			struct Windowsio{
-				int append;
+	union Hidden_{
+		version(Android){
+			struct AndroidIO_{
+				void* asset;
+			}
+			AndroidIO_ androidio;
+		}else static if((){
+			version(Windows) return true;
+			version(WinGDK)  return true;
+			else return false;
+		}()){
+			struct WindowsIO_{
+				SDL_bool append;
 				void* h;
-				struct Buffer{
+				struct Buffer_{
 					void* data;
 					size_t size;
 					size_t left;
 				}
-				Buffer buffer;
+				Buffer_ buffer;
 			}
-			Windowsio windowsio;
+			WindowsIO_ windowsio;
 		}
 		
 		version(WebAssembly){
 		}else{
-			struct Stdio{
+			struct StdIO_{
 				int autoclose;
 				FILE* fp;
 			}
-			Stdio stdio;
+			StdIO_ stdio;
 		}
 		
-		struct Mem{
+		struct Mem_{
 			ubyte* base;
 			ubyte* here;
 			ubyte* stop;
 		}
-		Mem mem;
+		Mem_ mem;
 		
-		struct Unknown{
+		struct Unknown_{
 			void* data1;
 			void* data2;
 		}
-		Unknown unknown;
+		Unknown_ unknown;
 	}
-	Hidden hidden;
+	Hidden_ hidden;
 }
 
 enum{
@@ -81,8 +87,8 @@ enum{
 	RW_SEEK_END = 2,
 }
 
-static if(sdlSupport < SDLSupport.v2_0_10){
-	pragma(inline, true) @nogc nothrow{
+pragma(inline, true) @nogc nothrow{
+	static if(sdlSupport < SDLSupport.v2_0_10){
 		long SDL_RWsize(SDL_RWops* ctx){ return ctx.size(ctx); }
 		long SDL_RWseek(SDL_RWops* ctx, long offset, int whence){ return ctx.seek(ctx, offset, whence); }
 		long SDL_RWtell(SDL_RWops* ctx){ return ctx.seek(ctx, 0, RW_SEEK_CUR); }
@@ -90,12 +96,10 @@ static if(sdlSupport < SDLSupport.v2_0_10){
 		size_t SDL_RWwrite(SDL_RWops* ctx, const(void)* ptr, size_t size, size_t n){ return ctx.write(ctx, ptr, size, n); }
 		int SDL_RWclose(SDL_RWops* ctx){ return ctx.close(ctx); }
 	}
-}
-
-static if(sdlSupport >= SDLSupport.v2_0_6){
-	pragma(inline, true) void* SDL_LoadFile(const(char)* filename, size_t datasize) @nogc nothrow{
-		
-		return SDL_LoadFile_RW(SDL_RWFromFile(filename, "rb"), datasize, 1);
+	static if(sdlSupport >= SDLSupport.v2_0_6){
+		void* SDL_LoadFile(const(char)* filename, size_t datasize){
+			return SDL_LoadFile_RW(SDL_RWFromFile(filename, "rb"), datasize, 1);
+		}
 	}
 }
 
@@ -114,13 +118,13 @@ mixin(joinFnBinds((){
 		[q{uint}, q{SDL_ReadBE32}, q{SDL_RWops* context}],
 		[q{ulong}, q{SDL_ReadLE64}, q{SDL_RWops* context}],
 		[q{ulong}, q{SDL_ReadBE64}, q{SDL_RWops* context}],
-		[q{size_t}, q{SDL_WriteU8}, q{SDL_RWops* context,ubyte value}],
-		[q{size_t}, q{SDL_WriteLE16}, q{SDL_RWops* context,ushort value}],
-		[q{size_t}, q{SDL_WriteBE16}, q{SDL_RWops* context,ushort value}],
-		[q{size_t}, q{SDL_WriteLE32}, q{SDL_RWops* context,uint value}],
-		[q{size_t}, q{SDL_WriteBE32}, q{SDL_RWops* context,uint value}],
-		[q{size_t}, q{SDL_WriteLE64}, q{SDL_RWops* context,ulong value}],
-		[q{size_t}, q{SDL_WriteBE64}, q{SDL_RWops* context,ulong value}],
+		[q{size_t}, q{SDL_WriteU8}, q{SDL_RWops* context, ubyte value}],
+		[q{size_t}, q{SDL_WriteLE16}, q{SDL_RWops* context, ushort value}],
+		[q{size_t}, q{SDL_WriteBE16}, q{SDL_RWops* context, ushort value}],
+		[q{size_t}, q{SDL_WriteLE32}, q{SDL_RWops* context, uint value}],
+		[q{size_t}, q{SDL_WriteBE32}, q{SDL_RWops* context, uint value}],
+		[q{size_t}, q{SDL_WriteLE64}, q{SDL_RWops* context, ulong value}],
+		[q{size_t}, q{SDL_WriteBE64}, q{SDL_RWops* context, ulong value}],
 	]);
 	version(WebAssembly){
 	}else{

@@ -11,10 +11,14 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 enum SDL_MUTEX_TIMEOUT = 1;
+
 enum SDL_MUTEX_MAXWAIT = uint.max;
 
 struct SDL_mutex;
-struct SDL_sem;
+
+struct SDL_semaphore;
+alias SDL_sem = SDL_semaphore;
+
 struct SDL_cond;
 
 mixin(joinFnBinds((){
@@ -26,13 +30,13 @@ mixin(joinFnBinds((){
 		[q{int}, q{SDL_UnlockMutex}, q{SDL_mutex* mutex}],
 		[q{void}, q{SDL_DestroyMutex}, q{SDL_mutex* mutex}],
 		
-		[q{SDL_sem*}, q{SDL_CreateSemaphore}, q{uint initial_value}],
-		[q{void}, q{SDL_DestroySemaphore}, q{SDL_sem* sem}],
-		[q{int}, q{SDL_SemWait}, q{SDL_sem* sem}],
-		[q{int}, q{SDL_SemTryWait}, q{SDL_sem* sem}],
-		[q{int}, q{SDL_SemWaitTimeout}, q{SDL_sem* sem, uint ms}],
-		[q{int}, q{SDL_SemPost}, q{SDL_sem* sem}],
-		[q{uint}, q{SDL_SemValue}, q{SDL_sem* sem}],
+		[q{SDL_semaphore*}, q{SDL_CreateSemaphore}, q{uint initial_value}],
+		[q{void}, q{SDL_DestroySemaphore}, q{SDL_semaphore* sem}],
+		[q{int}, q{SDL_SemWait}, q{SDL_semaphore* sem}],
+		[q{int}, q{SDL_SemTryWait}, q{SDL_semaphore* sem}],
+		[q{int}, q{SDL_SemWaitTimeout}, q{SDL_semaphore* sem, uint ms}],
+		[q{int}, q{SDL_SemPost}, q{SDL_semaphore* sem}],
+		[q{uint}, q{SDL_SemValue}, q{SDL_semaphore* sem}],
 		
 		[q{SDL_cond*}, q{SDL_CreateCond}, q{}],
 		[q{void}, q{SDL_DestroyCond}, q{SDL_cond* cond}],
@@ -43,3 +47,6 @@ mixin(joinFnBinds((){
 	]);
 	return ret;
 }()));
+
+alias SDL_mutexP = SDL_LockMutex;
+alias SDL_mutexV = SDL_UnlockMutex;

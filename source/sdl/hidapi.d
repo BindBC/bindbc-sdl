@@ -10,9 +10,9 @@ module sdl.hidapi;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
+import sdl.stdinc: SDL_bool;
+
 static if(sdlSupport >= SDLSupport.v2_0_18){
-	import sdl.stdinc: SDL_bool;
-	
 	struct SDL_hid_device;
 	
 	struct SDL_hid_device_info{

@@ -13,6 +13,9 @@ A great deal of care has gone into keeping the number of user-side breaking chan
 - Dynamic function bindings no longer expose function pointers. For example, `auto x = SDL_Init;` will now call `SDL_Init` and will make `typeof(x)` be `int` instead of `int function(uint)`. If you relied on getting references this way in your code, please use use the address-of operator (`&`) instead. (e.g. `auto x = &SDL_Init;`) This also means that if your code manually set the function pointers (i.e. `SDL_Init = &myFn;`) then it will no longer work.
 - Dynamic bindings' type aliases (e.g. `pSDL_Init`) no longer exist.
 - All internal SDL binding files are now in `sdl.*` instead of `bindbc.sdl.bind.*`. This should not affect most users.
+- Fixed the signature of `SDL_IntersectFRectAndLine` by changing the `int` positions to `float`s.
+- Fixed the signature of `SDL_HintCallback` by adding the missing `const(char)*` parameter at the end.
+- `SDL_CompilerBarrier`, `SDL_MemoryBarrierRelease` and `SDL_MemoryBarrierAcquire` are no longer aliases to `core.atomic.atomicFence!()`.
 
 ## Other Changes
 

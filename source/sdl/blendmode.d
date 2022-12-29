@@ -11,7 +11,7 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 // SDL_BlendMode
-alias SDL_BlendMode = int;
+alias SDL_BlendMode = uint;
 enum: SDL_BlendMode{
 	SDL_BLENDMODE_NONE     = 0x00000000,
 	SDL_BLENDMODE_BLEND    = 0x00000001,
@@ -28,7 +28,7 @@ enum: SDL_BlendMode{
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_6){
-	alias SDL_BlendOperation = int;
+	alias SDL_BlendOperation = uint;
 	enum: SDL_BlendOperation{
 		SDL_BLENDOPERATION_ADD           = 0x1,
 		SDL_BLENDOPERATION_SUBTRACT      = 0x2,
@@ -37,7 +37,7 @@ static if(sdlSupport >= SDLSupport.v2_0_6){
 		SDL_BLENDOPERATION_MAXIMUM       = 0x5,
 	}
 	
-	alias SDL_BlendFactor = int;
+	alias SDL_BlendFactor = uint;
 	enum: SDL_BlendFactor{
 		SDL_BLENDFACTOR_ZERO                 = 0x1,
 		SDL_BLENDFACTOR_ONE                  = 0x2,

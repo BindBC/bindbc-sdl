@@ -33,32 +33,31 @@ enum: SDL_SystemCursor{
 	SDL_NUM_SYSTEM_CURSORS,
 }
 
-pragma(inline, true) nothrow @nogc pure @safe{
-	uint SDL_BUTTON(ubyte x){ return 1 << (x-1); }
-}
-deprecated("Please use the non-template version instead"){
-	enum SDL_BUTTON(ubyte x) = 1 << (x-1);
-}
-
-enum: ubyte{
-	SDL_BUTTON_LEFT = 1,
-	SDL_BUTTON_MIDDLE = 2,
-	SDL_BUTTON_RIGHT = 3,
-	SDL_BUTTON_X1 = 4,
-	SDL_BUTTON_X2 = 5,
-	SDL_BUTTON_LMASK = SDL_BUTTON(SDL_BUTTON_LEFT),
-	SDL_BUTTON_MMASK = SDL_BUTTON(SDL_BUTTON_MIDDLE),
-	SDL_BUTTON_RMASK = SDL_BUTTON(SDL_BUTTON_RIGHT),
-	SDL_BUTTON_X1MASK = SDL_BUTTON(SDL_BUTTON_X1),
-	SDL_BUTTON_X2MASK = SDL_BUTTON(SDL_BUTTON_X2),
-}
-
 static if(sdlSupport >= SDLSupport.v2_0_4){
 	alias SDL_MouseWheelDirection = int;
 	enum: SDL_MouseWheelDirection{
 		SDL_MOUSEWHEEL_NORMAL,
 		SDL_MOUSEWHEEL_FLIPPED,
 	}
+}
+
+pragma(inline, true) nothrow @nogc pure @safe{
+	uint SDL_BUTTON(ubyte x){ return 1 << (x-1); }
+}
+deprecated("Please use the non-template version instead"){
+	enum SDL_BUTTON(ubyte x) = 1 << (x-1);
+}
+enum: ubyte{
+	SDL_BUTTON_LEFT      = 1,
+	SDL_BUTTON_MIDDLE    = 2,
+	SDL_BUTTON_RIGHT     = 3,
+	SDL_BUTTON_X1        = 4,
+	SDL_BUTTON_X2        = 5,
+	SDL_BUTTON_LMASK     = SDL_BUTTON(SDL_BUTTON_LEFT),
+	SDL_BUTTON_MMASK     = SDL_BUTTON(SDL_BUTTON_MIDDLE),
+	SDL_BUTTON_RMASK     = SDL_BUTTON(SDL_BUTTON_RIGHT),
+	SDL_BUTTON_X1MASK    = SDL_BUTTON(SDL_BUTTON_X1),
+	SDL_BUTTON_X2MASK    = SDL_BUTTON(SDL_BUTTON_X2),
 }
 
 mixin(joinFnBinds((){
@@ -79,7 +78,6 @@ mixin(joinFnBinds((){
 		[q{void}, q{SDL_FreeCursor}, q{SDL_Cursor* cursor}],
 		[q{int}, q{SDL_ShowCursor}, q{int toggle}],
 	]);
-	
 	static if(sdlSupport >= SDLSupport.v2_0_4){
 		ret ~= makeFnBinds([
 			[q{int}, q{SDL_CaptureMouse}, q{SDL_bool enabled}],

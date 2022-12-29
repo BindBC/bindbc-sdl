@@ -16,7 +16,7 @@ version(WebAssembly){
 //NOTE: as-of SDL 2.24, there is no longer a max log message length
 enum SDL_MAX_LOG_MESSAGE = 4096;
 
-alias SDL_LogCategory = int;
+alias SDL_LogCategory = uint;
 enum: SDL_LogCategory{
 	SDL_LOG_CATEGORY_APPLICATION,
 	SDL_LOG_CATEGORY_ERROR,
@@ -42,7 +42,7 @@ enum: SDL_LogCategory{
 	SDL_LOG_CATEGORY_CUSTOM,
 }
 
-alias SDL_LogPriority = int;
+alias SDL_LogPriority = uint;
 enum: SDL_LogPriority{
 	SDL_LOG_PRIORITY_VERBOSE = 1,
 	SDL_LOG_PRIORITY_DEBUG,
@@ -53,7 +53,7 @@ enum: SDL_LogPriority{
 	SDL_NUM_LOG_PRIORITIES,
 }
 
-alias SDL_LogOutputFunction = extern(C) void function(void*,int,SDL_LogPriority,const(char)*) nothrow;
+alias SDL_LogOutputFunction = extern(C) void function(void* userdata, int category, SDL_LogPriority priority, const(char)* message) nothrow;
 
 mixin(joinFnBinds((){
 	string[][] ret;

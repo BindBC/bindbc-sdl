@@ -36,7 +36,8 @@ If you intend to compile for any of these platforms, please add the correspondin
 | `RISCOS`              | RISC OS                      |
 | `UWP`                 | Windows Runtime              |
 | `Vivante`             | Vivante                      |used
-| `WinGDK`              | Windows Game Development Kit |
+| `Wayland`             | Wayland                      |used
+| `WinGDK`              | Windows Game Development Kit |used
 | `WinRT`               | Windows RT                   |used
 | `XboxOne`             | Xbox One                     |
 | `XboxSeries`          | Xbox Series X/S              |

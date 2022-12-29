@@ -11,12 +11,12 @@ import bindbc.sdl.config;
 static if(bindSDLTTF):
 import bindbc.sdl.codegen;
 
-import sdl.sdlerror: SDL_GetError, SDL_SetError;
-import sdl.sdlpixels: SDL_Color;
-import sdl.sdlrwops: SDL_RWops;
-import sdl.sdlsurface: SDL_Surface;
-import sdl.sdlversion: SDL_version;
-import sdl.sdlstdinc: SDL_bool;
+import sdl.error: SDL_GetError, SDL_SetError;
+import sdl.pixels: SDL_Color;
+import sdl.rwops: SDL_RWops;
+import sdl.surface: SDL_Surface;
+import sdl.version_: SDL_version;
+import sdl.stdinc: SDL_bool;
 
 enum SDLTTFSupport: SDL_version{
 	noLibrary   = SDL_version(0,0,0),
@@ -28,11 +28,11 @@ enum SDLTTFSupport: SDL_version{
 	v2_0_18     = SDL_version(2,0,18),
 	v2_20       = SDL_version(2,20,0),
 	
-	deprecated("Please use `v2_0_12` instead") sdlTTF2012 = 2012,
-	deprecated("Please use `v2_0_13` instead") sdlTTF2013 = 2013,
-	deprecated("Please use `v2_0_14` instead") sdlTTF2014 = 2014,
-	deprecated("Please use `v2_0_15` instead") sdlTTF2015 = 2015,
-	deprecated("Please use `v2_0_18` instead") sdlTTF2018 = 2018,
+	deprecated("Please use `v2_0_12` instead") sdlTTF2012 = SDL_version(2,0,12),
+	deprecated("Please use `v2_0_13` instead") sdlTTF2013 = SDL_version(2,0,13),
+	deprecated("Please use `v2_0_14` instead") sdlTTF2014 = SDL_version(2,0,14),
+	deprecated("Please use `v2_0_15` instead") sdlTTF2015 = SDL_version(2,0,15),
+	deprecated("Please use `v2_0_18` instead") sdlTTF2018 = SDL_version(2,0,18),
 }
 
 enum sdlTTFSupport = (){
@@ -44,9 +44,9 @@ enum sdlTTFSupport = (){
 	else                       return SDLTTFSupport.v2_0_12;
 }();
 
-enum SDL_MIXER_MAJOR_VERSION = sdlTTFSupport.major;
-enum SDL_MIXER_MINOR_VERSION = sdlTTFSupport.minor;
-enum SDL_MIXER_PATCHLEVEL    = sdlTTFSupport.patch;
+enum SDL_TTF_MAJOR_VERSION = sdlTTFSupport.major;
+enum SDL_TTF_MINOR_VERSION = sdlTTFSupport.minor;
+enum SDL_TTF_PATCHLEVEL    = sdlTTFSupport.patch;
 
 pragma(inline, true) void SDL_TTF_VERSION(SDL_version* X) @nogc nothrow pure @safe{
 	X.major = SDL_TTF_MAJOR_VERSION;
@@ -108,7 +108,7 @@ enum: TTF_Direction{
 };
 
 mixin(joinFnBinds((){
-	string ret;
+	string[][] ret;
 	ret ~= makeFnBinds([
 		[q{SDL_version*}, q{TTF_Linked_Version}, q{}],
 		[q{void}, q{TTF_ByteSwappedUNICODE}, q{int swapped}],

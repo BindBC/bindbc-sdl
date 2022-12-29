@@ -236,14 +236,14 @@ enum{
 	SDL_HINT_VIDEO_WAYLAND_EMULATE_MOUSE_WARP = "SDL_VIDEO_WAYLAND_EMULATE_MOUSE_WARP",
 }
 
-alias SDL_HintPriority = int;
+alias SDL_HintPriority = uint;
 enum: SDL_HintPriority{
 	SDL_HINT_DEFAULT,
 	SDL_HINT_NORMAL,
 	SDL_HINT_OVERRIDE,
 }
 
-alias SDL_HintCallback = extern(C) void function(void*,const(char)*,const(char)*) nothrow;
+alias SDL_HintCallback = extern(C) void function(void* userdata, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
 
 mixin(joinFnBinds((){
 	string[][] ret;

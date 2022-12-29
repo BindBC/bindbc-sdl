@@ -52,9 +52,15 @@ mixin(joinFnBinds((){
 			[q{void}, q{SDL_SensorUpdate}, q{}],
 		]);
 	}
+	static if(sdlSupport >= SDLSupport.v2_0_14){
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_LockSensors}, q{}],
+			[q{void}, q{SDL_UnlockSensors}, q{}],
+		]);
+	}
 	static if(sdlSupport >= SDLSupport.v2_26){
 		ret ~= makeFnBinds([
-			[q{int}, q{SDL_SensorGetDataWithTimestamp}, q{SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values}],
+			[q{int}, q{SDL_SensorGetDataWithTimestamp}, q{SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values}],	
 		]);
 	}
 	return ret;

@@ -11,19 +11,19 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 pragma(inline, true) @nogc nothrow{
-	int  SDL_OutOfMemory(){                return SDL_Error(SDL_ENOMEM); }
-	int  SDL_Unsupported(){                return SDL_Error(SDL_UNSUPPORTED); }
-	void SDL_InvalidParamError(T)(param){  SDL_SetError("Parameter '%s' is invalid", param); }
+	int  SDL_OutOfMemory(){ return SDL_Error(SDL_ENOMEM); }
+	int  SDL_Unsupported(){ return SDL_Error(SDL_UNSUPPORTED); }
+	void SDL_InvalidParamError(T)(param){ SDL_SetError("Parameter '%s' is invalid", param); }
 }
 
-alias SDL_errorcode = int;
+alias SDL_errorcode = uint;
 enum: SDL_errorcode{
-	SDL_ENOMEM,
-	SDL_EFREAD,
-	SDL_EFWRITE,
-	SDL_EFSEEK,
-	SDL_UNSUPPORTED,
-	SDL_LASTERROR
+	SDL_ENOMEM       = 0,
+	SDL_EFREAD       = 1,
+	SDL_EFWRITE      = 2,
+	SDL_EFSEEK       = 3,
+	SDL_UNSUPPORTED  = 4,
+	SDL_LASTERROR    = 5,
 }
 
 mixin(joinFnBinds((){

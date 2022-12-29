@@ -15,14 +15,14 @@ import sdl.scancode;
 enum SDLK_SCANCODE_MASK = 1<<30;
 
 pragma(inline, true) nothrow @nogc pure @safe{
-	SDL_Keycode SDL_SCANCODE_TO_KEYCODE(SDL_Scancode x){ return x | SDLK_SCANCODE_MASK; }
+	SDL_KeyCode SDL_SCANCODE_TO_KEYCODE(SDL_Scancode x){ return x | SDLK_SCANCODE_MASK; }
 }
 deprecated("Please use the non-template variant instead"){
 	enum SDL_SCANCODE_TO_KEYCODE(SDL_Scancode x) = x | SDLK_SCANCODE_MASK;
 }
 
-alias SDL_Keycode = int;
-enum: SDL_Keycode{
+alias SDL_KeyCode = uint;
+enum: SDL_KeyCode{
 	SDLK_UNKNOWN = 0,
 	SDLK_RETURN = '\r',
 	SDLK_ESCAPE = '\033',
@@ -273,7 +273,7 @@ enum: SDL_Keycode{
 	SDLK_SLEEP = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SLEEP),
 }
 static if(sdlSupport >= SDLSupport.v2_0_6)
-enum: SDL_Keycode{
+enum: SDL_KeyCode{
 	SDLK_APP1 = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_APP1),
 	SDLK_APP2 = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_APP2),
 	
@@ -281,14 +281,15 @@ enum: SDL_Keycode{
 	SDLK_AUDIOFASTFORWARD = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_AUDIOFASTFORWARD),
 }
 static if(sdlSupport >= SDLSupport.v2_24)
-enum: SDL_Keycode{
+enum: SDL_KeyCode{
 	SDLK_SOFTLEFT = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SOFTLEFT),
 	SDLK_SOFTRIGHT = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_SOFTRIGHT),
 	SDLK_CALL = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CALL),
 	SDLK_ENDCALL = SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_ENDCALL),
 }
+alias SDL_Keycode = SDL_KeyCode;
 
-alias SDL_Keymod = int;
+alias SDL_Keymod = ushort;
 enum: SDL_Keymod{
 	KMOD_NONE      = 0x0000,
 	KMOD_LSHIFT    = 0x0001,

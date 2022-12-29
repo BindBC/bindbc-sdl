@@ -30,46 +30,64 @@ extern(C) nothrow{
 	alias TLSDestructor = void function(void*);
 }
 
-private enum winOrGDK = (){
-	version(Windows)     return true;
-	else version(WinGDK) return true;
-	else                 return false;
-}();
+version(Windows)     version = Win_OS2_GDK;
+else version(WinGDK) version = Win_OS2_GDK;
+else version(OS2)    version = Win_OS2_GDK;
 
-static if(winOrGDK){
+version(Win_OS2_GDK){
 	import core.stdc.stdint: uintptr_t;
 	
-	extern(C) @nogc nothrow{
-		private alias beginTFunc = extern(Windows) uint function(void*) nothrow;
-		alias pfnSDL_CurrentBeginThread = uintptr_t(void*, uint, beginTFunc, void* arg, uint, uint* threadID);
-		alias pfnSDL_CurrentEndThread = void function(uint code);
-	}
-	extern(C) @nogc nothrow{
-		uintptr_t _beginthreadex(void*,uint,btex_fptr,void*,uint,uint*);
-		void _endthreadex(uint);
+	version(OS2){
+		static if(sdlSupport >= SDLSupport.v2_0_6):
 		
-		alias pfnSDL_CurrentBeginThread = uintptr_t function(void*,uint,btex_fptr,void*,uint,uint*);
-		alias pfnSDL_CurrentEndThread = void function(uint);
+		private alias start_address = void function(void*);
+		
+		extern(C) @nogc nothrow{
+			alias pfnSDL_CurrentBeginThread = uintptr_t function(start_address,void*,uint,void*);
+			private int _beginthread(start_address,void*,uint,void*);
+			alias SDL_beginthread = _beginthread;
+			
+			alias pfnSDL_CurrentEndThread = void function(uint);
+			private void _endthread();
+			alias SDL_endthread = _endthread;
+		}
+	}else{
+		private alias start_address = extern(Windows) uint function(void*);
+		
+		extern(C) @nogc nothrow{
+			/*
+			On Windows, SDL_CreateThread/WithStackSize require the _beginthreadex/_endthreadex of
+			the caller's process when using the DLL. As best as I can tell, this will be okay even
+			when statically linking. If it does break, I'll need to add a new version identifier
+			when BindBC_Static is specified in order to distingiuish between linking with the
+			DLL's import library and statically linking with SDL.
+			*/
+			alias pfnSDL_CurrentBeginThread = uintptr_t function(void*,uint,start_address,void*,uint,uint*);
+			private uintptr_t _beginthreadex(void*,uint,start_address,void*,uint,uint*);
+			alias SDL_beginthread = _beginthreadex;
+			
+			alias pfnSDL_CurrentEndThread = void function(uint);
+			private void _endthreadex(uint);
+			alias SDL_endthread = _endthreadex;
+		}
 	}
 	
 	pragma(inline, true) @nogc nothrow{
 		SDL_Thread* SDL_CreateThreadImpl(SDL_ThreadFunction fn, const(char)* name, void* data){
-			return SDL_CreateThread(fn, name, data, &_beginthreadex, &_endthreadex);
+			return SDL_CreateThread(fn, name, data, &SDL_beginthread, &SDL_endthread);
 		}
 		
 		static if(sdlSupport >= SDLSupport.v2_0_9){
 			SDL_Thread* SDL_CreateThreadWithStackSizeImpl(SDL_ThreadFunction fn, const(char)* name, const(size_t) stackSize, void* data){
-				return SDL_CreateThreadWithStackSize(fn, name, stackSize, data, &_beginthreadex, &_endthreadex);
+				return SDL_CreateThreadWithStackSize(fn, name, stackSize, data, &SDL_beginthread, &SDL_endthread);
 			}
 		}
 	}
-}else version(OS2){
-	
 }
 
 mixin(joinFnBinds((){
 	string[][] ret;
-	version(Windows){
+	version(Win_OS2_GDK){
 		ret ~= makeFnBinds([
 			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
 		]);
@@ -77,11 +95,7 @@ mixin(joinFnBinds((){
 			ret ~= makeFnBinds([
 				[q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
 			]);
-			}
 		}
-	}else version(OS2){
-		ret ~= makeFnBinds([
-		]);
 	}else{
 		ret ~= makeFnBinds([
 			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data}],

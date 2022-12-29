@@ -21,13 +21,16 @@ enum makeFnBinds = (string[3][] fns) nothrow pure @safe{
 		}
 	}else{
 		foreach(fn; fns){
-			makeFnBinds ~= "\n\tprivate "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
-			if(fn[0] == "void" && fn[2].length > 3 && fn[2][$-3..$] == "..."){
-				makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ debug{import std.stdio;writeln("I AM A GREAT COOL: ",*__traits(parameters));pragma(msg,"GOOD!");}}`;
-			}else if(fn[0] == "void"){
-				makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ _`~fn[1]~`(__traits(parameters)); }`;
+			if(fn[2].length > 3 && fn[2][$-3..$] == "..."){
+				makeFnBinds ~= "\n\t private "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
+				makeFnBinds ~= "\n\t alias "~fn[1]~` = _`~fn[1]~`;`;
 			}else{
-				makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ return _`~fn[1]~`(__traits(parameters)); }`;
+				makeFnBinds ~= "\n\tprivate "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
+				if(fn[0] == "void"){
+					makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ _`~fn[1]~`(__traits(parameters)); }`;
+				}else{
+					makeFnBinds ~= "\n\t"~fn[0]~` `~fn[1]~`(`~fn[2]~`){ return _`~fn[1]~`(__traits(parameters)); }`;
+				}
 			}
 			symbols ~= fn[1];
 		}
@@ -45,7 +48,7 @@ enum joinFnBinds = (string[][] list) nothrow pure @safe{
 			joined ~= item[0];
 		}
 	}else{
-		joined ~= " __gshared{";
+		joined ~= ` __gshared{`;
 		foreach(item; list){
 			joined ~= item[0];
 			symbols ~= item[1..$];

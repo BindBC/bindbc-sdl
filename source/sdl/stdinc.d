@@ -120,7 +120,7 @@ pragma(inline, true) @nogc nothrow{
 	ushort* SDL_iconv_utf8_ucs2(const(char)* S){ return cast(ushort*)SDL_iconv_string("UCS-2-INTERNAL", "UTF-8", S, SDL_strlen(S)+1); }
 	uint* SDL_iconv_utf8_ucs4(const(char)* S){ return cast(uint*)SDL_iconv_string("UCS-4-INTERNAL", "UTF-8", S, SDL_strlen(S)+1); }
 	static if(sdlSupport >= SDLSupport.v2_0_18){
-		char* SDL_iconv_wchar_utf8(const(dchar)* S){ return SDL_iconv_string("UTF-8", "WCHAR_T", cast(char*)S, (SDL_wcslen(S)+1)*(dchar.sizeof)); }
+		char* SDL_iconv_wchar_utf8(const(wchar_t)* S){ return SDL_iconv_string("UTF-8", "WCHAR_T", cast(char*)S, (SDL_wcslen(S)+1)*(wchar_t.sizeof)); }
 	}
 }
 deprecated("Please use the non-template variant instead"){
@@ -153,9 +153,9 @@ mixin(joinFnBinds((){
 		[q{void*}, q{SDL_memmove}, q{void* dst, const(void)* src, size_t len}],
 		[q{int}, q{SDL_memcmp}, q{const(void)* s1, const(void)* s2, size_t len}],
 		
-		[q{size_t}, q{SDL_wcslen}, q{const(dchar)* wstr}],
-		[q{size_t}, q{SDL_wcslcpy}, q{dchar* dst, const(dchar)* src, size_t maxlen}],
-		[q{size_t}, q{SDL_wcslcat}, q{dchar* dst, const(dchar)* src, size_t maxlen}],
+		[q{size_t}, q{SDL_wcslen}, q{const(wchar_t)* wstr}],
+		[q{size_t}, q{SDL_wcslcpy}, q{wchar_t* dst, const(wchar_t)* src, size_t maxlen}],
+		[q{size_t}, q{SDL_wcslcat}, q{wchar_t* dst, const(wchar_t)* src, size_t maxlen}],
 		
 		[q{size_t}, q{SDL_strlen}, q{const(char)* str}],
 		[q{size_t}, q{SDL_strlcpy}, q{char* dst, const(char)* src, size_t maxlen}],
@@ -242,7 +242,7 @@ mixin(joinFnBinds((){
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_6){
 		ret ~= makeFnBinds([
-			[q{int}, q{SDL_wcscmp}, q{const(dchar)* str1, const(dchar)* str2}],
+			[q{int}, q{SDL_wcscmp}, q{const(wchar_t)* str1, const(wchar_t)* str2}],
 			
 			[q{size_t}, q{SDL_utf8strlen}, q{const(char)* str}],
 		]);
@@ -275,7 +275,7 @@ mixin(joinFnBinds((){
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_9){
 		ret ~= makeFnBinds([
-			[q{dchar*}, q{SDL_wcsdup}, q{const(dchar)* wstr}],
+			[q{wchar_t*}, q{SDL_wcsdup}, q{const(wchar_t)* wstr}],
 			
 			[q{double}, q{SDL_exp}, q{double x}],
 			[q{float}, q{SDL_expf}, q{float x}],
@@ -286,8 +286,8 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_isupper}, q{int x}],
 			[q{int}, q{SDL_islower}, q{int x}],
 			
-			[q{dchar*}, q{SDL_wcsstr}, q{const(dchar)* haystack, const(dchar)* needle}],
-			[q{int}, q{SDL_wcsncmp}, q{const(dchar)* str1, const(dchar)* str2, size_t maxlen}],
+			[q{wchar_t*}, q{SDL_wcsstr}, q{const(wchar_t)* haystack, const(wchar_t)* needle}],
+			[q{int}, q{SDL_wcsncmp}, q{const(wchar_t)* str1, const(wchar_t)* str2, size_t maxlen}],
 			
 			[q{char*}, q{SDL_strtokr}, q{char* s1, const(char)* s2, char** saveptr}],
 		]);
@@ -296,8 +296,8 @@ mixin(joinFnBinds((){
 		ret ~= makeFnBinds([
 			[q{uint}, q{SDL_crc32}, q{uint crc, const(void)* data, size_t len}],
 			
-			[q{int}, q{SDL_wcscasecmp}, q{const(dchar)* str1, const(dchar)* str2}],
-			[q{int}, q{SDL_wcsncasecmp}, q{const(dchar)* str1, const(dchar)* str2, size_t len}],
+			[q{int}, q{SDL_wcscasecmp}, q{const(wchar_t)* str1, const(wchar_t)* str2}],
+			[q{int}, q{SDL_wcsncasecmp}, q{const(wchar_t)* str1, const(wchar_t)* str2, size_t len}],
 			
 			[q{double}, q{SDL_trunc}, q{double x}],
 			[q{float}, q{SDL_truncf}, q{float x}],

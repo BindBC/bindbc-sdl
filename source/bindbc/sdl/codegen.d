@@ -22,6 +22,18 @@ enum makeFnBinds = (string[3][] fns) nothrow pure @safe{
 	}else{
 		foreach(fn; fns){
 			if(fn[2].length > 3 && fn[2][$-3..$] == "..."){
+				//TODO: try replacing this with a D-style variadic function wrapper that supplies a va_list for the variadic portion of the function:
+				/+
+				extern(D) void fn(...){
+					import core.vararg;
+					import core.stdc.stdarg;
+					va_list x;
+					for(i; 0.._arguments){
+						va_add(x, va_arg!(void*)(_argptr));
+					}
+					_fn(x);
+				}
+				+/
 				makeFnBinds ~= "\n\t private "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
 				makeFnBinds ~= "\n\t alias "~fn[1]~` = _`~fn[1]~`;`;
 			}else{

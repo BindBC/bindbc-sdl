@@ -13,9 +13,10 @@ import bindbc.sdl.codegen;
 import sdl.render: SDL_Renderer;
 import sdl.stdinc: SDL_bool;
 
+version(Windows) version = Win32_GDK;
+version(WinGDK)  version = Win32_GDK;
 
-
-version(Windows){
+version(Win32_GDK){
 	static if(sdlSupport >= SDLSupport.v2_0_1):
 	struct IDirect3DDevice9;
 	
@@ -27,15 +28,36 @@ version(Windows){
 	
 	static if(sdlSupport >= SDLSupport.v2_24):
 	struct ID3D12Device;
-}else version(iOS){
-	static if(sdlSupport >= SDLSupport.v2_0_4):
-	alias SDL_iOSSetAnimationCallback = SDL_iPhoneSetAnimationCallback;
-	alias SDL_iOSSetEventPump = SDL_iPhoneSetEventPump;
-}else version(Android){
+}
+version(Android){
 	enum: int{
 		SDL_ANDROID_EXTERNAL_STORAGE_READ   = 0x01,
 		SDL_ANDROID_EXTERNAL_STORAGE_WRITE  = 0x02,
 	}
+}
+version(WinRT){
+	static if(sdlSupport >= SDLSupport.v2_0_3):
+	alias SDL_WinRT_Path = int;
+	enum: SDL_WinRT_Path{
+		SDL_WINRT_PATH_INSTALLED_LOCATION,
+		SDL_WINRT_PATH_LOCAL_FOLDER,
+		SDL_WINRT_PATH_ROAMING_FOLDER,
+		SDL_WINRT_PATH_TEMP_FOLDER,
+	}
+	
+	static if(sdlSupport >= SDLSupport.v2_0_8):
+	alias SDL_WinRT_DeviceFamily = int;
+	enum: SDL_WinRT_DeviceFamily{
+		SDL_WINRT_DEVICEFAMILY_UNKNOWN,
+		SDL_WINRT_DEVICEFAMILY_DESKTOP,
+		SDL_WINRT_DEVICEFAMILY_MOBILE,
+		SDL_WINRT_DEVICEFAMILY_XBOX,
+	}
+}
+version(WinGDK){
+	static if(sdlSupport >= SDLSupport.v2_24):
+	private struct XTaskQueueObject;
+	alias XTaskQueueHandle = XTaskQueueObject*;
 }
 
 mixin(joinFnBinds((){
@@ -46,14 +68,16 @@ mixin(joinFnBinds((){
 		]);
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_12){
-			void SDL_OnApplicationWillTerminate();
-			void SDL_OnApplicationDidReceiveMemoryWarning();
-			void SDL_OnApplicationWillResignActive();
-			void SDL_OnApplicationDidEnterBackground();
-			void SDL_OnApplicationWillEnterForeground();
-			void SDL_OnApplicationDidBecomeActive();
+		ret ~= makeFnBinds([
+			[q{void}, q{SDL_OnApplicationWillTerminate}, q{}],
+			[q{void}, q{SDL_OnApplicationDidReceiveMemoryWarning}, q{}],
+			[q{void}, q{SDL_OnApplicationWillResignActive}, q{}],
+			[q{void}, q{SDL_OnApplicationDidEnterBackground}, q{}],
+			[q{void}, q{SDL_OnApplicationWillEnterForeground}, q{}],
+			[q{void}, q{SDL_OnApplicationDidBecomeActive}, q{}],
+		]);
 	}
-	version(Windows){
+	version(Win32_GDK){
 		static if(sdlSupport >= SDLSupport.v2_0_1){
 			ret ~= makeFnBinds([
 				[q{int}, q{SDL_Direct3D9GetAdapterIndex}, q{int displayIndex}],
@@ -75,7 +99,8 @@ mixin(joinFnBinds((){
 				[q{void}, q{SDL_RenderGetD3D11Device}, q{SDL_Renderer* renderer}],
 			]);
 		}
-	}else version(linux){
+	}
+	version(linux){
 		static if(sdlSupport >= SDLSupport.v2_0_9){
 			ret ~= makeFnBinds([
 				[q{int}, q{SDL_LinuxSetThreadPriority}, q{long threadID, int priority}],
@@ -86,7 +111,8 @@ mixin(joinFnBinds((){
 				[q{int}, q{SDL_LinuxSetThreadPriorityAndPolicy}, q{long threadID, int sdlPriority, int schedPolicy}],
 			]);
 		}
-	}else version(iOS){
+	}
+	version(iOS){
 		ret ~= makeFnBinds([
 			[q{int}, q{SDL_iPhoneSetAnimationCallback}, q{SDL_Window* window, int interval, void function(void*) callback, void* callbackParam}],
 			[q{void}, q{SDL_iPhoneSetEventPump}, q{SDL_bool enabled}],
@@ -96,7 +122,8 @@ mixin(joinFnBinds((){
 				[q{void}, q{SDL_OnApplicationDidChangeStatusBarOrientation}, q{}],
 			]);
 		}
-	}else version(Android){
+	}
+	version(Android){
 		ret ~= makeFnBinds([
 			[q{void*}, q{SDL_AndroidGetJNIEnv}, q{}],
 			[q{void*}, q{SDL_AndroidGetActivity}, q{}],
@@ -137,5 +164,31 @@ mixin(joinFnBinds((){
 			]);
 		}
 	}
+	version(WinRT){
+		static if(sdlSupport >= SDLSupport.v2_0_3){
+			ret ~= makeFnBinds([
+				[q{wchar_t*}, q{SDL_WinRTGetFSPathUNICODE}, q{SDL_WinRT_Path pathType}],
+				[q{const(char)*}, q{SDL_WinRTGetFSPathUTF8}, q{SDL_WinRT_Path pathType}],
+			]);
+		}
+		static if(sdlSupport >= SDLSupport.v2_0_8){
+			ret ~= makeFnBinds([
+				[q{SDL_WinRT_DeviceFamily}, q{SDL_WinRTGetDeviceFamily}, q{}],
+			]);
+		}
+	}
+	version(WinGDK){
+		static if(sdlSupport >= SDLSupport.v2_24){
+			ret ~= makeFnBinds([
+				[q{int}, q{SDL_GDKGetTaskQueue}, q{XTaskQueueHandle* outTaskQueue}],
+			]);
+		}
+	}
 	return ret;
 }()));
+
+version(iOS){
+	static if(sdlSupport >= SDLSupport.v2_0_4):
+	alias SDL_iOSSetAnimationCallback = SDL_iPhoneSetAnimationCallback;
+	alias SDL_iOSSetEventPump = SDL_iPhoneSetEventPump;
+}

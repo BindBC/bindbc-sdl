@@ -145,7 +145,7 @@ mixin(joinFnBinds((){
 		[q{SDL_Surface*}, q{TTF_RenderText_Shaded}, q{TTF_Font* font, const(char)* text, SDL_Color fg, SDL_Color bg}],
 		[q{SDL_Surface*}, q{TTF_RenderUTF8_Shaded}, q{TTF_Font* font, const(char)* text, SDL_Color fg, SDL_Color bg}],
 		[q{SDL_Surface*}, q{TTF_RenderUNICODE_Shaded}, q{TTF_Font* font, const(ushort)* text, SDL_Color fg, SDL_Color bg}],
-		[q{SDL_Surface}, q{TTF_RenderGlyph_Shaded}, q{TTF_Font* font, ushort ch, SDL_Color fg,SDL_Color bg}],
+		[q{SDL_Surface*}, q{TTF_RenderGlyph_Shaded}, q{TTF_Font* font, ushort ch, SDL_Color fg,SDL_Color bg}],
 		[q{SDL_Surface*}, q{TTF_RenderText_Blended}, q{TTF_Font* font, const(char)* text, SDL_Color fg}],
 		[q{SDL_Surface*}, q{TTF_RenderUTF8_Blended}, q{TTF_Font* font, const(char)* text, SDL_Color fg}],
 		[q{SDL_Surface*}, q{TTF_RenderUNICODE_Blended}, q{TTF_Font* font, const(ushort)* text, SDL_Color fg}],

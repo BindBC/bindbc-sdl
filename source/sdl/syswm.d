@@ -168,9 +168,10 @@ struct SDL_SysWMinfo{
 		version(iOS){
 			struct _UIKit{
 				void* window;
-				static if(sdlSupport >= SDLSupport.v2_0_){
+				static if(sdlSupport >= SDLSupport.v2_0_4){
 					uint framebuffer;
 					uint colorbuffer;
+					alias colourbuffer = colorbuffer;
 					uint resolveFramebuffer;
 				}
 			}

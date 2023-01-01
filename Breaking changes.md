@@ -29,3 +29,4 @@ A great deal of care has gone into keeping the number of user-side breaking chan
 - Deprecated versionless `SDL_*` library version identifiers. (e.g. `SDL_Mixer`, `SDL_TTF`, etc.) Please use library version identifiers with versions instead. (e.g. `SDL_Mixer_200`, `SDL_TTF_2012`, etc.) Support for the old library version identifiers will be removed in BindBC SDL version 2.0.
 - Deprecated `SDL[*]Support.sdl[version]` enum members (e.g. `SDLImageSupport.sdlImage205`) in favour of `SDL[*]Support.v[version]`. (e.g. `SDLImageSupport.v2_0_5`) The old members will be removed in BindBC SDL version 2.0.
 - Added a deprecation warning to `expandEnum`, which I plan to move into another library. Possibly `bindbc-loader`.
+- Added non-American English aliases for most relevant symbols. (e.g. `SDL_SetRenderDrawColor` → `SDL_SetRenderDrawColour`, etc.)

@@ -10,9 +10,6 @@ module sdl.stdinc;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-version(WebAssembly){
-}else import core.stdc.stdarg: va_list;
-
 alias SDL_bool = int;
 enum: SDL_bool{
 	SDL_FALSE = 0,
@@ -191,6 +188,7 @@ mixin(joinFnBinds((){
 		
 		[q{int}, q{SDL_sscanf}, q{const(char)* text, const(char)* fmt, ...}],
 		[q{int}, q{SDL_snprintf}, q{char* text, size_t maxlen, const(char)* fmt, ...}],
+		[q{int}, q{SDL_vsnprintf}, q{char* text, size_t maxlen, const(char)* fmt, va_list ap}],
 		
 		[q{double}, q{SDL_atan}, q{double x}],
 		[q{double}, q{SDL_atan2}, q{double y, double x}],
@@ -211,24 +209,10 @@ mixin(joinFnBinds((){
 		[q{size_t}, q{SDL_iconv}, q{SDL_iconv_t* cd, const(char)** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft}],
 		[q{char*}, q{SDL_iconv_string}, q{const(char)* tocode, const(char)* fromcode, const(char)* inbuf, size_t inbytesleft}],
 	]);
-	version(WebAssembly){
-	}else{
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_vsnprintf}, q{char* text, size_t maxlen, const(char)* fmt, va_list ap}],
-		]);
-		static if(sdlSupport >= SDLSupport.v2_0_2){
-			ret ~= makeFnBinds([
-				[q{int}, q{SDL_vsscanf}, q{const(char)* text, const(char)* fmt, va_list ap}],
-			]);
-		}
-		static if(sdlSupport >= SDLSupport.v2_0_18){
-			ret ~= makeFnBinds([
-				[q{int}, q{SDL_vasprintf}, q{char** strp, const(char)* fmt, va_list ap}],
-			]);
-		}
-	}
 	static if(sdlSupport >= SDLSupport.v2_0_2){
 		ret ~= makeFnBinds([
+			[q{int}, q{SDL_vsscanf}, q{const(char)* text, const(char)* fmt, va_list ap}],
+			
 			[q{double}, q{SDL_acos}, q{double x}],
 			[q{double}, q{SDL_asin}, q{double x}],
 		]);
@@ -323,6 +307,7 @@ mixin(joinFnBinds((){
 	static if(sdlSupport >= SDLSupport.v2_0_18){
 		ret ~= makeFnBinds([
 			[q{int}, q{SDL_asprintf}, q{char** strp, const(char)* fmt, ...}],
+			[q{int}, q{SDL_vasprintf}, q{char** strp, const(char)* fmt, va_list ap}],
 		]);
 	}
 	static if(sdlSupport >= SDLSupport.v2_24){

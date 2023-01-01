@@ -124,16 +124,23 @@ enum bindSDLTTF = (){
 //NOTE: everything below here may be moved to another library in the future
 
 static if(__VERSION__ >= 2101L){ //2.101+ supports Import C with #include
-	import bindbc.sdl.ctypes: sizeof_wchar_t;
+	public import bindbc.sdl.ctypes: c_long, c_ulong;
 	
-	static if(sizeof_wchar_t == 4){
-		alias wchar_t = dchar;
-	}else static if(sizeof_wchar_t == 2){
-		alias wchar_t = wchar;
-	}else{
-		static assert(0, "`sizeof(wchar_t)` was an unexpected value. Expected 2 or 4, got "~sizeof_wchar_t.stringof);
-	}
+	//these `c_` type aliases are here because these types use #define on some platforms
+	private import bindbc.sdl.ctypes: c_wchar_t, c_va_list;
+	alias wchar_t = c_wchar_t;
+	alias va_list = c_va_list;
 }else{
+	version(WebAssembly){
+		alias c_long  = long;
+		alias c_ulong = ulong;
+		
+		alias va_list = void*;
+	}else{
+		public import core.stdc.config: c_long, c_ulong;
+		public import core.stdc.stdarg: va_list;
+	}
+	
 	static if((){
 		version(Posix)     return true;
 		else version(WASI) return true;
@@ -146,29 +153,6 @@ static if(__VERSION__ >= 2101L){ //2.101+ supports Import C with #include
 	}()){
 		alias wchar_t = wchar;
 	}else static assert(0, "`sizeof(wchar_t)` is not known on this platform. Please add it to bindbc/sdl/config.d, or update your compiler to a version based on dmd 2.101 or higher");
-}
-
-static if(__VERSION__ >= 2101L){
-	import bindbc.sdl.ctypes: sizeof_long, sizeof_unsigned_long;
-	
-	static if(sizeof_long == 8){
-		alias c_long = long;
-	}else static if(sizeof_long == 4){
-		alias c_long = int;
-	}else static assert(0, "`sizeof(long)` was an unexpected value. Expected 4 or 8, got "~sizeof_wchar_t.stringof);
-	
-	static if(sizeof_unsigned_long == 8){
-		alias c_ulong = ulong;
-	}else static if(sizeof_unsigned_long == 4){
-		alias c_ulong = uint;
-	}else static assert(0, "`sizeof(unsigned long)` was an unexpected value. Expected 4 or 8, got "~sizeof_wchar_t.stringof);
-}else{
-	version(WebAssembly){
-		alias c_long  = long;
-		alias c_ulong = ulong;
-	}else{
-		public import core.stdc.config: c_long, c_ulong;
-	}
 }
 
 deprecated("This template will be moved to another library in the future") enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure @safe{

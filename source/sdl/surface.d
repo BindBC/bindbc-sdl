@@ -138,3 +138,11 @@ mixin(joinFnBinds((){
 	}
 	return ret;
 }()));
+
+alias SDL_SetColourKey = SDL_SetColorKey;
+alias SDL_GetColourKey = SDL_GetColorKey;
+alias SDL_SetSurfaceColourMod = SDL_SetSurfaceColorMod;
+alias SDL_GetSurfaceColourMod = SDL_GetSurfaceColorMod;
+static if(sdlSupport >= SDLSupport.v2_0_9){
+	alias SDL_HasColourKey = SDL_HasColorKey;
+}

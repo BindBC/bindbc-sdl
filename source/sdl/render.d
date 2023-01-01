@@ -38,6 +38,7 @@ static if(sdlSupport >= SDLSupport.v2_0_18){
 	struct SDL_Vertex{
 		SDL_FPoint position;
 		SDL_Color color;
+		alias colour = color;
 		SDL_FPoint tex_coord;
 	}
 }
@@ -62,7 +63,9 @@ alias SDL_TextureModulate = int;
 enum: SDL_TextureModulate{
 	SDL_TEXTUREMODULATE_NONE   = 0x00000000,
 	SDL_TEXTUREMODULATE_COLOR  = 0x00000001,
-	SDL_TEXTUREMODULATE_ALPHA  = 0x00000002
+	SDL_TEXTUREMODULATE_ALPHA  = 0x00000002,
+	
+	SDL_TEXTUREMODULATE_COLOUR = SDL_TEXTUREMODULATE_COLOR,
 }
 
 alias SDL_RendererFlip = int;
@@ -207,3 +210,8 @@ mixin(joinFnBinds((){
 	}
 	return ret;
 }()));
+
+alias SDL_SetTextureColourMod = SDL_SetTextureColorMod;
+alias SDL_GetTextureColourMod = SDL_GetTextureColorMod;
+alias SDL_SetRenderDrawColour = SDL_SetRenderDrawColor;
+alias SDL_GetRenderDrawColour = SDL_GetRenderDrawColor;

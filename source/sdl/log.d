@@ -10,9 +10,6 @@ module sdl.log;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-version(WebAssembly){
-}else import core.stdc.stdarg: va_list;
-
 //NOTE: as-of SDL 2.24, there is no longer a max log message length
 enum SDL_MAX_LOG_MESSAGE = 4096;
 
@@ -70,14 +67,9 @@ mixin(joinFnBinds((){
 		[q{void}, q{SDL_LogError}, q{int category, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogCritical}, q{int category, const(char)* fmt, ...}],
 		[q{void}, q{SDL_LogMessage}, q{int category, SDL_LogPriority priority, const(char)* fmt, ...}],
+		[q{void}, q{SDL_LogMessageV}, q{int category, SDL_LogPriority priority, const(char)* fmt, va_list ap}],
 		[q{void}, q{SDL_LogGetOutputFunction}, q{SDL_LogOutputFunction callback, void** userdata}],
 		[q{void}, q{SDL_LogSetOutputFunction}, q{SDL_LogOutputFunction callback, void* userdata}],
 	]);
-	version(WebAssembly){
-	}else{
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_LogMessageV}, q{int category, SDL_LogPriority priority, const(char)* fmt, va_list ap}],
-		]);
-	}
 	return ret;
 }()));

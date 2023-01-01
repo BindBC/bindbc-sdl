@@ -6,7 +6,11 @@
 */
 
 #include <stddef.h>
+#include <stdarg.h>
 
-const char sizeof_long              = sizeof(long);
-const char sizeof_unsigned_long     = sizeof(unsigned long);
-const char sizeof_wchar_t           = sizeof(wchar_t);
+typedef long             c_long;
+typedef unsigned long    c_ulong;
+
+//these `c_` types are here because these types use #define on some platforms
+typedef wchar_t          c_wchar_t;
+typedef va_list          c_va_list;

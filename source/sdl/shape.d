@@ -23,10 +23,12 @@ enum{
 
 alias WindowShapeMode = int;
 enum: WindowShapeMode{
-	ShapeModeDefault,
-	ShapeModeBinarizeAlpha,
-	ShapeModeReverseBinarizeAlpha,
-	ShapeModeColorKey,
+	ShapeModeDefault               = 0,
+	ShapeModeBinarizeAlpha         = 1,
+	ShapeModeReverseBinarizeAlpha  = 2,
+	ShapeModeColorKey              = 3,
+	
+	ShapeModeColourKey             = ShapeModeColorKey,
 }
 
 enum SDL_SHAPEMODEALPHA(WindowShapeMode mode) = (mode == ShapeModeDefault || mode == ShapeModeBinarizeAlpha || mode == ShapeModeReverseBinarizeAlpha);
@@ -34,6 +36,7 @@ enum SDL_SHAPEMODEALPHA(WindowShapeMode mode) = (mode == ShapeModeDefault || mod
 union SDL_WindowShapeParams{
 	ubyte binarizationCutoff;
 	SDL_Color colorKey;
+	alias colourKey = colorKey;
 }
 
 struct SDL_WindowShapeMode{

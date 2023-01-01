@@ -22,20 +22,39 @@ enum makeFnBinds = (string[3][] fns) nothrow pure @safe{
 	}else{
 		foreach(fn; fns){
 			if(fn[2].length > 3 && fn[2][$-3..$] == "..."){
-				//TODO: try replacing this with a D-style variadic function wrapper that supplies a va_list for the variadic portion of the function:
-				/+
-				extern(D) void fn(...){
-					import core.vararg;
-					import core.stdc.stdarg;
-					va_list x;
-					for(i; 0.._arguments){
-						va_add(x, va_arg!(void*)(_argptr));
+				//version(WebAssembly){
+					makeFnBinds ~= "\n\t private "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
+					makeFnBinds ~= "\n\t alias "~fn[1]~` = _`~fn[1]~`;`;
+				/+}else{
+					size_t lastCommaPos = size_t.max; //a guaranteed fail if it's never found
+					string params = "";
+					bool capture = false;
+					bool firstArg = true;
+					foreach_reverse(i, c; fn[2]){
+						if(capture){
+							if(c == ' '){
+								capture = false;
+							}else{
+								params = c ~ params;
+							}
+						}else if(c == ','){
+							capture = true;
+							if(!firstArg){
+								params = ", " ~ params;
+							}else{
+								lastCommaPos = i;
+								firstArg = false;
+							}
+						}
 					}
-					_fn(x);
-				}
-				+/
-				makeFnBinds ~= "\n\t private "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
-				makeFnBinds ~= "\n\t alias "~fn[1]~` = _`~fn[1]~`;`;
+					string namedParams = fn[2][0..lastCommaPos];
+					makeFnBinds ~= "\n\tprivate "~fn[0]~` function(`~namedParams~`, void* argPtr) _`~fn[1]~`;`;
+					if(fn[0] == "void"){
+						makeFnBinds ~= "\n\textern(D) "~fn[0]~` `~fn[1]~`(`~fn[2]~`){ _`~fn[1]~`(`~params~`, _argptr); }`;
+					}else{
+						makeFnBinds ~= "\n\textern(D) "~fn[0]~` `~fn[1]~`(`~fn[2]~`){ return _`~fn[1]~`(`~params~`, _argptr); }`;
+					}
+				}+/
 			}else{
 				makeFnBinds ~= "\n\tprivate "~fn[0]~` function(`~fn[2]~`) _`~fn[1]~`;`;
 				if(fn[0] == "void"){

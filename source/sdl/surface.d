@@ -17,10 +17,10 @@ import sdl.pixels: SDL_Palette, SDL_PixelFormat;
 import sdl.stdinc: SDL_bool;
 
 enum{
-	SDL_SWSURFACE  = 0,
-	SDL_PREALLOC   = 0x00000001,
-	SDL_RLEACCEL   = 0x00000002,
-	SDL_DONTFREE   = 0x00000004,
+	SDL_SWSURFACE  = 0x0000_0000,
+	SDL_PREALLOC   = 0x0000_0001,
+	SDL_RLEACCEL   = 0x0000_0002,
+	SDL_DONTFREE   = 0x0000_0004,
 }
 
 pragma(inline, true) bool SDL_MUSTLOCK(const(SDL_Surface)* S) @nogc nothrow pure{
@@ -35,25 +35,25 @@ struct SDL_Surface{
 	int w, h;
 	int pitch;
 	void* pixels;
+	
 	void* userdata;
+	
 	int locked;
-	void* lock_data;
+	
+	static if(sdlSupport >= SDLSupport.v2_0_14){
+		void* list_blitmap;
+	}else{
+		void* lock_data;
+	}
+	
 	SDL_Rect clip_rect;
+	
 	SDL_BlitMap* map;
+	
 	int refcount;
 }
 
 alias SDL_blit = extern(C) int function(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect) nothrow;
-
-pragma(inline, true) @nogc nothrow{
-	SDL_Surface* SDL_LoadBMP(const(char)* file){
-		return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1);
-	}
-
-	int SDL_SaveBMP(SDL_Surface* surface, const(char)* file){
-		return SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), 1);
-	}
-}
 
 static if(sdlSupport >= SDLSupport.v2_0_8){
 	alias SDL_YUV_CONVERSION_MODE = int;
@@ -62,6 +62,16 @@ static if(sdlSupport >= SDLSupport.v2_0_8){
 		SDL_YUV_CONVERSION_BT601,
 		SDL_YUV_CONVERSION_BT709,
 		SDL_YUV_CONVERSION_AUTOMATIC,
+	}
+}
+
+pragma(inline, true) @nogc nothrow{
+	SDL_Surface* SDL_LoadBMP(const(char)* file){
+		return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1);
+	}
+
+	int SDL_SaveBMP(SDL_Surface* surface, const(char)* file){
+		return SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), 1);
 	}
 }
 

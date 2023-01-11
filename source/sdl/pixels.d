@@ -328,13 +328,13 @@ struct SDL_PixelFormat{
 mixin(joinFnBinds((){
 	string[][] ret;
 	ret ~= makeFnBinds([
-		[q{const(char)*}, q{SDL_GetPixelFormatName}, q{uint format}],
-		[q{SDL_bool}, q{SDL_PixelFormatEnumToMasks}, q{uint format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask}],
+		[q{const(char)*}, q{SDL_GetPixelFormatName}, q{SDL_PixelFormatEnum format}],
+		[q{SDL_bool}, q{SDL_PixelFormatEnumToMasks}, q{SDL_PixelFormatEnum format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask}],
 		[q{uint}, q{SDL_MasksToPixelFormatEnum}, q{int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask}],
 		[q{SDL_PixelFormat*}, q{SDL_AllocFormat}, q{uint pixel_format}],
 		[q{void}, q{SDL_FreeFormat}, q{SDL_PixelFormat* format}],
 		[q{SDL_Palette*}, q{SDL_AllocPalette}, q{int ncolors}],
-		[q{int}, q{SDL_SetPixelFormatPalette}, q{SDL_PixelFormat* format,SDL_Palette* palette}],
+		[q{int}, q{SDL_SetPixelFormatPalette}, q{SDL_PixelFormat* format, SDL_Palette* palette}],
 		[q{int}, q{SDL_SetPaletteColors}, q{SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors}],
 		[q{void}, q{SDL_FreePalette}, q{SDL_Palette* palette}],
 		[q{uint}, q{SDL_MapRGB}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b}],

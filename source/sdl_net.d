@@ -49,7 +49,7 @@ struct IPaddress{
 	ushort port;
 }
 
-enum{
+enum: uint{
 	INADDR_ANY        = 0x0000_0000,
 	INADDR_NONE       = 0xFFFF_FFFF,
 	INADDR_LOOPBACK   = 0x7F00_0001,

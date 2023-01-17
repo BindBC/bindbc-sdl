@@ -29,10 +29,10 @@ enum SDL_MAJOR_VERSION = sdlSupport.major;
 enum SDL_MINOR_VERSION = sdlSupport.minor;
 enum SDL_PATCHLEVEL    = sdlSupport.patch;
 
-pragma(inline, true) void SDL_VERSION(SDL_version* X) @nogc nothrow pure @safe{
-	X.major = SDL_MAJOR_VERSION;
-	X.minor = SDL_MINOR_VERSION;
-	X.patch = SDL_PATCHLEVEL;
+pragma(inline, true) void SDL_VERSION(SDL_version* x) @nogc nothrow pure @safe{
+	x.major = SDL_MAJOR_VERSION;
+	x.minor = SDL_MINOR_VERSION;
+	x.patch = SDL_PATCHLEVEL;
 }
 
 deprecated("Please use SDL_version() instead")
@@ -42,7 +42,7 @@ deprecated("Please use SDL_VERSION_ATLEAST or SDL_version() instead")
 	enum SDL_COMPILEDVERSION = SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
 
 pragma(inline, true) @nogc nothrow{
-	bool SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL) >= SDL_version(X, Y, Z); }
+	bool SDL_VERSION_ATLEAST(ubyte x, ubyte y, ubyte z){ return SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL) >= SDL_version(x, y, z); }
 }
 deprecated("Please use the non-template variant instead"){
 	enum SDL_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_version(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL) >= SDL_version(X, Y, Z);

@@ -75,6 +75,8 @@ struct SDL_SysWMmsg{
 			_Win win;
 		}
 		version(linux){
+			version(SDL_NoX11){}
+			else:
 			struct _X11{
 				//XEvent event;
 				int pad1;
@@ -145,6 +147,8 @@ struct SDL_SysWMinfo{
 			_WinRT winrt;
 		}
 		version(linux){
+			version(SDL_NoX11){}
+			else:
 			struct _X11{
 				void* display;
 				uint window;
@@ -177,7 +181,7 @@ struct SDL_SysWMinfo{
 			}
 			_UIKit uikit;
 		}
-		static if(sdlSupport >= SDLSupport.v2_0_2) version(Wayland){
+		static if(sdlSupport >= SDLSupport.v2_0_2) version(linux){
 			struct _WL{
 				void* display;
 				void* surface;

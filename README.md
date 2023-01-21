@@ -2,6 +2,9 @@
 	<img alt="BindBC SDL logo" width="50%" src="https://raw.githubusercontent.com/BindBC/bindbc-branding/master/logo_wide_sdl.png"/>
 </div>
 
+#TODO:
+- Reformat everything into two a big info-dump/reference, and a "quick-start" sort of guide, with more detail/troubleshooting in case the user needs it.
+
 # BindBC SDL
 This project provides a set of both static and dynamic bindings to
 [SDL (Simple Direct Media Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow` and can be compiled with `-betterC` compatibility. This package is intended as a replacement of [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
@@ -22,25 +25,18 @@ When using DUB to manage your project, the static bindings can be enabled via a 
 ## Special Platforms
 Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/version.html#predefined-versions), meaning that I've had to use custom version identifiers for them.
 If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub `versions`, or supply them in `-version` to your compiler.
+If you're building on Wayland and you have X11 support disabled in SDL, please add version `SDL_NoX11`.
 
 | Version identifier    | Platform                       |
 |-----------------------|--------------------------------|
-| `DirectFB`            | DirectFB                       |used
-| `Dreamcast`           | Dreamcast                      |
-| `Emscripten_Pthreads` | Emscripten with pthreads       |
-| `KMSDRM`              | KMS/DRM                        |used
-| `Mir`                 | Mir-server                     |used
-| `NGage`               | N-Gage                         |
-| `OS2`                 | Operating System/2             |used
-| `PSP`                 | PlayStation Portable           |
-| `RISCOS`              | RISC OS                        |
-| `UWP`                 | Windows Runtime                |
-| `Vivante`             | Vivante                        |used
-| `Wayland`             | Wayland                        |used
-| `WinGDK`              | Microsoft Game Development Kit |used
-| `WinRT`               | Windows Runtime                |used
-| `XboxOne`             | Xbox One                       |
-| `XboxSeries`          | Xbox Series X/S                |
+| `DirectFB`            | DirectFB                       |
+| `KMSDRM`              | KMS/DRM                        |
+| `Mir`                 | Mir-server                     |
+| `OS2`                 | Operating System/2             |
+| `Vivante`             | Vivante                        |
+| `Wayland`             | Wayland                        |
+| `WinGDK`              | Microsoft Game Development Kit |
+| `WinRT`               | Windows Runtime                |
 
 ## Configurations
 

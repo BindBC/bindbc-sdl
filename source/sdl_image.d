@@ -187,24 +187,15 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_image.dylib`,
-// 				`/usr/local/lib/libSDL2_image.dylib`,
-// 				`/usr/local/lib/libSDL2/libSDL2_image.dylib`,
-// 				`../Frameworks/SDL2_image.framework/SDL2_image`,
-// 				`/Library/Frameworks/SDL2_image.framework/SDL2_image`,
-// 				`/System/Library/Frameworks/SDL2_image.framework/SDL2_image`,
-// 				`/opt/local/lib/libSDL2_image.dylib`,
+				`SDL2_image`,
+				`/Library/Frameworks/SDL2_image.framework/SDL2_image`,
+				`/System/Library/Frameworks/SDL2_image.framework/SDL2_image`,
 			];
 		}else version(Posix){
 			return [
 				`libSDL2_image.so`,
 				`libSDL2_image-2.0.so`,
 				`libSDL2_image-2.0.so.0`,
-// 				`/usr/lib/libSDL2_image.so`,
-// 				`/usr/lib/libSDL2_image-2.0.so`,
-// 				`/usr/lib/libSDL2_image-2.0.so.0`,
-// 				`/usr/local/lib/libSDL2_image.so`,
-// 				`/usr/local/lib/libSDL2_image-2.0.so`,
-// 				`/usr/local/lib/libSDL2_image-2.0.so.0`,
 			];
 		}else static assert(0, "BindBC SDL_image does not have library search paths set up for this platform");
 	}();

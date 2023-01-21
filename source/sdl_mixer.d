@@ -314,24 +314,15 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_mixer.dylib`,
-// 				`/usr/local/lib/libSDL2_mixer.dylib`,
-// 				`/usr/local/lib/libSDL2/libSDL2_mixer.dylib`,
-// 				`../Frameworks/SDL2_mixer.framework/SDL2_mixer`,
-// 				`/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,
-// 				`/System/Library/Frameworks/SDL2.framework/SDL2_mixer`,
-// 				`/opt/local/lib/libSDL2_mixer.dylib`,
+				`SDL2_mixer`,
+				`/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,
+				`/System/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,
 			];
 		}else version(Posix){
 			return [
 				`libSDL2_mixer.so`,
 				`libSDL2-2.0_mixer.so`,
 				`libSDL2-2.0_mixer.so.0`,
-// 				`/usr/lib/libSDL2_mixer.so`,
-// 				`/usr/lib/libSDL2-2.0_mixer.so`,
-// 				`/usr/lib/libSDL2-2.0_mixer.so.0`,
-// 				`/usr/local/lib/libSDL2_mixer.so`,
-// 				`/usr/local/lib/libSDL2-2.0_mixer.so`,
-// 				`/usr/local/lib/libSDL2-2.0_mixer.so.0`,
 			];
 		}else static assert(0, "BindBC SDL_mixer does not have library search paths set up for this platform");
 	}();

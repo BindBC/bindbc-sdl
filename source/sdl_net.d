@@ -184,24 +184,15 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_net.dylib`,
-// 				`/usr/local/lib/libSDL2_net.dylib`,
-// 				`/usr/local/lib/libSDL2/libSDL2_net.dylib`,
-// 				`../Frameworks/SDL2_net.framework/SDL2_net`,
-// 				`/Library/Frameworks/SDL2_net.framework/SDL2_net`,
-// 				`/System/Library/Frameworks/SDL2_net.framework/SDL2_net`,
-// 				`/opt/local/lib/libSDL2_net.dylib`,
+				`SDL2_net`,
+				`/Library/Frameworks/SDL2_net.framework/SDL2_net`,
+				`/System/Library/Frameworks/SDL2_net.framework/SDL2_net`,
 			];
 		}else version(Posix){
 			return [
 				`libSDL2_net.so`,
 				`libSDL2_net-2.0.so`,
 				`libSDL2_net-2.0.so.0`,
-// 				`/usr/lib/libSDL2_net.so`,
-// 				`/usr/lib/libSDL2_net-2.0.so`,
-// 				`/usr/lib/libSDL2_net-2.0.so.0`,
-// 				`/usr/local/lib/libSDL2_net.so`,
-// 				`/usr/local/lib/libSDL2_net-2.0.so`,
-// 				`/usr/local/lib/libSDL2_net-2.0.so.0`,
 			];
 		}else static assert(0, "BindBC SDL_net does not have library search paths set up for this platform");
 	}();

@@ -1,6 +1,7 @@
 # BindBC SDL 1.3.0
 The newest update to BindBC SDL includes a *lot* of internal changes, and updates every SDL_* library's support to the latest version.
-Once SDL3 comes out, I plan to evaluate whether older versions of SDL still need to be supported. This will be _highly_ dependant on SDL3's backwards compatibility and API changes. It might even be most desirable for me to make a "BindBC SDL3" and retroactively change the existing parts of the library to "BindBC SDL2".
+
+Once SDL3 comes out, I plan to evaluate whether older versions of SDL still need to be supported. This will be _highly_ dependant on the nature of SDL3's API changes. It might be better for me to make a "BindBC SDL3".
 
 ## Breaking Changes
 A great deal of care has gone into keeping the number of user-side breaking changes as low as possible for this release. However, there are a few notable breaking changes:

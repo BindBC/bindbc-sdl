@@ -1,93 +1,164 @@
-
-//          Copyright 2018 - 2022 Michael D. Parker
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
-
+/+
++            Copyright 2022 – 2023 Aya Partridge
++          Copyright 2018 - 2022 Michael D. Parker
++ Distributed under the Boost Software License, Version 1.0.
++     (See accompanying file LICENSE_1_0.txt or copy at
++           http://www.boost.org/LICENSE_1_0.txt)
++/
 module bindbc.sdl.config;
 
-enum SDLSupport {
-    noLibrary,
-    badLibrary,
-    sdl200      = 200,
-    sdl201      = 201,
-    sdl202      = 202,
-    sdl203      = 203,
-    sdl204      = 204,
-    sdl205      = 205,
-    sdl206      = 206,
-    sdl207      = 207,
-    sdl208      = 208,
-    sdl209      = 209,
-    sdl2010     = 2010,
-    sdl2012     = 2012,
-    sdl2014     = 2014,
-    sdl2016     = 2016,
-    sdl2018     = 2018,
-    sdl2020     = 2020,
-    sdl2022     = 2022,
+import sdl.version_: SDL_version, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL;
+
+enum SDLSupport: SDL_version{
+	noLibrary   = SDL_version(0,0,0),
+	badLibrary  = SDL_version(0,0,255),
+	v2_0_0      = SDL_version(2,0,0),
+	v2_0_1      = SDL_version(2,0,1),
+	v2_0_2      = SDL_version(2,0,2),
+	v2_0_3      = SDL_version(2,0,3),
+	v2_0_4      = SDL_version(2,0,4),
+	v2_0_5      = SDL_version(2,0,5),
+	v2_0_6      = SDL_version(2,0,6),
+	v2_0_7      = SDL_version(2,0,7),
+	v2_0_8      = SDL_version(2,0,8),
+	v2_0_9      = SDL_version(2,0,9),
+	v2_0_10     = SDL_version(2,0,10),
+	v2_0_12     = SDL_version(2,0,12),
+	v2_0_14     = SDL_version(2,0,14),
+	v2_0_16     = SDL_version(2,0,16),
+	v2_0_18     = SDL_version(2,0,18),
+	v2_0_20     = SDL_version(2,0,20),
+	v2_0_22     = SDL_version(2,0,22),
+	v2_24       = SDL_version(2,24,0),
+	v2_26       = SDL_version(2,26,0),
+	
+	deprecated("Please use `v2_0_0` instead")  sdl200  = SDL_version(2,0,0),
+	deprecated("Please use `v2_0_1` instead")  sdl201  = SDL_version(2,0,1),
+	deprecated("Please use `v2_0_2` instead")  sdl202  = SDL_version(2,0,2),
+	deprecated("Please use `v2_0_3` instead")  sdl203  = SDL_version(2,0,3),
+	deprecated("Please use `v2_0_4` instead")  sdl204  = SDL_version(2,0,4),
+	deprecated("Please use `v2_0_5` instead")  sdl205  = SDL_version(2,0,5),
+	deprecated("Please use `v2_0_6` instead")  sdl206  = SDL_version(2,0,6),
+	deprecated("Please use `v2_0_7` instead")  sdl207  = SDL_version(2,0,7),
+	deprecated("Please use `v2_0_8` instead")  sdl208  = SDL_version(2,0,8),
+	deprecated("Please use `v2_0_9` instead")  sdl209  = SDL_version(2,0,9),
+	deprecated("Please use `v2_0_10` instead") sdl2010 = SDL_version(2,0,10),
+	deprecated("Please use `v2_0_12` instead") sdl2012 = SDL_version(2,0,12),
+	deprecated("Please use `v2_0_14` instead") sdl2014 = SDL_version(2,0,14),
+	deprecated("Please use `v2_0_16` instead") sdl2016 = SDL_version(2,0,16),
+	deprecated("Please use `v2_0_18` instead") sdl2018 = SDL_version(2,0,18),
+	deprecated("Please use `v2_0_20` instead") sdl2020 = SDL_version(2,0,20),
+	deprecated("Please use `v2_0_22` instead") sdl2022 = SDL_version(2,0,22),
 }
 
-version(BindBC_Static) version = BindSDL_Static;
-version(BindSDL_Static) enum staticBinding = true;
-else enum staticBinding = false;
+enum staticBinding = (){
+	version(BindBC_Static)       return true;
+	else version(BindSDL_Static) return true;
+	else return false;
+}();
 
-version(SDL_2022) enum sdlSupport = SDLSupport.sdl2022;
-else version(SDL_2020) enum sdlSupport = SDLSupport.sdl2020;
-else version(SDL_2018) enum sdlSupport = SDLSupport.sdl2018;
-else version(SDL_2016) enum sdlSupport = SDLSupport.sdl2016;
-else version(SDL_2014) enum sdlSupport = SDLSupport.sdl2014;
-else version(SDL_2012) enum sdlSupport = SDLSupport.sdl2012;
-else version(SDL_2010) enum sdlSupport = SDLSupport.sdl2010;
-else version(SDL_209) enum sdlSupport = SDLSupport.sdl209;
-else version(SDL_208) enum sdlSupport = SDLSupport.sdl208;
-else version(SDL_207) enum sdlSupport = SDLSupport.sdl207;
-else version(SDL_206) enum sdlSupport = SDLSupport.sdl206;
-else version(SDL_205) enum sdlSupport = SDLSupport.sdl205;
-else version(SDL_204) enum sdlSupport = SDLSupport.sdl204;
-else version(SDL_203) enum sdlSupport = SDLSupport.sdl203;
-else version(SDL_202) enum sdlSupport = SDLSupport.sdl202;
-else version(SDL_201) enum sdlSupport = SDLSupport.sdl201;
-else enum sdlSupport = SDLSupport.sdl200;
+enum sdlSupport = (){
+	version(SDL_2_26)      return SDLSupport.v2_26;
+	else version(SDL_2_24) return SDLSupport.v2_24;
+	else version(SDL_2022) return SDLSupport.v2_0_22;
+	else version(SDL_2020) return SDLSupport.v2_0_20;
+	else version(SDL_2018) return SDLSupport.v2_0_18;
+	else version(SDL_2016) return SDLSupport.v2_0_16;
+	else version(SDL_2014) return SDLSupport.v2_0_14;
+	else version(SDL_2012) return SDLSupport.v2_0_12;
+	else version(SDL_2010) return SDLSupport.v2_0_10;
+	else version(SDL_209)  return SDLSupport.v2_0_9;
+	else version(SDL_208)  return SDLSupport.v2_0_8;
+	else version(SDL_207)  return SDLSupport.v2_0_7;
+	else version(SDL_206)  return SDLSupport.v2_0_6;
+	else version(SDL_205)  return SDLSupport.v2_0_5;
+	else version(SDL_204)  return SDLSupport.v2_0_4;
+	else version(SDL_203)  return SDLSupport.v2_0_3;
+	else version(SDL_202)  return SDLSupport.v2_0_2;
+	else version(SDL_201)  return SDLSupport.v2_0_1;
+	else                   return SDLSupport.v2_0_0;
+}();
 
-version(SDL_Image) version = BindSDL_Image;
-else version(SDL_Image_200) version = BindSDL_Image;
-else version(SDL_Image_201) version = BindSDL_Image;
-else version(SDL_Image_202) version = BindSDL_Image;
-else version(SDL_Image_203) version = BindSDL_Image;
-else version(SDL_Image_204) version = BindSDL_Image;
-else version(SDL_Image_205) version = BindSDL_Image;
-version(BindSDL_Image) enum bindSDLImage = true;
-else enum bindSDLImage = false;
+enum bindSDLImage = (){
+	version(SDL_Image){ pragma(msg, "`SDL_Image` is deprecated. If you want the earliest supported version of SDL Image then please use version `SDL_Image_200`, otherwise you can safely remove it from your version list"); return true; }
+	else version(SDL_Image_200) return true;
+	else version(SDL_Image_201) return true;
+	else version(SDL_Image_202) return true;
+	else version(SDL_Image_203) return true;
+	else version(SDL_Image_204) return true;
+	else version(SDL_Image_205) return true;
+	else version(SDL_Image_2_6) return true;
+	else return false;
+}();
 
-version(SDL_Mixer) version = BindSDL_Mixer;
-else version(SDL_Mixer_200) version = BindSDL_Mixer;
-else version(SDL_Mixer_201) version = BindSDL_Mixer;
-else version(SDL_Mixer_202) version = BindSDL_Mixer;
-else version(SDL_Mixer_204) version = BindSDL_Mixer;
-else version(SDL_Mixer_260) version = BindSDL_Mixer;
-version(BindSDL_Mixer) enum bindSDLMixer = true;
-else enum bindSDLMixer = false;
+enum bindSDLMixer = (){
+	version(SDL_Mixer){ pragma(msg, "`SDL_Mixer` is deprecated. If you want the earliest supported version of SDL Mixer then please use version `SDL_Mixer_200`, otherwise you can safely remove it from your version list"); return true; }
+	else version(SDL_Mixer_200) return true;
+	else version(SDL_Mixer_201) return true;
+	else version(SDL_Mixer_202) return true;
+	else version(SDL_Mixer_204) return true;
+	else version(SDL_Mixer_260){ pragma(msg, "`SDL_Mixer_260` is deprecated. Please use version `SDL_Mixer_2_6` instead"); return true; }
+	else version(SDL_Mixer_2_6) return true;
+	else return false;
+}();
 
-version(SDL_Net) version = BindSDL_Net;
-else version(SDL_Net_200) version = BindSDL_Net;
-else version(SDL_Net_201) version = BindSDL_Net;
-version(BindSDL_Net) enum bindSDLNet = true;
-else enum bindSDLNet = false;
+enum bindSDLNet = (){
+	version(SDL_Net){ pragma(msg, "`SDL_Net` is deprecated. If you want the earliest supported version of SDL Net then please use version `SDL_Net_200`, otherwise you can safely remove it from your version list"); return true; }
+	else version(SDL_Net_200) return true;
+	else version(SDL_Net_201) return true;
+	else version(SDL_Net_2_2) return true;
+	else return false;
+}();
 
-version(SDL_TTF) version = BindSDL_TTF;
-else version(SDL_TTF_2012) version = BindSDL_TTF;
-else version(SDL_TTF_2013) version = BindSDL_TTF;
-else version(SDL_TTF_2014) version = BindSDL_TTF;
-else version(SDL_TTF_2015) version = BindSDL_TTF;
-else version(SDL_TTF_2018) version = BindSDL_TTF;
-version(BindSDL_TTF) enum bindSDLTTF = true;
-else enum bindSDLTTF = false;
+enum bindSDLTTF = (){
+	version(SDL_TTF){ pragma(msg, "`SDL_TTF` is deprecated. If you want the earliest supported version of SDL TTF then please use version `SDL_TTF_2012`, otherwise you can safely remove it from your version list"); return true; }
+	else version(SDL_TTF_2012) return true;
+	else version(SDL_TTF_2013) return true;
+	else version(SDL_TTF_2014) return true;
+	else version(SDL_TTF_2015) return true;
+	else version(SDL_TTF_2018) return true;
+	else version(SDL_TTF_2_20) return true;
+	else return false;
+}();
 
-enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = (){
-    string expandEnum;
-    foreach(m;__traits(allMembers, EnumType)) {
-        expandEnum ~= "alias " ~ m ~ " = " ~ fqnEnumType ~ "." ~ m ~ ";";
-    }
-    return expandEnum;
+//NOTE: everything below here may be moved to another library in the future
+
+static if(__VERSION__ >= 2101L){ //2.101+ supports Import C with #include
+	public import bindbc.sdl.ctypes: c_long, c_ulong;
+	
+	//these `c_` type aliases are here because these types use #define on some platforms
+	private import bindbc.sdl.ctypes: c_wchar_t, c_va_list;
+	alias wchar_t = c_wchar_t;
+	alias va_list = c_va_list;
+}else{
+	version(WebAssembly){
+		alias c_long  = long;
+		alias c_ulong = ulong;
+		
+		alias va_list = void*;
+	}else{
+		public import core.stdc.config: c_long, c_ulong;
+		public import core.stdc.stdarg: va_list;
+	}
+	
+	static if((){
+		version(Posix)     return true;
+		else version(WASI) return true;
+		else return false;
+	}()){
+		alias wchar_t = dchar;
+	}else static if((){
+		version (Windows) return true;
+		else return false;
+	}()){
+		alias wchar_t = wchar;
+	}else static assert(0, "`sizeof(wchar_t)` is not known on this platform. Please add it to bindbc/sdl/config.d, or update your compiler to a version based on dmd 2.101 or higher");
+}
+
+deprecated("This template will be moved to another library in the future") enum expandEnum(EnumType, string fqnEnumType = EnumType.stringof) = () nothrow pure @safe{
+	string expandEnum;
+	foreach(m;__traits(allMembers, EnumType)){
+		expandEnum ~= `alias `~m~` = `~fqnEnumType~`.`~m~`;`;
+	}
+	return expandEnum;
 }();

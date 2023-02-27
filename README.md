@@ -9,7 +9,7 @@ This project provides a set of both dynamic and static bindings to
 | Table of Contents |
 |-------------------|
 |[License](license)|
-|[SDL Documentation](#sdl-documentation)|
+|[SDL documentation](#sdl-documentation)|
 |[Quickstart guide](#quickstart-guide)|
 |[Sub-configurations](#configurations)|
 |[Library versions](#library-versions)|
@@ -22,7 +22,7 @@ BindBC-SDL&mdash;as well as every other binding in the [BindBC project](https://
 
 Bear in mind that you still need to abide by [SDL's license](https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt), and the licenses of any SDL_* libraries that you use through these bindings.
 
-## SDL Documentation
+## SDL documentation
 This readme describes how to use BindBC-SDL, *not* SDL. BindBC-SDL is a direct D binding to the SDL API, so any existing SDL documentation and tutorials can be adapted with only minor modifications.
 * [The SDL Wiki](https://wiki.libsdl.org/FrontPage) has official documentation of the SDL API.
 * [The SDL 2 tutorials from Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/index.php) are a good start for those unfamiliar with the API.

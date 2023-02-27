@@ -3,8 +3,8 @@
 </div>
 
 # BindBC-SDL
-This project provides a set of both static and dynamic bindings to
-[SDL (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow` and can be compiled with `-betterC` compatibility. This package is intended as a replacement of [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
+This project provides a set of both dynamic and static bindings to
+[SDL (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility. This package is intended to replace [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
 | Table of Contents |
 |-------------------|
@@ -45,7 +45,7 @@ Example __dub.sdl__
 dependency "bindbc-sdl" version="~>1.3.0"
 ```
 
-By default, BindBC-SDL is configured to compile as a dynamic binding that is not BetterC-compatible. If you prefer static bindings or need BetterC compatibility, they can be enabled via `subConfigurations`. For configuration naming, see [Configurations](#configurations).
+By default, BindBC-SDL is configured to compile as a dynamic binding that is not BetterC-compatible. If you prefer static bindings or need BetterC compatibility, they can be enabled via `subConfigurations` in your dub configuration file. For configuration naming & more details, see [Configurations](#configurations).
 
 Example __dub.json__
 ```json
@@ -92,15 +92,15 @@ void main(){
 
 **If you're using dynamic bindings**: you need to load each library you need with the appropriate load function. 
 
-For most use cases, it's best to use BindBC-Loader's [error handling API](https://github.com/BindBC/bindbc-loader#error-handling) to see if there were any failures while loading the libraries. This information can be written to a log file before aborting the program.
+For most use cases, it's best to use BindBC-Loader's [error handling API](https://github.com/BindBC/bindbc-loader#error-handling) to see if there were any errors while loading the libraries. This information can be written to a log file before aborting the program.
 
 The load function will also return a member of the `SDLSupport` enum (or equivalent: e.g. `SDLNetSupport` for SDL_net) which can be used for debugging:
 
-* `noLibrary` means the library failed to load. Usually this is because it couldn't be found.
-* `badLibrary` means one or more symbols in the library failed to load.
-* A version number. This version *should* match the library version you entered in your dub configuration. You can make sure it does match by comparing it with `sdlSupport` (or equivalent: e.g. `sdlNetSupport` for SDL_net). If it doesn't match then you may have the wrong library version installed on your computer, or even multiple versions installed at once!
+* `noLibrary` means the library couldn't be found.
+* `badLibrary` means there was an error while loading the library.
+* A version number means that SDL was loaded, however this version number currently **does not** correspond to which version of SDL was loaded. Instead, please use `SDL_GetVersion()` for SDL, `IMG_Linked_Version()` for SDL_image, `Mix_Linked_Version()` for SDL_mixer, `SDLNet_Linked_Version()` for SDL_net, or `TTF_Linked_Version()` for SDL_ttf.
 
-Here's a simple example using only 
+Here's a simple example using only the load function's return value:
 
 ```d
 import bindbc.sdl;
@@ -108,6 +108,8 @@ import bindbc.sdl;
 /*
 This version attempts to load the SDL shared library using
 well-known variations of the library name for the host system.
+`sdlSupport` is an `SDLSupport` version corresponding to the
+configured library version. (via SDL_204, SDL_2010 etc.)
 */
 SDLSupport ret = loadSDL();
 if(ret != sdlSupport){
@@ -118,16 +120,19 @@ if(ret != sdlSupport){
 	*/
 	if(ret == SDLSupport.noLibrary){
 		//The SDL shared library failed to load
-	}else if(SDLSupport.badLibrary){
+	}else if(ret == SDLSupport.badLibrary){
 		/*
-		One or more symbols failed to load. The likely cause is that the shared library is for a lower version than BindBC-SDL was configured to load (via SDL_204, SDL_2010 etc.)
+		One or more symbols failed to load. The likely cause is that
+		the shared library is for a lower version than BindBC-SDL was
+		configured to load.
 		*/
 	}
 }
 
 /*
-This version attempts to load the SDL library using a user-supplied file name. Usually, the name and/or path used
-will be platform specific, as in this example which attempts to load `sdl2.dll` from the `libs` subdirectory,
+This version attempts to load the SDL library using a user-supplied file name.
+Usually, the name and/or path used will be platform specific, as in this
+example which attempts to load `sdl2.dll` from the `libs` subdirectory,
 relative to the executable, only on Windows.
 */
 version(Windows) loadSDL("libs/sdl2.dll");
@@ -138,24 +143,20 @@ version(Windows) loadSDL("libs/sdl2.dll");
 import bindbc.sdl;
 
 /*
-Import the sharedlib module for error handling. Assigning an alias ensures the function names do not conflict with
-other public APIs. This isn't strictly necessary, but the API names are common enough that they could appear in other
-packages.
+Import the sharedlib module for error handling. Assigning an alias ensures that the
+function names do not conflict with other public APIs. This isn't strictly necessary,
+but the API names are common enough that they could appear in other packages.
 */
 import loader = bindbc.loader.sharedlib;
 
 bool loadLib(){
-	/*
-	Compare the return value of loadSDL with the global `sdlSupport` constant to determine if the version of SDL
-	configured at compile time is the version that was loaded.
-	*/
 	auto ret = loadSDL();
 	if(ret != sdlSupport){
 		//Log the error info
 		foreach(info; loader.errors){
 			/*
-			A hypothetical logging function. Note that `info.error` and `info.message` are `const(char)*`, not
-			`string`.
+			A hypothetical logging function. Note that `info.error` and
+			`info.message` are `const(char)*`, not `string`.
 			*/
 			logError(info.error, info.message);
 		}
@@ -165,7 +166,13 @@ bool loadLib(){
 		if(ret == SDLSupport.noLibrary){
 			msg = "This application requires the SDL library.";
 		}else{
-			msg = "The version of the SDL library on your system is too low. Please upgrade."
+			SDL_version version;
+			SDL_GetVersion(&version);
+			msg = "Your SDL version is too low: "~
+				itoa(version.major)~"."~
+				itoa(version.minor)~"."~
+				itoa(version.patch)~
+				". Please upgrade to 2.0.14+.";
 		}
 		//A hypothetical message box function
 		showMessageBox(msg);
@@ -183,76 +190,35 @@ BindBC-SDL has the following configurations:
 | **Dynamic** | `dynamic`  | `dynamicBC` |
 | **Static**  | `static`   | `staticBC`  |
 
-For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the the version identifier `BindSDL_Static` must be passed to your compiler/linker.
+For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the version identifier `BindSDL_Static` must be passed to your compiler/linker when building your project.
 
 > __Note__
 >
 > The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organization](https://github.com/BindBC)) Some third-party BindBC packages may support it as well.
 
-The dynamic bindings have no link-time dependency on the SDL libraries, so the SDL shared libraries must be manually loaded at runtime.
-At runtime, the SDL shared libraries are required to be on the shared library search path of the user's system.
+### Dynamic bindings
+The dynamic bindings have no link-time dependency on the SDL libraries, so the SDL shared libraries must be manually loaded at
+runtime from the shared library search path of the user's system.
 On Windows, this is typically handled by distributing the SDL DLLs with your program.
 On other systems, it usually means installing the SDL runtime libraries through a package manager.
 
-The static bindings have a link-time dependency on the SDL libraries&mdash;either the static libraries or the appropriate files for linking with shared libraries on your system.
+It is recommended that you always select the minimum version you require _and no higher_.
+If a lower version is loaded then it's still possible to call functions available in that lower version, but
+any calls to functions from versions between that version and the one you configured will result in a null pointer access.
+For example, if you configured SDL to 2.0.4 (`SDL_204`) but loaded SDL 2.0.2 at runtime, then any function pointers from
+2.0.3 and 2.0.4 will be `null`. For this reason, it's recommended to always specify your required version of the SDL library at
+compile time and unconditionally abort when you receive an `SDLSupport.badLibrary` return value from `loadSDL` (or equivalent).
 
-By default, each BindBC-SDL binding is configured to compile bindings for the lowest supported version of the C libraries. This ensures the widest level of compatibility at runtime. This behavior can be overridden via specific version identifiers. It is recommended that you always select the minimum version you require _and no higher_. In this example, the SDL dynamic binding is compiled to support SDL 2.0.4:
+The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not. `unloadSDL` can be used to unload a sucessfully loaded shared library. The SDL_* libraries provide similar functions: `isSDLImageLoaded`, `unloadSDLImage`, etc.
 
-__dub.json__
-```json
-"dependencies": {
-	"bindbc-sdl": "~>1.3.0",
-},
-"versions": [
-	"SDL_204",
-],
-```
+### Static bindings
+Static _bindings_ do not require static _linking_. The static bindings have a link-time dependency on either the shared _or_ static SDL libraries and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
 
-__dub.sdl__
-```sdl
-dependency "bindbc-sdl" version="~>1.3.0"
-versions "SDL_204"
-```
+Static bindings require the SDL development packages be installed on your system. The [SDL download page](https://www.libsdl.org/download-2.0.php) provides development packages for Windows and macOS. You can also install them via your system's package manager. For example, on Debian-based Linux distributions `sudo apt install sdl2` will install both the development and runtime packages.
 
-With this example configuration, `sdlSupport` is configured at compile time as `SDLSupport.sdl204`. If SDL 2.0.4 or later is installed on the system, `loadSDL` will return `SDLSupport.sdl204`. If a lower version of SDL is installed, `loadSDL` will return `SDLSupport.badLibrary`. In this scenario, calling `SDL_GetVersion()` will return an `SDLSupport` member indicating which version of SDL, if any, actually loaded.
+When linking with the shared (or import) libraries, there is a runtime dependency on the shared library just as there is when using the dynamic bindings. The difference is that the shared libraries are no longer loaded manually&mdash;loading is handled automatically by the system when the program is launched. Attempting to call `loadSDL` with the static binding enabled will result in a compilation error.
 
-If a lower version is loaded, it's still possible to call functions from that version of SDL, but any calls to functions from versions between that version and the one you configured will result in a null pointer access. For example, if you configured `SDL 2.0.4` and loaded `SDL 2.0.2`, then function pointers from both 2.0.3 and 2.0.4 will be `null`. For this reason, it's recommended to always specify your required version of the SDL library at compile time and abort when you receive an `SDLSupport.badLibrary` return value from `loadSDL`.
-
-No matter which version was configured, the successfully loaded version can be obtained via a call to `loadedSDLVersion`. It returns one of the following:
-
-* `SDLSupport.noLibrary` if `loadSDL` returned `SDLSupport.noLibrary`
-* `SDLSupport.badLibrary` if `loadSDL` returned `SDLSupport.badLibrary` and no version of SDL successfully loaded
-* a member of `SDLSupport` indicating the version of SDL that successfully loaded. When `loadSDL` returns `SDLSupport.badLibrary`, this will be a version number lower than the one configured at compile time. Otherwise, it will be the same as the manifest constant `sdlSupport`.
-
-The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not.
-
-```d
-SDLSupport ret = loadSDL();
-if(ret != sdlSupport) {
-	if(SDLSupport.badLibrary) {
-		/*
-		Let's say we've configured support for SDL 2.0.10 for some of the functions added to the SDL renderer API in
-		that version and don't use them if they aren't available. Let's further say that the absolute minimum version
-		of SDL we require is 2.0.4, because we rely on some of the functions that version added to the SDL API.
-
-		In this scenario, `SDLSupport.badLibrary` indicates that we have loaded a version of SDL that is less than
-		2.0.10. Maybe it's 2.0.9, or 2.0.2. We require at least 2.0.4, so we can check.
-		*/
-		if(loadedSDLVersion < SDLSupport.sdl204) {
-			// Version too low. Handle the error.
-		}
-	}
-	/*
-	The only other possible return value is `SDLSupport.noLibrary`, indicating the SDL library or one of its
-	dependencies could not be found.
-	*/
-	else {
-		// No library. Handle the error.
-	}
-}
-```
-
-The satellite libraries provide similar functions, e.g., `loadedSDLImageVersion` and `isSDLImageLoaded`.
+When linking with the static libraries, there is no runtime dependency on SDL. The SDL homepage does not distribute pre-compiled static libraries. If you decide to obtain static libraries from another source (usually by compiling them yourself) you will also need to ensure that you link with all of SDL's link-time dependencies (such as the OpenGL library and system API libraries).
 
 ## Library Versions
 These are the supported versions of each SDL_* library, along with the corresponding version identifiers to add to your dub configuration or pass to the compiler.
@@ -371,93 +337,15 @@ If you intend to compile for any of these platforms, please add the correspondin
 >
 > If you're building on Wayland and you have X11 support disabled in SDL, please add version `SDL_NoX11`.
 
-| Version identifier    | Platform                       |
-|-----------------------|--------------------------------|
-| `DirectFB`            | DirectFB                       |
-| `KMSDRM`              | KMS/DRM                        |
-| `Mir`                 | Mir-server                     |
-| `OS2`                 | Operating System/2             |
-| `Vivante`             | Vivante                        |
-| `WinGDK`              | Microsoft Game Development Kit |
-| `WinRT`               | Windows Runtime                |
-
-## The static bindings
-First things first: static _bindings_ do not require static _linking_. The static bindings have a link-time dependency on either the shared _or_ static SDL libraries and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
-
-Static bindings require1 the SDL development packages be installed on your system. The [SDL download page](https://www.libsdl.org/download-2.0.php) provides development packages for Windows and Mac OS X. On other systems, you can install them via your system package manager. For example, on Debian-based systems, `apt install sdl2`, or `apt-get install sdl2`, will install both the development and runtime packages.
-
-When linking with the shared (or import) libraries, there is a runtime dependency on the shared library just as there is when using the dynamic bindings. The difference is that the shared libraries are no longer loaded manually&mdash;loading is handled automatically by the system when the program is launched. Attempting to call `loadSDL` with the static binding enabled will result in a compilation error.
-
-When linking with the static libraries, there is no runtime dependency on SDL. The SDL homepage does not distribute pre-compiled static libraries. If you decide to obtain static libraries from another source, or by compiling them yourself, you will also need to ensure that you link with all of SDL's link-time dependencies (such as the OpenGL library and system API libraries).
-
-Personally, I recommend you avoid using any static SDL libraries. Using the static bindings is pefectly fine; just link with the shared libraries.
-
-Enabling the static bindings can be done in two ways.
-
-### Via the compiler's `-version` switch or DUB's `versions` directive
-Pass the `BindSDL_Static` version to the compiler and link with the appropriate libraries. Note that `BindSDL_Static` will also enable the static bindings for any satellite libraries used.
-
-When using the compiler command line or a build system that doesn't support DUB, this is the only option. The `-version=BindSDL_Static` option should be passed to the compiler when building your program. All of the required C libraries, as well as the BindBC-SDL static libraries, must also be passed to the compiler on the command line or via your build system's configuration.
-
-
-
-For example, when using the static bindings for SDL and SDL_image with DUB:
-
-__dub.json__
-```json
-"dependencies": {
-	"bindbc-sdl": "~>1.3.0"
-},
-"versions": [
-	"BindSDL_Static",
-	"SDL_Image",
-],
-"libs": [
-	"SDL2", "SDL2_image",
-],
-```
-
-__dub.sdl__
-```sdl
-dependency "bindbc-sdl" version="~>1.3.0"
-
-versions "BindSDL_Static" "SDL_Image"
-libs "SDL2" "SDL2_image"
-```
-
-### Via DUB subconfigurations
-Instead of using DUB's `versions` directive, a `subConfiguration` can be used. Enable the `static` subconfiguration for the BindBC-SDL dependency:
-
-__dub.json__
-```json
-"dependencies": {
-	"bindbc-sdl": "~>1.3.0",
-},
-"subConfigurations": {
-	"bindbc-sdl": "static",
-},
-"versions": [
-	"SDL_Image",
-],
-"libs": [
-	"SDL2",
-	"SDL2_image",
-],
-```
-
-__dub.sdl__
-```sdl
-dependency "bindbc-sdl" version="~>1.3.0"
-subConfiguration "bindbc-sdl" "static"
-
-versions "SDL_Image"
-libs "SDL2" "SDL2_image"
-```
-
-This has the benefit of completely excluding from the build any source modules related to the dynamic bindings, i.e., they will never be passed to the compiler. Using the version approach, the related modules are still passed to the compiler, but their contents are versioned out.
-
-## `-betterC` support
-When not using dub to manage your project, first use dub to compile the BindBC libraries with the `dynamicBC` or `staticBC` configuration, then pass `-betterC` (or equivalent) to the compiler when building your project (and `-version=BindSDL_Static` if you used the `staticBC` configuration).
+| Platform                       | Version identifier    |
+|--------------------------------|-----------------------|
+| DirectFB                       | `DirectFB`            |
+| KMS/DRM                        | `KMSDRM`              |
+| Mir-server                     | `Mir`                 |
+| Operating System/2             | `OS2`                 |
+| Vivante                        | `Vivante`             |
+| Microsoft Game Development Kit | `WinGDK`              |
+| Windows Runtime                | `WinRT`               |
 
 ## Windows: Loading from outside the DLL search path
 The SDL libraries load some dependency DLLs dynamically in the same way that BindBC can load libraries dynamically. There is an issue that can arise on Windows when putting some of the SDL DLLs in a subdirectory of your executable directory. That is, if your executable is (for example) in the directory `myapp`, and the SDL DLLs are in the directory `myapp\libs`, you may find that one or more of the SDL libraries fails to load. To solve or prevent this problem, take the following steps:

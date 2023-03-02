@@ -11,7 +11,7 @@ This project provides a set of both static and dynamic bindings to
 |[License](license)|
 |[SDL documentation](#sdl-documentation)|
 |[Quickstart guide](#quickstart-guide)|
-|[Sub-configurations](#configurations)|
+|[Configurations](#configurations)|
 |[Library versions](#library-versions)|
 |[Special platforms](#special-platforms)|
 |[Windows: Loading from outside the DLL search path](#windows-loading-from-outside-the-dll-search-path)|

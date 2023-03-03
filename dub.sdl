@@ -23,7 +23,6 @@ configuration "static" {
 }
 
 configuration "staticBC" {
-    dflags "-betterC"
     versions "BindSDL_Static"
-    excludedSourceFiles "source/bindbc/sdl/dynload.d"
+    dflags "-betterC"
 }

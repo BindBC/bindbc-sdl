@@ -237,7 +237,7 @@ private{
 				`libSDL2-2.0_ttf.so`,
 				`libSDL2-2.0_ttf.so.0`,
 			];
-		}else static assert(0, "BindBC SDL_ttf does not have library search paths set up for this platform");
+		}else static assert(0, "BindBC-SDL_ttf does not have library search paths set up for this platform");
 	}();
 }
 

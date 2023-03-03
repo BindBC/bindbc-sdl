@@ -197,7 +197,7 @@ private{
 				`libSDL2_image-2.0.so`,
 				`libSDL2_image-2.0.so.0`,
 			];
-		}else static assert(0, "BindBC SDL_image does not have library search paths set up for this platform");
+		}else static assert(0, "BindBC-SDL_image does not have library search paths set up for this platform");
 	}();
 }
 

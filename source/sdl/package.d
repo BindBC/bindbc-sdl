@@ -129,7 +129,7 @@ private{
 deprecated("Please use `SDL_GetVersion` instead")
 	SDLSupport loadedSDLVersion(){ return loadedVersion; }
 
-mixin(makeDynloadFns("", [
+mixin(bindbc.sdl.codegen.makeDynloadFns("", [
 	__MODULE__,
 	"sdl.assert_",
 	"sdl.atomic",

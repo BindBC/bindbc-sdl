@@ -332,4 +332,4 @@ private{
 deprecated("Please use `Mix_Linked_Version` instead")
 	SDLMixerSupport loadedSDLMixerVersion(){ return loadedVersion; }
 
-mixin(makeDynloadFns("Mixer", [__MODULE__]));
+mixin(bindbc.sdl.codegen.makeDynloadFns("Mixer", [__MODULE__]));

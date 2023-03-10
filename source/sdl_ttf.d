@@ -245,4 +245,4 @@ private{
 deprecated("Please use `TTF_Linked_Version` instead")
 	SDLTTFSupport loadedSDLTTFVersion(){ return loadedVersion; }
 
-mixin(makeDynloadFns("TTF", [__MODULE__]));
+mixin(bindbc.sdl.codegen.makeDynloadFns("TTF", [__MODULE__]));

@@ -205,4 +205,4 @@ private{
 deprecated("Please use `IMG_Linked_Version` instead")
 	SDLImageSupport loadedSDLImageVersion(){ return loadedVersion; }
 
-mixin(makeDynloadFns("Image", [__MODULE__]));
+mixin(bindbc.sdl.codegen.makeDynloadFns("Image", [__MODULE__]));

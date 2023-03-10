@@ -202,4 +202,4 @@ private{
 deprecated("Please use `SDLNet_Linked_Version` instead")
 	SDLNetSupport loadedSDLNetVersion(){ return loadedVersion; }
 
-mixin(makeDynloadFns("Net", [__MODULE__]));
+mixin(bindbc.sdl.codegen.makeDynloadFns("Net", [__MODULE__]));

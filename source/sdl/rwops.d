@@ -39,8 +39,8 @@ struct SDL_RWops{
 			}
 			AndroidIO_ androidio;
 		}else static if((){
-			version(Windows) return true;
-			version(WinGDK)  return true;
+			version(Windows)      return true;
+			else version(WinGDK)  return true;
 			else return false;
 		}()){
 			struct WindowsIO_{

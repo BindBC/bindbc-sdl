@@ -193,15 +193,15 @@ mixin(joinFnBinds((){
 			[q{int}, q{SDL_RenderGeometry}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_Vertex)* vertices, int num_vertices, const(int)* indices, int num_indices}],
 			[q{int}, q{SDL_RenderSetVSync}, q{SDL_Renderer* renderer, int vsync}],
 		]);
-	}
-	static if(sdlSupport < SDLSupport.v2_0_20){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_RenderGeometryRaw}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(int)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices}],
-		]);
-	}else{
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_RenderGeometryRaw}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices}],
-		]);
+		static if(sdlSupport >= SDLSupport.v2_0_20){
+			ret ~= makeFnBinds([
+				[q{int}, q{SDL_RenderGeometryRaw}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(SDL_Color)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices}],
+			]);
+		}else{
+			ret ~= makeFnBinds([
+				[q{int}, q{SDL_RenderGeometryRaw}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(float)* xy, int xy_stride, const(int)* color, int color_stride, const(float)* uv, int uv_stride, int num_vertices, const(void)* indices, int num_indices, int size_indices}],
+			]);
+		}
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_22){
 		ret ~= makeFnBinds([

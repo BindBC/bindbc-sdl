@@ -51,6 +51,16 @@ enum SDLSupport: SDL_version{
 	deprecated("Please use `v2_0_22` instead") sdl2022 = SDL_version(2,0,22),
 }
 
+enum useImportC = (){
+    static if (__VERSION__ >= 2101L)
+    {
+        version(BindBC_ImportC) return true;
+        else return false;
+    }
+    else
+        return false;
+}();
+
 enum staticBinding = (){
 	version(BindBC_Static)       return true;
 	else version(BindSDL_Static) return true;
@@ -123,7 +133,7 @@ enum bindSDLTTF = (){
 
 //NOTE: everything below here may be moved to another library in the future
 
-static if(__VERSION__ >= 2101L){ //2.101+ supports Import C with #include
+static if(useImportC){ //2.101+ supports Import C with #include
 	public import bindbc.sdl.ctypes: c_long, c_ulong;
 	
 	//these `c_` type aliases are here because these types use #define on some platforms

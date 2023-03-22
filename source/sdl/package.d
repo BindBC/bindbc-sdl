@@ -111,6 +111,7 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2.dylib`,
+				`/opt/homebrew/lib/libSDL2.dylib`,
 				`SDL2`,
 				`/Library/Frameworks/SDL2.framework/SDL2`,
 				`/System/Library/Frameworks/SDL2.framework/SDL2`,

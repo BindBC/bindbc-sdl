@@ -314,6 +314,7 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_mixer.dylib`,
+				`/opt/homebrew/lib/libSDL2_mixer.dylib`,
 				`SDL2_mixer`,
 				`/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,
 				`/System/Library/Frameworks/SDL2_mixer.framework/SDL2_mixer`,

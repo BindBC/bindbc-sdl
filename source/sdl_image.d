@@ -187,6 +187,7 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_image.dylib`,
+				`/opt/homebrew/lib/libSDL2_image.dylib`,
 				`SDL2_image`,
 				`/Library/Frameworks/SDL2_image.framework/SDL2_image`,
 				`/System/Library/Frameworks/SDL2_image.framework/SDL2_image`,

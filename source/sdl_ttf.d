@@ -227,6 +227,7 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_ttf.dylib`,
+				`/opt/homebrew/lib/libSDL2_ttf.dylib`,
 				`SDL2_ttf`,
 				`/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf`,
 				`/System/Library/Frameworks/SDL2_ttf.framework/SDL2_ttf`,

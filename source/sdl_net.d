@@ -184,6 +184,7 @@ private{
 		}else version(OSX){
 			return [
 				`libSDL2_net.dylib`,
+				`/opt/homebrew/lib/libSDL2_net.dylib`,
 				`SDL2_net`,
 				`/Library/Frameworks/SDL2_net.framework/SDL2_net`,
 				`/System/Library/Frameworks/SDL2_net.framework/SDL2_net`,

@@ -12,6 +12,7 @@ import bindbc.sdl.codegen;
 
 import sdl.render: SDL_Renderer;
 import sdl.stdinc: SDL_bool;
+import sdl.video: SDL_Window;
 
 version(Windows) version = Win32_GDK;
 version(WinGDK)  version = Win32_GDK;

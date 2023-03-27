@@ -7,8 +7,8 @@
 +/
 module sdl.atomic;
 
-version(SDL_No_Atomics){}
-else:
+version(SDL_No_Atomics){
+}else:
 
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
@@ -23,8 +23,8 @@ version(LDC) version = ExtAsm;
 pragma(inline, true) nothrow @nogc{
 	void SDL_CompilerBarrier(){
 		static if((){
-			version(Emscripten) return false;
-			version(ExtAsm)     return true;
+			version(Emscripten)  return false;
+			else version(ExtAsm) return true;
 			else return false;
 		}()){
 			asm nothrow @nogc{ "" : : : "memory"; } 
@@ -54,25 +54,25 @@ pragma(inline, true) nothrow @nogc{
 	
 	void SDL_MemoryBarrierRelease(){
 		static if((){
-			version(ExtAsm)
+			version(ExtAsm){
 				version(PPC)        return true;
 				else version(PPC64) return true;
 				else return false;
-			else return false;
+			}else return false;
 		}()){
 			asm nothrow @nogc{ "lwsync" : : : "memory"; }
 		}else static if((){
-			version(ExtAsm)
+			version(ExtAsm){
 				version(AArch64) return true;
 				else return false;
-			else return false;
+			}else return false;
 		}()){
 			asm nothrow @nogc{ "dmb ish" : : : "memory"; }
 		}else static if((){
-			version(ExtAsm)
+			version(ExtAsm){
 				version(ARM) return true;
 				else return false;
-			else return false;
+			}else return false;
 		}()){
 			asm nothrow @nogc{ "" : : : "memory"; }
 		}else{
@@ -84,20 +84,20 @@ pragma(inline, true) nothrow @nogc{
 	void SDL_CPUPauseInstruction() pure{ //NOTE: added in 2.24.0
 		version(ExtAsm){
 			static if((){
-				version(X86)    return true;
-				version(X86_64) return true;
+				version(X86)         return true;
+				else version(X86_64) return true;
 				else return false;
 			}()){
 				asm nothrow @nogc pure{ "rep nop"; }
 			}else static if((){
-				version(ARM)     return true;
-				version(AArch64) return true;
+				version(ARM)          return true;
+				else version(AArch64) return true;
 				else return false;
 			}()){
 				asm nothrow @nogc pure{ "yield" : : : "memory"; }
 			}else static if((){
-				version(PPC)   return true;
-				version(PPC64) return true;
+				version(PPC)        return true;
+				else version(PPC64) return true;
 				else return false;
 			}()){
 				asm nothrow @nogc pure{ "or 27,27,27"; }

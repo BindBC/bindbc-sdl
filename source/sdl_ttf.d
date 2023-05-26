@@ -160,7 +160,7 @@ mixin(joinFnBinds((){
 	]);
 	static if(sdlTTFSupport >= SDLTTFSupport.v2_0_14){
 		ret ~= makeFnBinds([
-			[q{int}, q{TTF_GetFontKerningSizeGlyph}, q{TTF_Font* font, ushort previous_ch, ushort ch}],
+			[q{int}, q{TTF_GetFontKerningSizeGlyphs}, q{TTF_Font* font, ushort previous_ch, ushort ch}],
 		]);
 	}
 	static if(sdlTTFSupport >= SDLTTFSupport.v2_0_18){

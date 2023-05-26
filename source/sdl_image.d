@@ -145,10 +145,9 @@ mixin(joinFnBinds((){
 	static if(sdlImageSupport >= SDLImageSupport.v2_0_2){
 		ret ~= makeFnBinds([
 			[q{int}, q{IMG_isSVG}, q{SDL_RWops* src}],
-			[q{SDL_Surface*}, q{IMG_LoadSVG}, q{SDL_RWops* src}],
+			[q{SDL_Surface*}, q{IMG_LoadSVG_RW}, q{SDL_RWops* src}],
 			[q{int}, q{IMG_SaveJPG}, q{SDL_Surface* surface, const(char)* file, int quality}],
 			[q{int}, q{IMG_SaveJPG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freedst, int quality}],
-			[q{SDL_Surface*}, q{IMG_LoadSVG_RW}, q{SDL_RWops* src}],
 		]);
 	}
 	static if(sdlImageSupport >= SDLImageSupport.v2_6){

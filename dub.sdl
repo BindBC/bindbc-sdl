@@ -1,6 +1,5 @@
 name "bindbc-sdl"
 description "Static & dynamic bindings to SDL and the SDL_* libraries, compatible with BetterC, @nogc and nothrow."
-homepage ""
 authors "Aya Partridge" "Mike Parker"
 license "BSL-1.0"
 
@@ -9,20 +8,20 @@ targetPath "lib"
 targetName "BindBC_SDL"
 
 configuration "dynamic" {
-    dependency "bindbc-loader" version="~>1.0.0"
+	dependency "bindbc-loader" version="~>1.0.0"
 }
 
 configuration "dynamicBC" {
-    dependency "bindbc-loader" version="~>1.0.0"
-    subConfiguration "bindbc-loader" "yesBC"
-    dflags "-betterC"
+	dependency "bindbc-loader" version="~>1.0.0"
+	subConfiguration "bindbc-loader" "yesBC"
+	buildOptions "betterC"
 }
 
 configuration "static" {
-    versions "BindSDL_Static"
+	versions "BindSDL_Static"
 }
 
 configuration "staticBC" {
-    versions "BindSDL_Static"
-    dflags "-betterC"
+	versions "BindSDL_Static"
+	buildOptions "betterC"
 }

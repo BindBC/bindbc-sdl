@@ -8,7 +8,7 @@ This project provides a set of both static and dynamic bindings to
 
 | Table of Contents |
 |-------------------|
-|[License](license)|
+|[License](#license)|
 |[SDL documentation](#sdl-documentation)|
 |[Quickstart guide](#quickstart-guide)|
 |[Configurations](#configurations)|

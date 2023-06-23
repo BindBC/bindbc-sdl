@@ -106,7 +106,7 @@ Here's a simple example using only the load function's return value:
 import bindbc.sdl;
 
 /*
-This version attempts to load the SDL shared library using
+This code attempts to load the SDL shared library using
 well-known variations of the library name for the host system.
 `sdlSupport` is an `SDLSupport` version corresponding to the
 configured library version. (via SDL_204, SDL_2010 etc.)
@@ -130,7 +130,7 @@ if(ret != sdlSupport){
 }
 
 /*
-This version attempts to load the SDL library using a user-supplied file name.
+This code attempts to load the SDL library using a user-supplied file name.
 Usually, the name and/or path used will be platform specific, as in this
 example which attempts to load `sdl2.dll` from the `libs` subdirectory,
 relative to the executable, only on Windows.
@@ -185,7 +185,7 @@ bool loadLib(){
 ## Configurations
 BindBC-SDL has the following configurations:
 
-|      ┌      |  DRuntime  |   BetterC   |
+|     ┌      |  DRuntime  |   BetterC   |
 |-------------|------------|-------------|
 | **Dynamic** | `dynamic`  | `dynamicBC` |
 | **Static**  | `static`   | `staticBC`  |
@@ -214,9 +214,9 @@ The function `isSDLLoaded` returns `true` if any version of the shared library h
 ### Static bindings
 Static _bindings_ do not require static _linking_. The static bindings have a link-time dependency on either the shared _or_ static SDL libraries and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
 
-Static bindings require the SDL development packages be installed on your system. The [SDL download page](https://www.libsdl.org/download-2.0.php) provides development packages for Windows and macOS. You can also install them via your system's package manager. For example, on Debian-based Linux distributions `sudo apt install sdl2` will install both the development and runtime packages.
+When linking with the shared (or import) libraries, there is a runtime dependency on the shared library just as there is when using the dynamic bindings. The difference is that the shared libraries are no longer loaded manually&mdash;loading is handled automatically by the system when the program is launched. Attempting to call `loadSDL` with the static bindings enabled will result in a compilation error.
 
-When linking with the shared (or import) libraries, there is a runtime dependency on the shared library just as there is when using the dynamic bindings. The difference is that the shared libraries are no longer loaded manually&mdash;loading is handled automatically by the system when the program is launched. Attempting to call `loadSDL` with the static binding enabled will result in a compilation error.
+Static linking requires the SDL development packages be installed on your system. The [SDL download page](https://www.libsdl.org/download-2.0.php) provides development packages for Windows and macOS. You can also install them via your system's package manager. For example, on Debian-based Linux distributions `sudo apt install sdl2` will install both the development and runtime packages.
 
 When linking with the static libraries, there is no runtime dependency on SDL. The SDL homepage does not distribute pre-compiled static libraries. If you decide to obtain static libraries from another source (usually by compiling them yourself) you will also need to ensure that you link with all of SDL's link-time dependencies (such as the OpenGL library and system API libraries).
 
@@ -352,7 +352,7 @@ The SDL libraries load some dependency DLLs dynamically in the same way that Bin
 
 First, make sure the non-system libraries on which the SDL libraries depend (such as `zlib.dll`) are in the same directory as the SDL libraries.
 
-Second, you'll want to add your subdirectory path to the Windows DLL search path. This can be accomplished via the function `setCustomLoaderSearchPath` in BindBC-Loader`. For more details, see ["Default Windows search path"](https://github.com/BindBC/bindbc-loader#default-windows-search-path) from the BindBC-Loader readme.
+Second, you'll want to add your subdirectory path to the Windows DLL search path. This can be accomplished via the function `setCustomLoaderSearchPath` in `BindBC-Loader`. For more details, see ["Default Windows search path"](https://github.com/BindBC/bindbc-loader#default-windows-search-path) from the BindBC-Loader readme.
 
 The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset to the default search path. Bear in mind that some of the SDL_* libraries load their dependencies lazily. For example, SDL_image will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialized.
 

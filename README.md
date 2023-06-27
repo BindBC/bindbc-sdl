@@ -6,13 +6,13 @@
 This project provides a set of both static and dynamic bindings to
 [SDL (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility. This package is intended to replace [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
-| Table of Contents |
-|-------------------|
-|[License](#license)|
+| Table of Contents                     |
+|---------------------------------------|
+|[License](#license)                    |
 |[SDL documentation](#sdl-documentation)|
-|[Quickstart guide](#quickstart-guide)|
-|[Configurations](#configurations)|
-|[Library versions](#library-versions)|
+|[Quickstart guide](#quickstart-guide)  |
+|[Configurations](#configurations)      |
+|[Library versions](#library-versions)  |
 |[Special platforms](#special-platforms)|
 |[Windows: Loading from outside the DLL search path](#windows-loading-from-outside-the-dll-search-path)|
 
@@ -23,7 +23,7 @@ BindBC-SDL&mdash;as well as every other binding in the [BindBC project](https://
 Bear in mind that you still need to abide by [SDL's license](https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt), and the licenses of any SDL_* libraries that you use through these bindings.
 
 ## SDL documentation
-This readme describes how to use BindBC-SDL, *not* SDL. BindBC-SDL is a direct D binding to the SDL API, so any existing SDL documentation and tutorials can be adapted with only minor modifications.
+This readme describes how to use BindBC-SDL, *not* SDL itself. BindBC-SDL is a direct D binding to the SDL API, so any existing SDL documentation and tutorials can be adapted with only minor modifications.
 * [The SDL Wiki](https://wiki.libsdl.org/FrontPage) has official documentation of the SDL API.
 * [The SDL 2 tutorials from Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/index.php) are a good start for those unfamiliar with the API.
 
@@ -65,10 +65,10 @@ If using static bindings, then you will also need to add the name of each librar
 Example __dub.json__
 ```json
 "versions": [
-	"SDL_2014", "SDL_Net_200"
+	"SDL_2014", "SDL_Net_200",
 ],
 "libs": [
-	"SDL2", "SDL2_net"
+	"SDL2", "SDL2_net",
 ],
 ```
 Example __dub.sdl__
@@ -77,7 +77,7 @@ versions "SDL_2014" "SDL_Net_200"
 libs "SDL2" "SDL2_net"
 ```
 
-**If you're using static bindings**: `import bindbc.sdl` in your code, and then you can use SDL just like you would in C. That's it!
+**If you're using static bindings**: `import bindbc.sdl` in your code, and then you can use all of SDL just like you would in C. That's it!
 ```d
 import bindbc.sdl;
 
@@ -150,7 +150,7 @@ but the API names are common enough that they could appear in other packages.
 import loader = bindbc.loader.sharedlib;
 
 bool loadLib(){
-	auto ret = loadSDL();
+	LoadMsg ret = loadSDL();
 	if(ret != sdlSupport){
 		//Log the error info
 		foreach(info; loader.errors){
@@ -190,33 +190,29 @@ BindBC-SDL has the following configurations:
 | **Dynamic** | `dynamic`  | `dynamicBC` |
 | **Static**  | `static`   | `staticBC`  |
 
-For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the version identifier `BindSDL_Static` must be passed to your compiler/linker when building your project.
+For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the version identifier `BindSDL_Static` must be passed to your compiler when building your project.
 
 > __Note__
 >
 > The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organization](https://github.com/BindBC)) Some third-party BindBC packages may support it as well.
 
 ### Dynamic bindings
-The dynamic bindings have no link-time dependency on the SDL libraries, so the SDL shared libraries must be manually loaded at
-runtime from the shared library search path of the user's system.
+The dynamic bindings have no link-time dependency on the SDL libraries, so the SDL shared libraries must be manually loaded at runtime from the shared library search path of the user's system.
 On Windows, this is typically handled by distributing the SDL DLLs with your program.
-On other systems, it usually means installing the SDL runtime libraries through a package manager.
+On other systems, it usually means installing the SDL shared libraries through a package manager.
 
 It is recommended that you always select the minimum version you require _and no higher_.
-If a lower version is loaded then it's still possible to call functions available in that lower version, but
-any calls to functions from versions between that version and the one you configured will result in a null pointer access.
-For example, if you configured SDL to 2.0.4 (`SDL_204`) but loaded SDL 2.0.2 at runtime, then any function pointers from
-2.0.3 and 2.0.4 will be `null`. For this reason, it's recommended to always specify your required version of the SDL library at
-compile time and unconditionally abort when you receive an `SDLSupport.badLibrary` return value from `loadSDL` (or equivalent).
+If a lower version is loaded then it's still possible to call functions available in that lower version, but any calls to functions from versions between that version and the one you configured will result in a null pointer access.
+For example, if you configured SDL to 2.0.4 (`SDL_204`) but loaded SDL 2.0.2 at runtime, then any function pointers from 2.0.3 and 2.0.4 will be `null`. For this reason, it's recommended to always specify your required version of the SDL library at compile time and unconditionally abort when you receive an `SDLSupport.badLibrary` return value from `loadSDL` (or equivalent).
 
-The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not. `unloadSDL` can be used to unload a sucessfully loaded shared library. The SDL_* libraries provide similar functions: `isSDLImageLoaded`, `unloadSDLImage`, etc.
+The function `isSDLLoaded` returns `true` if any version of the shared library has been loaded and `false` if not. `unloadSDL` can be used to unload a successfully loaded shared library. The SDL_* libraries provide similar functions: `isSDLImageLoaded`, `unloadSDLImage`, etc.
 
 ### Static bindings
 Static _bindings_ do not require static _linking_. The static bindings have a link-time dependency on either the shared _or_ static SDL libraries and any satellite SDL libraries the program uses. On Windows, you can link with the static libraries or, to use the DLLs, the import libraries. On other systems, you can link with either the static libraries or directly with the shared libraries.
 
 When linking with the shared (or import) libraries, there is a runtime dependency on the shared library just as there is when using the dynamic bindings. The difference is that the shared libraries are no longer loaded manually&mdash;loading is handled automatically by the system when the program is launched. Attempting to call `loadSDL` with the static bindings enabled will result in a compilation error.
 
-Static linking requires the SDL development packages be installed on your system. The [SDL download page](https://www.libsdl.org/download-2.0.php) provides development packages for Windows and macOS. You can also install them via your system's package manager. For example, on Debian-based Linux distributions `sudo apt install sdl2` will install both the development and runtime packages.
+Static linking requires the SDL development packages be installed on your system. The [SDL download page](https://www.libsdl.org/download-2.0.php) provides development packages for Windows and macOS. You can also install them via your system's package manager. For example, on Debian-based Linux distributions `sudo apt install libsdl2-dev` will install both the development and runtime packages.
 
 When linking with the static libraries, there is no runtime dependency on SDL. The SDL homepage does not distribute pre-compiled static libraries. If you decide to obtain static libraries from another source (usually by compiling them yourself) you will also need to ensure that you link with all of SDL's link-time dependencies (such as the OpenGL library and system API libraries).
 
@@ -354,7 +350,7 @@ First, make sure the non-system libraries on which the SDL libraries depend (suc
 
 Second, you'll want to add your subdirectory path to the Windows DLL search path. This can be accomplished via the function `setCustomLoaderSearchPath` in `BindBC-Loader`. For more details, see ["Default Windows search path"](https://github.com/BindBC/bindbc-loader#default-windows-search-path) from the BindBC-Loader readme.
 
-The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset to the default search path. Bear in mind that some of the SDL_* libraries load their dependencies lazily. For example, SDL_image will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialized.
+The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset to the default search path. Bear in mind that some of the SDL_* libraries load their dependencies lazily. For example, SDL_image will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialised.
 
 ```d
 import bindbc.loader,

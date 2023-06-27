@@ -34,14 +34,14 @@ enum: ushort{
 }
 
 enum: uint{
-	SDL_HAPTIC_POLAR = 0,
-	SDL_HAPTIC_CARTESIAN = 1,
-	SDL_HAPTIC_SPHERICAL = 2,
-	SDL_HAPTIC_INFINITY = 4294967295U,
+	SDL_HAPTIC_POLAR          = 0,
+	SDL_HAPTIC_CARTESIAN      = 1,
+	SDL_HAPTIC_SPHERICAL      = 2,
+	SDL_HAPTIC_INFINITY       = 4294967295U,
 }
 static if(sdlSupport >= SDLSupport.v2_0_14)
 enum: uint{
-	SDL_HAPTIC_STEERING_AXIS = 3,
+	SDL_HAPTIC_STEERING_AXIS  = 3,
 }
 
 struct SDL_HapticDirection{

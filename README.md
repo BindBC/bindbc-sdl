@@ -6,13 +6,13 @@
 This project provides a set of both static and dynamic bindings to
 [SDL (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility. This package is intended to replace [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
-| Table of Contents                     |
-|---------------------------------------|
-|[License](#license)                    |
+| Table of Contents |
+|-------------------|
+|[License](#license)|
 |[SDL documentation](#sdl-documentation)|
-|[Quickstart guide](#quickstart-guide)  |
-|[Configurations](#configurations)      |
-|[Library versions](#library-versions)  |
+|[Quickstart guide](#quickstart-guide)|
+|[Configurations](#configurations)|
+|[Library versions](#library-versions)|
 |[Special platforms](#special-platforms)|
 |[Windows: Loading from outside the DLL search path](#windows-loading-from-outside-the-dll-search-path)|
 

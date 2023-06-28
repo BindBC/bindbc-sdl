@@ -111,7 +111,7 @@ enum: SDL_GameControllerButton{
 }
 else
 enum: SDL_GameControllerButton{
-	SDL_CONTROLLER_BUTTON_MAX            = 16,
+	SDL_CONTROLLER_BUTTON_MAX            = 15,
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_2){

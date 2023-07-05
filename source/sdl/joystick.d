@@ -13,6 +13,11 @@ import bindbc.sdl.codegen;
 import sdl.stdinc: SDL_bool;
 import sdl.guid: SDL_GUID;
 
+version(SDL_ThreadSafetyAnalysis){
+	import sdl.mutex: SDL_mutex;
+	extern extern(C) SDL_mutex* SDL_joystick_lock;
+}
+
 struct SDL_Joystick;
 
 alias SDL_JoystickGUID = SDL_GUID;

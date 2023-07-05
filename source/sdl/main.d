@@ -54,6 +54,11 @@ mixin(joinFnBinds((){
 				[q{int}, q{SDL_GDKRunApp}, q{SDL_main_func mainFunction, void* reserved}],
 			]);
 		}
+		static if(sdlSupport >= SDLSupport.v2_28){
+			ret ~= makeFnBinds([
+				[q{void}, q{SDL_GDKSuspendComplete}, q{}],
+			]);
+		}
 	}
 	return ret;
 }()));

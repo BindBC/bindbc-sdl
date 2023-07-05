@@ -34,7 +34,7 @@ mixin(joinFnBinds((){
 		[q{void}, q{SDL_DestroySemaphore}, q{SDL_semaphore* sem}],
 		[q{int}, q{SDL_SemWait}, q{SDL_semaphore* sem}],
 		[q{int}, q{SDL_SemTryWait}, q{SDL_semaphore* sem}],
-		[q{int}, q{SDL_SemWaitTimeout}, q{SDL_semaphore* sem, uint ms}],
+		[q{int}, q{SDL_SemWaitTimeout}, q{SDL_semaphore* sem, uint timeout}],
 		[q{int}, q{SDL_SemPost}, q{SDL_semaphore* sem}],
 		[q{uint}, q{SDL_SemValue}, q{SDL_semaphore* sem}],
 		

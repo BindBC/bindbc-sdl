@@ -31,7 +31,7 @@ enum SDLSupport: SDL_version{
 	v2_0_22     = SDL_version(2,0,22),
 	v2_24       = SDL_version(2,24,0),
 	v2_26       = SDL_version(2,26,0),
-	v2_26       = SDL_version(2,28,0),
+	v2_28       = SDL_version(2,28,0),
 	
 	deprecated("Please use `v2_0_0` instead")  sdl200  = SDL_version(2,0,0),
 	deprecated("Please use `v2_0_1` instead")  sdl201  = SDL_version(2,0,1),
@@ -60,7 +60,7 @@ enum staticBinding = (){
 
 enum sdlSupport = (){
 	version(SDL_2_28)      return SDLSupport.v2_28;
-	version(SDL_2_26)      return SDLSupport.v2_26;
+	else version(SDL_2_26) return SDLSupport.v2_26;
 	else version(SDL_2_24) return SDLSupport.v2_24;
 	else version(SDL_2022) return SDLSupport.v2_0_22;
 	else version(SDL_2020) return SDLSupport.v2_0_20;

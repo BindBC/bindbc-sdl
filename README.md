@@ -1,5 +1,5 @@
 <div align="center" width="100%">
-	<img alt="BindBC SDL logo" width="50%" src="https://raw.githubusercontent.com/BindBC/bindbc-branding/master/logo_wide_sdl.png"/>
+	<img alt="BindBC-SDL logo" width="50%" src="https://raw.githubusercontent.com/BindBC/bindbc-branding/master/logo_wide_sdl.png"/>
 </div>
 
 # BindBC-SDL
@@ -37,12 +37,12 @@ To use BindBC-SDL in your dub project, add it to the list of `dependencies` in y
 Example __dub.json__
 ```json
 "dependencies": {
-	"bindbc-sdl": "~>1.3.0",
+	"bindbc-sdl": "~>1.4.0",
 },
 ```
 Example __dub.sdl__
 ```sdl
-dependency "bindbc-sdl" version="~>1.3.0"
+dependency "bindbc-sdl" version="~>1.4.0"
 ```
 
 By default, BindBC-SDL is configured to compile as a dynamic binding that is not BetterC-compatible. If you prefer static bindings or need BetterC compatibility, they can be enabled via `subConfigurations` in your dub configuration file. For configuration naming & more details, see [Configurations](#configurations).
@@ -65,7 +65,7 @@ If using static bindings, then you will also need to add the name of each librar
 Example __dub.json__
 ```json
 "versions": [
-	"SDL_2014", "SDL_Net_200",
+	"SDL_2016", "SDL_Net_200",
 ],
 "libs": [
 	"SDL2", "SDL2_net",
@@ -73,7 +73,7 @@ Example __dub.json__
 ```
 Example __dub.sdl__
 ```sdl
-versions "SDL_2014" "SDL_Net_200"
+versions "SDL_2016" "SDL_Net_200"
 libs "SDL2" "SDL2_net"
 ```
 
@@ -172,7 +172,7 @@ bool loadLib(){
 				itoa(version.major)~"."~
 				itoa(version.minor)~"."~
 				itoa(version.patch)~
-				". Please upgrade to 2.0.14+.";
+				". Please upgrade to 2.0.16+.";
 		}
 		//A hypothetical message box function
 		showMessageBox(msg);
@@ -327,21 +327,21 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 ## Special platforms
 Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/version.html#predefined-versions), meaning that BindBC-SDL has to use custom version identifiers for them.
-If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub `versions`, or supply them in `-version` to your compiler.
+If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub recipe's `versions` list, or supply them directly to the compiler.
 
 > __Note__
 >
-> If you're building on Wayland and you have X11 support disabled in SDL, please add version `SDL_NoX11`.
+> If you're building on Wayland and you have X11 support disabled in SDL, please add version identifier `SDL_NoX11`.
 
-| Platform                       | Version identifier    |
-|--------------------------------|-----------------------|
-| DirectFB                       | `DirectFB`            |
-| KMS/DRM                        | `KMSDRM`              |
-| Mir-server                     | `Mir`                 |
-| Operating System/2             | `OS2`                 |
-| Vivante                        | `Vivante`             |
-| Microsoft Game Development Kit | `WinGDK`              |
-| Windows Runtime                | `WinRT`               |
+| Platform                       | Version identifier |
+|--------------------------------|--------------------|
+| DirectFB                       | `DirectFB`         |
+| KMS/DRM                        | `KMSDRM`           |
+| Mir-server                     | `Mir`              |
+| Operating System/2             | `OS2`              |
+| Vivante                        | `Vivante`          |
+| Microsoft Game Development Kit | `WinGDK`           |
+| Windows Runtime                | `WinRT`            |
 
 ## Windows: Loading from outside the DLL search path
 The SDL libraries load some dependency DLLs dynamically in the same way that BindBC can load libraries dynamically. There is an issue that can arise on Windows when putting some of the SDL DLLs in a subdirectory of your executable directory. That is, if your executable is (for example) in the directory `myapp`, and the SDL DLLs are in the directory `myapp\libs`, you may find that one or more of the SDL libraries fails to load. To solve or prevent this problem, take the following steps:

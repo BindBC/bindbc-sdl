@@ -124,6 +124,10 @@ static if(sdlSupport >= SDLSupport.v2_0_9){
 		SDL_DISPLAYEVENT_CONNECTED     = 2,
 		SDL_DISPLAYEVENT_DISCONNECTED  = 3,
 	}
+	static if(sdlSupport >= SDLSupport.v2_28)
+	enum: SDL_DisplayEventID{
+		SDL_DISPLAYEVENT_MOVED         = 4,
+	}
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_9){
@@ -374,6 +378,12 @@ mixin(joinFnBinds((){
 	static if(sdlSupport >= SDLSupport.v2_26){
 		ret ~= makeFnBinds([
 			[q{void}, q{SDL_GetWindowSizeInPixels}, q{SDL_Window* window, int* w, int* h}],
+		]);
+	}
+	static if(sdlSupport >= SDLSupport.v2_28){
+		ret ~= makeFnBinds([
+			[q{SDL_bool}, q{SDL_HasWindowSurface}, q{SDL_Window* window}],
+			[q{int}, q{SDL_DestroyWindowSurface}, q{SDL_Window* window}],
 		]);
 	}
 	return ret;

@@ -221,6 +221,10 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 > __Note__
 >
+> If you have `SDL_THREAD_SAFETY_ANALYSIS` support enabled in SDL, you may use version identifier `SDL_ThreadSafetyAnalysis`.
+
+> __Note__
+>
 > It is necessary to specify only a single version identifier per library. For example, `SDL_Image_204` by itself will activate the SDL_image binding.
 >
 > Previously, there were identifiers for the SDL_* libraries with no version. (`SDL_Image`, `SDL_TTF`, etc.) These are are now deprecated due to their ambiguity and older projects are encouraged to remove them.
@@ -249,6 +253,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.22      | `SDL_2022`       |
 | 2.24.X      | `SDL_2_24`       |
 | 2.26.X      | `SDL_2_26`       |
+| 2.28.X      | `SDL_2_28`       |
 
 > __Warning__
 >

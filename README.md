@@ -156,7 +156,7 @@ bool loadLib(){
 		foreach(info; loader.errors){
 			/*
 			A hypothetical logging function. Note that `info.error` and
-			`info.message` are `const(char)*`, not `string`.
+			`info.message` are null-terminated `const(char)*`, not `string`.
 			*/
 			logError(info.error, info.message);
 		}

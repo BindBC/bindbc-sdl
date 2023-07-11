@@ -23,7 +23,7 @@ enum{
 	SDL_DONTFREE   = 0x0000_0004,
 }
 
-pragma(inline, true) bool SDL_MUSTLOCK(const(SDL_Surface)* S) @nogc nothrow pure{
+pragma(inline, true) bool SDL_MUSTLOCK(const(SDL_Surface)* S) nothrow @nogc pure{
 	return (S.flags & SDL_RLEACCEL) != 0;
 }
 
@@ -65,7 +65,7 @@ static if(sdlSupport >= SDLSupport.v2_0_8){
 	}
 }
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	SDL_Surface* SDL_LoadBMP(const(char)* file){
 		return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1);
 	}

@@ -24,7 +24,7 @@ enum: uint{
 }
 
 struct SDL_RWops{
-	extern(C) @nogc nothrow{
+	extern(C) nothrow @nogc{
 		long function(SDL_RWops*) size;
 		long function(SDL_RWops*, long, int) seek;
 		size_t function(SDL_RWops*, void*, size_t, size_t) read;
@@ -87,7 +87,7 @@ enum{
 	RW_SEEK_END = 2,
 }
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	static if(sdlSupport < SDLSupport.v2_0_10){
 		long SDL_RWsize(SDL_RWops* ctx){ return ctx.size(ctx); }
 		long SDL_RWseek(SDL_RWops* ctx, long offset, int whence){ return ctx.seek(ctx, offset, whence); }

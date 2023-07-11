@@ -77,7 +77,7 @@ enum: SDL_PackedLayout{
 
 alias SDL_DEFINE_PIXELFOURCC = SDL_FOURCC;
 
-pragma(inline, true) @nogc nothrow pure @safe{
+pragma(inline, true) nothrow @nogc pure @safe{
 	uint SDL_DEFINE_PIXELFORMAT(int type, int order, int layout, int bits, int bytes){
 		return (1 << 28) | (type << 24) | (order << 20) | (layout << 16) | (bits << 8) | (bytes << 0);
 	}

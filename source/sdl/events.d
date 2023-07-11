@@ -497,7 +497,7 @@ enum{
 	SDL_ENABLE   = 1,
 }
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	int SDL_GetEventState(SDL_EventType type){
 		return SDL_EventState(type, SDL_QUERY);
 	}

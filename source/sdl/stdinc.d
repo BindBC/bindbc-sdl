@@ -72,7 +72,7 @@ static if(sdlSupport >= SDLSupport.v2_0_4){
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_7){
-	extern(C) @nogc nothrow{
+	extern(C) nothrow @nogc{
 		alias SDL_malloc_func = void* function(size_t size);
 		alias SDL_calloc_func = void* function(size_t nmemb, size_t size);
 		alias SDL_realloc_func = void* function(void* mem, size_t size);
@@ -91,7 +91,7 @@ enum: size_t{
 
 struct SDL_iconv_t;
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	int SDL_arraysize(T)(T array) pure @safe{ return array.sizeof/array[0].sizeof; }
 	
 	dchar SDL_FOURCC(char A, char B, char C, char D) pure @safe{

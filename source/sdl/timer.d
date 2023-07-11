@@ -18,7 +18,7 @@ alias SDL_TimerID = int;
 // This was added to SDL 2.0.1 as a macro, but it's
 // useful & has no dependency on the library version,
 // so it's here for 2.0.0 as well.
-pragma(inline, true) bool SDL_TICKS_PASSED(uint A, uint B) @nogc nothrow pure @safe{
+pragma(inline, true) bool SDL_TICKS_PASSED(uint A, uint B) nothrow @nogc pure @safe{
 	return cast(int)(B - A) <= 0;
 }
 

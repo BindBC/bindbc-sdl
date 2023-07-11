@@ -50,7 +50,7 @@ deprecated("Please use `SDL_MIXER_MAJOR_VERSION` instead") alias MIX_MAJOR_VERSI
 deprecated("Please use `SDL_MIXER_MINOR_VERSION` instead") alias MIX_MINOR_VERSION = SDL_MIXER_MINOR_VERSION;
 deprecated("Please use `SDL_MIXER_PATCHLEVEL` instead")    alias MIX_PATCH_LEVEL   = SDL_MIXER_PATCHLEVEL;
 
-pragma(inline, true) void SDL_MIXER_VERSION(SDL_version* X) @nogc nothrow pure @safe{
+pragma(inline, true) void SDL_MIXER_VERSION(SDL_version* X) nothrow @nogc pure @safe{
 	X.major = SDL_MIXER_MAJOR_VERSION;
 	X.minor = SDL_MIXER_MINOR_VERSION;
 	X.patch = SDL_MIXER_PATCHLEVEL;
@@ -60,7 +60,7 @@ pragma(inline, true) void SDL_MIXER_VERSION(SDL_version* X) @nogc nothrow pure @
 deprecated("Please use SDL_MIXER_VERSION_ATLEAST or SDL_MIXER_VERSION instead")
 	enum SDL_MIXER_COMPILEDVERSION = SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL);
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	bool SDL_MIXER_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_version(X, Y, Z); }
 }
 deprecated("Please use the non-template variant instead"){
@@ -174,7 +174,7 @@ alias Mix_ClearError = SDL_ClearError;
 alias Mix_OutOfMemory = SDL_OutOfMemory;
 
 static if(sdlMixerSupport < SDLMixerSupport.v2_6){
-	pragma(inline, true) @nogc nothrow{
+	pragma(inline, true) nothrow @nogc{
 		Mix_Chunk* Mix_LoadWAV(const(char)* file){
 			return Mix_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1);
 		}
@@ -329,7 +329,7 @@ private{
 	}();
 }
 
-@nogc nothrow:
+nothrow @nogc:
 deprecated("Please use `Mix_Linked_Version` instead")
 	SDLMixerSupport loadedSDLMixerVersion(){ return loadedVersion; }
 

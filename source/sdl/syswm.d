@@ -128,7 +128,7 @@ struct SDL_SysWMmsg{
 struct SDL_SysWMinfo{
 	SDL_version version_;
 	SDL_SYSWM_TYPE subsystem;
-
+	
 	union _Info{
 		version(Windows){
 			struct _Win{

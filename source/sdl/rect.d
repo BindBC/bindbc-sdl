@@ -33,7 +33,7 @@ static if(sdlSupport >= SDLSupport.v2_0_10){
 	}
 }
 
-pragma(inline, true) @nogc nothrow pure{
+pragma(inline, true) nothrow @nogc pure{
 	// This macro was added to SDL_rect.h in 2.0.4, but hurts nothing to implement for all versions.
 	bool SDL_PointInRect(const(SDL_Point)* p, const(SDL_Rect)* r){
 		return (

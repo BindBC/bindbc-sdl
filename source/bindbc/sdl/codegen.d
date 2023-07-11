@@ -70,7 +70,7 @@ enum makeFnBinds = (string[3][] fns) nothrow pure @safe{
 };
 
 enum joinFnBinds = (string[][] list) nothrow pure @safe{
-	string joined = `extern(C) @nogc nothrow`;
+	string joined = `extern(C) nothrow @nogc`;
 	string[] symbols;
 	
 	static if(staticBinding){
@@ -88,7 +88,7 @@ enum joinFnBinds = (string[][] list) nothrow pure @safe{
 	joined ~= "\n}";
 	
 	static if(!staticBinding){
-		joined ~= "\n\nimport bindbc.loader: SharedLib, bindSymbol;\nvoid bindModuleSymbols(SharedLib lib) @nogc nothrow{";
+		joined ~= "\n\nimport bindbc.loader: SharedLib, bindSymbol;\nvoid bindModuleSymbols(SharedLib lib) nothrow @nogc{";
 		foreach(symbol; symbols){
 			joined ~= "\n\tlib.bindSymbol(cast(void**)&_"~symbol~`, "`~symbol~`");`;
 			//joined ~= "\n\tassert("~symbol~` != null);`;

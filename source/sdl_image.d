@@ -50,7 +50,7 @@ enum SDL_IMAGE_MAJOR_VERSION = sdlImageSupport.major;
 enum SDL_IMAGE_MINOR_VERSION = sdlImageSupport.minor;
 enum SDL_IMAGE_PATCHLEVEL    = sdlImageSupport.patch;
 
-pragma(inline, true) void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow pure @safe{
+pragma(inline, true) void SDL_IMAGE_VERSION(SDL_version* X) nothrow @nogc pure @safe{
 	X.major = SDL_IMAGE_MAJOR_VERSION;
 	X.minor = SDL_IMAGE_MINOR_VERSION;
 	X.patch = SDL_IMAGE_PATCHLEVEL;
@@ -59,7 +59,7 @@ pragma(inline, true) void SDL_IMAGE_VERSION(SDL_version* X) @nogc nothrow pure @
 deprecated("Please use SDL_IMAGE_VERSION_ATLEAST or SDL_IMAGE_VERSION instead")
 	enum SDL_IMAGE_COMPILEDVERSION = SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL);
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	bool SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(X, Y, Z); }
 }
 deprecated("Please use the non-template variant instead"){
@@ -201,7 +201,7 @@ private{
 	}();
 }
 
-@nogc nothrow:
+nothrow @nogc:
 deprecated("Please use `IMG_Linked_Version` instead")
 	SDLImageSupport loadedSDLImageVersion(){ return loadedVersion; }
 

@@ -48,7 +48,7 @@ enum SDL_TTF_MAJOR_VERSION = sdlTTFSupport.major;
 enum SDL_TTF_MINOR_VERSION = sdlTTFSupport.minor;
 enum SDL_TTF_PATCHLEVEL    = sdlTTFSupport.patch;
 
-pragma(inline, true) void SDL_TTF_VERSION(SDL_version* X) @nogc nothrow pure @safe{
+pragma(inline, true) void SDL_TTF_VERSION(SDL_version* X) nothrow @nogc pure @safe{
 	X.major = SDL_TTF_MAJOR_VERSION;
 	X.minor = SDL_TTF_MINOR_VERSION;
 	X.patch = SDL_TTF_PATCHLEVEL;
@@ -242,7 +242,7 @@ private{
 	}();
 }
 
-@nogc nothrow:
+nothrow @nogc:
 deprecated("Please use `TTF_Linked_Version` instead")
 	SDLTTFSupport loadedSDLTTFVersion(){ return loadedVersion; }
 

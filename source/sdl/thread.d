@@ -42,7 +42,7 @@ version(Win_OS2_GDK){
 		
 		private alias start_address = void function(void*);
 		
-		extern(C) @nogc nothrow{
+		extern(C) nothrow @nogc{
 			alias pfnSDL_CurrentBeginThread = uintptr_t function(start_address,void*,uint,void*);
 			private int _beginthread(start_address,void*,uint,void*);
 			alias SDL_beginthread = _beginthread;
@@ -54,7 +54,7 @@ version(Win_OS2_GDK){
 	}else{
 		private alias start_address = extern(Windows) uint function(void*);
 		
-		extern(C) @nogc nothrow{
+		extern(C) nothrow @nogc{
 			/*
 			On Windows, SDL_CreateThread/WithStackSize require the _beginthreadex/_endthreadex of
 			the caller's process when using the DLL. As best as I can tell, this will be okay even
@@ -72,7 +72,7 @@ version(Win_OS2_GDK){
 		}
 	}
 	
-	pragma(inline, true) @nogc nothrow{
+	pragma(inline, true) nothrow @nogc{
 		SDL_Thread* SDL_CreateThreadImpl(SDL_ThreadFunction fn, const(char)* name, void* data){
 			return SDL_CreateThread(fn, name, data, &SDL_beginthread, &SDL_endthread);
 		}

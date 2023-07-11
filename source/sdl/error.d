@@ -10,7 +10,7 @@ module sdl.error;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-pragma(inline, true) @nogc nothrow{
+pragma(inline, true) nothrow @nogc{
 	int  SDL_OutOfMemory(){ return SDL_Error(SDL_ENOMEM); }
 	int  SDL_Unsupported(){ return SDL_Error(SDL_UNSUPPORTED); }
 	void SDL_InvalidParamError(T)(param){ SDL_SetError("Parameter '%s' is invalid", param); }

@@ -126,7 +126,7 @@ private{
 	}();
 }
 
-@nogc nothrow:
+nothrow @nogc:
 deprecated("Please use `SDL_GetVersion` instead")
 	SDLSupport loadedSDLVersion(){ return loadedVersion; }
 

@@ -129,7 +129,7 @@ enum: SDL_AudioStatus{
 	SDL_AUDIO_PAUSED   = 2,
 }
 
-pragma(inline, true) SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audio_buf, uint* len) @nogc nothrow{
+pragma(inline, true) SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audio_buf, uint* len) nothrow @nogc{
 	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, len);
 }
 

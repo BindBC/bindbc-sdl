@@ -115,7 +115,7 @@ enum: SDL_GameControllerButton{
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_2){
-	pragma(inline, true) int SDL_GameControllerAddMappingsFromFile(const(char)* file) @nogc nothrow{
+	pragma(inline, true) int SDL_GameControllerAddMappingsFromFile(const(char)* file) nothrow @nogc{
 		return SDL_GameControllerAddMappingsFromRW(SDL_RWFromFile(file, "rb"), 1);
 	}
 }

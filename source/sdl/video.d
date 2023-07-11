@@ -77,7 +77,7 @@ enum: uint{
 	SDL_WINDOWPOS_CENTERED = SDL_WINDOWPOS_CENTERED_DISPLAY(0),
 }
 
-pragma(inline, true) @nogc nothrow pure @safe{
+pragma(inline, true) nothrow @nogc pure @safe{
 	uint SDL_WINDOWPOS_UNDEFINED_DISPLAY(uint x){ return SDL_WINDOWPOS_UNDEFINED_MASK | x; }
 	uint SDL_WINDOWPOS_ISUNDEFINED(uint x){ return (x & 0xFFFF0000) == SDL_WINDOWPOS_UNDEFINED_MASK; }
 	uint SDL_WINDOWPOS_CENTERED_DISPLAY(uint x){ return SDL_WINDOWPOS_CENTERED_MASK | x; }

@@ -108,11 +108,6 @@ mixin(joinFnBinds((){
 		[q{int}, q{SDL_UpperBlitScaled}, q{SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, SDL_Rect* dstrect}],
 		[q{int}, q{SDL_LowerBlitScaled}, q{SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect}],
 	]);
-	ret ~= [q{
-	alias SDL_BlitSurface = SDL_UpperBlit;
-	alias SDL_BlitScaled = SDL_UpperBlitScaled;
-	}];
-	
 	static if(sdlSupport >= SDLSupport.v2_0_5){
 		ret ~= makeFnBinds([
 			[q{SDL_Surface*}, q{SDL_CreateRGBSurfaceWithFormat}, q{uint flags, int width, int height, int depth, uint format}],
@@ -153,6 +148,8 @@ alias SDL_SetColourKey = SDL_SetColorKey;
 alias SDL_GetColourKey = SDL_GetColorKey;
 alias SDL_SetSurfaceColourMod = SDL_SetSurfaceColorMod;
 alias SDL_GetSurfaceColourMod = SDL_GetSurfaceColorMod;
+alias SDL_BlitSurface = SDL_UpperBlit;
+alias SDL_BlitScaled = SDL_UpperBlitScaled;
 static if(sdlSupport >= SDLSupport.v2_0_9){
 	alias SDL_HasColourKey = SDL_HasColorKey;
 }

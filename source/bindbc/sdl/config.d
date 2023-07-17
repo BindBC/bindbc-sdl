@@ -7,7 +7,20 @@
 +/
 module bindbc.sdl.config;
 
-import sdl.version_: SDL_version, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL;
+struct SDL_version{
+	ubyte major;
+	ubyte minor;
+	ubyte patch;
+	
+	int opCmp(SDL_version x) nothrow @nogc pure{
+		if(major != x.major)
+			return major - x.major;
+		else if(minor != x.minor)
+			return minor - x.minor;
+		else
+			return patch - x.patch;
+	}
+}
 
 enum SDLSupport: SDL_version{
 	noLibrary   = SDL_version(0,0,0),

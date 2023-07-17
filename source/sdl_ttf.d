@@ -15,7 +15,6 @@ import sdl.error: SDL_GetError, SDL_SetError;
 import sdl.pixels: SDL_Color;
 import sdl.rwops: SDL_RWops;
 import sdl.surface: SDL_Surface;
-import sdl.version_: SDL_version;
 import sdl.stdinc: SDL_bool;
 
 enum SDLTTFSupport: SDL_version{

@@ -15,7 +15,6 @@ import sdl.error: SDL_GetError, SDL_SetError;
 import sdl.render: SDL_Renderer, SDL_Texture;
 import sdl.rwops: SDL_RWops;
 import sdl.surface: SDL_Surface;
-import sdl.version_: SDL_version;
 
 enum SDLImageSupport: SDL_version{
 	noLibrary   = SDL_version(0,0,0),
@@ -89,7 +88,6 @@ static if(sdlImageSupport >= SDLImageSupport.v2_6){
 }
 
 alias IMG_SetError = SDL_SetError;
-
 alias IMG_GetError = SDL_GetError;
 
 mixin(joinFnBinds((){

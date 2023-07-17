@@ -11,8 +11,6 @@ import bindbc.sdl.config;
 static if(bindSDLNet):
 import bindbc.sdl.codegen;
 
-import sdl.version_: SDL_version;
-
 alias SDLNet_version = SDL_version;
 
 enum SDLNetSupport: SDLNet_version{

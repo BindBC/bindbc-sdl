@@ -10,21 +10,6 @@ module sdl.version_;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-struct SDL_version{
-	ubyte major;
-	ubyte minor;
-	ubyte patch;
-	
-	int opCmp(SDL_version x) nothrow @nogc pure{
-		if(major != x.major)
-			return major - x.major;
-		else if(minor != x.minor)
-			return minor - x.minor;
-		else
-			return patch - x.patch;
-	}
-}
-
 enum SDL_MAJOR_VERSION = sdlSupport.major;
 enum SDL_MINOR_VERSION = sdlSupport.minor;
 enum SDL_PATCHLEVEL    = sdlSupport.patch;

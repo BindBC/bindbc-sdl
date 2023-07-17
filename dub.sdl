@@ -3,6 +3,7 @@ description "Static & dynamic bindings to SDL2 & the SDL_* libraries, compatible
 authors "Aya Partridge" "Mike Parker"
 license "BSL-1.0"
 
+dependency "bindbc-common" version="~>0.1.1"
 targetType "staticLibrary"
 targetPath "lib"
 targetName "BindBC_SDL"

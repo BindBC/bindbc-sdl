@@ -27,7 +27,7 @@ This readme describes how to use BindBC-SDL, *not* SDL itself. BindBC-SDL is a d
 * [The SDL Wiki](https://wiki.libsdl.org/FrontPage) has official documentation of the SDL API.
 * [The SDL 2 tutorials from Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/index.php) are a good start for those unfamiliar with the API.
 
-> [!NOTE]
+> [!NOTE]\
 > The bindings for `SDL_atomics.h` have not been thoroughly tested. If the `SDL_atomics` binding causes trouble and you don't need to use it, you can supply the version identifier `SDL_No_Atomics` and the module's contents will not be compiled. If it's causing trouble and you need it, please report an issue.
 
 ## Quickstart guide
@@ -191,7 +191,7 @@ BindBC-SDL has the following configurations:
 
 For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the version identifier `BindSDL_Static` must be passed to your compiler when building your project.
 
-> [!NOTE]
+> [!NOTE]\
 > The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organisation](https://github.com/BindBC)) Some third-party BindBC packages may support it as well.
 
 ### Dynamic bindings
@@ -217,10 +217,10 @@ When linking with the static libraries, there is no runtime dependency on SDL. T
 ## Library Versions
 These are the supported versions of each SDL_* library, along with the corresponding version identifiers to add to your dub configuration or pass to the compiler.
 
-> [!NOTE]
+> [!NOTE]\
 > If you have `SDL_THREAD_SAFETY_ANALYSIS` support enabled in SDL, you may use version identifier `SDL_ThreadSafetyAnalysis`.
 
-> [!NOTE]
+> [!NOTE]\
 > It is necessary to specify only a single version identifier per library. For example, `SDL_Image_204` by itself will activate the SDL_image binding.
 >
 > Previously, there were identifiers for the SDL_* libraries with no version. (`SDL_Image`, `SDL_TTF`, etc.) These are are now deprecated due to their ambiguity and older projects are encouraged to remove them.
@@ -251,10 +251,10 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.26.X      | `SDL_2_26`       |
 | 2.28.X      | `SDL_2_28`       |
 
-> [!WARNING]
+> [!WARNING]\
 > SDL 2.0.1 on Windows had a bug preventing `SDL_GetPrefPath` from creating a folder when it doesn't exist. It's fine to compile with `SDL_201`, but make sure to ship your app with 2.0.2 or later on Windows and _verify_ that the [linked version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later with `SDL_GetVersion`. Alternatively, compile with `SDL_202` on Windows but `SDL_201` on other platforms, thereby guaranteeing an error on Windows if the user doesn't have SDL 2.0.2 or higher.
 
-> [!NOTE]
+> [!NOTE]\
 > Starting from SDL 2.0.10, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
 </details>
 
@@ -271,7 +271,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.5   | `SDL_Image_205`  | :x:                |
 | 2.6.X   | `SDL_Image_2_6`  | :heavy_check_mark: |
 
-> [!NOTE]
+> [!NOTE]\
 > Starting from SDL_image 2.6.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
 </details>
 
@@ -286,7 +286,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.4   | `SDL_Mixer_204`  | :heavy_check_mark: |
 | 2.6.X   | `SDL_Mixer_2_6`  | :heavy_check_mark: |
 
-> [!NOTE]
+> [!NOTE]\
 > Starting from SDL_mixer 2.0.4, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
 </details>
 
@@ -300,7 +300,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.1   | `SDL_Net_201`    | :x:                |
 | 2.2.X   | `SDL_Net_2_2`    | :x:                |
 
-> [!NOTE]
+> [!NOTE]\
 > Starting from SDL_net 2.2.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
 </details>
 
@@ -316,7 +316,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.18  | `SDL_TTF_2018`   | :heavy_check_mark: |
 | 2.20.X  | `SDL_TTF_2_20`   | :heavy_check_mark: |
 
-> [!NOTE]
+> [!NOTE]\
 > Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
 </details>
 
@@ -324,7 +324,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/version.html#predefined-versions), meaning that BindBC-SDL has to use custom version identifiers for them.
 If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub recipe's `versions` list, or supply them directly to the compiler.
 
-> [!NOTE]
+> [!NOTE]\
 > If you're building on Wayland and you have X11 support disabled in SDL, please add version identifier `SDL_NoX11`.
 
 | Platform                       | Version identifier |

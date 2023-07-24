@@ -22,7 +22,7 @@ rather than the funcion pointers).
 */
 version(Windows){
 	alias SDL_CreateThread = SDL_CreateThreadImpl;
-
+	
 	static if(sdlSupport >= SDLSupport.v2_0_9){
 		alias SDL_CreateThreadWithStackSize = SDL_CreateThreadWithStackSizeImpl;
 	}

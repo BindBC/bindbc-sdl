@@ -21,7 +21,7 @@ deprecated("Please use the non-template variant instead"){
 	enum SDL_SCANCODE_TO_KEYCODE(SDL_Scancode x) = x | SDLK_SCANCODE_MASK;
 }
 
-alias SDL_KeyCode = uint;
+alias SDL_KeyCode = int;
 enum: SDL_KeyCode{
 	SDLK_UNKNOWN = 0,
 	SDLK_RETURN = '\r',

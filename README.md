@@ -149,7 +149,7 @@ but the API names are common enough that they could appear in other packages.
 import loader = bindbc.loader.sharedlib;
 
 bool loadLib(){
-	LoadMsg ret = loadSDL();
+	SDLSupport ret = loadSDL();
 	if(ret != sdlSupport){
 		//Log the error info
 		foreach(info; loader.errors){
@@ -165,12 +165,12 @@ bool loadLib(){
 		if(ret == SDLSupport.noLibrary){
 			msg = "This application requires the SDL library.";
 		}else{
-			SDL_version version;
-			SDL_GetVersion(&version);
+			SDL_version version_;
+			SDL_GetVersion(&version_);
 			msg = "Your SDL version is too low: "~
-				itoa(version.major)~"."~
-				itoa(version.minor)~"."~
-				itoa(version.patch)~
+				itoa(version_.major)~"."~
+				itoa(version_.minor)~"."~
+				itoa(version_.patch)~
 				". Please upgrade to 2.0.16+.";
 		}
 		//A hypothetical message box function

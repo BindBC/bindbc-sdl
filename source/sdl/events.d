@@ -316,7 +316,7 @@ struct SDL_ControllerDeviceEvent{
 
 static if(sdlSupport >= SDLSupport.v2_0_14){
 	struct SDL_ControllerTouchpadEvent{
-		uint type;
+		SDL_EventType type;
 		uint timestamp;
 		SDL_JoystickID which;
 		int touchpad;
@@ -327,7 +327,7 @@ static if(sdlSupport >= SDLSupport.v2_0_14){
 	}
 	
 	struct SDL_ControllerSensorEvent{
-		uint type;
+		SDL_EventType type;
 		uint timestamp;
 		SDL_JoystickID which;
 		int sensor;
@@ -340,7 +340,7 @@ static if(sdlSupport >= SDLSupport.v2_0_14){
 
 static if(sdlSupport >= SDLSupport.v2_0_4){
 	struct SDL_AudioDeviceEvent{
-		uint type;
+		SDL_EventType type;
 		uint timestamp;
 		uint which;
 		ubyte iscapture;
@@ -513,11 +513,11 @@ mixin(joinFnBinds((){
 	string[][] ret;
 	ret ~= makeFnBinds([
 		[q{void}, q{SDL_PumpEvents}, q{}],
-		[q{int}, q{SDL_PeepEvents}, q{SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType}],
-		[q{SDL_bool}, q{SDL_HasEvent}, q{uint type}],
-		[q{SDL_bool}, q{SDL_HasEvents}, q{uint minType, uint maxType}],
-		[q{void}, q{SDL_FlushEvent}, q{uint type}],
-		[q{void}, q{SDL_FlushEvents}, q{uint minType, uint maxType}],
+		[q{int}, q{SDL_PeepEvents}, q{SDL_Event* events, int numevents, SDL_eventaction action, SDL_EventType minType, SDL_EventType maxType}],
+		[q{SDL_bool}, q{SDL_HasEvent}, q{SDL_EventType type}],
+		[q{SDL_bool}, q{SDL_HasEvents}, q{SDL_EventType minType, SDL_EventType maxType}],
+		[q{void}, q{SDL_FlushEvent}, q{SDL_EventType type}],
+		[q{void}, q{SDL_FlushEvents}, q{SDL_EventType minType, SDL_EventType maxType}],
 		[q{int}, q{SDL_PollEvent}, q{SDL_Event* event}],
 		[q{int}, q{SDL_WaitEvent}, q{SDL_Event* event}],
 		[q{int}, q{SDL_WaitEventTimeout}, q{SDL_Event* event, int timeout}],
@@ -527,8 +527,8 @@ mixin(joinFnBinds((){
 		[q{void}, q{SDL_AddEventWatch}, q{SDL_EventFilter filter, void* userdata}],
 		[q{void}, q{SDL_DelEventWatch}, q{SDL_EventFilter filter, void* userdata}],
 		[q{void}, q{SDL_FilterEvents}, q{SDL_EventFilter filter, void* userdata}],
-		[q{ubyte}, q{SDL_EventState}, q{uint type, int state}],
-		[q{uint}, q{SDL_RegisterEvents}, q{int numevents}],
+		[q{ubyte}, q{SDL_EventState}, q{SDL_EventType type, int state}],
+		[q{SDL_EventType}, q{SDL_RegisterEvents}, q{int numevents}],
 	]);
 	return ret;
 }()));

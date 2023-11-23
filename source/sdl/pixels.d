@@ -326,23 +326,22 @@ struct SDL_PixelFormat{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{const(char)*}, q{SDL_GetPixelFormatName}, q{SDL_PixelFormatEnum format}],
-		[q{SDL_bool}, q{SDL_PixelFormatEnumToMasks}, q{SDL_PixelFormatEnum format, int* bpp, uint* Rmask, uint* Gmask, uint* Bmask, uint* Amask}],
-		[q{uint}, q{SDL_MasksToPixelFormatEnum}, q{int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask}],
-		[q{SDL_PixelFormat*}, q{SDL_AllocFormat}, q{uint pixel_format}],
-		[q{void}, q{SDL_FreeFormat}, q{SDL_PixelFormat* format}],
-		[q{SDL_Palette*}, q{SDL_AllocPalette}, q{int ncolors}],
-		[q{int}, q{SDL_SetPixelFormatPalette}, q{SDL_PixelFormat* format, SDL_Palette* palette}],
-		[q{int}, q{SDL_SetPaletteColors}, q{SDL_Palette* palette, const(SDL_Color)* colors, int firstcolor, int ncolors}],
-		[q{void}, q{SDL_FreePalette}, q{SDL_Palette* palette}],
-		[q{uint}, q{SDL_MapRGB}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b}],
-		[q{uint}, q{SDL_MapRGBA}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a}],
-		[q{void}, q{SDL_GetRGB}, q{uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b}],
-		[q{void}, q{SDL_GetRGBA}, q{uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a}],
-		[q{void}, q{SDL_CalculateGammaRamp}, q{float gamma, ushort* ramp}],
-	]);
+	FnBind[] ret = [
+		{q{const(char)*}, q{SDL_GetPixelFormatName}, q{SDL_PixelFormatEnum format}},
+		{q{SDL_bool}, q{SDL_PixelFormatEnumToMasks}, q{SDL_PixelFormatEnum format, int* bpp, uint* rMask, uint* gMask, uint* bMask, uint* aMask}},
+		{q{uint}, q{SDL_MasksToPixelFormatEnum}, q{int bpp, uint rMask, uint gMask, uint bMask, uint aMask}},
+		{q{SDL_PixelFormat*}, q{SDL_AllocFormat}, q{uint pixelFormat}},
+		{q{void}, q{SDL_FreeFormat}, q{SDL_PixelFormat* format}},
+		{q{SDL_Palette*}, q{SDL_AllocPalette}, q{int nColours}},
+		{q{int}, q{SDL_SetPixelFormatPalette}, q{SDL_PixelFormat* format, SDL_Palette* palette}},
+		{q{int}, q{SDL_SetPaletteColors}, q{SDL_Palette* palette, const(SDL_Color)* colours, int firstColour, int nColours}},
+		{q{void}, q{SDL_FreePalette}, q{SDL_Palette* palette}},
+		{q{uint}, q{SDL_MapRGB}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b}},
+		{q{uint}, q{SDL_MapRGBA}, q{const(SDL_PixelFormat)* format, ubyte r, ubyte g, ubyte b, ubyte a}},
+		{q{void}, q{SDL_GetRGB}, q{uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b}},
+		{q{void}, q{SDL_GetRGBA}, q{uint pixel, const(SDL_PixelFormat)* format, ubyte* r, ubyte* g, ubyte* b, ubyte* a}},
+		{q{void}, q{SDL_CalculateGammaRamp}, q{float gamma, ushort* ramp}},
+	];
 	return ret;
 }()));
 

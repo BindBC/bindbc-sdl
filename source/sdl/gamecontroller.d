@@ -121,108 +121,118 @@ static if(sdlSupport >= SDLSupport.v2_0_2){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_GameControllerAddMapping}, q{const(char)* mappingString}],
-		[q{char*}, q{SDL_GameControllerMappingForGUID}, q{SDL_JoystickGUID guid}],
-		[q{char*}, q{SDL_GameControllerMapping}, q{SDL_GameController* gamecontroller}],
-		[q{SDL_bool}, q{SDL_IsGameController}, q{int joystick_index}],
-		[q{const(char)*}, q{SDL_GameControllerNameForIndex}, q{int joystick_index}],
-		[q{SDL_GameController*}, q{SDL_GameControllerOpen}, q{int joystick_index}],
-		[q{const(char)*}, q{SDL_GameControllerName}, q{SDL_GameController* gamecontroller}],
-		[q{SDL_bool}, q{SDL_GameControllerGetAttached}, q{SDL_GameController* gamecontroller}],
-		[q{SDL_Joystick*}, q{SDL_GameControllerGetJoystick}, q{SDL_GameController* gamecontroller}],
-		[q{int}, q{SDL_GameControllerEventState}, q{int state}],
-		[q{void}, q{SDL_GameControllerUpdate}, q{}],
-		[q{SDL_GameControllerAxis}, q{SDL_GameControllerGetAxisFromString}, q{const(char)* pchString}],
-		[q{const(char)*}, q{SDL_GameControllerGetStringForAxis}, q{SDL_GameControllerAxis axis}],
-		[q{SDL_GameControllerButtonBind}, q{SDL_GameControllerGetBindForAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
-		[q{short}, q{SDL_GameControllerGetAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
-		[q{SDL_GameControllerButton}, q{SDL_GameControllerGetButtonFromString}, q{const(char*) pchString}],
-		[q{const(char)*}, q{SDL_GameControllerGetStringForButton}, q{SDL_GameControllerButton button}],
-		[q{SDL_GameControllerButtonBind}, q{SDL_GameControllerGetBindForButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
-		[q{ubyte}, q{SDL_GameControllerGetButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
-		[q{void}, q{SDL_GameControllerClose}, q{SDL_GameController* gamecontroller}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_2){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GameControllerAddMappingsFromRW}, q{SDL_RWops* rw, int freerw}],
-		]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_GameControllerAddMapping}, q{const(char)* mappingString}},
+		{q{char*}, q{SDL_GameControllerMappingForGUID}, q{SDL_JoystickGUID guid}},
+		{q{char*}, q{SDL_GameControllerMapping}, q{SDL_GameController* gameController}},
+		{q{SDL_bool}, q{SDL_IsGameController}, q{int joystickIndex}},
+		{q{const(char)*}, q{SDL_GameControllerNameForIndex}, q{int joystickIndex}},
+		{q{SDL_GameController*}, q{SDL_GameControllerOpen}, q{int joystickIndex}},
+		{q{const(char)*}, q{SDL_GameControllerName}, q{SDL_GameController* gameController}},
+		{q{SDL_bool}, q{SDL_GameControllerGetAttached}, q{SDL_GameController* gameController}},
+		{q{SDL_Joystick*}, q{SDL_GameControllerGetJoystick}, q{SDL_GameController* gameController}},
+		{q{int}, q{SDL_GameControllerEventState}, q{int state}},
+		{q{void}, q{SDL_GameControllerUpdate}, q{}},
+		{q{SDL_GameControllerAxis}, q{SDL_GameControllerGetAxisFromString}, q{const(char)* pchString}},
+		{q{const(char)*}, q{SDL_GameControllerGetStringForAxis}, q{SDL_GameControllerAxis axis}},
+		{q{SDL_GameControllerButtonBind}, q{SDL_GameControllerGetBindForAxis}, q{SDL_GameController* gameController, SDL_GameControllerAxis axis}},
+		{q{short}, q{SDL_GameControllerGetAxis}, q{SDL_GameController* gameController, SDL_GameControllerAxis axis}},
+		{q{SDL_GameControllerButton}, q{SDL_GameControllerGetButtonFromString}, q{const(char*) pchString}},
+		{q{const(char)*}, q{SDL_GameControllerGetStringForButton}, q{SDL_GameControllerButton button}},
+		{q{SDL_GameControllerButtonBind}, q{SDL_GameControllerGetBindForButton}, q{SDL_GameController* gameController, SDL_GameControllerButton button}},
+		{q{ubyte}, q{SDL_GameControllerGetButton}, q{SDL_GameController* gameController, SDL_GameControllerButton button}},
+		{q{void}, q{SDL_GameControllerClose}, q{SDL_GameController* gameController}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_2){
+		FnBind[] add = [
+			{q{int}, q{SDL_GameControllerAddMappingsFromRW}, q{SDL_RWops* rw, int freeRW}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_4){
-		ret ~= makeFnBinds([
-			[q{SDL_GameController*}, q{SDL_GameControllerFromInstanceID}, q{SDL_JoystickID joyid}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_4){
+		FnBind[] add = [
+			{q{SDL_GameController*}, q{SDL_GameControllerFromInstanceID}, q{SDL_JoystickID joyID}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_6){
-		ret ~= makeFnBinds([
-			[q{ushort}, q{SDL_GameControllerGetProduct}, q{SDL_GameController* gamecontroller}],
-			[q{ushort}, q{SDL_GameControllerGetProductVersion}, q{SDL_GameController* gamecontroller}],
-			[q{ushort}, q{SDL_GameControllerGetVendor}, q{SDL_GameController* gamecontroller}],
-			[q{char*}, q{SDL_GameControllerMappingForIndex}, q{int mapping_index}],
-			[q{int}, q{SDL_GameControllerNumMappings}, q{}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_6){
+		FnBind[] add = [
+			{q{ushort}, q{SDL_GameControllerGetProduct}, q{SDL_GameController* gameController}},
+			{q{ushort}, q{SDL_GameControllerGetProductVersion}, q{SDL_GameController* gameController}},
+			{q{ushort}, q{SDL_GameControllerGetVendor}, q{SDL_GameController* gameController}},
+			{q{char*}, q{SDL_GameControllerMappingForIndex}, q{int mappingIndex}},
+			{q{int}, q{SDL_GameControllerNumMappings}, q{}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_9){
-		ret ~= makeFnBinds([
-			[q{char*}, q{SDL_GameControllerMappingForDeviceIndex}, q{int joystick_index}],
-			[q{int}, q{SDL_GameControllerRumble}, q{SDL_GameController* gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_9){
+		FnBind[] add = [
+			{q{char*}, q{SDL_GameControllerMappingForDeviceIndex}, q{int joystickIndex}},
+			{q{int}, q{SDL_GameControllerRumble}, q{SDL_GameController* gameController, ushort lowFrequencyRumble, ushort highFrequencyRumble, uint durationMS}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_10){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GameControllerGetPlayerIndex}, q{SDL_GameController* gamecontroller}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_10){
+		FnBind[] add = [
+			{q{int}, q{SDL_GameControllerGetPlayerIndex}, q{SDL_GameController* gameController}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_12){
-		ret ~= makeFnBinds([
-			[q{SDL_GameControllerType}, q{SDL_GameControllerTypeForIndex}, q{int joystick_index}],
-			[q{SDL_GameController*}, q{SDL_GameControllerFromPlayerIndex}, q{int player_index}],
-			[q{SDL_GameControllerType}, q{SDL_GameControllerGetType}, q{SDL_GameController* gamecontroller}],
-			[q{void}, q{SDL_GameControllerSetPlayerIndex}, q{SDL_GameController* gamecontroller, int player_index}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_12){
+		FnBind[] add = [
+			{q{SDL_GameControllerType}, q{SDL_GameControllerTypeForIndex}, q{int joystickIndex}},
+			{q{SDL_GameController*}, q{SDL_GameControllerFromPlayerIndex}, q{int playerIndex}},
+			{q{SDL_GameControllerType}, q{SDL_GameControllerGetType}, q{SDL_GameController* gameController}},
+			{q{void}, q{SDL_GameControllerSetPlayerIndex}, q{SDL_GameController* gameController, int playerIndex}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_14){
-		ret ~= makeFnBinds([
-			[q{SDL_bool}, q{SDL_GameControllerHasAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
-			[q{SDL_bool}, q{SDL_GameControllerHasButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
-			[q{int}, q{SDL_GameControllerGetNumTouchpads}, q{SDL_GameController* gamecontroller}],
-			[q{int}, q{SDL_GameControllerGetNumTouchpadFingers}, q{SDL_GameController* gamecontroller, int touchpad}],
-			[q{int}, q{SDL_GameControllerGetTouchpadFinger}, q{SDL_GameController* gamecontroller, int touchpad, int finger, ubyte* state, float* x, float* y, float* pressure}],
-			[q{SDL_bool}, q{SDL_GameControllerHasSensor}, q{SDL_GameController* gamecontroller, SDL_SensorType type}],
-			[q{int}, q{SDL_GameControllerSetSensorEnabled}, q{SDL_GameController* gamecontroller, SDL_SensorType type, SDL_bool enabled}],
-			[q{SDL_bool}, q{SDL_GameControllerIsSensorEnabled}, q{SDL_GameController* gamecontroller, SDL_SensorType type}],
-			[q{int}, q{SDL_GameControllerGetSensorData}, q{SDL_GameController* gamecontroller, SDL_SensorType type, float* data, int num_values}],
-			[q{int}, q{SDL_GameControllerRumbleTriggers}, q{SDL_GameController* gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms}],
-			[q{SDL_bool}, q{SDL_GameControllerHasLED}, q{SDL_GameController* gamecontroller}],
-			[q{int}, q{SDL_GameControllerSetLED}, q{SDL_GameController* gamecontroller, ubyte red, ubyte green, ubyte blue}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_14){
+		FnBind[] add = [
+			{q{SDL_bool}, q{SDL_GameControllerHasAxis}, q{SDL_GameController* gameController, SDL_GameControllerAxis axis}},
+			{q{SDL_bool}, q{SDL_GameControllerHasButton}, q{SDL_GameController* gameController, SDL_GameControllerButton button}},
+			{q{int}, q{SDL_GameControllerGetNumTouchpads}, q{SDL_GameController* gameController}},
+			{q{int}, q{SDL_GameControllerGetNumTouchpadFingers}, q{SDL_GameController* gameController, int touchpad}},
+			{q{int}, q{SDL_GameControllerGetTouchpadFinger}, q{SDL_GameController* gameController, int touchpad, int finger, ubyte* state, float* x, float* y, float* pressure}},
+			{q{SDL_bool}, q{SDL_GameControllerHasSensor}, q{SDL_GameController* gameController, SDL_SensorType type}},
+			{q{int}, q{SDL_GameControllerSetSensorEnabled}, q{SDL_GameController* gameController, SDL_SensorType type, SDL_bool enabled}},
+			{q{SDL_bool}, q{SDL_GameControllerIsSensorEnabled}, q{SDL_GameController* gameController, SDL_SensorType type}},
+			{q{int}, q{SDL_GameControllerGetSensorData}, q{SDL_GameController* gameController, SDL_SensorType type, float* data, int numValues}},
+			{q{int}, q{SDL_GameControllerRumbleTriggers}, q{SDL_GameController* gameController, ushort leftRumble, ushort rightRumble, uint durationMS}},
+			{q{SDL_bool}, q{SDL_GameControllerHasLED}, q{SDL_GameController* gameController}},
+			{q{int}, q{SDL_GameControllerSetLED}, q{SDL_GameController* gameController, ubyte red, ubyte green, ubyte blue}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_16){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GameControllerSendEffect}, q{SDL_GameController* gamecontroller, const(void)* data, int size}],
-			[q{float}, q{SDL_GameControllerGetSensorDataRate}, q{SDL_GameController* gamecontroller, SDL_SensorType type}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_16){
+		FnBind[] add = [
+			{q{int}, q{SDL_GameControllerSendEffect}, q{SDL_GameController* gameController, const(void)* data, int size}},
+			{q{float}, q{SDL_GameControllerGetSensorDataRate}, q{SDL_GameController* gameController, SDL_SensorType type}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_18){
-		ret ~= makeFnBinds([
-			[q{SDL_bool}, q{SDL_GameControllerHasRumble}, q{SDL_GameController* gamecontroller}],
-			[q{SDL_bool}, q{SDL_GameControllerHasRumbleTriggers}, q{SDL_GameController* gamecontroller}],
-			[q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForButton}, q{SDL_GameController* gamecontroller, SDL_GameControllerButton button}],
-			[q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForAxis}, q{SDL_GameController* gamecontroller, SDL_GameControllerAxis axis}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_18){
+		FnBind[] add = [
+			{q{SDL_bool}, q{SDL_GameControllerHasRumble}, q{SDL_GameController* gameController}},
+			{q{SDL_bool}, q{SDL_GameControllerHasRumbleTriggers}, q{SDL_GameController* gameController}},
+			{q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForButton}, q{SDL_GameController* gameController, SDL_GameControllerButton button}},
+			{q{const(char)*}, q{SDL_GameControllerGetAppleSFSymbolsNameForAxis}, q{SDL_GameController* gameController, SDL_GameControllerAxis axis}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_24){
-		ret ~= makeFnBinds([
-			[q{const(char)*}, q{SDL_GameControllerPathForIndex}, q{int joystick_index}],
-			[q{const(char)*}, q{SDL_GameControllerPath}, q{SDL_GameController* gamecontroller}],
-			[q{ushort}, q{SDL_GameControllerGetFirmwareVersion}, q{SDL_GameController* gamecontroller}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_24){
+		FnBind[] add = [
+			{q{const(char)*}, q{SDL_GameControllerPathForIndex}, q{int joystickIndex}},
+			{q{const(char)*}, q{SDL_GameControllerPath}, q{SDL_GameController* gameController}},
+			{q{ushort}, q{SDL_GameControllerGetFirmwareVersion}, q{SDL_GameController* gameController}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_26){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GameControllerGetSensorDataWithTimestamp}, q{SDL_GameController* gamecontroller, SDL_SensorType type, ulong* timestamp, float* data, int num_values}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_26){
+		FnBind[] add = [
+			{q{int}, q{SDL_GameControllerGetSensorDataWithTimestamp}, q{SDL_GameController* gameController, SDL_SensorType type, ulong* timestamp, float* data, int numValues}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

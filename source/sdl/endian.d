@@ -20,8 +20,10 @@ pragma(inline, true) nothrow @nogc pure @safe{
 	}
 	uint SDL_Swap32(uint x){
 		return cast(uint)(
-			(x << 24) | ((x << 8) & 0x00FF0000) |
-			((x >> 8) & 0x0000FF00) | (x >> 24)
+			(x << 24) |
+			((x << 8) & 0x00FF0000) |
+			((x >> 8) & 0x0000FF00) |
+			(x >> 24)
 		);
 	}
 	ulong SDL_Swap64(ulong x){
@@ -65,8 +67,3 @@ pragma(inline, true) nothrow @nogc pure @safe{
 		float SDL_SwapFloatBE(float X){ return X; }
 	}
 }
-
-mixin(joinFnBinds((){
-	string[][] ret;
-	return ret;
-}()));

@@ -11,9 +11,8 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{const(char)*}, q{SDL_GetPlatform}, q{}],
-	]);
+	FnBind[] ret = [
+		{q{const(char)*}, q{SDL_GetPlatform}, q{}},
+	];
 	return ret;
 }()));

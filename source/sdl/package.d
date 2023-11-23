@@ -87,14 +87,13 @@ static if(sdlSupport >= SDLSupport.v2_0_9){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_Init}, q{uint flags}],
-		[q{int}, q{SDL_InitSubSystem}, q{uint flags}],
-		[q{void}, q{SDL_QuitSubSystem}, q{uint flags}],
-		[q{uint}, q{SDL_WasInit}, q{uint flags}],
-		[q{void}, q{SDL_Quit}, q{}],
-	]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_Init}, q{uint flags}},
+		{q{int}, q{SDL_InitSubSystem}, q{uint flags}},
+		{q{void}, q{SDL_QuitSubSystem}, q{uint flags}},
+		{q{uint}, q{SDL_WasInit}, q{uint flags}},
+		{q{void}, q{SDL_Quit}, q{}},
+	];
 	return ret;
 }()));
 
@@ -136,11 +135,9 @@ mixin(bindbc.sdl.codegen.makeDynloadFns("", [
 	"sdl.assert_",
 	"sdl.atomic",
 	"sdl.audio",
-	"sdl.bits",
 	"sdl.blendmode",
 	"sdl.clipboard",
 	"sdl.cpuinfo",
-	"sdl.endian",
 	"sdl.error",
 	"sdl.events",
 	"sdl.filesystem",
@@ -152,7 +149,6 @@ mixin(bindbc.sdl.codegen.makeDynloadFns("", [
 	"sdl.hints",
 	"sdl.joystick",
 	"sdl.keyboard",
-	"sdl.keycode",
 	"sdl.loadso",
 	"sdl.locale",
 	"sdl.log",
@@ -167,7 +163,6 @@ mixin(bindbc.sdl.codegen.makeDynloadFns("", [
 	"sdl.rect",
 	"sdl.render",
 	"sdl.rwops",
-	"sdl.scancode",
 	"sdl.sensor",
 	"sdl.shape",
 	"sdl.stdinc",

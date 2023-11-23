@@ -61,29 +61,29 @@ enum: ubyte{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_Window*}, q{SDL_GetMouseFocus}, q{}],
-		[q{uint}, q{SDL_GetMouseState}, q{int* x, int* y}],
-		[q{uint}, q{SDL_GetRelativeMouseState}, q{int* x, int* y}],
-		[q{void}, q{SDL_WarpMouseInWindow}, q{SDL_Window* window, int x, int y}],
-		[q{int}, q{SDL_SetRelativeMouseMode}, q{SDL_bool enabled}],
-		[q{SDL_bool}, q{SDL_GetRelativeMouseMode}, q{}],
-		[q{SDL_Cursor*}, q{SDL_CreateCursor}, q{const(ubyte)* data, const(ubyte)* mask, int w, int h, int hot_x, int hot_y}],
-		[q{SDL_Cursor*}, q{SDL_CreateColorCursor}, q{SDL_Surface* surface, int hot_x, int hot_y}],
-		[q{SDL_Cursor*}, q{SDL_CreateSystemCursor}, q{SDL_SystemCursor id}],
-		[q{void}, q{SDL_SetCursor}, q{SDL_Cursor* cursor}],
-		[q{SDL_Cursor*}, q{SDL_GetCursor}, q{}],
-		[q{SDL_Cursor*}, q{SDL_GetDefaultCursor}, q{}],
-		[q{void}, q{SDL_FreeCursor}, q{SDL_Cursor* cursor}],
-		[q{int}, q{SDL_ShowCursor}, q{int toggle}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_4){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_CaptureMouse}, q{SDL_bool enabled}],
-			[q{uint}, q{SDL_GetGlobalMouseState}, q{int* x, int* y}],
-			[q{void}, q{SDL_WarpMouseGlobal}, q{int x, int y}],
-		]);
+	FnBind[] ret = [
+		{q{SDL_Window*}, q{SDL_GetMouseFocus}, q{}},
+		{q{uint}, q{SDL_GetMouseState}, q{int* x, int* y}},
+		{q{uint}, q{SDL_GetRelativeMouseState}, q{int* x, int* y}},
+		{q{void}, q{SDL_WarpMouseInWindow}, q{SDL_Window* window, int x, int y}},
+		{q{int}, q{SDL_SetRelativeMouseMode}, q{SDL_bool enabled}},
+		{q{SDL_bool}, q{SDL_GetRelativeMouseMode}, q{}},
+		{q{SDL_Cursor*}, q{SDL_CreateCursor}, q{const(ubyte)* data, const(ubyte)* mask, int w, int h, int hotX, int hotY}},
+		{q{SDL_Cursor*}, q{SDL_CreateColorCursor}, q{SDL_Surface* surface, int hotX, int hotY}},
+		{q{SDL_Cursor*}, q{SDL_CreateSystemCursor}, q{SDL_SystemCursor id}},
+		{q{void}, q{SDL_SetCursor}, q{SDL_Cursor* cursor}},
+		{q{SDL_Cursor*}, q{SDL_GetCursor}, q{}},
+		{q{SDL_Cursor*}, q{SDL_GetDefaultCursor}, q{}},
+		{q{void}, q{SDL_FreeCursor}, q{SDL_Cursor* cursor}},
+		{q{int}, q{SDL_ShowCursor}, q{int toggle}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_4){
+		FnBind[] add = [
+			{q{int}, q{SDL_CaptureMouse}, q{SDL_bool enabled}},
+			{q{uint}, q{SDL_GetGlobalMouseState}, q{int* x, int* y}},
+			{q{void}, q{SDL_WarpMouseGlobal}, q{int x, int y}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

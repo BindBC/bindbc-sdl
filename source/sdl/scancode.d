@@ -285,8 +285,3 @@ enum: SDL_Scancode{
 	SDL_SCANCODE_CALL = 289,
 	SDL_SCANCODE_ENDCALL = 290,
 }
-
-mixin(joinFnBinds((){
-	string[][] ret;
-	return ret;
-}()));

@@ -311,8 +311,3 @@ enum: SDL_Keymod{
 	KMOD_ALT       = (KMOD_LALT   | KMOD_RALT),
 	KMOD_GUI       = (KMOD_LGUI   | KMOD_RGUI),
 }
-
-mixin(joinFnBinds((){
-	string[][] ret;
-	return ret;
-}()));

@@ -14,12 +14,13 @@ struct SDL_GUID{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	static if(sdlSupport >= SDLSupport.v2_24){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_GUIDToString}, q{SDL_GUID guid, char* pszGUID, int cbGUID}],
-			[q{SDL_GUID}, q{SDL_GUIDFromString}, q{const(char)* pchGUID}],
-		]);
+	FnBind[] ret;
+	if(sdlSupport >= SDLSupport.v2_24){
+		FnBind[] add = [
+			{q{void}, q{SDL_GUIDToString}, q{SDL_GUID guid, char* pszGUID, int cbGUID}},
+			{q{SDL_GUID}, q{SDL_GUIDFromString}, q{const(char)* pchGUID}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

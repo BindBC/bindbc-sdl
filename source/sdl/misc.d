@@ -11,11 +11,12 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	static if(sdlSupport >= SDLSupport.v2_0_14){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_OpenURL}, q{const(char)* url}],
-		]);
+	FnBind[] ret;
+	if(sdlSupport >= SDLSupport.v2_0_14){
+		FnBind[] add = [
+			{q{int}, q{SDL_OpenURL}, q{const(char)* url}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

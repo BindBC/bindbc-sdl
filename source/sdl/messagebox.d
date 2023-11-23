@@ -44,17 +44,16 @@ alias SDL_MessageBoxColour = SDL_MessageBoxColor;
 alias SDL_MessageBoxColorType = uint;
 enum: SDL_MessageBoxColorType{
 	SDL_MESSAGEBOX_COLOR_BACKGROUND         = 0,
-	SDL_MESSAGEBOX_COLOR_TEXT               = 1,
-	SDL_MESSAGEBOX_COLOR_BUTTON_BORDER      = 2,
-	SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND  = 3,
-	SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED    = 4,
-	SDL_MESSAGEBOX_COLOR_MAX                = 5,
-	
 	SDL_MESSAGEBOX_COLOUR_BACKGROUND        = SDL_MESSAGEBOX_COLOR_BACKGROUND,
+	SDL_MESSAGEBOX_COLOR_TEXT               = 1,
 	SDL_MESSAGEBOX_COLOUR_TEXT              = SDL_MESSAGEBOX_COLOR_TEXT,
+	SDL_MESSAGEBOX_COLOR_BUTTON_BORDER      = 2,
 	SDL_MESSAGEBOX_COLOUR_BUTTON_BORDER     = SDL_MESSAGEBOX_COLOR_BUTTON_BORDER,
+	SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND  = 3,
 	SDL_MESSAGEBOX_COLOUR_BUTTON_BACKGROUND = SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND,
+	SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED    = 4,
 	SDL_MESSAGEBOX_COLOUR_BUTTON_SELECTED   = SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED,
+	SDL_MESSAGEBOX_COLOR_MAX                = 5,
 	SDL_MESSAGEBOX_COLOUR_MAX               = SDL_MESSAGEBOX_COLOR_MAX,
 }
 alias SDL_MessageBoxColourType = SDL_MessageBoxColorType;
@@ -78,10 +77,9 @@ struct SDL_MessageBoxData{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_ShowMessageBox}, q{const(SDL_MessageBoxData)* messageboxdata, int* buttonid}],
-		[q{int}, q{SDL_ShowSimpleMessageBox}, q{SDL_MessageBoxFlags flags, const(char)* title, const(char)* messsage, SDL_Window* window}],
-	]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_ShowMessageBox}, q{const(SDL_MessageBoxData)* messageBoxData, int* buttonID}},
+		{q{int}, q{SDL_ShowSimpleMessageBox}, q{SDL_MessageBoxFlags flags, const(char)* title, const(char)* messsage, SDL_Window* window}},
+	];
 	return ret;
 }()));

@@ -27,17 +27,17 @@ enum: SDL_errorcode{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{void}, q{SDL_SetError}, q{const(char)* fmt, ...}],
-		[q{const(char)*}, q{SDL_GetError}, q{}],
-		[q{void}, q{SDL_ClearError}, q{}],
-		[q{int}, q{SDL_Error}, q{SDL_errorcode code}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_14){
-		ret ~= makeFnBinds([
-			[q{char*}, q{SDL_GetErrorMsg}, q{char* errstr, int maxlen}],
-		]);
+	FnBind[] ret = [
+		{q{void}, q{SDL_SetError}, q{const(char)* fmt, ...}},
+		{q{const(char)*}, q{SDL_GetError}, q{}},
+		{q{void}, q{SDL_ClearError}, q{}},
+		{q{int}, q{SDL_Error}, q{SDL_errorcode code}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_14){
+		FnBind[] add = [
+			{q{char*}, q{SDL_GetErrorMsg}, q{char* errStr, int maxLen}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

@@ -26,7 +26,7 @@ static if(sdlSupport >= SDLSupport.v2_0_10){
 	struct SDL_FPoint{
 		float x, y;
 	}
-
+	
 	struct SDL_FRect{
 		float x, y;
 		float w, h;
@@ -34,7 +34,7 @@ static if(sdlSupport >= SDLSupport.v2_0_10){
 }
 
 pragma(inline, true) nothrow @nogc pure{
-	// This macro was added to SDL_rect.h in 2.0.4, but hurts nothing to implement for all versions.
+	//This macro was added to SDL_rect.h in 2.0.4, but is always implemented here
 	bool SDL_PointInRect(const(SDL_Point)* p, const(SDL_Rect)* r){
 		return (
 			(p.x >= r.x) && (p.x < (r.x + r.w)) &&
@@ -72,22 +72,22 @@ pragma(inline, true) nothrow @nogc pure{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_bool}, q{SDL_HasIntersection}, q{const(SDL_Rect)* A, const(SDL_Rect)* B}],
-		[q{SDL_bool}, q{SDL_IntersectRect}, q{const(SDL_Rect)* A, const(SDL_Rect)* B,SDL_Rect* result}],
-		[q{void}, q{SDL_UnionRect}, q{const(SDL_Rect)* A, const(SDL_Rect)* B, SDL_Rect* result}],
-		[q{SDL_bool}, q{SDL_EnclosePoints}, q{const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result}],
-		[q{SDL_bool}, q{SDL_IntersectRectAndLine}, q{const(SDL_Rect)* rect, int* X1, int* Y1, int* X2, int* Y2}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_22){
-		ret ~= makeFnBinds([
-			[q{SDL_bool}, q{SDL_HasIntersectionF}, q{const(SDL_FRect)* A, const(SDL_FRect)* B}],
-			[q{SDL_bool}, q{SDL_IntersectFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
-			[q{SDL_bool}, q{SDL_UnionFRect}, q{const(SDL_FRect)* A, const(SDL_FRect)* B, SDL_FRect* result}],
-			[q{SDL_bool}, q{SDL_EncloseFPoints}, q{const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result}],
-			[q{SDL_bool}, q{SDL_IntersectFRectAndLine}, q{const(SDL_FRect)* rect, float* X1, float* Y1, float* X2, float* Y2}],
-		]);
+	FnBind[] ret = [
+		{q{SDL_bool}, q{SDL_HasIntersection}, q{const(SDL_Rect)* a, const(SDL_Rect)* b}},
+		{q{SDL_bool}, q{SDL_IntersectRect}, q{const(SDL_Rect)* a, const(SDL_Rect)* b,SDL_Rect* result}},
+		{q{void}, q{SDL_UnionRect}, q{const(SDL_Rect)* a, const(SDL_Rect)* b, SDL_Rect* result}},
+		{q{SDL_bool}, q{SDL_EnclosePoints}, q{const(SDL_Point)* points, int count, const(SDL_Rect)* clip, SDL_Rect* result}},
+		{q{SDL_bool}, q{SDL_IntersectRectAndLine}, q{const(SDL_Rect)* rect, int* x1, int* y1, int* x2, int* y2}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_22){
+		FnBind[] add = [
+			{q{SDL_bool}, q{SDL_HasIntersectionF}, q{const(SDL_FRect)* a, const(SDL_FRect)* b}},
+			{q{SDL_bool}, q{SDL_IntersectFRect}, q{const(SDL_FRect)* a, const(SDL_FRect)* b, SDL_FRect* result}},
+			{q{SDL_bool}, q{SDL_UnionFRect}, q{const(SDL_FRect)* a, const(SDL_FRect)* b, SDL_FRect* result}},
+			{q{SDL_bool}, q{SDL_EncloseFPoints}, q{const(SDL_FPoint)* points, int count, const(SDL_FRect)* clip, SDL_FRect* result}},
+			{q{SDL_bool}, q{SDL_IntersectFRectAndLine}, q{const(SDL_FRect)* rect, float* x1, float* y1, float* x2, float* y2}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

@@ -488,7 +488,7 @@ enum: SDL_eventaction{
 }
 alias SDL_EventAction = SDL_eventaction;
 
-alias SDL_EventFilter = extern(C) int function(void* userdata, SDL_Event* event) nothrow;
+alias SDL_EventFilter = extern(C) int function(void* userData, SDL_Event* event) nothrow;
 
 enum{
 	SDL_QUERY    = -1,
@@ -510,26 +510,25 @@ pragma(inline, true) nothrow @nogc{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{void}, q{SDL_PumpEvents}, q{}],
-		[q{int}, q{SDL_PeepEvents}, q{SDL_Event* events, int numevents, SDL_eventaction action, SDL_EventType minType, SDL_EventType maxType}],
-		[q{SDL_bool}, q{SDL_HasEvent}, q{SDL_EventType type}],
-		[q{SDL_bool}, q{SDL_HasEvents}, q{SDL_EventType minType, SDL_EventType maxType}],
-		[q{void}, q{SDL_FlushEvent}, q{SDL_EventType type}],
-		[q{void}, q{SDL_FlushEvents}, q{SDL_EventType minType, SDL_EventType maxType}],
-		[q{int}, q{SDL_PollEvent}, q{SDL_Event* event}],
-		[q{int}, q{SDL_WaitEvent}, q{SDL_Event* event}],
-		[q{int}, q{SDL_WaitEventTimeout}, q{SDL_Event* event, int timeout}],
-		[q{int}, q{SDL_PushEvent}, q{SDL_Event* event}],
-		[q{void}, q{SDL_SetEventFilter}, q{SDL_EventFilter filter, void* userdata}],
-		[q{SDL_bool}, q{SDL_GetEventFilter}, q{SDL_EventFilter* filter, void** userdata}],
-		[q{void}, q{SDL_AddEventWatch}, q{SDL_EventFilter filter, void* userdata}],
-		[q{void}, q{SDL_DelEventWatch}, q{SDL_EventFilter filter, void* userdata}],
-		[q{void}, q{SDL_FilterEvents}, q{SDL_EventFilter filter, void* userdata}],
-		[q{ubyte}, q{SDL_EventState}, q{SDL_EventType type, int state}],
-		[q{SDL_EventType}, q{SDL_RegisterEvents}, q{int numevents}],
-	]);
+	FnBind[] ret = [
+		{q{void}, q{SDL_PumpEvents}, q{}},
+		{q{int}, q{SDL_PeepEvents}, q{SDL_Event* events, int numEvents, SDL_eventaction action, SDL_EventType minType, SDL_EventType maxType}},
+		{q{SDL_bool}, q{SDL_HasEvent}, q{SDL_EventType type}},
+		{q{SDL_bool}, q{SDL_HasEvents}, q{SDL_EventType minType, SDL_EventType maxType}},
+		{q{void}, q{SDL_FlushEvent}, q{SDL_EventType type}},
+		{q{void}, q{SDL_FlushEvents}, q{SDL_EventType minType, SDL_EventType maxType}},
+		{q{int}, q{SDL_PollEvent}, q{SDL_Event* event}},
+		{q{int}, q{SDL_WaitEvent}, q{SDL_Event* event}},
+		{q{int}, q{SDL_WaitEventTimeout}, q{SDL_Event* event, int timeout}},
+		{q{int}, q{SDL_PushEvent}, q{SDL_Event* event}},
+		{q{void}, q{SDL_SetEventFilter}, q{SDL_EventFilter filter, void* userData}},
+		{q{SDL_bool}, q{SDL_GetEventFilter}, q{SDL_EventFilter* filter, void** userData}},
+		{q{void}, q{SDL_AddEventWatch}, q{SDL_EventFilter filter, void* userData}},
+		{q{void}, q{SDL_DelEventWatch}, q{SDL_EventFilter filter, void* userData}},
+		{q{void}, q{SDL_FilterEvents}, q{SDL_EventFilter filter, void* userData}},
+		{q{ubyte}, q{SDL_EventState}, q{SDL_EventType type, int state}},
+		{q{SDL_EventType}, q{SDL_RegisterEvents}, q{int numEvents}},
+	];
 	return ret;
 }()));
 

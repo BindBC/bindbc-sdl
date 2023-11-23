@@ -248,32 +248,34 @@ enum: SDL_HintPriority{
 	SDL_HINT_OVERRIDE,
 }
 
-alias SDL_HintCallback = extern(C) void function(void* userdata, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
+alias SDL_HintCallback = extern(C) void function(void* userData, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_bool}, q{SDL_SetHintWithPriority}, q{const(char)* name, const(char)* value, SDL_HintPriority priority}],
-		[q{SDL_bool}, q{SDL_SetHint}, q{const(char)* name, const(char)* value}],
-		[q{const(char)*}, q{SDL_GetHint}, q{const(char)* name}],
-		[q{void}, q{SDL_AddHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userdata}],
-		[q{void}, q{SDL_DelHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userdata}],
-		[q{void}, q{SDL_ClearHints}, q{}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_5){
-		ret ~= makeFnBinds([
-			[q{SDL_bool}, q{SDL_GetHintBoolean}, q{const(char)* name, SDL_bool default_value}],
-		]);
+	FnBind[] ret = [
+		{q{SDL_bool}, q{SDL_SetHintWithPriority}, q{const(char)* name, const(char)* value, SDL_HintPriority priority}},
+		{q{SDL_bool}, q{SDL_SetHint}, q{const(char)* name, const(char)* value}},
+		{q{const(char)*}, q{SDL_GetHint}, q{const(char)* name}},
+		{q{void}, q{SDL_AddHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userData}},
+		{q{void}, q{SDL_DelHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userData}},
+		{q{void}, q{SDL_ClearHints}, q{}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_5){
+		FnBind[] add = [
+			{q{SDL_bool}, q{SDL_GetHintBoolean}, q{const(char)* name, SDL_bool defaultValue}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_24){
-		ret ~= makeFnBinds([
-			[q{SDL_bool}, q{SDL_ResetHint}, q{const(char)* name}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_24){
+		FnBind[] add = [
+			{q{SDL_bool}, q{SDL_ResetHint}, q{const(char)* name}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_26){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_ResetHints}, q{}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_26){
+		FnBind[] add = [
+			{q{void}, q{SDL_ResetHints}, q{}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

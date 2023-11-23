@@ -50,26 +50,25 @@ enum: SDL_LogPriority{
 	SDL_NUM_LOG_PRIORITIES,
 }
 
-alias SDL_LogOutputFunction = extern(C) void function(void* userdata, int category, SDL_LogPriority priority, const(char)* message) nothrow;
+alias SDL_LogOutputFunction = extern(C) void function(void* userData, int category, SDL_LogPriority priority, const(char)* message) nothrow;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{void}, q{SDL_LogSetAllPriority}, q{SDL_LogPriority priority}],
-		[q{void}, q{SDL_LogSetPriority}, q{int category, SDL_LogPriority priority}],
-		[q{SDL_LogPriority}, q{SDL_LogGetPriority}, q{int category}],
-		[q{void}, q{SDL_LogResetPriorities}, q{}],
-		[q{void}, q{SDL_Log}, q{const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogVerbose}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogDebug}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogInfo}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogWarn}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogError}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogCritical}, q{int category, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogMessage}, q{int category, SDL_LogPriority priority, const(char)* fmt, ...}],
-		[q{void}, q{SDL_LogMessageV}, q{int category, SDL_LogPriority priority, const(char)* fmt, va_list ap}],
-		[q{void}, q{SDL_LogGetOutputFunction}, q{SDL_LogOutputFunction callback, void** userdata}],
-		[q{void}, q{SDL_LogSetOutputFunction}, q{SDL_LogOutputFunction callback, void* userdata}],
-	]);
+	FnBind[] ret = [
+		{q{void}, q{SDL_LogSetAllPriority}, q{SDL_LogPriority priority}},
+		{q{void}, q{SDL_LogSetPriority}, q{int category, SDL_LogPriority priority}},
+		{q{SDL_LogPriority}, q{SDL_LogGetPriority}, q{int category}},
+		{q{void}, q{SDL_LogResetPriorities}, q{}},
+		{q{void}, q{SDL_Log}, q{const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogVerbose}, q{int category, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogDebug}, q{int category, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogInfo}, q{int category, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogWarn}, q{int category, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogError}, q{int category, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogCritical}, q{int category, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogMessage}, q{int category, SDL_LogPriority priority, const(char)* fmt, ...}},
+		{q{void}, q{SDL_LogMessageV}, q{int category, SDL_LogPriority priority, const(char)* fmt, va_list ap}},
+		{q{void}, q{SDL_LogGetOutputFunction}, q{SDL_LogOutputFunction callback, void** userData}},
+		{q{void}, q{SDL_LogSetOutputFunction}, q{SDL_LogOutputFunction callback, void* userData}},
+	];
 	return ret;
 }()));

@@ -10,18 +10,18 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 pragma(inline, true) nothrow @nogc pure @safe{
-	int SDL_MostSignificantBitIndex32(inout uint x_){
+	int SDL_MostSignificantBitIndex32(inout uint x){
 		static immutable uint[] b = [0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000];
 		static immutable int[]  S = [1, 2, 4, 8, 16];
 		
 		int msbIndex = 0;
-		uint x = x_;
+		uint x_ = x;
 		
-		if(x == 0) return -1;
+		if(x_ == 0) return -1;
 		
 		foreach_reverse(i; 0..5){
-			if(x & b[i]){
-				x >>= S[i];
+			if(x_ & b[i]){
+				x_ >>= S[i];
 				msbIndex |= S[i];
 			}
 		}
@@ -34,8 +34,3 @@ pragma(inline, true) nothrow @nogc pure @safe{
 		}
 	}
 }
-
-mixin(joinFnBinds((){
-	string[][] ret;
-	return ret;
-}()));

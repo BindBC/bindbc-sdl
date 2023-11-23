@@ -57,11 +57,12 @@ static if(sdlSupport >= SDLSupport.v2_0_6){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	static if(sdlSupport >= SDLSupport.v2_0_6){
-		ret ~= makeFnBinds([
-			[q{SDL_BlendMode}, q{SDL_ComposeCustomBlendMode}, q{SDL_BlendFactor srcColorFactor, SDL_BlendFactor dstColorFactor, SDL_BlendOperation colorOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation}],
-		]);
+	FnBind[] ret;
+	if(sdlSupport >= SDLSupport.v2_0_6){
+		FnBind[] add = [
+			{q{SDL_BlendMode}, q{SDL_ComposeCustomBlendMode}, q{SDL_BlendFactor srcColourFactor, SDL_BlendFactor dstColourFactor, SDL_BlendOperation colourOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

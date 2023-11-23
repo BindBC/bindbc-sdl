@@ -34,34 +34,37 @@ static if(sdlSupport >= SDLSupport.v2_0_9){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	static if(sdlSupport >= SDLSupport.v2_0_9){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_NumSensors}, q{}],
-			[q{const(char)*}, q{SDL_SensorGetDeviceName}, q{int device_index}],
-			[q{SDL_SensorType}, q{SDL_SensorGetDeviceType}, q{int device_index}],
-			[q{int}, q{SDL_SensorGetDeviceNonPortableType}, q{int device_index}],
-			[q{SDL_SensorID}, q{SDL_SensorGetDeviceInstanceID}, q{int device_index}],
-			[q{SDL_Sensor*}, q{SDL_SensorOpen}, q{int device_index}],
-			[q{SDL_Sensor*}, q{SDL_SensorFromInstanceID}, q{SDL_SensorID instance_id}],
-			[q{const(char)*}, q{SDL_SensorGetName}, q{SDL_Sensor* sensor}],
-			[q{SDL_SensorType}, q{SDL_SensorGetType}, q{SDL_Sensor* sensor}],
-			[q{int}, q{SDL_SensorGetNonPortableType}, q{SDL_Sensor* sensor}],
-			[q{int}, q{SDL_SensorGetData}, q{SDL_Sensor* sensor, float* data, int num_values}],
-			[q{void}, q{SDL_SensorClose}, q{SDL_Sensor* sensor}],
-			[q{void}, q{SDL_SensorUpdate}, q{}],
-		]);
+	FnBind[] ret;
+	if(sdlSupport >= SDLSupport.v2_0_9){
+		FnBind[] add = [
+			{q{int}, q{SDL_NumSensors}, q{}},
+			{q{const(char)*}, q{SDL_SensorGetDeviceName}, q{int deviceIndex}},
+			{q{SDL_SensorType}, q{SDL_SensorGetDeviceType}, q{int deviceIndex}},
+			{q{int}, q{SDL_SensorGetDeviceNonPortableType}, q{int deviceIndex}},
+			{q{SDL_SensorID}, q{SDL_SensorGetDeviceInstanceID}, q{int deviceIndex}},
+			{q{SDL_Sensor*}, q{SDL_SensorOpen}, q{int deviceIndex}},
+			{q{SDL_Sensor*}, q{SDL_SensorFromInstanceID}, q{SDL_SensorID instanceID}},
+			{q{const(char)*}, q{SDL_SensorGetName}, q{SDL_Sensor* sensor}},
+			{q{SDL_SensorType}, q{SDL_SensorGetType}, q{SDL_Sensor* sensor}},
+			{q{int}, q{SDL_SensorGetNonPortableType}, q{SDL_Sensor* sensor}},
+			{q{int}, q{SDL_SensorGetData}, q{SDL_Sensor* sensor, float* data, int numValues}},
+			{q{void}, q{SDL_SensorClose}, q{SDL_Sensor* sensor}},
+			{q{void}, q{SDL_SensorUpdate}, q{}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_14){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_LockSensors}, q{}],
-			[q{void}, q{SDL_UnlockSensors}, q{}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_14){
+		FnBind[] add = [
+			{q{void}, q{SDL_LockSensors}, q{}},
+			{q{void}, q{SDL_UnlockSensors}, q{}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_26){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_SensorGetDataWithTimestamp}, q{SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values}],	
-		]);
+	if(sdlSupport >= SDLSupport.v2_26){
+		FnBind[] add = [
+			{q{int}, q{SDL_SensorGetDataWithTimestamp}, q{SDL_Sensor* sensor, ulong* timestamp, float* data, int numValues}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

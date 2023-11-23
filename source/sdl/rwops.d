@@ -97,55 +97,57 @@ pragma(inline, true) nothrow @nogc{
 		int SDL_RWclose(SDL_RWops* ctx){ return ctx.close(ctx); }
 	}
 	static if(sdlSupport >= SDLSupport.v2_0_6){
-		void* SDL_LoadFile(const(char)* filename, size_t datasize){
-			return SDL_LoadFile_RW(SDL_RWFromFile(filename, "rb"), datasize, 1);
+		void* SDL_LoadFile(const(char)* fileName, size_t dataSize){
+			return SDL_LoadFile_RW(SDL_RWFromFile(fileName, "rb"), dataSize, 1);
 		}
 	}
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_RWops*}, q{SDL_RWFromFile}, q{const(char)* file, const(char)* mode}],
-		[q{SDL_RWops*}, q{SDL_RWFromMem}, q{void* mem, int size}],
-		[q{SDL_RWops*}, q{SDL_RWFromConstMem}, q{const(void)* mem, int size}],
-		[q{SDL_RWops*}, q{SDL_AllocRW}, q{}],
-		[q{void}, q{SDL_FreeRW}, q{SDL_RWops* context}],
-		[q{ubyte}, q{SDL_ReadU8}, q{SDL_RWops* context}],
-		[q{ushort}, q{SDL_ReadLE16}, q{SDL_RWops* context}],
-		[q{ushort}, q{SDL_ReadBE16}, q{SDL_RWops* context}],
-		[q{uint}, q{SDL_ReadLE32}, q{SDL_RWops* context}],
-		[q{uint}, q{SDL_ReadBE32}, q{SDL_RWops* context}],
-		[q{ulong}, q{SDL_ReadLE64}, q{SDL_RWops* context}],
-		[q{ulong}, q{SDL_ReadBE64}, q{SDL_RWops* context}],
-		[q{size_t}, q{SDL_WriteU8}, q{SDL_RWops* context, ubyte value}],
-		[q{size_t}, q{SDL_WriteLE16}, q{SDL_RWops* context, ushort value}],
-		[q{size_t}, q{SDL_WriteBE16}, q{SDL_RWops* context, ushort value}],
-		[q{size_t}, q{SDL_WriteLE32}, q{SDL_RWops* context, uint value}],
-		[q{size_t}, q{SDL_WriteBE32}, q{SDL_RWops* context, uint value}],
-		[q{size_t}, q{SDL_WriteLE64}, q{SDL_RWops* context, ulong value}],
-		[q{size_t}, q{SDL_WriteBE64}, q{SDL_RWops* context, ulong value}],
-	]);
+	FnBind[] ret = [
+		{q{SDL_RWops*}, q{SDL_RWFromFile}, q{const(char)* file, const(char)* mode}},
+		{q{SDL_RWops*}, q{SDL_RWFromMem}, q{void* mem, int size}},
+		{q{SDL_RWops*}, q{SDL_RWFromConstMem}, q{const(void)* mem, int size}},
+		{q{SDL_RWops*}, q{SDL_AllocRW}, q{}},
+		{q{void}, q{SDL_FreeRW}, q{SDL_RWops* context}},
+		{q{ubyte}, q{SDL_ReadU8}, q{SDL_RWops* context}},
+		{q{ushort}, q{SDL_ReadLE16}, q{SDL_RWops* context}},
+		{q{ushort}, q{SDL_ReadBE16}, q{SDL_RWops* context}},
+		{q{uint}, q{SDL_ReadLE32}, q{SDL_RWops* context}},
+		{q{uint}, q{SDL_ReadBE32}, q{SDL_RWops* context}},
+		{q{ulong}, q{SDL_ReadLE64}, q{SDL_RWops* context}},
+		{q{ulong}, q{SDL_ReadBE64}, q{SDL_RWops* context}},
+		{q{size_t}, q{SDL_WriteU8}, q{SDL_RWops* context, ubyte value}},
+		{q{size_t}, q{SDL_WriteLE16}, q{SDL_RWops* context, ushort value}},
+		{q{size_t}, q{SDL_WriteBE16}, q{SDL_RWops* context, ushort value}},
+		{q{size_t}, q{SDL_WriteLE32}, q{SDL_RWops* context, uint value}},
+		{q{size_t}, q{SDL_WriteBE32}, q{SDL_RWops* context, uint value}},
+		{q{size_t}, q{SDL_WriteLE64}, q{SDL_RWops* context, ulong value}},
+		{q{size_t}, q{SDL_WriteBE64}, q{SDL_RWops* context, ulong value}},
+	];
 	version(WebAssembly){
-	}else{
-		ret ~= makeFnBinds([
-			[q{SDL_RWops*}, q{SDL_RWFromFP}, q{FILE* ffp, SDL_bool autoclose}],
-		]);
+	}else{{
+		FnBind[] add = [
+			{q{SDL_RWops*}, q{SDL_RWFromFP}, q{FILE* ffp, SDL_bool autoClose}},
+		];
+		ret ~= add;
+	}}
+	if(sdlSupport >= SDLSupport.v2_0_6){
+		FnBind[] add = [
+			{q{void*}, q{SDL_LoadFile_RW}, q{SDL_RWops* context, size_t dataSize, int freeSrc}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_6){
-		ret ~= makeFnBinds([
-			[q{void*}, q{SDL_LoadFile_RW}, q{SDL_RWops* context, size_t datasize, int freesrc}],
-		]);
-	}
-	static if(sdlSupport >= SDLSupport.v2_0_10){
-		ret ~= makeFnBinds([
-			[q{long}, q{SDL_RWsize}, q{SDL_RWops* context}],
-			[q{long}, q{SDL_RWseek}, q{SDL_RWops* context, long offset, int whence}],
-			[q{long}, q{SDL_RWtell}, q{SDL_RWops* context}],
-			[q{size_t}, q{SDL_RWread}, q{SDL_RWops* context, void* ptr, size_t size, size_t maxnum}],
-			[q{size_t}, q{SDL_RWwrite}, q{SDL_RWops* context, const(void)* ptr, size_t size, size_t num}],
-			[q{int}, q{SDL_RWclose}, q{SDL_RWops* context}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_10){
+		FnBind[] add = [
+			{q{long}, q{SDL_RWsize}, q{SDL_RWops* context}},
+			{q{long}, q{SDL_RWseek}, q{SDL_RWops* context, long offset, int whence}},
+			{q{long}, q{SDL_RWtell}, q{SDL_RWops* context}},
+			{q{size_t}, q{SDL_RWread}, q{SDL_RWops* context, void* ptr, size_t size, size_t maxNum}},
+			{q{size_t}, q{SDL_RWwrite}, q{SDL_RWops* context, const(void)* ptr, size_t size, size_t num}},
+			{q{int}, q{SDL_RWclose}, q{SDL_RWops* context}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

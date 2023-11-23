@@ -16,48 +16,52 @@ user needs the functions located within it for their application.
 Feel free to submit a PR if there is a better way this could be laid out.
 */
 
-alias SDL_main_func = int function(int argc, char** argv);
+alias SDL_main_func = int function(int argC, char** argV);
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_main}, q{int argc, char** argv}],
-		[q{void}, q{SDL_SetMainReady}, q{}],
-	]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_main}, q{int argC, char** argV}},
+		{q{void}, q{SDL_SetMainReady}, q{}},
+	];
 	static if(sdlSupport >= SDLSupport.v2_0_2 && (){
 		version(Windows)     return true;
 		else version(WinGDK) return true;
 		else return false;
 	}()){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_RegisterApp}, q{const(char)* name, uint style, void* hInst}],
-			[q{void}, q{SDL_UnregisterApp}, q{}],
-		]);
+		FnBind[] add = [
+			{q{int}, q{SDL_RegisterApp}, q{const(char)* name, uint style, void* hInst}},
+			{q{void}, q{SDL_UnregisterApp}, q{}},
+		];
+		ret ~= add;
 	}
 	version(WinRT){
-		static if(sdlSupport >= SDLSupport.v2_0_3){
-			ret ~= makeFnBinds([
-				[q{int}, q{SDL_WinRTRunApp}, q{SDL_main_func mainFunction, void* reserved}],
-			]);
+		if(sdlSupport >= SDLSupport.v2_0_3){
+			FnBind[] add = [
+				{q{int}, q{SDL_WinRTRunApp}, q{SDL_main_func mainFunction, void* reserved}},
+			];
+			ret ~= add;
 		}
 	}
 	version(iOS){
-		static if(sdlSupport >= SDLSupport.v2_0_10){
-			ret ~= makeFnBinds([
-				[q{int}, q{SDL_UIKitRunApp}, q{int argc, char** argv, SDL_main_func mainFunction}],
-			]);
+		if(sdlSupport >= SDLSupport.v2_0_10){
+			FnBind[] add = [
+				{q{int}, q{SDL_UIKitRunApp}, q{int argC, char** argV, SDL_main_func mainFunction}},
+			];
+			ret ~= add;
 		}
 	}
 	version(WinGDK){
-		static if(sdlSupport >= SDLSupport.v2_24){
-			ret ~= makeFnBinds([
-				[q{int}, q{SDL_GDKRunApp}, q{SDL_main_func mainFunction, void* reserved}],
-			]);
+		if(sdlSupport >= SDLSupport.v2_24){
+			FnBind[] add = [
+				{q{int}, q{SDL_GDKRunApp}, q{SDL_main_func mainFunction, void* reserved}},
+			];
+			ret ~= add;
 		}
-		static if(sdlSupport >= SDLSupport.v2_28){
-			ret ~= makeFnBinds([
-				[q{void}, q{SDL_GDKSuspendComplete}, q{}],
-			]);
+		if(sdlSupport >= SDLSupport.v2_28){
+			FnBind[] add = [
+				{q{void}, q{SDL_GDKSuspendComplete}, q{}},
+			];
+			ret ~= add;
 		}
 	}
 	return ret;

@@ -246,145 +246,154 @@ static if(sdlSupport >= SDLSupport.v2_0_6){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_GetNumVideoDrivers}, q{}],
-		[q{const(char)*}, q{SDL_GetVideoDriver}, q{int index}],
-		[q{int}, q{SDL_VideoInit}, q{const(char)* driver_name}],
-		[q{void}, q{SDL_VideoQuit}, q{}],
-		[q{const(char)*}, q{SDL_GetCurrentVideoDriver}, q{}],
-		[q{int}, q{SDL_GetNumVideoDisplays}, q{}],
-		[q{const(char)*}, q{SDL_GetDisplayName}, q{int displayIndex}],
-		[q{int}, q{SDL_GetDisplayBounds}, q{int displayIndex, SDL_Rect* rect}],
-		[q{int}, q{SDL_GetNumDisplayModes}, q{int displayIndex}],
-		[q{int}, q{SDL_GetDisplayMode}, q{int displayIndex, int modeIndex, SDL_DisplayMode* mode}],
-		[q{int}, q{SDL_GetDesktopDisplayMode}, q{int displayIndex, SDL_DisplayMode* mode}],
-		[q{int}, q{SDL_GetCurrentDisplayMode}, q{int displayIndex, SDL_DisplayMode* mode}],
-		[q{SDL_DisplayMode*}, q{SDL_GetClosestDisplayMode}, q{int displayIndex, const(SDL_DisplayMode)* mode, SDL_DisplayMode* closest}],
-		[q{int}, q{SDL_GetWindowDisplayIndex}, q{SDL_Window* window}],
-		[q{int}, q{SDL_SetWindowDisplayMode}, q{SDL_Window* window, const(SDL_DisplayMode)* mode}],
-		[q{int}, q{SDL_GetWindowDisplayMode}, q{SDL_Window* window, SDL_DisplayMode* mode}],
-		[q{uint}, q{SDL_GetWindowPixelFormat}, q{SDL_Window* window}],
-		[q{SDL_Window*}, q{SDL_CreateWindow}, q{const(char)* title, int x, int y, int w, int h, SDL_WindowFlags flags}],
-		[q{SDL_Window*}, q{SDL_CreateWindowFrom}, q{const(void)* data}],
-		[q{uint}, q{SDL_GetWindowID}, q{SDL_Window* window}],
-		[q{SDL_Window*}, q{SDL_GetWindowFromID}, q{uint id}],
-		[q{SDL_WindowFlags}, q{SDL_GetWindowFlags}, q{SDL_Window* window}],
-		[q{void}, q{SDL_SetWindowTitle}, q{SDL_Window* window, const(char)* title}],
-		[q{const(char)*}, q{SDL_GetWindowTitle}, q{SDL_Window* window}],
-		[q{void}, q{SDL_SetWindowIcon}, q{SDL_Window* window, SDL_Surface* icon}],
-		[q{void*}, q{SDL_SetWindowData}, q{SDL_Window* window, const(char)* name, void* userdata}],
-		[q{void*}, q{SDL_GetWindowData}, q{SDL_Window* window, const(char)* name}],
-		[q{void}, q{SDL_SetWindowPosition}, q{SDL_Window* window, int x, int y}],
-		[q{void}, q{SDL_GetWindowPosition}, q{SDL_Window* window, int* x, int* y}],
-		[q{void}, q{SDL_SetWindowSize}, q{SDL_Window* window, int w, int h}],
-		[q{void}, q{SDL_GetWindowSize}, q{SDL_Window* window, int* w, int* h}],
-		[q{void}, q{SDL_SetWindowMinimumSize}, q{SDL_Window* window, int min_w, int min_h}],
-		[q{void}, q{SDL_GetWindowMinimumSize}, q{SDL_Window* window, int* w, int* h}],
-		[q{void}, q{SDL_SetWindowMaximumSize}, q{SDL_Window* window, int max_w, int max_h}],
-		[q{void}, q{SDL_GetWindowMaximumSize}, q{SDL_Window* window, int* w, int* h}],
-		[q{void}, q{SDL_SetWindowBordered}, q{SDL_Window* window, SDL_bool bordered}],
-		[q{void}, q{SDL_ShowWindow}, q{SDL_Window* window}],
-		[q{void}, q{SDL_HideWindow}, q{SDL_Window* window}],
-		[q{void}, q{SDL_RaiseWindow}, q{SDL_Window* window}],
-		[q{void}, q{SDL_MaximizeWindow}, q{SDL_Window* window}],
-		[q{void}, q{SDL_MinimizeWindow}, q{SDL_Window* window}],
-		[q{void}, q{SDL_RestoreWindow}, q{SDL_Window* window}],
-		[q{int}, q{SDL_SetWindowFullscreen}, q{SDL_Window* window, SDL_WindowFlags flags}],
-		[q{SDL_Surface*}, q{SDL_GetWindowSurface}, q{SDL_Window* window}],
-		[q{int}, q{SDL_UpdateWindowSurface}, q{SDL_Window* window}],
-		[q{int}, q{SDL_UpdateWindowSurfaceRects}, q{SDL_Window* window, SDL_Rect* rects, int numrects}],
-		[q{void}, q{SDL_SetWindowGrab}, q{SDL_Window* window, SDL_bool grabbed}],
-		[q{SDL_bool}, q{SDL_GetWindowGrab}, q{SDL_Window* window}],
-		[q{int}, q{SDL_SetWindowBrightness}, q{SDL_Window* window, float brightness}],
-		[q{float}, q{SDL_GetWindowBrightness}, q{SDL_Window* window}],
-		[q{int}, q{SDL_SetWindowGammaRamp}, q{SDL_Window* window, const(ushort)* red, const(ushort)* green, const(ushort)* blue}],
-		[q{int}, q{SDL_GetWindowGammaRamp}, q{SDL_Window* window, ushort* red, ushort* green, ushort* blue}],
-		[q{void}, q{SDL_DestroyWindow}, q{SDL_Window* window}],
-		[q{SDL_bool}, q{SDL_IsScreenSaverEnabled}, q{}],
-		[q{void}, q{SDL_EnableScreenSaver}, q{}],
-		[q{void}, q{SDL_DisableScreenSaver}, q{}],
-		[q{int}, q{SDL_GL_LoadLibrary}, q{const(char)* path}],
-		[q{void*}, q{SDL_GL_GetProcAddress}, q{const(char)* proc}],
-		[q{void}, q{SDL_GL_UnloadLibrary}, q{}],
-		[q{SDL_bool}, q{SDL_GL_ExtensionSupported}, q{const(char)* extension}],
-		[q{int}, q{SDL_GL_SetAttribute}, q{SDL_GLattr attr, int value}],
-		[q{int}, q{SDL_GL_GetAttribute}, q{SDL_GLattr attr, int* value}],
-		[q{SDL_GLContext}, q{SDL_GL_CreateContext}, q{SDL_Window* window}],
-		[q{int}, q{SDL_GL_MakeCurrent}, q{SDL_Window* window, SDL_GLContext context}],
-		[q{SDL_Window*}, q{SDL_GL_GetCurrentWindow}, q{}],
-		[q{SDL_GLContext}, q{SDL_GL_GetCurrentContext}, q{}],
-		[q{int}, q{SDL_GL_SetSwapInterval}, q{int interval}],
-		[q{int}, q{SDL_GL_GetSwapInterval}, q{}],
-		[q{void}, q{SDL_GL_SwapWindow}, q{SDL_Window* window}],
-		[q{void}, q{SDL_GL_DeleteContext}, q{SDL_GLContext context}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_1){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_GL_GetDrawableSize}, q{SDL_Window* window, int* w, int* h}],
-		]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_GetNumVideoDrivers}, q{}},
+		{q{const(char)*}, q{SDL_GetVideoDriver}, q{int index}},
+		{q{int}, q{SDL_VideoInit}, q{const(char)* driverName}},
+		{q{void}, q{SDL_VideoQuit}, q{}},
+		{q{const(char)*}, q{SDL_GetCurrentVideoDriver}, q{}},
+		{q{int}, q{SDL_GetNumVideoDisplays}, q{}},
+		{q{const(char)*}, q{SDL_GetDisplayName}, q{int displayIndex}},
+		{q{int}, q{SDL_GetDisplayBounds}, q{int displayIndex, SDL_Rect* rect}},
+		{q{int}, q{SDL_GetNumDisplayModes}, q{int displayIndex}},
+		{q{int}, q{SDL_GetDisplayMode}, q{int displayIndex, int modeIndex, SDL_DisplayMode* mode}},
+		{q{int}, q{SDL_GetDesktopDisplayMode}, q{int displayIndex, SDL_DisplayMode* mode}},
+		{q{int}, q{SDL_GetCurrentDisplayMode}, q{int displayIndex, SDL_DisplayMode* mode}},
+		{q{SDL_DisplayMode*}, q{SDL_GetClosestDisplayMode}, q{int displayIndex, const(SDL_DisplayMode)* mode, SDL_DisplayMode* closest}},
+		{q{int}, q{SDL_GetWindowDisplayIndex}, q{SDL_Window* window}},
+		{q{int}, q{SDL_SetWindowDisplayMode}, q{SDL_Window* window, const(SDL_DisplayMode)* mode}},
+		{q{int}, q{SDL_GetWindowDisplayMode}, q{SDL_Window* window, SDL_DisplayMode* mode}},
+		{q{uint}, q{SDL_GetWindowPixelFormat}, q{SDL_Window* window}},
+		{q{SDL_Window*}, q{SDL_CreateWindow}, q{const(char)* title, int x, int y, int w, int h, SDL_WindowFlags flags}},
+		{q{SDL_Window*}, q{SDL_CreateWindowFrom}, q{const(void)* data}},
+		{q{uint}, q{SDL_GetWindowID}, q{SDL_Window* window}},
+		{q{SDL_Window*}, q{SDL_GetWindowFromID}, q{uint id}},
+		{q{SDL_WindowFlags}, q{SDL_GetWindowFlags}, q{SDL_Window* window}},
+		{q{void}, q{SDL_SetWindowTitle}, q{SDL_Window* window, const(char)* title}},
+		{q{const(char)*}, q{SDL_GetWindowTitle}, q{SDL_Window* window}},
+		{q{void}, q{SDL_SetWindowIcon}, q{SDL_Window* window, SDL_Surface* icon}},
+		{q{void*}, q{SDL_SetWindowData}, q{SDL_Window* window, const(char)* name, void* userData}},
+		{q{void*}, q{SDL_GetWindowData}, q{SDL_Window* window, const(char)* name}},
+		{q{void}, q{SDL_SetWindowPosition}, q{SDL_Window* window, int x, int y}},
+		{q{void}, q{SDL_GetWindowPosition}, q{SDL_Window* window, int* x, int* y}},
+		{q{void}, q{SDL_SetWindowSize}, q{SDL_Window* window, int w, int h}},
+		{q{void}, q{SDL_GetWindowSize}, q{SDL_Window* window, int* w, int* h}},
+		{q{void}, q{SDL_SetWindowMinimumSize}, q{SDL_Window* window, int minW, int minH}},
+		{q{void}, q{SDL_GetWindowMinimumSize}, q{SDL_Window* window, int* w, int* h}},
+		{q{void}, q{SDL_SetWindowMaximumSize}, q{SDL_Window* window, int maxW, int maxH}},
+		{q{void}, q{SDL_GetWindowMaximumSize}, q{SDL_Window* window, int* w, int* h}},
+		{q{void}, q{SDL_SetWindowBordered}, q{SDL_Window* window, SDL_bool bordered}},
+		{q{void}, q{SDL_ShowWindow}, q{SDL_Window* window}},
+		{q{void}, q{SDL_HideWindow}, q{SDL_Window* window}},
+		{q{void}, q{SDL_RaiseWindow}, q{SDL_Window* window}},
+		{q{void}, q{SDL_MaximizeWindow}, q{SDL_Window* window}},
+		{q{void}, q{SDL_MinimizeWindow}, q{SDL_Window* window}},
+		{q{void}, q{SDL_RestoreWindow}, q{SDL_Window* window}},
+		{q{int}, q{SDL_SetWindowFullscreen}, q{SDL_Window* window, SDL_WindowFlags flags}},
+		{q{SDL_Surface*}, q{SDL_GetWindowSurface}, q{SDL_Window* window}},
+		{q{int}, q{SDL_UpdateWindowSurface}, q{SDL_Window* window}},
+		{q{int}, q{SDL_UpdateWindowSurfaceRects}, q{SDL_Window* window, SDL_Rect* rects, int numRects}},
+		{q{void}, q{SDL_SetWindowGrab}, q{SDL_Window* window, SDL_bool grabbed}},
+		{q{SDL_bool}, q{SDL_GetWindowGrab}, q{SDL_Window* window}},
+		{q{int}, q{SDL_SetWindowBrightness}, q{SDL_Window* window, float brightness}},
+		{q{float}, q{SDL_GetWindowBrightness}, q{SDL_Window* window}},
+		{q{int}, q{SDL_SetWindowGammaRamp}, q{SDL_Window* window, const(ushort)* red, const(ushort)* green, const(ushort)* blue}},
+		{q{int}, q{SDL_GetWindowGammaRamp}, q{SDL_Window* window, ushort* red, ushort* green, ushort* blue}},
+		{q{void}, q{SDL_DestroyWindow}, q{SDL_Window* window}},
+		{q{SDL_bool}, q{SDL_IsScreenSaverEnabled}, q{}},
+		{q{void}, q{SDL_EnableScreenSaver}, q{}},
+		{q{void}, q{SDL_DisableScreenSaver}, q{}},
+		{q{int}, q{SDL_GL_LoadLibrary}, q{const(char)* path}},
+		{q{void*}, q{SDL_GL_GetProcAddress}, q{const(char)* proc}},
+		{q{void}, q{SDL_GL_UnloadLibrary}, q{}},
+		{q{SDL_bool}, q{SDL_GL_ExtensionSupported}, q{const(char)* extension}},
+		{q{int}, q{SDL_GL_SetAttribute}, q{SDL_GLattr attr, int value}},
+		{q{int}, q{SDL_GL_GetAttribute}, q{SDL_GLattr attr, int* value}},
+		{q{SDL_GLContext}, q{SDL_GL_CreateContext}, q{SDL_Window* window}},
+		{q{int}, q{SDL_GL_MakeCurrent}, q{SDL_Window* window, SDL_GLContext context}},
+		{q{SDL_Window*}, q{SDL_GL_GetCurrentWindow}, q{}},
+		{q{SDL_GLContext}, q{SDL_GL_GetCurrentContext}, q{}},
+		{q{int}, q{SDL_GL_SetSwapInterval}, q{int interval}},
+		{q{int}, q{SDL_GL_GetSwapInterval}, q{}},
+		{q{void}, q{SDL_GL_SwapWindow}, q{SDL_Window* window}},
+		{q{void}, q{SDL_GL_DeleteContext}, q{SDL_GLContext context}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_1){
+		FnBind[] add = [
+			{q{void}, q{SDL_GL_GetDrawableSize}, q{SDL_Window* window, int* w, int* h}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_2){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_GL_ResetAttributes}, q{}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_2){
+		FnBind[] add = [
+			{q{void}, q{SDL_GL_ResetAttributes}, q{}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_4){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GetDisplayDPI}, q{int displayIndex, float* ddpi, float* hdpi, float* vdpi}],
-			[q{SDL_Window*}, q{SDL_GetGrabbedWindow}, q{}],
-			[q{int}, q{SDL_SetWindowHitTest}, q{SDL_Window* window, SDL_HitTest callback, void* callback_data}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_4){
+		FnBind[] add = [
+			{q{int}, q{SDL_GetDisplayDPI}, q{int displayIndex, float* ddpi, float* hdpi, float* vdpi}},
+			{q{SDL_Window*}, q{SDL_GetGrabbedWindow}, q{}},
+			{q{int}, q{SDL_SetWindowHitTest}, q{SDL_Window* window, SDL_HitTest callback, void* callbackData}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_5){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GetDisplayUsableBounds}, q{int displayIndex, SDL_Rect* rect}],
-			[q{int}, q{SDL_GetWindowBordersSize}, q{SDL_Window* window, int* top, int* left, int* bottom, int* right}],
-			[q{int}, q{SDL_GetWindowOpacity}, q{SDL_Window* window, float* opacity}],
-			[q{int}, q{SDL_SetWindowInputFocus}, q{SDL_Window* window}],
-			[q{int}, q{SDL_SetWindowModalFor}, q{SDL_Window* modal_window, SDL_Window* parent_window}],
-			[q{int}, q{SDL_SetWindowOpacity}, q{SDL_Window* window, float opacity}],
-			[q{void}, q{SDL_SetWindowResizable}, q{SDL_Window* window, SDL_bool resizable}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_5){
+		FnBind[] add = [
+			{q{int}, q{SDL_GetDisplayUsableBounds}, q{int displayIndex, SDL_Rect* rect}},
+			{q{int}, q{SDL_GetWindowBordersSize}, q{SDL_Window* window, int* top, int* left, int* bottom, int* right}},
+			{q{int}, q{SDL_GetWindowOpacity}, q{SDL_Window* window, float* opacity}},
+			{q{int}, q{SDL_SetWindowInputFocus}, q{SDL_Window* window}},
+			{q{int}, q{SDL_SetWindowModalFor}, q{SDL_Window* modalWindow, SDL_Window* parentWindow}},
+			{q{int}, q{SDL_SetWindowOpacity}, q{SDL_Window* window, float opacity}},
+			{q{void}, q{SDL_SetWindowResizable}, q{SDL_Window* window, SDL_bool resizable}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_9){
-		ret ~= makeFnBinds([
-			[q{SDL_DisplayOrientation}, q{SDL_GetDisplayOrientation}, q{int displayIndex}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_9){
+		FnBind[] add = [
+			{q{SDL_DisplayOrientation}, q{SDL_GetDisplayOrientation}, q{int displayIndex}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_16){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_FlashWindow}, q{SDL_Window* window, SDL_FlashOperation operation}],
-			[q{void}, q{SDL_SetWindowAlwaysOnTop}, q{SDL_Window* window, SDL_bool on_top}],
-			[q{void}, q{SDL_SetWindowKeyboardGrab}, q{SDL_Window* window, SDL_bool grabbed}],
-			[q{SDL_bool}, q{SDL_GetWindowKeyboardGrab}, q{SDL_Window * window}],
-			[q{void}, q{SDL_SetWindowMouseGrab}, q{SDL_Window* window, SDL_bool grabbed}],
-			[q{SDL_bool}, q{SDL_GetWindowMouseGrab}, q{SDL_Window* window}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_16){
+		FnBind[] add = [
+			{q{int}, q{SDL_FlashWindow}, q{SDL_Window* window, SDL_FlashOperation operation}},
+			{q{void}, q{SDL_SetWindowAlwaysOnTop}, q{SDL_Window* window, SDL_bool on_top}},
+			{q{void}, q{SDL_SetWindowKeyboardGrab}, q{SDL_Window* window, SDL_bool grabbed}},
+			{q{SDL_bool}, q{SDL_GetWindowKeyboardGrab}, q{SDL_Window * window}},
+			{q{void}, q{SDL_SetWindowMouseGrab}, q{SDL_Window* window, SDL_bool grabbed}},
+			{q{SDL_bool}, q{SDL_GetWindowMouseGrab}, q{SDL_Window* window}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_18){
-		ret ~= makeFnBinds([
-			[q{void*}, q{SDL_GetWindowICCProfile}, q{SDL_Window* window, size_t* size}],
-			[q{int}, q{SDL_SetWindowMouseRect}, q{SDL_Window* window, const(SDL_Rect)* rect}],
-			[q{const(SDL_Rect)*}, q{SDL_GetWindowMouseRect}, q{SDL_Window* window}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_18){
+		FnBind[] add = [
+			{q{void*}, q{SDL_GetWindowICCProfile}, q{SDL_Window* window, size_t* size}},
+			{q{int}, q{SDL_SetWindowMouseRect}, q{SDL_Window* window, const(SDL_Rect)* rect}},
+			{q{const(SDL_Rect)*}, q{SDL_GetWindowMouseRect}, q{SDL_Window* window}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_24){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GetPointDisplayIndex}, q{const(SDL_Point)* point}],
-			[q{int}, q{SDL_GetRectDisplayIndex}, q{const(SDL_Rect)* rect}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_24){
+		FnBind[] add = [
+			{q{int}, q{SDL_GetPointDisplayIndex}, q{const(SDL_Point)* point}},
+			{q{int}, q{SDL_GetRectDisplayIndex}, q{const(SDL_Rect)* rect}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_26){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_GetWindowSizeInPixels}, q{SDL_Window* window, int* w, int* h}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_26){
+		FnBind[] add = [
+			{q{void}, q{SDL_GetWindowSizeInPixels}, q{SDL_Window* window, int* w, int* h}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_28){
-		ret ~= makeFnBinds([
-			[q{SDL_bool}, q{SDL_HasWindowSurface}, q{SDL_Window* window}],
-			[q{int}, q{SDL_DestroyWindowSurface}, q{SDL_Window* window}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_28){
+		FnBind[] add = [
+			{q{SDL_bool}, q{SDL_HasWindowSurface}, q{SDL_Window* window}},
+			{q{int}, q{SDL_DestroyWindowSurface}, q{SDL_Window* window}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

@@ -239,9 +239,8 @@ struct SDL_SysWMinfo{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_bool}, q{SDL_GetWindowWMInfo}, q{SDL_Window* window, SDL_SysWMinfo* info}],
-	]);
+	FnBind[] ret = [
+		{q{SDL_bool}, q{SDL_GetWindowWMInfo}, q{SDL_Window* window, SDL_SysWMinfo* info}},
+	];
 	return ret;
 }()));

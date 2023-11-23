@@ -87,7 +87,7 @@ enum{
 		SDL_AUDIO_ALLOW_CHANNELS_CHANGE,
 }
 
-alias SDL_AudioCallback = extern(C) void function(void* userdata, ubyte* stream, int len) nothrow;
+alias SDL_AudioCallback = extern(C) void function(void* userData, ubyte* stream, int len) nothrow;
 
 struct SDL_AudioSpec{
 	int freq;
@@ -101,7 +101,7 @@ struct SDL_AudioSpec{
 	void* userdata;
 }
 
-// Declared in 2.0.6, but doesn't hurt to use here
+//Declared in 2.0.6
 enum SDL_AUDIOCVT_MAX_FILTERS = 9;
 
 alias SDL_AudioFilter = extern(C) void function(SDL_AudioCVT* cvt, SDL_AudioFormat format) nothrow;
@@ -129,8 +129,8 @@ enum: SDL_AudioStatus{
 	SDL_AUDIO_PAUSED   = 2,
 }
 
-pragma(inline, true) SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audio_buf, uint* len) nothrow @nogc{
-	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, len);
+pragma(inline, true) SDL_AudioSpec* SDL_LoadWAV(const(char)* file, SDL_AudioSpec* spec, ubyte** audioBuf, uint* len) nothrow @nogc{
+	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audioBuf, len);
 }
 
 static if(sdlSupport >= SDLSupport.v2_0_7){
@@ -140,66 +140,70 @@ static if(sdlSupport >= SDLSupport.v2_0_7){
 enum SDL_MIX_MAXVOLUME = 128;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_GetNumAudioDrivers}, q{}],
-		[q{const(char)*}, q{SDL_GetAudioDriver}, q{int index}],
-		[q{int}, q{SDL_AudioInit}, q{const(char)* driver_name}],
-		[q{void}, q{SDL_AudioQuit}, q{}],
-		[q{const(char)*}, q{SDL_GetCurrentAudioDriver}, q{}],
-		[q{int}, q{SDL_OpenAudio}, q{SDL_AudioSpec* desired, SDL_AudioSpec* obtained}],
-		[q{int}, q{SDL_GetNumAudioDevices}, q{int iscapture}],
-		[q{const(char)*}, q{SDL_GetAudioDeviceName}, q{int index, int iscapture}],
-		[q{SDL_AudioDeviceID}, q{SDL_OpenAudioDevice}, q{const(char)* device, int iscapture, const(SDL_AudioSpec)* desired, SDL_AudioSpec* obtained, int allowed_changes}],
-		[q{SDL_AudioStatus}, q{SDL_GetAudioStatus}, q{}],
-		[q{SDL_AudioStatus}, q{SDL_GetAudioDeviceStatus}, q{SDL_AudioDeviceID dev}],
-		[q{void}, q{SDL_PauseAudio}, q{int pause_on}],
-		[q{void}, q{SDL_PauseAudioDevice}, q{SDL_AudioDeviceID dev, int pause_on}],
-		[q{SDL_AudioSpec*}, q{SDL_LoadWAV_RW}, q{SDL_RWops* src, int freesrc, SDL_AudioSpec* spec, ubyte** audio_buf, uint* audio_len}],
-		[q{void}, q{SDL_FreeWAV}, q{ubyte* audio_buf}],
-		[q{int}, q{SDL_BuildAudioCVT}, q{SDL_AudioCVT* cvt, SDL_AudioFormat src_format, ubyte src_channels, int src_rate, SDL_AudioFormat dst_format, ubyte dst_channels, int dst_rate}],
-		[q{int}, q{SDL_ConvertAudio}, q{SDL_AudioCVT* cvt}],
-		[q{void}, q{SDL_MixAudio}, q{ubyte* dst, const(ubyte)* src, uint len, int volume}],
-		[q{void}, q{SDL_MixAudioFormat}, q{ubyte* dst, const(ubyte)* src, SDL_AudioFormat format, uint len, int volume}],
-		[q{void}, q{SDL_LockAudio}, q{}],
-		[q{void}, q{SDL_LockAudioDevice}, q{SDL_AudioDeviceID dev}],
-		[q{void}, q{SDL_UnlockAudio}, q{}],
-		[q{void}, q{SDL_UnlockAudioDevice}, q{SDL_AudioDeviceID dev}],
-		[q{void}, q{SDL_CloseAudio}, q{}],
-		[q{void}, q{SDL_CloseAudioDevice}, q{SDL_AudioDeviceID dev}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_4){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_QueueAudio}, q{SDL_AudioDeviceID dev, const(void)* data, uint len}],
-			[q{int}, q{SDL_ClearQueuedAudio}, q{SDL_AudioDeviceID dev}],
-			[q{int}, q{SDL_GetQueuedAudioSize}, q{SDL_AudioDeviceID dev}],
-		]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_GetNumAudioDrivers}, q{}},
+		{q{const(char)*}, q{SDL_GetAudioDriver}, q{int index}},
+		{q{int}, q{SDL_AudioInit}, q{const(char)* driverName}},
+		{q{void}, q{SDL_AudioQuit}, q{}},
+		{q{const(char)*}, q{SDL_GetCurrentAudioDriver}, q{}},
+		{q{int}, q{SDL_OpenAudio}, q{SDL_AudioSpec* desired, SDL_AudioSpec* obtained}},
+		{q{int}, q{SDL_GetNumAudioDevices}, q{int isCapture}},
+		{q{const(char)*}, q{SDL_GetAudioDeviceName}, q{int index, int isCapture}},
+		{q{SDL_AudioDeviceID}, q{SDL_OpenAudioDevice}, q{const(char)* device, int isCapture, const(SDL_AudioSpec)* desired, SDL_AudioSpec* obtained, int allowedChanges}},
+		{q{SDL_AudioStatus}, q{SDL_GetAudioStatus}, q{}},
+		{q{SDL_AudioStatus}, q{SDL_GetAudioDeviceStatus}, q{SDL_AudioDeviceID dev}},
+		{q{void}, q{SDL_PauseAudio}, q{int pauseOn}},
+		{q{void}, q{SDL_PauseAudioDevice}, q{SDL_AudioDeviceID dev, int pauseOn}},
+		{q{SDL_AudioSpec*}, q{SDL_LoadWAV_RW}, q{SDL_RWops* src, int freeSrc, SDL_AudioSpec* spec, ubyte** audioBuf, uint* audioLen}},
+		{q{void}, q{SDL_FreeWAV}, q{ubyte* audioBuf}},
+		{q{int}, q{SDL_BuildAudioCVT}, q{SDL_AudioCVT* cvt, SDL_AudioFormat srcFormat, ubyte srcChannels, int srcRate, SDL_AudioFormat dstFormat, ubyte dstChannels, int dstRate}},
+		{q{int}, q{SDL_ConvertAudio}, q{SDL_AudioCVT* cvt}},
+		{q{void}, q{SDL_MixAudio}, q{ubyte* dst, const(ubyte)* src, uint len, int volume}},
+		{q{void}, q{SDL_MixAudioFormat}, q{ubyte* dst, const(ubyte)* src, SDL_AudioFormat format, uint len, int volume}},
+		{q{void}, q{SDL_LockAudio}, q{}},
+		{q{void}, q{SDL_LockAudioDevice}, q{SDL_AudioDeviceID dev}},
+		{q{void}, q{SDL_UnlockAudio}, q{}},
+		{q{void}, q{SDL_UnlockAudioDevice}, q{SDL_AudioDeviceID dev}},
+		{q{void}, q{SDL_CloseAudio}, q{}},
+		{q{void}, q{SDL_CloseAudioDevice}, q{SDL_AudioDeviceID dev}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_4){
+		FnBind[] add = [
+			{q{int}, q{SDL_QueueAudio}, q{SDL_AudioDeviceID dev, const(void)* data, uint len}},
+			{q{int}, q{SDL_ClearQueuedAudio}, q{SDL_AudioDeviceID dev}},
+			{q{int}, q{SDL_GetQueuedAudioSize}, q{SDL_AudioDeviceID dev}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_5){
-		ret ~= makeFnBinds([
-			[q{uint}, q{SDL_DequeueAudio}, q{SDL_AudioDeviceID dev, void* data, uint len}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_5){
+		FnBind[] add = [
+			{q{uint}, q{SDL_DequeueAudio}, q{SDL_AudioDeviceID dev, void* data, uint len}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_7){
-		ret ~= makeFnBinds([
-			[q{SDL_AudioStream*}, q{SDL_NewAudioStream}, q{const SDL_AudioFormat src_format, const ubyte src_channels, const int src_rate, const SDL_AudioFormat dst_format, const ubyte dst_channels, const int dst_rate}],
-			[q{int}, q{SDL_AudioStreamPut}, q{SDL_AudioStream* stream, const(void)* buf, int len}],
-			[q{int}, q{SDL_AudioStreamGet}, q{SDL_AudioStream* stream, void* buf, int len}],
-			[q{int}, q{SDL_AudioStreamAvailable}, q{SDL_AudioStream* stream}],
-			[q{int}, q{SDL_AudioStreamFlush}, q{SDL_AudioStream* stream}],
-			[q{void}, q{SDL_AudioStreamClear}, q{SDL_AudioStream* stream}],
-			[q{void}, q{SDL_FreeAudioStream}, q{SDL_AudioStream* stream}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_7){
+		FnBind[] add = [
+			{q{SDL_AudioStream*}, q{SDL_NewAudioStream}, q{const SDL_AudioFormat srcFormat, const ubyte srcChannels, const int srcRate, const SDL_AudioFormat dstFormat, const ubyte dstChannels, const int dstRate}},
+			{q{int}, q{SDL_AudioStreamPut}, q{SDL_AudioStream* stream, const(void)* buf, int len}},
+			{q{int}, q{SDL_AudioStreamGet}, q{SDL_AudioStream* stream, void* buf, int len}},
+			{q{int}, q{SDL_AudioStreamAvailable}, q{SDL_AudioStream* stream}},
+			{q{int}, q{SDL_AudioStreamFlush}, q{SDL_AudioStream* stream}},
+			{q{void}, q{SDL_AudioStreamClear}, q{SDL_AudioStream* stream}},
+			{q{void}, q{SDL_FreeAudioStream}, q{SDL_AudioStream* stream}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_16){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GetAudioDeviceSpec}, q{int index, int iscapture, SDL_AudioSpec *spec}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_16){
+		FnBind[] add = [
+			{q{int}, q{SDL_GetAudioDeviceSpec}, q{int index, int isCapture, SDL_AudioSpec* spec}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_24){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_GetDefaultAudioInfo}, q{char** name, SDL_AudioSpec* spec, int iscapture}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_24){
+		FnBind[] add = [
+			{q{int}, q{SDL_GetDefaultAudioInfo}, q{char** name, SDL_AudioSpec* spec, int isCapture}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

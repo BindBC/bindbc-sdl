@@ -20,9 +20,8 @@ enum: SDL_PowerState{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_PowerState}, q{SDL_GetPowerInfo}, q{int* seconds, int* percent}],
-	]);
+	FnBind[] ret = [
+		{q{SDL_PowerState}, q{SDL_GetPowerInfo}, q{int* seconds, int* percent}},
+	];
 	return ret;
 }()));

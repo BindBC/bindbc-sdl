@@ -35,22 +35,23 @@ static if(sdlSupport >= SDLSupport.v2_0_10){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_GetNumTouchDevices}, q{}],
-		[q{SDL_TouchID}, q{SDL_GetTouchDevice}, q{int index}],
-		[q{int}, q{SDL_GetNumTouchFingers}, q{SDL_TouchID touchID}],
-		[q{SDL_Finger*}, q{SDL_GetTouchFinger}, q{SDL_TouchID touchID, int index}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_10){
-		ret ~= makeFnBinds([
-			[q{SDL_TouchDeviceType}, q{SDL_GetTouchDeviceType}, q{SDL_TouchID touchID}],
-		]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_GetNumTouchDevices}, q{}},
+		{q{SDL_TouchID}, q{SDL_GetTouchDevice}, q{int index}},
+		{q{int}, q{SDL_GetNumTouchFingers}, q{SDL_TouchID touchID}},
+		{q{SDL_Finger*}, q{SDL_GetTouchFinger}, q{SDL_TouchID touchID, int index}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_10){
+		FnBind[] add = [
+			{q{SDL_TouchDeviceType}, q{SDL_GetTouchDeviceType}, q{SDL_TouchID touchID}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_22){
-		ret ~= makeFnBinds([
-			[q{const(char)*}, q{SDL_GetTouchName}, q{int index}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_22){
+		FnBind[] add = [
+			{q{const(char)*}, q{SDL_GetTouchName}, q{int index}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

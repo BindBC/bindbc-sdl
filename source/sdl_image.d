@@ -49,20 +49,20 @@ enum SDL_IMAGE_MAJOR_VERSION = sdlImageSupport.major;
 enum SDL_IMAGE_MINOR_VERSION = sdlImageSupport.minor;
 enum SDL_IMAGE_PATCHLEVEL    = sdlImageSupport.patch;
 
-pragma(inline, true) void SDL_IMAGE_VERSION(SDL_version* X) nothrow @nogc pure @safe{
-	X.major = SDL_IMAGE_MAJOR_VERSION;
-	X.minor = SDL_IMAGE_MINOR_VERSION;
-	X.patch = SDL_IMAGE_PATCHLEVEL;
+pragma(inline, true) void SDL_IMAGE_VERSION(SDL_version* x) nothrow @nogc pure @safe{
+	x.major = SDL_IMAGE_MAJOR_VERSION;
+	x.minor = SDL_IMAGE_MINOR_VERSION;
+	x.patch = SDL_IMAGE_PATCHLEVEL;
 }
 
 deprecated("Please use SDL_IMAGE_VERSION_ATLEAST or SDL_IMAGE_VERSION instead")
 	enum SDL_IMAGE_COMPILEDVERSION = SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL);
 
 pragma(inline, true) nothrow @nogc{
-	bool SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z){ return SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(X, Y, Z); }
+	bool SDL_IMAGE_VERSION_ATLEAST(ubyte x, ubyte y, ubyte z){ return SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(x, y, z); }
 }
 deprecated("Please use the non-template variant instead"){
-	enum SDL_IMAGE_VERSION_ATLEAST(ubyte X, ubyte Y, ubyte Z) = SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(X, Y, Z);
+	enum SDL_IMAGE_VERSION_ATLEAST(ubyte x, ubyte y, ubyte z) = SDL_version(SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_PATCHLEVEL) >= SDL_version(x, y, z);
 }
 
 alias IMG_InitFlags = int;
@@ -91,81 +91,82 @@ alias IMG_SetError = SDL_SetError;
 alias IMG_GetError = SDL_GetError;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{IMG_Init}, q{int flags}],
-		[q{int}, q{IMG_Quit}, q{}],
-		[q{const(SDL_version)*}, q{IMG_Linked_Version}, q{}],
-		[q{SDL_Surface*}, q{IMG_LoadTyped_RW}, q{SDL_RWops* src, int freesrc, const(char)* type}],
-		[q{SDL_Surface*}, q{IMG_Load}, q{const(char)* file}],
-		[q{SDL_Surface*}, q{IMG_Load_RW}, q{SDL_RWops* src, int freesrc}],
+	FnBind[] ret = [
+		{q{int}, q{IMG_Init}, q{int flags}},
+		{q{int}, q{IMG_Quit}, q{}},
+		{q{const(SDL_version)*}, q{IMG_Linked_Version}, q{}},
+		{q{SDL_Surface*}, q{IMG_LoadTyped_RW}, q{SDL_RWops* src, int freeSrc, const(char)* type}},
+		{q{SDL_Surface*}, q{IMG_Load}, q{const(char)* file}},
+		{q{SDL_Surface*}, q{IMG_Load_RW}, q{SDL_RWops* src, int freeSrc}},
 		
-		[q{SDL_Texture*}, q{IMG_LoadTexture}, q{SDL_Renderer* renderer, const(char)* file}],
-		[q{SDL_Texture*}, q{IMG_LoadTexture_RW}, q{SDL_Renderer* renderer, SDL_RWops* src, int freesrc}],
-		[q{SDL_Texture*}, q{IMG_LoadTextureTyped_RW}, q{SDL_Renderer* renderer, SDL_RWops* src, int freesrc, const(char)* type}],
+		{q{SDL_Texture*}, q{IMG_LoadTexture}, q{SDL_Renderer* renderer, const(char)* file}},
+		{q{SDL_Texture*}, q{IMG_LoadTexture_RW}, q{SDL_Renderer* renderer, SDL_RWops* src, int freeSrc}},
+		{q{SDL_Texture*}, q{IMG_LoadTextureTyped_RW}, q{SDL_Renderer* renderer, SDL_RWops* src, int freeSrc, const(char)* type}},
 		
-		[q{int}, q{IMG_isICO}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isCUR}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isBMP}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isGIF}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isJPG}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isLBM}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isPCX}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isPNG}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isPNM}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isTIF}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isXCF}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isXPM}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isXV}, q{SDL_RWops* src}],
-		[q{int}, q{IMG_isWEBP}, q{SDL_RWops* src}],
+		{q{int}, q{IMG_isICO}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isCUR}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isBMP}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isGIF}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isJPG}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isLBM}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isPCX}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isPNG}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isPNM}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isTIF}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isXCF}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isXPM}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isXV}, q{SDL_RWops* src}},
+		{q{int}, q{IMG_isWEBP}, q{SDL_RWops* src}},
 		
-		[q{SDL_Surface*}, q{IMG_LoadICO_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadCUR_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadBMP_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadGIF_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadJPG_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadLBM_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadPCX_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadPNG_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadPNM_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadTGA_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadTIF_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadXCF_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadXPM_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadXV_RW}, q{SDL_RWops* src}],
-		[q{SDL_Surface*}, q{IMG_LoadWEBP_RW}, q{SDL_RWops* src}],
+		{q{SDL_Surface*}, q{IMG_LoadICO_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadCUR_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadBMP_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadGIF_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadJPG_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadLBM_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadPCX_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadPNG_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadPNM_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadTGA_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadTIF_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadXCF_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadXPM_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadXV_RW}, q{SDL_RWops* src}},
+		{q{SDL_Surface*}, q{IMG_LoadWEBP_RW}, q{SDL_RWops* src}},
 		
-		[q{SDL_Surface*}, q{IMG_ReadXPMFromArray}, q{char** xpm}],
+		{q{SDL_Surface*}, q{IMG_ReadXPMFromArray}, q{char** xpm}},
 		
-		[q{int}, q{IMG_SavePNG}, q{SDL_Surface* surface, const(char)* file}],
-		[q{int}, q{IMG_SavePNG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freedst}],
-	]);
-	static if(sdlImageSupport >= SDLImageSupport.v2_0_2){
-		ret ~= makeFnBinds([
-			[q{int}, q{IMG_isSVG}, q{SDL_RWops* src}],
-			[q{SDL_Surface*}, q{IMG_LoadSVG_RW}, q{SDL_RWops* src}],
-			[q{int}, q{IMG_SaveJPG}, q{SDL_Surface* surface, const(char)* file, int quality}],
-			[q{int}, q{IMG_SaveJPG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freedst, int quality}],
-		]);
+		{q{int}, q{IMG_SavePNG}, q{SDL_Surface* surface, const(char)* file}},
+		{q{int}, q{IMG_SavePNG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freeDst}},
+	];
+	if(sdlImageSupport >= SDLImageSupport.v2_0_2){
+		FnBind[] add = [
+			{q{int}, q{IMG_isSVG}, q{SDL_RWops* src}},
+			{q{SDL_Surface*}, q{IMG_LoadSVG_RW}, q{SDL_RWops* src}},
+			{q{int}, q{IMG_SaveJPG}, q{SDL_Surface* surface, const(char)* file, int quality}},
+			{q{int}, q{IMG_SaveJPG_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freeDst, int quality}},
+		];
+		ret ~= add;
 	}
-	static if(sdlImageSupport >= SDLImageSupport.v2_6){
-		ret ~= makeFnBinds([
-			[q{int}, q{IMG_isAVIF}, q{SDL_RWops* src}],
-			[q{int}, q{IMG_isJXL}, q{SDL_RWops* src}],
-			[q{int}, q{IMG_isQOI}, q{SDL_RWops* src}],
+	if(sdlImageSupport >= SDLImageSupport.v2_6){
+		FnBind[] add = [
+			{q{int}, q{IMG_isAVIF}, q{SDL_RWops* src}},
+			{q{int}, q{IMG_isJXL}, q{SDL_RWops* src}},
+			{q{int}, q{IMG_isQOI}, q{SDL_RWops* src}},
 			
-			[q{SDL_Surface*}, q{IMG_LoadAVIF_RW}, q{SDL_RWops* src}],
-			[q{SDL_Surface*}, q{IMG_LoadJXL_RW}, q{SDL_RWops* src}],
-			[q{SDL_Surface*}, q{IMG_LoadQOI_RW}, q{SDL_RWops* src}],
+			{q{SDL_Surface*}, q{IMG_LoadAVIF_RW}, q{SDL_RWops* src}},
+			{q{SDL_Surface*}, q{IMG_LoadJXL_RW}, q{SDL_RWops* src}},
+			{q{SDL_Surface*}, q{IMG_LoadQOI_RW}, q{SDL_RWops* src}},
 			
-			[q{SDL_Surface*}, q{IMG_LoadSizedSVG_RW}, q{SDL_RWops* src, int width, int height}],
-			[q{SDL_Surface*}, q{IMG_ReadXPMFromArrayToRGB888}, q{char** xpm}],
-			[q{IMG_Animation*}, q{IMG_LoadAnimation}, q{const(char)* file}],
-			[q{IMG_Animation*}, q{IMG_LoadAnimation_RW}, q{SDL_RWops* src, int freesrc}],
-			[q{IMG_Animation*}, q{IMG_LoadAnimationTyped_RW}, q{SDL_RWops* src, int freesrc, const(char)* type}],
-			[q{void}, q{IMG_FreeAnimation}, q{IMG_Animation* anim}],
-			[q{IMG_Animation*}, q{IMG_LoadGIFAnimation_RW}, q{SDL_RWops* src}],
-		]);
+			{q{SDL_Surface*}, q{IMG_LoadSizedSVG_RW}, q{SDL_RWops* src, int width, int height}},
+			{q{SDL_Surface*}, q{IMG_ReadXPMFromArrayToRGB888}, q{char** xpm}},
+			{q{IMG_Animation*}, q{IMG_LoadAnimation}, q{const(char)* file}},
+			{q{IMG_Animation*}, q{IMG_LoadAnimation_RW}, q{SDL_RWops* src, int freeSrc}},
+			{q{IMG_Animation*}, q{IMG_LoadAnimationTyped_RW}, q{SDL_RWops* src, int freeSrc, const(char)* type}},
+			{q{void}, q{IMG_FreeAnimation}, q{IMG_Animation* anim}},
+			{q{IMG_Animation*}, q{IMG_LoadGIFAnimation_RW}, q{SDL_RWops* src}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

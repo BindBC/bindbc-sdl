@@ -27,7 +27,7 @@ pragma(inline, true) nothrow @nogc{
 			else version(ExtAsm) return true;
 			else return false;
 		}()){
-			asm nothrow @nogc{ "" : : : "memory"; } 
+			asm nothrow @nogc{ "" : : : "memory"; }
 		}else version(DigitalMars){
 			asm nothrow @nogc{}
 		}else{
@@ -151,30 +151,29 @@ struct SDL_atomic_t{
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{SDL_bool}, q{SDL_AtomicTryLock}, q{SDL_SpinLock* lock}],
-		[q{void}, q{SDL_AtomicLock}, q{SDL_SpinLock* lock}],
-		[q{void}, q{SDL_AtomicUnlock}, q{SDL_SpinLock* lock}],
-		// Perhaps the following could be replaced with the platform-specific intrinsics for GDC, like
-		// the GCC macros in SDL_atomic.h. I'll have to investigate.
-		[q{SDL_bool}, q{SDL_AtomicCAS}, q{SDL_atomic_t* a, int oldval, int newval}],
-		[q{SDL_bool}, q{SDL_AtomicCASPtr}, q{void** a, void* oldval, void* newval}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_3){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_AtomicSet}, q{SDL_atomic_t* a, int v}],
-			[q{int}, q{SDL_AtomicGet}, q{SDL_atomic_t* a}],
-			[q{int}, q{SDL_AtomicAdd}, q{SDL_atomic_t* a, int v}],
-			[q{void*}, q{SDL_AtomicSetPtr}, q{void** a, void* v}],
-			[q{void*}, q{SDL_AtomicGetPtr}, q{void** a}],
-		]);
+	FnBind[] ret = [
+		{q{SDL_bool}, q{SDL_AtomicTryLock}, q{SDL_SpinLock* lock}},
+		{q{void}, q{SDL_AtomicLock}, q{SDL_SpinLock* lock}},
+		{q{void}, q{SDL_AtomicUnlock}, q{SDL_SpinLock* lock}},
+		{q{SDL_bool}, q{SDL_AtomicCAS}, q{SDL_atomic_t* a, int oldVal, int newVal}},
+		{q{SDL_bool}, q{SDL_AtomicCASPtr}, q{void** a, void* oldVal, void* newVal}},
+	];
+	if(sdlSupport >= SDLSupport.v2_0_3){
+		FnBind[] add = [
+			{q{int}, q{SDL_AtomicSet}, q{SDL_atomic_t* a, int v}},
+			{q{int}, q{SDL_AtomicGet}, q{SDL_atomic_t* a}},
+			{q{int}, q{SDL_AtomicAdd}, q{SDL_atomic_t* a, int v}},
+			{q{void*}, q{SDL_AtomicSetPtr}, q{void** a, void* v}},
+			{q{void*}, q{SDL_AtomicGetPtr}, q{void** a}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_6){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_MemoryBarrierReleaseFunction}, q{}],
-			[q{void}, q{SDL_MemoryBarrierAcquireFunction}, q{}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_6){
+		FnBind[] add = [
+			{q{void}, q{SDL_MemoryBarrierReleaseFunction}, q{}},
+			{q{void}, q{SDL_MemoryBarrierAcquireFunction}, q{}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

@@ -43,8 +43,8 @@ version(Win_OS2_GDK){
 		private alias start_address = void function(void*);
 		
 		extern(C) nothrow @nogc{
-			alias pfnSDL_CurrentBeginThread = uintptr_t function(start_address,void*,uint,void*);
-			private int _beginthread(start_address,void*,uint,void*);
+			alias pfnSDL_CurrentBeginThread = uintptr_t function(start_address, void*, uint, void*);
+			private int _beginthread(start_address,void*, uint, void*);
 			alias SDL_beginthread = _beginthread;
 			
 			alias pfnSDL_CurrentEndThread = void function(uint);
@@ -62,8 +62,8 @@ version(Win_OS2_GDK){
 			when BindBC_Static is specified in order to distingiuish between linking with the
 			DLL's import library and statically linking with SDL.
 			*/
-			alias pfnSDL_CurrentBeginThread = uintptr_t function(void*,uint,start_address,void*,uint,uint*);
-			private uintptr_t _beginthreadex(void*,uint,start_address,void*,uint,uint*);
+			alias pfnSDL_CurrentBeginThread = uintptr_t function(void*, uint, start_address, void*, uint, uint*);
+			private uintptr_t _beginthreadex(void*, uint, start_address, void*, uint, uint*);
 			alias SDL_beginthread = _beginthreadex;
 			
 			alias pfnSDL_CurrentEndThread = void function(uint);
@@ -86,45 +86,54 @@ version(Win_OS2_GDK){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
+	FnBind[] ret = [
+		{q{const(char)*}, q{SDL_GetThreadName}, q{SDL_Thread* thread}},
+		{q{SDL_threadID}, q{SDL_ThreadID}, q{}},
+		{q{SDL_threadID}, q{SDL_GetThreadID}, q{SDL_Thread* thread}},
+		{q{int}, q{SDL_SetThreadPriority}, q{SDL_ThreadPriority priority}},
+		{q{void}, q{SDL_WaitThread}, q{SDL_Thread* thread, int* status}},
+		{q{SDL_TLSID}, q{SDL_TLSCreate}, q{}},
+		{q{void*}, q{SDL_TLSGet}, q{SDL_TLSID id}},
+		{q{int}, q{SDL_TLSSet}, q{SDL_TLSID id, const(void)* value, TLSDestructor destructor}},
+	];
 	version(Win_OS2_GDK){
-		ret ~= makeFnBinds([
-			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
-		]);
-		static if(sdlSupport >= SDLSupport.v2_0_9){
-			ret ~= makeFnBinds([
-				[q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stacksize, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pfnEndThread}],
-			]);
+		{
+			FnBind[] add = [
+				{q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pFnEndThread}},
+			];
+			ret ~= add;
+		}
+		if(sdlSupport >= SDLSupport.v2_0_9){
+			FnBind[] add = [
+				{q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stackSize, void* data, pfnSDL_CurrentBeginThread pFnBeginThread, pfnSDL_CurrentEndThread pFnEndThread}},
+			];
+			ret ~= add;
 		}
 	}else{
-		ret ~= makeFnBinds([
-			[q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data}],
-		]);
-		static if(sdlSupport >= SDLSupport.v2_0_9){
-			ret ~= makeFnBinds([
-				[q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stacksize, void* data}],
-			]);
+		{
+			FnBind[] add = [
+				{q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data}},
+			];
+			ret ~= add;
+		}
+		if(sdlSupport >= SDLSupport.v2_0_9){
+			FnBind[] add = [
+				{q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stackSize, void* data}},
+			];
+			ret ~= add;
 		}
 	}
-	ret ~= makeFnBinds([
-		[q{const(char)*}, q{SDL_GetThreadName}, q{SDL_Thread* thread}],
-		[q{SDL_threadID}, q{SDL_ThreadID}, q{}],
-		[q{SDL_threadID}, q{SDL_GetThreadID}, q{SDL_Thread* thread}],
-		[q{int}, q{SDL_SetThreadPriority}, q{SDL_ThreadPriority priority}],
-		[q{void}, q{SDL_WaitThread}, q{SDL_Thread* thread, int* status}],
-		[q{SDL_TLSID}, q{SDL_TLSCreate}, q{}],
-		[q{void*}, q{SDL_TLSGet}, q{SDL_TLSID id}],
-		[q{int}, q{SDL_TLSSet}, q{SDL_TLSID id, const(void)* value, TLSDestructor destructor}],
-	]);
-	static if(sdlSupport >= SDLSupport.v2_0_2){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_DetachThread}, q{SDL_Thread* thread}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_2){
+		FnBind[] add = [
+			{q{void}, q{SDL_DetachThread}, q{SDL_Thread* thread}},
+		];
+		ret ~= add;
 	}
-	static if(sdlSupport >= SDLSupport.v2_0_16){
-		ret ~= makeFnBinds([
-			[q{void}, q{SDL_TLSCleanup}, q{}],
-		]);
+	if(sdlSupport >= SDLSupport.v2_0_16){
+		FnBind[] add = [
+			{q{void}, q{SDL_TLSCleanup}, q{}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

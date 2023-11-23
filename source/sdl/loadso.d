@@ -11,11 +11,10 @@ import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{void*}, q{SDL_LoadObject}, q{const(char)* sofile}],
-		[q{void*}, q{SDL_LoadFunction}, q{void* handle,const(char*) name}],
-		[q{void}, q{SDL_UnloadObject}, q{void* handle}],
-	]);
+	FnBind[] ret = [
+		{q{void*}, q{SDL_LoadObject}, q{const(char)* soFile}},
+		{q{void*}, q{SDL_LoadFunction}, q{void* handle,const(char*) name}},
+		{q{void}, q{SDL_UnloadObject}, q{void* handle}},
+	];
 	return ret;
 }()));

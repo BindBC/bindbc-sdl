@@ -16,12 +16,11 @@ import sdl.rwops: SDL_RWops;
 alias SDL_GestureID = long;
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	ret ~= makeFnBinds([
-		[q{int}, q{SDL_RecordGesture}, q{SDL_TouchID touchId}],
-		[q{int}, q{SDL_SaveAllDollarTemplates}, q{SDL_RWops* dst}],
-		[q{int}, q{SDL_SaveDollarTemplate}, q{SDL_GestureID gestureId, SDL_RWops* dst}],
-		[q{int}, q{SDL_LoadDollarTemplates}, q{SDL_TouchID touchId,SDL_RWops* src}],
-	]);
+	FnBind[] ret = [
+		{q{int}, q{SDL_RecordGesture}, q{SDL_TouchID touchID}},
+		{q{int}, q{SDL_SaveAllDollarTemplates}, q{SDL_RWops* dst}},
+		{q{int}, q{SDL_SaveDollarTemplate}, q{SDL_GestureID gestureID, SDL_RWops* dst}},
+		{q{int}, q{SDL_LoadDollarTemplates}, q{SDL_TouchID touchID, SDL_RWops* src}},
+	];
 	return ret;
 }()));

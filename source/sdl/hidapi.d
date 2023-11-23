@@ -34,28 +34,29 @@ static if(sdlSupport >= SDLSupport.v2_0_18){
 }
 
 mixin(joinFnBinds((){
-	string[][] ret;
-	static if(sdlSupport >= SDLSupport.v2_0_18){
-		ret ~= makeFnBinds([
-			[q{int}, q{SDL_hid_init}, q{}],
-			[q{int}, q{SDL_hid_exit}, q{}],
-			[q{uint}, q{SDL_hid_device_change_count}, q{}],
-			[q{SDL_hid_device_info*}, q{SDL_hid_enumerate}, q{ushort vendor_id, ushort product_id}],
-			[q{void}, q{SDL_hid_free_enumeration}, q{SDL_hid_device_info* devs}],
-			[q{SDL_hid_device*}, q{SDL_hid_open}, q{ushort vendor_id, ushort product_id, const(wchar_t)* serial_number}],
-			[q{SDL_hid_device*}, q{SDL_hid_open_path}, q{const(char)* path, int bExclusive=false}],
-			[q{int}, q{SDL_hid_write}, q{SDL_hid_device* dev, const(ubyte*) data, size_t length}],
-			[q{int}, q{SDL_hid_read_timeout}, q{SDL_hid_device* dev, ubyte* data, size_t length, int milliseconds}],
-			[q{int}, q{SDL_hid_read}, q{SDL_hid_device* dev, ubyte* data, size_t length}],
-			[q{int}, q{SDL_hid_set_nonblocking}, q{SDL_hid_device* dev, int nonblock}],
-			[q{int}, q{SDL_hid_send_feature_report}, q{SDL_hid_device* dev, const(ubyte)* data, size_t length}],
-			[q{int}, q{SDL_hid_get_feature_report}, q{SDL_hid_device* dev, ubyte* data, size_t length}],
-			[q{int}, q{SDL_hid_get_manufacturer_string}, q{SDL_hid_device* dev, wchar_t* string_, size_t maxlen}],
-			[q{int}, q{SDL_hid_get_product_string}, q{SDL_hid_device* dev, wchar_t* string_, size_t maxlen}],
-			[q{int}, q{SDL_hid_get_serial_number_string}, q{SDL_hid_device* dev, wchar_t* string_, size_t maxlen}],
-			[q{int}, q{SDL_hid_get_indexed_string}, q{SDL_hid_device* dev, int string_index, wchar_t* string_, size_t maxlen}],
-			[q{void}, q{SDL_hid_ble_scan}, q{SDL_bool active}],
-		]);
+	FnBind[] ret;
+	if(sdlSupport >= SDLSupport.v2_0_18){
+		FnBind[] add = [
+			{q{int}, q{SDL_hid_init}, q{}},
+			{q{int}, q{SDL_hid_exit}, q{}},
+			{q{uint}, q{SDL_hid_device_change_count}, q{}},
+			{q{SDL_hid_device_info*}, q{SDL_hid_enumerate}, q{ushort vendorID, ushort productID}},
+			{q{void}, q{SDL_hid_free_enumeration}, q{SDL_hid_device_info* devs}},
+			{q{SDL_hid_device*}, q{SDL_hid_open}, q{ushort vendorID, ushort productID, const(wchar_t)* serialNumber}},
+			{q{SDL_hid_device*}, q{SDL_hid_open_path}, q{const(char)* path, int bExclusive=false}},
+			{q{int}, q{SDL_hid_write}, q{SDL_hid_device* dev, const(ubyte*) data, size_t length}},
+			{q{int}, q{SDL_hid_read_timeout}, q{SDL_hid_device* dev, ubyte* data, size_t length, int milliseconds}},
+			{q{int}, q{SDL_hid_read}, q{SDL_hid_device* dev, ubyte* data, size_t length}},
+			{q{int}, q{SDL_hid_set_nonblocking}, q{SDL_hid_device* dev, int nonBlock}},
+			{q{int}, q{SDL_hid_send_feature_report}, q{SDL_hid_device* dev, const(ubyte)* data, size_t length}},
+			{q{int}, q{SDL_hid_get_feature_report}, q{SDL_hid_device* dev, ubyte* data, size_t length}},
+			{q{int}, q{SDL_hid_get_manufacturer_string}, q{SDL_hid_device* dev, wchar_t* string, size_t maxLen}},
+			{q{int}, q{SDL_hid_get_product_string}, q{SDL_hid_device* dev, wchar_t* string, size_t maxLen}},
+			{q{int}, q{SDL_hid_get_serial_number_string}, q{SDL_hid_device* dev, wchar_t* string, size_t maxLen}},
+			{q{int}, q{SDL_hid_get_indexed_string}, q{SDL_hid_device* dev, int stringIndex, wchar_t* string, size_t maxLen}},
+			{q{void}, q{SDL_hid_ble_scan}, q{SDL_bool active}},
+		];
+		ret ~= add;
 	}
 	return ret;
 }()));

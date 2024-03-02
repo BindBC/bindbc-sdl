@@ -17,7 +17,6 @@ This project provides a set of both static and dynamic bindings to
 |[Windows: Loading from outside the DLL search path](#windows-loading-from-outside-the-dll-search-path)|
 
 ## License
-
 BindBC-SDL&mdash;as well as every other binding in the [BindBC project](https://github.com/BindBC)&mdash;is licensed under the [Boost Software License](https://www.boost.org/LICENSE_1_0.txt).
 
 Bear in mind that you still need to abide by [SDL's license](https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt), and the licenses of any SDL_* libraries that you use through these bindings.
@@ -59,7 +58,7 @@ subConfiguration "bindbc-sdl" "staticBC"
 
 If you need to use the SDL_* libraries, or versions of SDL newer than 2.0.0, then you will have to add the appropriate version identifiers to `versions` in your dub configuration. For a list of library version identifiers, see [Library versions](#library-versions).
 
-If using static bindings, then you will also need to add the name of each library you're using to `libs`.
+If you're using static bindings, then you will also need to add the name of each library you're using to `libs`.
 
 Example __dub.json__
 ```json
@@ -184,7 +183,7 @@ bool loadLib(){
 ## Configurations
 BindBC-SDL has the following configurations:
 
-|     ┌      |  DRuntime  |   BetterC   |
+|      ┌      |  DRuntime  |   BetterC   |
 |-------------|------------|-------------|
 | **Dynamic** | `dynamic`  | `dynamicBC` |
 | **Static**  | `static`   | `staticBC`  |

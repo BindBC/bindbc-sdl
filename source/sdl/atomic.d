@@ -7,141 +7,142 @@
 +/
 module sdl.atomic;
 
-version(SDL_No_Atomics){
-}else:
-
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-import sdl.stdinc: SDL_bool;
-
 alias SDL_SpinLock = int;
 
-version(GNU) version = ExtAsm; //GDC
-version(LDC) version = ExtAsm;
-
-pragma(inline, true) nothrow @nogc{
-	void SDL_CompilerBarrier(){
-		static if((){
-			version(Emscripten)  return false;
-			else version(ExtAsm) return true;
-			else return false;
-		}()){
-			asm nothrow @nogc{ "" : : : "memory"; }
-		}else version(DigitalMars){
-			asm nothrow @nogc{}
-		}else{
-			__gshared SDL_SpinLock _tmp = 0;
-			SDL_AtomicLock(&_tmp);
-			SDL_AtomicUnlock(&_tmp);
+version(SDL_No_Atomics){
+}else{
+	import sdl.stdinc: SDL_bool;
+	
+	
+	version(GNU) version = ExtAsm; //GDC
+	version(LDC) version = ExtAsm;
+	
+	pragma(inline, true) nothrow @nogc{
+		void SDL_CompilerBarrier(){
+			static if((){
+				version(Emscripten)  return false;
+				else version(ExtAsm) return true;
+				else return false;
+			}()){
+				asm nothrow @nogc{ "" : : : "memory"; }
+			}else version(DigitalMars){
+				asm nothrow @nogc{}
+			}else{
+				__gshared SDL_SpinLock _tmp = 0;
+				SDL_AtomicLock(&_tmp);
+				SDL_AtomicUnlock(&_tmp);
+			}
+			
+	// 		#if defined(_MSC_VER) && (_MSC_VER > 1200) && !defined(__clang__)
+	// 		void _ReadWriteBarrier(void);
+	// 		#pragma intrinsic(_ReadWriteBarrier)
+	// 		#define SDL_CompilerBarrier()   _ReadWriteBarrier()
+	// 		#elif (defined(__GNUC__) && !defined(__EMSCRIPTEN__)) || (defined(__SUNPRO_C) && (__SUNPRO_C >= 0x5120))
+	// 		/* This is correct for all CPUs when using GCC or Solaris Studio 12.1+. */
+	// 		#define SDL_CompilerBarrier()   __asm__ __volatile__ ("" : : : "memory")
+	// 		#elif defined(__WATCOMC__)
+	// 		extern __inline void SDL_CompilerBarrier(void);
+	// 		#pragma aux SDL_CompilerBarrier = "" parm [] modify exact [];
+	// 		#else
+	// 		#define SDL_CompilerBarrier()   \
+	// 		{ SDL_SpinLock _tmp = 0; SDL_AtomicLock(&_tmp); SDL_AtomicUnlock(&_tmp); }
+	// 		#endif
 		}
 		
-// 		#if defined(_MSC_VER) && (_MSC_VER > 1200) && !defined(__clang__)
-// 		void _ReadWriteBarrier(void);
-// 		#pragma intrinsic(_ReadWriteBarrier)
-// 		#define SDL_CompilerBarrier()   _ReadWriteBarrier()
-// 		#elif (defined(__GNUC__) && !defined(__EMSCRIPTEN__)) || (defined(__SUNPRO_C) && (__SUNPRO_C >= 0x5120))
-// 		/* This is correct for all CPUs when using GCC or Solaris Studio 12.1+. */
-// 		#define SDL_CompilerBarrier()   __asm__ __volatile__ ("" : : : "memory")
-// 		#elif defined(__WATCOMC__)
-// 		extern __inline void SDL_CompilerBarrier(void);
-// 		#pragma aux SDL_CompilerBarrier = "" parm [] modify exact [];
-// 		#else
-// 		#define SDL_CompilerBarrier()   \
-// 		{ SDL_SpinLock _tmp = 0; SDL_AtomicLock(&_tmp); SDL_AtomicUnlock(&_tmp); }
-// 		#endif
-	}
-	
-	void SDL_MemoryBarrierRelease(){
-		static if((){
-			version(ExtAsm){
-				version(PPC)        return true;
-				else version(PPC64) return true;
-				else return false;
-			}else return false;
-		}()){
-			asm nothrow @nogc{ "lwsync" : : : "memory"; }
-		}else static if((){
-			version(ExtAsm){
-				version(AArch64) return true;
-				else return false;
-			}else return false;
-		}()){
-			asm nothrow @nogc{ "dmb ish" : : : "memory"; }
-		}else static if((){
-			version(ExtAsm){
-				version(ARM) return true;
-				else return false;
-			}else return false;
-		}()){
-			asm nothrow @nogc{ "" : : : "memory"; }
-		}else{
-			SDL_CompilerBarrier();
-		}
-	}
-	alias SDL_MemoryBarrierAcquire = SDL_MemoryBarrierRelease;
-	
-	void SDL_CPUPauseInstruction() pure{ //NOTE: added in 2.24.0
-		version(ExtAsm){
+		void SDL_MemoryBarrierRelease(){
 			static if((){
-				version(X86)         return true;
-				else version(X86_64) return true;
-				else return false;
+				version(ExtAsm){
+					version(PPC)        return true;
+					else version(PPC64) return true;
+					else return false;
+				}else return false;
 			}()){
-				asm nothrow @nogc pure{ "rep nop"; }
+				asm nothrow @nogc{ "lwsync" : : : "memory"; }
 			}else static if((){
-				version(ARM)          return true;
-				else version(AArch64) return true;
-				else return false;
+				version(ExtAsm){
+					version(AArch64) return true;
+					else return false;
+				}else return false;
 			}()){
-				asm nothrow @nogc pure{ "yield" : : : "memory"; }
+				asm nothrow @nogc{ "dmb ish" : : : "memory"; }
 			}else static if((){
-				version(PPC)        return true;
-				else version(PPC64) return true;
-				else return false;
+				version(ExtAsm){
+					version(ARM) return true;
+					else return false;
+				}else return false;
 			}()){
-				asm nothrow @nogc pure{ "or 27,27,27"; }
+				asm nothrow @nogc{ "" : : : "memory"; }
+			}else{
+				SDL_CompilerBarrier();
 			}
 		}
-	}
-	
-	int SDL_AtomicIncRef(SDL_atomic_t* a){
-		return SDL_AtomicAdd(a, 1);
-	}
-	bool SDL_AtomicDecRef(SDL_atomic_t* a){
-		return SDL_AtomicAdd(a, -1) == 1;
-	}
-	static if(sdlSupport < SDLSupport.v2_0_3){
-		int SDL_AtomicSet(SDL_atomic_t* a, int v){
-			int value;
-			do{
-				value = a.value;
-			}while(!SDL_AtomicCAS(a, value, v));
-			return value;
+		alias SDL_MemoryBarrierAcquire = SDL_MemoryBarrierRelease;
+		
+		void SDL_CPUPauseInstruction() pure{ //NOTE: added in 2.24.0
+			version(ExtAsm){
+				static if((){
+					version(X86)         return true;
+					else version(X86_64) return true;
+					else return false;
+				}()){
+					asm nothrow @nogc pure{ "rep nop"; }
+				}else static if((){
+					version(ARM)          return true;
+					else version(AArch64) return true;
+					else return false;
+				}()){
+					asm nothrow @nogc pure{ "yield" : : : "memory"; }
+				}else static if((){
+					version(PPC)        return true;
+					else version(PPC64) return true;
+					else return false;
+				}()){
+					asm nothrow @nogc pure{ "or 27,27,27"; }
+				}
+			}
 		}
-		int SDL_AtomicGet(SDL_atomic_t* a){
-			int value = a.value;
-			SDL_CompilerBarrier();
-			return value;
+		
+		int SDL_AtomicIncRef(SDL_atomic_t* a){
+			return SDL_AtomicAdd(a, 1);
 		}
-		int SDL_AtomicAdd(SDL_atomic_t* a, int v){
-			int value;
-			do{
-				value = a.value;
-			}while(!SDL_AtomicCAS(a, value, value + v));
-			return value;
+		bool SDL_AtomicDecRef(SDL_atomic_t* a){
+			return SDL_AtomicAdd(a, -1) == 1;
 		}
-		void* SDL_AtomicSetPtr(void** a, void* v){
-			void* value;
-			do{
-				value = *a;
-			}while(!SDL_AtomicCASPtr(a, value, v));
-			return value;
-		}
-		void* SDL_AtomicGetPtr(void** a){
-			void* value = *a;
-			SDL_CompilerBarrier();
-			return value;
+		static if(sdlSupport < SDLSupport.v2_0_3){
+			int SDL_AtomicSet(SDL_atomic_t* a, int v){
+				int value;
+				do{
+					value = a.value;
+				}while(!SDL_AtomicCAS(a, value, v));
+				return value;
+			}
+			int SDL_AtomicGet(SDL_atomic_t* a){
+				int value = a.value;
+				SDL_CompilerBarrier();
+				return value;
+			}
+			int SDL_AtomicAdd(SDL_atomic_t* a, int v){
+				int value;
+				do{
+					value = a.value;
+				}while(!SDL_AtomicCAS(a, value, value + v));
+				return value;
+			}
+			void* SDL_AtomicSetPtr(void** a, void* v){
+				void* value;
+				do{
+					value = *a;
+				}while(!SDL_AtomicCASPtr(a, value, v));
+				return value;
+			}
+			void* SDL_AtomicGetPtr(void** a){
+				void* value = *a;
+				SDL_CompilerBarrier();
+				return value;
+			}
 		}
 	}
 }

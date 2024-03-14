@@ -26,6 +26,7 @@ enum SDLTTFSupport: SDL_version{
 	v2_0_15     = SDL_version(2,0,15),
 	v2_0_18     = SDL_version(2,0,18),
 	v2_20       = SDL_version(2,20,0),
+	v2_22       = SDL_version(2,22,0),
 	
 	deprecated("Please use `v2_0_12` instead") sdlTTF2012 = SDL_version(2,0,12),
 	deprecated("Please use `v2_0_13` instead") sdlTTF2013 = SDL_version(2,0,13),
@@ -35,7 +36,8 @@ enum SDLTTFSupport: SDL_version{
 }
 
 enum sdlTTFSupport = (){
-	version(SDL_TTF_2_20)      return SDLTTFSupport.v2_20;
+	version(SDL_TTF_2_22)      return SDLTTFSupport.v2_22;
+	else version(SDL_TTF_2_20) return SDLTTFSupport.v2_20;
 	else version(SDL_TTF_2018) return SDLTTFSupport.v2_0_18;
 	else version(SDL_TTF_2015) return SDLTTFSupport.v2_0_15;
 	else version(SDL_TTF_2014) return SDLTTFSupport.v2_0_14;

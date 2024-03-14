@@ -25,6 +25,7 @@ enum SDLMixerSupport: SDL_version{
 	v2_0_2      = SDL_version(2,0,2),
 	v2_0_4      = SDL_version(2,0,4),
 	v2_6        = SDL_version(2,6,0),
+	v2_8        = SDL_version(2,8,0),
 	
 	deprecated("Please use `v2_0_0` instead") sdlMixer200 = SDL_version(2,0,0),
 	deprecated("Please use `v2_0_1` instead") sdlMixer201 = SDL_version(2,0,1),
@@ -34,8 +35,9 @@ enum SDLMixerSupport: SDL_version{
 }
 
 enum sdlMixerSupport = (){
-	version(SDL_Mixer_260)      return SDLMixerSupport.v2_6; //NOTE: deprecated, remove this in bindbc-sdl 2.0
+	version(SDL_Mixer_2_8)      return SDLMixerSupport.v2_8;
 	else version(SDL_Mixer_2_6) return SDLMixerSupport.v2_6;
+	else version(SDL_Mixer_260) return SDLMixerSupport.v2_6; //NOTE: deprecated, remove this in bindbc-sdl 2.0
 	else version(SDL_Mixer_204) return SDLMixerSupport.v2_0_4;
 	else version(SDL_Mixer_202) return SDLMixerSupport.v2_0_2;
 	else version(SDL_Mixer_201) return SDLMixerSupport.v2_0_1;
@@ -98,8 +100,12 @@ enum MIX_DEFAULT_FREQUENCY = (){
 }();
 
 enum MIX_DEFAULT_FORMAT = (){
-	version(LittleEndian) return AUDIO_S16LSB;
-	else                  return AUDIO_S16MSB;
+	static if(sdlMixerSupport >= SDLMixerSupport.v2_8){
+		return AUDIO_S16SYS;
+	}else{
+		version(LittleEndian) return AUDIO_S16LSB;
+		else                  return AUDIO_S16MSB;
+	}
 }();
 
 enum MIX_DEFAULT_CHANNELS = 2;
@@ -145,6 +151,11 @@ enum: Mix_MusicType{
 static if(sdlMixerSupport >= SDLMixerSupport.v2_0_4)
 enum: Mix_MusicType{
 	MUS_OPUS            = 10,
+}
+static if(sdlMixerSupport >= SDLMixerSupport.v2_8)
+enum: Mix_MusicType{
+	MUS_WAVPACK         = 11,
+	MUS_GME             = 12,
 }
 
 struct Mix_Music;
@@ -293,6 +304,14 @@ mixin(joinFnBinds((){
 			{q{double}, q{Mix_GetMusicLoopLengthTime}, q{Mix_Music* music}},
 			{q{int}, q{Mix_SetTimidityCfg}, q{const(char)* path}},
 			{q{const(char)*}, q{Mix_GetTimidityCfg}, q{}},
+		];
+		ret ~= add;
+	}
+	if(sdlMixerSupport >= SDLMixerSupport.v2_8){
+		FnBind[] add = [
+			{q{void}, q{Mix_PauseAudio}, q{int pauseOn}},
+			{q{int}, q{Mix_StartTrack}, q{Mix_Music* music, int track}},
+			{q{int}, q{Mix_GetNumTracks}, q{Mix_Music* music}},
 		];
 		ret ~= add;
 	}

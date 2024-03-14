@@ -106,6 +106,11 @@ static if(sdlSupport >= SDLSupport.v2_24)
 enum: SDL_EventType{
 	SDL_JOYBATTERYUPDATED         = 0x607,
 }
+static if(sdlSupport >= SDLSupport.v2_30)
+enum: SDL_EventType{
+	SDL_CONTROLLERUPDATECOMPLETE_RESERVED_FOR_SDL3 = 0x65A,
+	SDL_CONTROLLERSTEAMHANDLEUPDATED = 0x65B,
+}
 
 struct SDL_CommonEvent{
 	SDL_EventType type;

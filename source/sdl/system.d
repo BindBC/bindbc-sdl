@@ -59,6 +59,8 @@ version(WinGDK){
 	static if(sdlSupport >= SDLSupport.v2_24):
 	private struct XTaskQueueObject;
 	alias XTaskQueueHandle = XTaskQueueObject*;
+	private struct XUser;
+	alias XUserHandle = XUser*;
 }
 
 mixin(joinFnBinds((){
@@ -205,6 +207,12 @@ mixin(joinFnBinds((){
 		if(sdlSupport >= SDLSupport.v2_24){
 			FnBind[] add = [
 				{q{int}, q{SDL_GDKGetTaskQueue}, q{XTaskQueueHandle* outTaskQueue}},
+			];
+			ret ~= add;
+		}
+		if(sdlSupport >= SDLSupport.v2_30){
+			FnBind[] add = [
+				{q{int}, q{SDL_GDKGetDefaultUser}, q{XUserHandle* outUserHandle}},
 			];
 			ret ~= add;
 		}

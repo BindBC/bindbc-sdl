@@ -255,10 +255,10 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 > [!NOTE]\
 > Starting from SDL 2.0.10, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
+
 </details>
 
-<details>
-	<summary><h3>SDL_image versions</h3></summary>
+<details><summary><h3>SDL_image versions</h3></summary>
 
 | Version |Version identifier| Public API changed |
 |---------|------------------|--------------------|
@@ -272,10 +272,10 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 > [!NOTE]\
 > Starting from SDL_image 2.6.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
+
 </details>
 
-<details>
-	<summary><h3>SDL_mixer versions</h3></summary>
+<details><summary><h3>SDL_mixer versions</h3></summary>
 
 | Version |Version identifier| Public API changed |
 |---------|------------------|--------------------|
@@ -287,11 +287,10 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 > [!NOTE]\
 > Starting from SDL_mixer 2.0.4, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
+
 </details>
 
-<details>
-	<summary><h3>SDL_net versions</h3></summary>
-<background>
+<details><summary><h3>SDL_net versions</h3></summary>
 
 | Version |Version identifier| Public API changed |
 |---------|------------------|--------------------|
@@ -301,10 +300,10 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 > [!NOTE]\
 > Starting from SDL_net 2.2.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
+
 </details>
 
-<details>
-	<summary><h3>SDL_ttf versions</h3></summary>
+<details><summary><h3>SDL_ttf versions</h3></summary>
 
 | Version |Version identifier| Public API changed |
 |---------|------------------|--------------------|
@@ -317,6 +316,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 > [!NOTE]\
 > Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
+
 </details>
 
 ## Special platforms

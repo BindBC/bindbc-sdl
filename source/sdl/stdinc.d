@@ -114,8 +114,13 @@ pragma(inline, true) nothrow @nogc{
 	}
 	
 	char* SDL_iconv_utf8_locale(const(char)* s){ return SDL_iconv_string("", "UTF-8", s, SDL_strlen(s)+1); }
-	ushort* SDL_iconv_utf8_ucs2(const(char)* s){ return cast(ushort*)SDL_iconv_string("UCS-2-INTERNAL", "UTF-8", s, SDL_strlen(s)+1); }
-	uint* SDL_iconv_utf8_ucs4(const(char)* s){ return cast(uint*)SDL_iconv_string("UCS-4-INTERNAL", "UTF-8", s, SDL_strlen(s)+1); }
+	static if(sdlSupport >= SDLSupport.v2_30){
+		ushort* SDL_iconv_utf8_ucs2(const(char)* s){ return cast(ushort*)SDL_iconv_string("UCS-2", "UTF-8", s, SDL_strlen(s)+1); }
+		uint* SDL_iconv_utf8_ucs4(const(char)* s){ return cast(uint*)SDL_iconv_string("UCS-4", "UTF-8", s, SDL_strlen(s)+1); }
+	}else{
+		ushort* SDL_iconv_utf8_ucs2(const(char)* s){ return cast(ushort*)SDL_iconv_string("UCS-2-INTERNAL", "UTF-8", s, SDL_strlen(s)+1); }
+		uint* SDL_iconv_utf8_ucs4(const(char)* s){ return cast(uint*)SDL_iconv_string("UCS-4-INTERNAL", "UTF-8", s, SDL_strlen(s)+1); }
+	}
 	static if(sdlSupport >= SDLSupport.v2_0_18){
 		char* SDL_iconv_wchar_utf8(const(wchar_t)* s){ return SDL_iconv_string("UTF-8", "WCHAR_T", cast(char*)s, (SDL_wcslen(s)+1)*(wchar_t.sizeof)); }
 	}

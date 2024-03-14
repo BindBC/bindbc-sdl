@@ -44,6 +44,10 @@ static if(sdlSupport >= SDLSupport.v2_0_12){
 		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT    = 12,
 		SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR     = 13,
 	}
+	static if(sdlSupport >= SDLSupport.v2_30):
+	enum: SDL_GameControllerType{
+		SDL_CONTROLLER_TYPE_MAX                             = 14,
+	}
 }
 
 alias SDL_GameControllerBindType = uint;
@@ -231,6 +235,12 @@ mixin(joinFnBinds((){
 	if(sdlSupport >= SDLSupport.v2_26){
 		FnBind[] add = [
 			{q{int}, q{SDL_GameControllerGetSensorDataWithTimestamp}, q{SDL_GameController* gameController, SDL_SensorType type, ulong* timestamp, float* data, int numValues}},
+		];
+		ret ~= add;
+	}
+	if(sdlSupport >= SDLSupport.v2_30){
+		FnBind[] add = [
+			{q{ulong}, q{SDL_GameControllerGetSteamHandle}, q{SDL_GameController* gameController}},
 		];
 		ret ~= add;
 	}

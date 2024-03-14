@@ -26,6 +26,7 @@ enum SDLImageSupport: SDL_version{
 	v2_0_4      = SDL_version(2,0,4),
 	v2_0_5      = SDL_version(2,0,5),
 	v2_6        = SDL_version(2,6,0),
+	v2_8        = SDL_version(2,8,0),
 	
 	deprecated("Please use `v2_0_0` instead") sdlImage200 = SDL_version(2,0,0),
 	deprecated("Please use `v2_0_1` instead") sdlImage201 = SDL_version(2,0,1),
@@ -36,7 +37,8 @@ enum SDLImageSupport: SDL_version{
 }
 
 enum sdlImageSupport = (){
-	version(SDL_Image_2_6)      return SDLImageSupport.v2_6;
+	version(SDL_Image_2_8)      return SDLImageSupport.v2_8;
+	else version(SDL_Image_2_6) return SDLImageSupport.v2_6;
 	else version(SDL_Image_205) return SDLImageSupport.v2_0_5;
 	else version(SDL_Image_204) return SDLImageSupport.v2_0_4;
 	else version(SDL_Image_203) return SDLImageSupport.v2_0_3;

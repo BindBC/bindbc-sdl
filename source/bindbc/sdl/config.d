@@ -47,6 +47,7 @@ enum SDLSupport: SDL_version{
 	v2_24       = SDL_version(2,24,0),
 	v2_26       = SDL_version(2,26,0),
 	v2_28       = SDL_version(2,28,0),
+	v2_30       = SDL_version(2,30,0),
 	
 	deprecated("Please use `v2_0_0` instead")  sdl200  = v2_0_0,
 	deprecated("Please use `v2_0_1` instead")  sdl201  = v2_0_1,
@@ -74,6 +75,7 @@ enum staticBinding = (){
 }();
 
 enum sdlSupport = (){
+	version(SDL_2_30)      return SDLSupport.v2_30;
 	version(SDL_2_28)      return SDLSupport.v2_28;
 	else version(SDL_2_26) return SDLSupport.v2_26;
 	else version(SDL_2_24) return SDLSupport.v2_24;
@@ -116,6 +118,7 @@ enum bindSDLMixer = (){
 	else version(SDL_Mixer_204) return true;
 	else version(SDL_Mixer_260){ pragma(msg, "`SDL_Mixer_260` is deprecated. Please use version `SDL_Mixer_2_6` instead"); return true; }
 	else version(SDL_Mixer_2_6) return true;
+	else version(SDL_Mixer_2_8) return true;
 	else return false;
 }();
 
@@ -135,6 +138,7 @@ enum bindSDLTTF = (){
 	else version(SDL_TTF_2015) return true;
 	else version(SDL_TTF_2018) return true;
 	else version(SDL_TTF_2_20) return true;
+	else version(SDL_TTF_2_22) return true;
 	else return false;
 }();
 

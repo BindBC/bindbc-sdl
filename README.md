@@ -249,6 +249,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.24.X      | `SDL_2_24`       |
 | 2.26.X      | `SDL_2_26`       |
 | 2.28.X      | `SDL_2_28`       |
+| 2.30.X      | `SDL_2_30`       |
 
 > [!WARNING]\
 > SDL 2.0.1 on Windows had a bug preventing `SDL_GetPrefPath` from creating a folder when it doesn't exist. It's fine to compile with `SDL_201`, but make sure to ship your app with 2.0.2 or later on Windows and _verify_ that the [linked version](https://wiki.libsdl.org/CategoryVersion) is 2.0.2 or later with `SDL_GetVersion`. Alternatively, compile with `SDL_202` on Windows but `SDL_201` on other platforms, thereby guaranteeing an error on Windows if the user doesn't have SDL 2.0.2 or higher.
@@ -269,6 +270,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.4   | `SDL_Image_204`  | :x:                |
 | 2.0.5   | `SDL_Image_205`  | :x:                |
 | 2.6.X   | `SDL_Image_2_6`  | :heavy_check_mark: |
+| 2.8.X   | `SDL_Image_2_8`  | :x:                |
 
 > [!NOTE]\
 > Starting from SDL_image 2.6.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
@@ -284,6 +286,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.2   | `SDL_Mixer_202`  | :heavy_check_mark: |
 | 2.0.4   | `SDL_Mixer_204`  | :heavy_check_mark: |
 | 2.6.X   | `SDL_Mixer_2_6`  | :heavy_check_mark: |
+| 2.8.X   | `SDL_Mixer_2_8`  | :heavy_check_mark: |
 
 > [!NOTE]\
 > Starting from SDL_mixer 2.0.4, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.
@@ -313,6 +316,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 | 2.0.15  | `SDL_TTF_2015`   | :x:                |
 | 2.0.18  | `SDL_TTF_2018`   | :heavy_check_mark: |
 | 2.20.X  | `SDL_TTF_2_20`   | :heavy_check_mark: |
+| 2.22.X  | `SDL_TTF_2_22`   | :x:                |
 
 > [!NOTE]\
 > Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.

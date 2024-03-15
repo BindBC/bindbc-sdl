@@ -11,7 +11,7 @@ import bindbc.sdl.config;
 static if(bindSDLMixer):
 import bindbc.sdl.codegen;
 
-import sdl.audio: AUDIO_S16LSB, SDL_MIX_MAXVOLUME;
+import sdl.audio: AUDIO_S16LSB, AUDIO_S16SYS, SDL_MIX_MAXVOLUME;
 import sdl.error: SDL_GetError, SDL_SetError, SDL_ClearError, SDL_OutOfMemory;
 import sdl.rwops: SDL_RWops, SDL_RWFromFile;
 import sdl.stdinc: SDL_bool;

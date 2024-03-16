@@ -10,7 +10,7 @@ module sdl.haptic;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-import sdl.joystick: SDL_Joystick;
+import sdl.joystick;
 
 struct SDL_Haptic;
 

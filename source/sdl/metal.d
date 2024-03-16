@@ -9,7 +9,7 @@ module sdl.metal;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-import sdl.video: SDL_Window;
+import sdl.video;
 
 alias SDL_MetalView = void*;
 

@@ -10,9 +10,9 @@ module sdl.system;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-import sdl.render: SDL_Renderer;
+import sdl.render;
 import sdl.stdinc: SDL_bool;
-import sdl.video: SDL_Window;
+import sdl.video;
 
 version(Windows) version = Win32_GDK;
 version(WinGDK)  version = Win32_GDK;

@@ -10,7 +10,7 @@ module sdl.messagebox;
 import bindbc.sdl.config;
 import bindbc.sdl.codegen;
 
-import sdl.video: SDL_Window;
+import sdl.video;
 
 alias SDL_MessageBoxFlags = uint;
 enum: SDL_MessageBoxFlags{

@@ -12,7 +12,7 @@ import bindbc.sdl.codegen;
 
 import sdl.stdinc: SDL_bool;
 import sdl.surface: SDL_Surface;
-import sdl.video: SDL_Window;
+import sdl.video;
 
 struct SDL_Cursor;
 

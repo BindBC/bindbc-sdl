@@ -14,7 +14,7 @@ import sdl.blendmode: SDL_BlendMode;
 import sdl.rect;
 import sdl.stdinc: SDL_bool;
 import sdl.surface: SDL_Surface;
-import sdl.video: SDL_Window;
+import sdl.video;
 import sdl.pixels: SDL_Color;
 
 alias SDL_RendererFlags = uint;

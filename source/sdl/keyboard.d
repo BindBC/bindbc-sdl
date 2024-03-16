@@ -14,7 +14,7 @@ import sdl.keycode: SDL_KeyCode, SDL_Keymod;
 import sdl.rect: SDL_Rect;
 import sdl.scancode: SDL_Scancode;
 import sdl.stdinc: SDL_bool;
-import sdl.video: SDL_Window;
+import sdl.video;
 
 struct SDL_Keysym{
 	SDL_Scancode scancode;

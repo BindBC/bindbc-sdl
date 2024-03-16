@@ -13,7 +13,7 @@ import bindbc.sdl.codegen;
 import sdl.pixels: SDL_Color;
 import sdl.stdinc: SDL_bool;
 import sdl.surface: SDL_Surface;
-import sdl.video: SDL_Window, SDL_WindowFlags;
+import sdl.video;
 
 enum{
 	SDL_NONSHAPEABLE_WINDOW     = -1,

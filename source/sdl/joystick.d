@@ -1,220 +1,221 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.joystick;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.stdinc: SDL_bool;
 import sdl.guid: SDL_GUID;
-
-version(SDL_ThreadSafetyAnalysis){
-	import sdl.mutex: SDL_mutex;
-	extern extern(C) SDL_mutex* SDL_joystick_lock;
-}
+import sdl.power: SDL_PowerState;
+import sdl.properties: SDL_PropertiesID;
+import sdl.sensor: SDL_SensorType;
 
 struct SDL_Joystick;
 
-alias SDL_JoystickGUID = SDL_GUID;
+alias SDL_JoystickID = uint;
 
-alias SDL_JoystickID = int;
+mixin(makeEnumBind(q{SDL_JoystickType}, members: (){
+	EnumMember[] ret = [
+		{{q{unknown},        q{SDL_JOYSTICK_TYPE_UNKNOWN}}},
+		{{q{gamepad},        q{SDL_JOYSTICK_TYPE_GAMEPAD}}},
+		{{q{wheel},          q{SDL_JOYSTICK_TYPE_WHEEL}}},
+		{{q{arcadeStick},    q{SDL_JOYSTICK_TYPE_ARCADE_STICK}}},
+		{{q{flightStick},    q{SDL_JOYSTICK_TYPE_FLIGHT_STICK}}},
+		{{q{dancePad},       q{SDL_JOYSTICK_TYPE_DANCE_PAD}}},
+		{{q{guitar},         q{SDL_JOYSTICK_TYPE_GUITAR}}},
+		{{q{drumKit},        q{SDL_JOYSTICK_TYPE_DRUM_KIT}}},
+		{{q{arcadePad},      q{SDL_JOYSTICK_TYPE_ARCADE_PAD}}},
+		{{q{throttle},       q{SDL_JOYSTICK_TYPE_THROTTLE}}},
+		{{q{count},          q{SDL_JOYSTICK_TYPE_COUNT}}},
+	];
+	return ret;
+}()));
 
-enum: ubyte{
-	SDL_HAT_CENTERED   = 0x00,
-	SDL_HAT_UP         = 0x01,
-	SDL_HAT_RIGHT      = 0x02,
-	SDL_HAT_DOWN       = 0x04,
-	SDL_HAT_LEFT       = 0x08,
-	SDL_HAT_RIGHTUP    = (SDL_HAT_RIGHT | SDL_HAT_UP),
-	SDL_HAT_RIGHTDOWN  = (SDL_HAT_RIGHT | SDL_HAT_DOWN),
-	SDL_HAT_LEFTUP     = (SDL_HAT_LEFT  | SDL_HAT_UP),
-	SDL_HAT_LEFTDOWN   = (SDL_HAT_LEFT  | SDL_HAT_DOWN),
+mixin(makeEnumBind(q{SDL_JoystickConnectionState}, aliases: [q{SDL_JoystickConnection}], members: (){
+	EnumMember[] ret = [
+		{{q{invalid},   q{SDL_JOYSTICK_CONNECTION_INVALID}}, q{-1}},
+		{{q{unknown},   q{SDL_JOYSTICK_CONNECTION_UNKNOWN}}},
+		{{q{wired},     q{SDL_JOYSTICK_CONNECTION_WIRED}}},
+		{{q{wireless},  q{SDL_JOYSTICK_CONNECTION_WIRELESS}}},
+	];
+	return ret;
+}()));
+
+enum{
+	SDL_JOYSTICK_AXIS_MAX  =  32767,
+	SDL_JOYSTICK_AXIS_MIN  = -32768,
+}
+static if(dStyleEnums){
+	alias axisMax = SDL_JOYSTICK_AXIS_MAX;
+	alias axisMin = SDL_JOYSTICK_AXIS_MIN;
 }
 
-static if(sdlSupport >= SDLSupport.v2_0_4){
-	alias SDL_JoystickPowerLevel = int;
-	enum: SDL_JoystickPowerLevel{
-		SDL_JOYSTICK_POWER_UNKNOWN = -1,
-		SDL_JOYSTICK_POWER_EMPTY,
-		SDL_JOYSTICK_POWER_LOW,
-		SDL_JOYSTICK_POWER_MEDIUM,
-		SDL_JOYSTICK_POWER_FULL,
-		SDL_JOYSTICK_POWER_WIRED,
-		SDL_JOYSTICK_POWER_MAX
-	}
-}
-
-static if(sdlSupport >= SDLSupport.v2_0_14){
-	enum SDL_IPHONE_MAX_GFORCE = 5.0;
-}
-
-static if(sdlSupport >= SDLSupport.v2_24){
-	struct SDL_VirtualJoystickDesc{
-		ushort version_; //NOTE: the original variable's name is `version`
-		ushort type;
-		ushort naxes;
-		ushort nbuttons;
-		ushort nhats;
-		ushort vendor_id;
-		ushort product_id;
-		ushort padding;
-		uint button_mask;
-		uint axis_mask;
-		const(char)* name;
-
-		void* userdata;
-		void function(void* userData) Update;
-		void function(void* userData, int playerIndex) SetPlayerIndex;
-		int function(void* userData, ushort lowFrequencyRumble, ushort highFrequencyRumble) Rumble;
-		int function(void* userData, ushort leftRumble, ushort rightRumble) RumbleTriggers;
-		int function(void* userData, ubyte red, ubyte green, ubyte blue) SetLED;
-		int function(void* userData, const(void)* data, int size) SendEffect;
-	}
+struct SDL_VirtualJoystickTouchpadDesc{
+	ushort nFingers;
+	ushort[3] padding;
 	
-	enum ushort SDL_VIRTUAL_JOYSTICK_DESC_VERSION = 1;
+	alias nfingers = nFingers;
 }
 
-static if(sdlSupport >= SDLSupport.v2_0_6){
-	alias SDL_JoystickType = ushort;
-	enum: SDL_JoystickType{
-		SDL_JOYSTICK_TYPE_UNKNOWN,
-		SDL_JOYSTICK_TYPE_GAMECONTROLLER,
-		SDL_JOYSTICK_TYPE_WHEEL,
-		SDL_JOYSTICK_TYPE_ARCADE_STICK,
-		SDL_JOYSTICK_TYPE_FLIGHT_STICK,
-		SDL_JOYSTICK_TYPE_DANCE_PAD,
-		SDL_JOYSTICK_TYPE_GUITAR,
-		SDL_JOYSTICK_TYPE_DRUM_KIT,
-		SDL_JOYSTICK_TYPE_ARCADE_PAD,
-		SDL_JOYSTICK_TYPE_THROTTLE,
-	}
-	
-	enum{
-		SDL_JOYSTICK_AXIS_MAX = 32767,
-		SDL_JOYSTICK_AXIS_MIN = -32768,
-	}
+struct SDL_VirtualJoystickSensorDesc{
+	SDL_SensorType type;
+	float rate;
 }
+
+struct SDL_VirtualJoystickDesc{
+	uint version_;
+	ushort type;
+	ushort padding;
+	ushort vendorID;
+	ushort productID;
+	ushort nAxes;
+	ushort nButtons;
+	ushort nBalls;
+	ushort nHats;
+	ushort nTouchpads;
+	ushort nSensors;
+	ushort[2] padding2;
+	uint buttonMask;
+	uint axisMask;
+	const(char)* name;
+	const(SDL_VirtualJoystickTouchpadDesc)* touchpads;
+	const(SDL_VirtualJoystickSensorDesc)* sensors;
+	void* userData;
+	private extern(C) nothrow{
+		alias UpdateFn = void function(void* userData);
+		alias SetPlayerIndexFn = void function(void* userData, int playerIndex);
+		alias RumbleFn = bool function(void* userData, ushort lowFrequencyRumble, ushort highFrequencyRumble);
+		alias RumbleTriggersFn = bool function(void* userData, ushort leftRumble, ushort rightRumble);
+		alias SetLEDFn = bool function(void* userData, ubyte red, ubyte green, ubyte blue);
+		alias SendEffectFn = bool function(void* userData, const(void)* data, int size);
+		alias SetSensorsEnabledFn = bool function(void* userData, bool enabled);
+		alias CleanUpFn = void function(void* userData);
+	}
+	UpdateFn update;
+	SetPlayerIndexFn setPlayerIndex;
+	RumbleFn rumble;
+	RumbleTriggersFn rumbleTriggers;
+	SetLEDFn setLED;
+	SendEffectFn sendEffect;
+	SetSensorsEnabledFn setSensorsEnabled;
+	CleanUpFn cleanUp;
+	
+	alias vendor_id = vendorID;
+	alias product_id = productID;
+	alias naxes = nAxes;
+	alias nbuttons = nButtons;
+	alias nballs = nBalls;
+	alias nhats = nHats;
+	alias ntouchpads = nTouchpads;
+	alias nsensors = nSensors;
+	alias button_mask = buttonMask;
+	alias axis_mask = axisMask;
+	alias userdata = userData;
+	alias Update = update;
+	alias SetPlayerIndex = setPlayerIndex;
+	alias Rumble = rumble;
+	alias RumbleTriggers = rumbleTriggers;
+	alias SetLED = setLED;
+	alias SendEffect = sendEffect;
+	alias SetSensorsEnabled = setSensorsEnabled;
+	alias Cleanup = cleanUp;
+}
+
+static assert(
+	((void*).sizeof == 4 && SDL_VirtualJoystickDesc.sizeof ==  84) ||
+	((void*).sizeof == 8 && SDL_VirtualJoystickDesc.sizeof == 136)
+);
+
+mixin(makeEnumBind(q{SDLProp_JoystickCap}, q{const(char)*}, members: (){
+	EnumMember[] ret = [
+		{{q{monoLEDBoolean},          q{SDL_PROP_JOYSTICK_CAP_MONO_LED_BOOLEAN}},          q{"SDL.joystick.cap.mono_led"}},
+		{{q{rgbLEDBoolean},           q{SDL_PROP_JOYSTICK_CAP_RGB_LED_BOOLEAN}},           q{"SDL.joystick.cap.rgb_led"}},
+		{{q{playerLEDBoolean},        q{SDL_PROP_JOYSTICK_CAP_PLAYER_LED_BOOLEAN}},        q{"SDL.joystick.cap.player_led"}},
+		{{q{rumbleBoolean},           q{SDL_PROP_JOYSTICK_CAP_RUMBLE_BOOLEAN}},            q{"SDL.joystick.cap.rumble"}},
+		{{q{triggerRumbleBoolean},    q{SDL_PROP_JOYSTICK_CAP_TRIGGER_RUMBLE_BOOLEAN}},    q{"SDL.joystick.cap.trigger_rumble"}},
+	];
+	return ret;
+}()));
+
+alias SDL_Hat_ = ubyte;
+mixin(makeEnumBind(q{SDL_Hat}, q{SDL_Hat_}, members: (){
+	EnumMember[] ret = [
+		{{q{centred},      q{SDL_HAT_CENTRED}},      q{0x00U}, aliases: [{q{centered}, q{SDL_HAT_CENTERED}}]},
+		{{q{up},           q{SDL_HAT_UP}},           q{0x01U}},
+		{{q{right},        q{SDL_HAT_RIGHT}},        q{0x02U}},
+		{{q{down},         q{SDL_HAT_DOWN}},         q{0x04U}},
+		{{q{left},         q{SDL_HAT_LEFT}},         q{0x08U}},
+		{{q{rightUp},      q{SDL_HAT_RIGHTUP}},      q{SDL_Hat.right | SDL_Hat.up}},
+		{{q{rightDown},    q{SDL_HAT_RIGHTDOWN}},    q{SDL_Hat.right | SDL_Hat.down}},
+		{{q{leftUp},       q{SDL_HAT_LEFTUP}},       q{SDL_Hat.left  | SDL_Hat.up}},
+		{{q{leftDown},     q{SDL_HAT_LEFTDOWN}},     q{SDL_Hat.left  | SDL_Hat.down}},
+	];
+	return ret;
+}()));
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
-		{q{int}, q{SDL_NumJoysticks}, q{}},
-		{q{const(char)*}, q{SDL_JoystickNameForIndex}, q{int deviceIndex}},
-		{q{SDL_JoystickGUID}, q{SDL_JoystickGetDeviceGUID}, q{int deviceIndex}},
-		{q{SDL_Joystick*}, q{SDL_JoystickOpen}, q{int device_index}},
-		{q{const(char)*}, q{SDL_JoystickName}, q{SDL_Joystick* joystick}},
-		{q{SDL_JoystickGUID}, q{SDL_JoystickGetGUID}, q{SDL_Joystick* joystick}},
-		{q{void}, q{SDL_JoystickGetGUIDString}, q{SDL_JoystickGUID guid, char* pszGUID, int cbGUID}},
-		{q{SDL_JoystickGUID}, q{SDL_JoystickGetGUIDFromString}, q{const(char)*}},
-		{q{SDL_bool}, q{SDL_JoystickGetAttached}, q{SDL_Joystick* joystick}},
-		{q{SDL_JoystickID}, q{SDL_JoystickInstanceID}, q{SDL_Joystick* joystick}},
-		{q{int}, q{SDL_JoystickNumAxes}, q{SDL_Joystick* joystick}},
-		{q{int}, q{SDL_JoystickNumBalls}, q{SDL_Joystick* joystick}},
-		{q{int}, q{SDL_JoystickNumHats}, q{SDL_Joystick* joystick}},
-		{q{int}, q{SDL_JoystickNumButtons}, q{SDL_Joystick* joystick}},
-		{q{void}, q{SDL_JoystickUpdate}, q{}},
-		{q{int}, q{SDL_JoystickEventState}, q{int state}},
-		{q{short}, q{SDL_JoystickGetAxis}, q{SDL_Joystick* joystick, int axis}},
-		{q{ubyte}, q{SDL_JoystickGetHat}, q{SDL_Joystick* joystick, int hat}},
-		{q{int}, q{SDL_JoystickGetBall}, q{SDL_Joystick* joystick, int ball, int* dx, int* dy}},
-		{q{ubyte}, q{SDL_JoystickGetButton}, q{SDL_Joystick* joystick, int button}},
-		{q{void}, q{SDL_JoystickClose}, q{SDL_Joystick* joystick}},
+		{q{void}, q{SDL_LockJoysticks}, q{}},
+		{q{void}, q{SDL_UnlockJoysticks}, q{}},
+		{q{bool}, q{SDL_HasJoystick}, q{}},
+		{q{SDL_JoystickID*}, q{SDL_GetJoysticks}, q{int* count}},
+		{q{const(char)*}, q{SDL_GetJoystickNameForID}, q{SDL_JoystickID instanceID}},
+		{q{const(char)*}, q{SDL_GetJoystickPathForID}, q{SDL_JoystickID instanceID}},
+		{q{int}, q{SDL_GetJoystickPlayerIndexForID}, q{SDL_JoystickID instanceID}},
+		{q{SDL_GUID}, q{SDL_GetJoystickGUIDForID}, q{SDL_JoystickID instanceID}},
+		{q{ushort}, q{SDL_GetJoystickVendorForID}, q{SDL_JoystickID instanceID}},
+		{q{ushort}, q{SDL_GetJoystickProductForID}, q{SDL_JoystickID instanceID}},
+		{q{ushort}, q{SDL_GetJoystickProductVersionForID}, q{SDL_JoystickID instanceID}},
+		{q{SDL_JoystickType}, q{SDL_GetJoystickTypeForID}, q{SDL_JoystickID instanceID}},
+		{q{SDL_Joystick*}, q{SDL_OpenJoystick}, q{SDL_JoystickID instanceID}},
+		{q{SDL_Joystick*}, q{SDL_GetJoystickFromID}, q{SDL_JoystickID instanceID}},
+		{q{SDL_Joystick*}, q{SDL_GetJoystickFromPlayerIndex}, q{int playerIndex}},
+		{q{SDL_JoystickID}, q{SDL_AttachVirtualJoystick}, q{const(SDL_VirtualJoystickDesc)* desc}},
+		{q{bool}, q{SDL_DetachVirtualJoystick}, q{SDL_JoystickID instanceID}},
+		{q{bool}, q{SDL_IsJoystickVirtual}, q{SDL_JoystickID instanceID}},
+		{q{bool}, q{SDL_SetJoystickVirtualAxis}, q{SDL_Joystick* joystick, int axis, short value}},
+		{q{bool}, q{SDL_SetJoystickVirtualBall}, q{SDL_Joystick* joystick, int ball, short xRel, short yRel}},
+		{q{bool}, q{SDL_SetJoystickVirtualButton}, q{SDL_Joystick* joystick, int button, bool down}},
+		{q{bool}, q{SDL_SetJoystickVirtualHat}, q{SDL_Joystick* joystick, int hat, SDL_Hat_ value}},
+		{q{bool}, q{SDL_SetJoystickVirtualTouchpad}, q{SDL_Joystick* joystick, int touchpad, int finger, bool down, float x, float y, float pressure}},
+		{q{bool}, q{SDL_SendJoystickVirtualSensorData}, q{SDL_Joystick* joystick, SDL_SensorType type, ulong sensorTimestamp, const(float)* data, int numValues}},
+		{q{SDL_PropertiesID}, q{SDL_GetJoystickProperties}, q{SDL_Joystick* joystick}},
+		{q{const(char)*}, q{SDL_GetJoystickName}, q{SDL_Joystick* joystick}},
+		{q{const(char)*}, q{SDL_GetJoystickPath}, q{SDL_Joystick* joystick}},
+		{q{int}, q{SDL_GetJoystickPlayerIndex}, q{SDL_Joystick* joystick}},
+		{q{bool}, q{SDL_SetJoystickPlayerIndex}, q{SDL_Joystick* joystick, int playerIndex}},
+		{q{SDL_GUID}, q{SDL_GetJoystickGUID}, q{SDL_Joystick* joystick}},
+		{q{ushort}, q{SDL_GetJoystickVendor}, q{SDL_Joystick* joystick}},
+		{q{ushort}, q{SDL_GetJoystickProduct}, q{SDL_Joystick* joystick}},
+		{q{ushort}, q{SDL_GetJoystickProductVersion}, q{SDL_Joystick* joystick}},
+		{q{ushort}, q{SDL_GetJoystickFirmwareVersion}, q{SDL_Joystick* joystick}},
+		{q{const(char)*}, q{SDL_GetJoystickSerial}, q{SDL_Joystick* joystick}},
+		{q{SDL_JoystickType}, q{SDL_GetJoystickType}, q{SDL_Joystick* joystick}},
+		{q{void}, q{SDL_GetJoystickGUIDInfo}, q{SDL_GUID guid, ushort* vendor, ushort* product, ushort* version_, ushort* crc16}},
+		{q{bool}, q{SDL_JoystickConnected}, q{SDL_Joystick* joystick}},
+		{q{SDL_JoystickID}, q{SDL_GetJoystickID}, q{SDL_Joystick* joystick}},
+		{q{int}, q{SDL_GetNumJoystickAxes}, q{SDL_Joystick* joystick}},
+		{q{int}, q{SDL_GetNumJoystickBalls}, q{SDL_Joystick* joystick}},
+		{q{int}, q{SDL_GetNumJoystickHats}, q{SDL_Joystick* joystick}},
+		{q{int}, q{SDL_GetNumJoystickButtons}, q{SDL_Joystick* joystick}},
+		{q{void}, q{SDL_SetJoystickEventsEnabled}, q{bool enabled}},
+		{q{bool}, q{SDL_JoystickEventsEnabled}, q{}},
+		{q{void}, q{SDL_UpdateJoysticks}, q{}},
+		{q{short}, q{SDL_GetJoystickAxis}, q{SDL_Joystick* joystick, int axis}},
+		{q{bool}, q{SDL_GetJoystickAxisInitialState}, q{SDL_Joystick* joystick, int axis, short* state}},
+		{q{bool}, q{SDL_GetJoystickBall}, q{SDL_Joystick* joystick, int ball, int* dx, int* dy}},
+		{q{SDL_Hat}, q{SDL_GetJoystickHat}, q{SDL_Joystick* joystick, int hat}},
+		{q{bool}, q{SDL_GetJoystickButton}, q{SDL_Joystick* joystick, int button}},
+		{q{bool}, q{SDL_RumbleJoystick}, q{SDL_Joystick* joystick, ushort lowFrequencyRumble, ushort highFrequencyRumble, uint durationMS}},
+		{q{bool}, q{SDL_RumbleJoystickTriggers}, q{SDL_Joystick* joystick, ushort leftRumble, ushort rightRumble, uint durationMS}},
+		{q{bool}, q{SDL_SetJoystickLED}, q{SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue}},
+		{q{bool}, q{SDL_SendJoystickEffect}, q{SDL_Joystick* joystick, const(void)* data, int size}},
+		{q{void}, q{SDL_CloseJoystick}, q{SDL_Joystick* joystick}},
+		{q{SDL_JoystickConnectionState}, q{SDL_GetJoystickConnectionState}, q{SDL_Joystick* joystick}},
+		{q{SDL_PowerState}, q{SDL_GetJoystickPowerInfo}, q{SDL_Joystick* joystick, int* percent}},
 	];
-	if(sdlSupport >= SDLSupport.v2_0_4){
-		FnBind[] add = [
-			{q{SDL_JoystickPowerLevel}, q{SDL_JoystickCurrentPowerLevel}, q{SDL_Joystick* joystick}},
-			{q{SDL_Joystick*}, q{SDL_JoystickFromInstanceID}, q{SDL_JoystickID instanceID}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_6){
-		FnBind[] add = [
-			{q{SDL_bool}, q{SDL_JoystickGetAxisInitialState}, q{SDL_Joystick* joystick, int axis, short* state}},
-			{q{ushort}, q{SDL_JoystickGetDeviceProduct}, q{int deviceIndex}},
-			{q{ushort}, q{SDL_JoystickGetDeviceProductVersion}, q{int deviceIndex}},
-			{q{SDL_JoystickType}, q{SDL_JoystickGetDeviceType}, q{int deviceIndex}},
-			{q{SDL_JoystickType}, q{SDL_JoystickGetDeviceInstanceID}, q{int deviceIndex}},
-			{q{ushort}, q{SDL_JoystickGetDeviceVendor}, q{int device_index}},
-			{q{ushort}, q{SDL_JoystickGetProduct}, q{SDL_Joystick* joystick}},
-			{q{ushort}, q{SDL_JoystickGetProductVersion}, q{SDL_Joystick* joystick}},
-			{q{SDL_JoystickType}, q{SDL_JoystickGetType}, q{SDL_Joystick* joystick}},
-			{q{ushort}, q{SDL_JoystickGetVendor}, q{SDL_Joystick* joystick}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_7){
-		FnBind[] add = [
-			{q{void}, q{SDL_LockJoysticks}, q{}},
-			{q{void}, q{SDL_UnlockJoysticks}, q{}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_9){
-		FnBind[] add = [
-			{q{int}, q{SDL_JoystickRumble}, q{SDL_Joystick* joystick, ushort lowFrequencyRumble, ushort highFrequencyRumble, uint durationMS}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_10){
-		FnBind[] add = [
-			{q{int}, q{SDL_JoystickGetDevicePlayerIndex}, q{int deviceIndex}},
-			{q{int}, q{SDL_JoystickGetPlayerIndex}, q{SDL_Joystick* joystick}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_12){
-		FnBind[] add = [
-			{q{SDL_Joystick*}, q{SDL_JoystickFromPlayerIndex}, q{int}},
-			{q{void}, q{SDL_JoystickSetPlayerIndex}, q{SDL_Joystick* joystick, int}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_14){
-		FnBind[] add = [
-			{q{int}, q{SDL_JoystickAttachVirtual}, q{SDL_JoystickType type, int naxes, int nButtons, int nHats}},
-			{q{int}, q{SDL_JoystickDetachVirtual}, q{int deviceIndex}},
-			{q{SDL_bool}, q{SDL_JoystickIsVirtual}, q{int deviceIndex}},
-			{q{int}, q{SDL_JoystickSetVirtualAxis}, q{SDL_Joystick* joystick, int axis, short value}},
-			{q{int}, q{SDL_JoystickSetVirtualButton}, q{SDL_Joystick* joystick, int button, ubyte value}},
-			{q{int}, q{SDL_JoystickSetVirtualHat}, q{SDL_Joystick* joystick, int hat, ubyte value}},
-			{q{const(char)*}, q{SDL_JoystickGetSerial}, q{SDL_Joystick* joystick}},
-			{q{int}, q{SDL_JoystickRumbleTriggers}, q{SDL_Joystick* joystick, ushort leftRumble, ushort rightRumble, uint durationMS}},
-			{q{SDL_bool}, q{SDL_JoystickHasLED}, q{SDL_Joystick* joystick}},
-			{q{int}, q{SDL_JoystickSetLED}, q{SDL_Joystick* joystick, ubyte red, ubyte green, ubyte blue}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_16){
-		FnBind[] add = [
-			{q{int}, q{SDL_JoystickSendEffect}, q{SDL_Joystick* joystick, const(void)* data, int size}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_18){
-		FnBind[] add = [
-			{q{SDL_bool}, q{SDL_JoystickHasRumble}, q{SDL_Joystick* joystick}},
-			{q{SDL_bool}, q{SDL_JoystickHasRumbleTriggers}, q{SDL_Joystick* joystick}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_24){
-		FnBind[] add = [
-			{q{const(char)*}, q{SDL_JoystickPathForIndex}, q{int deviceIndex}},
-			{q{int}, q{SDL_JoystickAttachVirtualEx}, q{const(SDL_VirtualJoystickDesc)* desc}},
-			{q{const(char)*}, q{SDL_JoystickPath}, q{SDL_Joystick* joystick}},
-			{q{ushort}, q{SDL_JoystickGetFirmwareVersion}, q{SDL_Joystick* joystick}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_26){
-		FnBind[] add = [
-			{q{void}, q{SDL_GetJoystickGUIDInfo}, q{SDL_JoystickGUID guid, ushort* vendor, ushort* product, ushort* version_, ushort* crc16}},
-		];
-		ret ~= add;
-	}
 	return ret;
 }()));

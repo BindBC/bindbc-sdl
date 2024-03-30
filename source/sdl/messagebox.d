@@ -1,85 +1,82 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.messagebox;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.video;
+import sdl.video: SDL_Window;
 
-alias SDL_MessageBoxFlags = uint;
-enum: SDL_MessageBoxFlags{
-	SDL_MESSAGEBOX_ERROR                  = 0x0000_0010,
-	SDL_MESSAGEBOX_WARNING                = 0x0000_0020,
-	SDL_MESSAGEBOX_INFORMATION            = 0x0000_0040,
-}
-static if(sdlSupport >= SDLSupport.v2_0_12)
-enum: SDL_MessageBoxFlags{
-	SDL_MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT  = 0x0000_0080,
-	SDL_MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT  = 0x0000_0100,
-}
+alias SDL_MessageBoxFlags_ = uint;
+mixin(makeEnumBind(q{SDL_MessageBoxFlags}, q{SDL_MessageBoxFlags_}, aliases: [q{SDL_MessageBox}], members: (){
+	EnumMember[] ret = [
+		{{q{error},                 q{SDL_MESSAGEBOX_ERROR}},                    q{0x0000_0010U}},
+		{{q{warning},               q{SDL_MESSAGEBOX_WARNING}},                  q{0x0000_0020U}},
+		{{q{information},           q{SDL_MESSAGEBOX_INFORMATION}},              q{0x0000_0040U}},
+		{{q{buttonsLeftToRight},    q{SDL_MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT}},    q{0x0000_0080U}},
+		{{q{buttonsRightToLeft},    q{SDL_MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT}},    q{0x0000_0100U}},
+	];
+	return ret;
+}()));
 
-alias SDL_MessageBoxButtonFlags = uint;
-enum: SDL_MessageBoxButtonFlags{
-	SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT  = 0x000_00001,
-	SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT  = 0x000_00002,
-}
+alias SDL_MessageBoxButtonFlags_ = uint;
+mixin(makeEnumBind(q{SDL_MessageBoxButtonFlags}, q{SDL_MessageBoxButtonFlags_}, aliases: [q{SDL_MessageBoxButton}], members: (){
+	EnumMember[] ret = [
+		{{q{returnKeyDefault},    q{SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT}},    q{0x0000_0001U}},
+		{{q{escapeKeyDefault},    q{SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT}},    q{0x0000_0002U}},
+	];
+	return ret;
+}()));
 
 struct SDL_MessageBoxButtonData{
-	uint flags;
-	int buttonid;
+	SDL_MessageBoxButtonFlags flags;
+	int buttonID;
 	const(char)* text;
 }
 
-struct SDL_MessageBoxColor{
+struct SDL_MessageBoxColour{
 	ubyte r, g, b;
 }
-alias SDL_MessageBoxColour = SDL_MessageBoxColor;
+alias SDL_MessageBoxColor = SDL_MessageBoxColour;
 
-alias SDL_MessageBoxColorType = uint;
-enum: SDL_MessageBoxColorType{
-	SDL_MESSAGEBOX_COLOR_BACKGROUND         = 0,
-	SDL_MESSAGEBOX_COLOUR_BACKGROUND        = SDL_MESSAGEBOX_COLOR_BACKGROUND,
-	SDL_MESSAGEBOX_COLOR_TEXT               = 1,
-	SDL_MESSAGEBOX_COLOUR_TEXT              = SDL_MESSAGEBOX_COLOR_TEXT,
-	SDL_MESSAGEBOX_COLOR_BUTTON_BORDER      = 2,
-	SDL_MESSAGEBOX_COLOUR_BUTTON_BORDER     = SDL_MESSAGEBOX_COLOR_BUTTON_BORDER,
-	SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND  = 3,
-	SDL_MESSAGEBOX_COLOUR_BUTTON_BACKGROUND = SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND,
-	SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED    = 4,
-	SDL_MESSAGEBOX_COLOUR_BUTTON_SELECTED   = SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED,
-	SDL_MESSAGEBOX_COLOR_MAX                = 5,
-	SDL_MESSAGEBOX_COLOUR_MAX               = SDL_MESSAGEBOX_COLOR_MAX,
-}
-alias SDL_MessageBoxColourType = SDL_MessageBoxColorType;
+mixin(makeEnumBind(q{SDL_MessageBoxColourType}, aliases: [q{SDL_MessageBoxColorType}], members: (){
+	EnumMember[] ret = [
+		{{q{background},          q{SDL_MESSAGEBOX_COLOUR_BACKGROUND}}, aliases: [{c: q{SDL_MESSAGEBOX_COLOR_BACKGROUND}}]},
+		{{q{text},                q{SDL_MESSAGEBOX_COLOUR_TEXT}}, aliases: [{c: q{SDL_MESSAGEBOX_COLOR_TEXT}}]},
+		{{q{buttonBorder},        q{SDL_MESSAGEBOX_COLOUR_BUTTON_BORDER}}, aliases: [{c: q{SDL_MESSAGEBOX_COLOR_BUTTON_BORDER}}]},
+		{{q{buttonBackground},    q{SDL_MESSAGEBOX_COLOUR_BUTTON_BACKGROUND}}, aliases: [{c: q{SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND}}]},
+		{{q{buttonSelected},      q{SDL_MESSAGEBOX_COLOUR_BUTTON_SELECTED}}, aliases: [{c: q{SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED}}]},
+		{{q{count},               q{SDL_MESSAGEBOX_COLOUR_COUNT}}, aliases: [{c: q{SDL_MESSAGEBOX_COLOR_COUNT}}]},
+	];
+	return ret;
+}()));
 
-struct SDL_MessageBoxColorScheme{
-	SDL_MessageBoxColor[SDL_MESSAGEBOX_COLOR_MAX] colors;
-	alias colours = colors;
+struct SDL_MessageBoxColourScheme{
+	SDL_MessageBoxColour[SDL_MessageBoxColourType.count] colours;
+	
+	alias colors = colours;
 }
+alias SDL_MessageBoxColorScheme = SDL_MessageBoxColourScheme;
 
 struct SDL_MessageBoxData{
 	SDL_MessageBoxFlags flags;
 	SDL_Window* window;
-	const(char)* title;
-	const(char)* message;
-	
-	int numbuttons;
+	const(char)* title, message;
+	int numButtons;
 	const(SDL_MessageBoxButtonData)* buttons;
+	const(SDL_MessageBoxColourScheme)* colourScheme;
 	
-	const(SDL_MessageBoxColorScheme)* colorScheme;
-	alias colourScheme = colorScheme;
+	alias numbuttons = numButtons;
+	alias colorScheme = colourScheme;
 }
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
-		{q{int}, q{SDL_ShowMessageBox}, q{const(SDL_MessageBoxData)* messageBoxData, int* buttonID}},
-		{q{int}, q{SDL_ShowSimpleMessageBox}, q{SDL_MessageBoxFlags flags, const(char)* title, const(char)* messsage, SDL_Window* window}},
+		{q{bool}, q{SDL_ShowMessageBox}, q{const(SDL_MessageBoxData)* messageBoxData, int* buttonID}},
+		{q{bool}, q{SDL_ShowSimpleMessageBox}, q{SDL_MessageBoxFlags_ flags, const(char)* title, const(char)* message, SDL_Window* window}},
 	];
 	return ret;
 }()));

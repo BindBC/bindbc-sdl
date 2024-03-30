@@ -1,91 +1,106 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.mouse;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.stdinc: SDL_bool;
 import sdl.surface: SDL_Surface;
-import sdl.video;
+import sdl.video: SDL_Window;
+
+alias SDL_MouseID = uint;
 
 struct SDL_Cursor;
 
-alias SDL_SystemCursor = uint;
-enum: SDL_SystemCursor{
-	SDL_SYSTEM_CURSOR_ARROW        = 0,
-	SDL_SYSTEM_CURSOR_IBEAM        = 1,
-	SDL_SYSTEM_CURSOR_WAIT         = 2,
-	SDL_SYSTEM_CURSOR_CROSSHAIR    = 3,
-	SDL_SYSTEM_CURSOR_WAITARROW    = 4,
-	SDL_SYSTEM_CURSOR_SIZENWSE     = 5,
-	SDL_SYSTEM_CURSOR_SIZENESW     = 6,
-	SDL_SYSTEM_CURSOR_SIZEWE       = 7,
-	SDL_SYSTEM_CURSOR_SIZENS       = 8,
-	SDL_SYSTEM_CURSOR_SIZEALL      = 9,
-	SDL_SYSTEM_CURSOR_NO           = 10,
-	SDL_SYSTEM_CURSOR_HAND         = 11,
-	SDL_NUM_SYSTEM_CURSORS         = 12,
-}
-
-static if(sdlSupport >= SDLSupport.v2_0_4){
-	alias SDL_MouseWheelDirection = uint;
-	enum: SDL_MouseWheelDirection{
-		SDL_MOUSEWHEEL_NORMAL   = 0,
-		SDL_MOUSEWHEEL_FLIPPED  = 1,
-	}
-}
-
-pragma(inline, true) nothrow @nogc pure @safe{
-	uint SDL_BUTTON(ubyte x){ return 1 << (x-1); }
-}
-deprecated("Please use the non-template version instead"){
-	enum SDL_BUTTON(ubyte x) = 1 << (x-1);
-}
-enum: ubyte{
-	SDL_BUTTON_LEFT      = 1,
-	SDL_BUTTON_MIDDLE    = 2,
-	SDL_BUTTON_RIGHT     = 3,
-	SDL_BUTTON_X1        = 4,
-	SDL_BUTTON_X2        = 5,
-	SDL_BUTTON_LMASK     = SDL_BUTTON(SDL_BUTTON_LEFT),
-	SDL_BUTTON_MMASK     = SDL_BUTTON(SDL_BUTTON_MIDDLE),
-	SDL_BUTTON_RMASK     = SDL_BUTTON(SDL_BUTTON_RIGHT),
-	SDL_BUTTON_X1MASK    = SDL_BUTTON(SDL_BUTTON_X1),
-	SDL_BUTTON_X2MASK    = SDL_BUTTON(SDL_BUTTON_X2),
-}
-
-mixin(joinFnBinds((){
-	FnBind[] ret = [
-		{q{SDL_Window*}, q{SDL_GetMouseFocus}, q{}},
-		{q{uint}, q{SDL_GetMouseState}, q{int* x, int* y}},
-		{q{uint}, q{SDL_GetRelativeMouseState}, q{int* x, int* y}},
-		{q{void}, q{SDL_WarpMouseInWindow}, q{SDL_Window* window, int x, int y}},
-		{q{int}, q{SDL_SetRelativeMouseMode}, q{SDL_bool enabled}},
-		{q{SDL_bool}, q{SDL_GetRelativeMouseMode}, q{}},
-		{q{SDL_Cursor*}, q{SDL_CreateCursor}, q{const(ubyte)* data, const(ubyte)* mask, int w, int h, int hotX, int hotY}},
-		{q{SDL_Cursor*}, q{SDL_CreateColorCursor}, q{SDL_Surface* surface, int hotX, int hotY}},
-		{q{SDL_Cursor*}, q{SDL_CreateSystemCursor}, q{SDL_SystemCursor id}},
-		{q{void}, q{SDL_SetCursor}, q{SDL_Cursor* cursor}},
-		{q{SDL_Cursor*}, q{SDL_GetCursor}, q{}},
-		{q{SDL_Cursor*}, q{SDL_GetDefaultCursor}, q{}},
-		{q{void}, q{SDL_FreeCursor}, q{SDL_Cursor* cursor}},
-		{q{int}, q{SDL_ShowCursor}, q{int toggle}},
+mixin(makeEnumBind(q{SDL_SystemCursor}, members: (){
+	EnumMember[] ret = [
+		{{q{default_},      q{SDL_SYSTEM_CURSOR_DEFAULT}}},
+		{{q{text},          q{SDL_SYSTEM_CURSOR_TEXT}}},
+		{{q{wait},          q{SDL_SYSTEM_CURSOR_WAIT}}},
+		{{q{crosshair},     q{SDL_SYSTEM_CURSOR_CROSSHAIR}}},
+		{{q{progress},      q{SDL_SYSTEM_CURSOR_PROGRESS}}},
+		{{q{nwseResize},    q{SDL_SYSTEM_CURSOR_NWSE_RESIZE}}},
+		{{q{neswResize},    q{SDL_SYSTEM_CURSOR_NESW_RESIZE}}},
+		{{q{ewResize},      q{SDL_SYSTEM_CURSOR_EW_RESIZE}}},
+		{{q{nsResize},      q{SDL_SYSTEM_CURSOR_NS_RESIZE}}},
+		{{q{move},          q{SDL_SYSTEM_CURSOR_MOVE}}},
+		{{q{notAllowed},    q{SDL_SYSTEM_CURSOR_NOT_ALLOWED}}},
+		{{q{pointer},       q{SDL_SYSTEM_CURSOR_POINTER}}},
+		{{q{nwResize},      q{SDL_SYSTEM_CURSOR_NW_RESIZE}}},
+		{{q{nResize},       q{SDL_SYSTEM_CURSOR_N_RESIZE}}},
+		{{q{neResize},      q{SDL_SYSTEM_CURSOR_NE_RESIZE}}},
+		{{q{eResize},       q{SDL_SYSTEM_CURSOR_E_RESIZE}}},
+		{{q{seResize},      q{SDL_SYSTEM_CURSOR_SE_RESIZE}}},
+		{{q{sResize},       q{SDL_SYSTEM_CURSOR_S_RESIZE}}},
+		{{q{swResize},      q{SDL_SYSTEM_CURSOR_SW_RESIZE}}},
+		{{q{wResize},       q{SDL_SYSTEM_CURSOR_W_RESIZE}}},
+		{{q{count},         q{SDL_SYSTEM_CURSOR_COUNT}}},
 	];
-	if(sdlSupport >= SDLSupport.v2_0_4){
-		FnBind[] add = [
-			{q{int}, q{SDL_CaptureMouse}, q{SDL_bool enabled}},
-			{q{uint}, q{SDL_GetGlobalMouseState}, q{int* x, int* y}},
-			{q{void}, q{SDL_WarpMouseGlobal}, q{int x, int y}},
-		];
-		ret ~= add;
-	}
 	return ret;
 }()));
 
-alias SDL_CreateColourCursor = SDL_CreateColorCursor;
+mixin(makeEnumBind(q{SDL_MouseWheelDirection}, aliases: [q{SDL_MouseWheel}], members: (){
+	EnumMember[] ret = [
+		{{q{normal},   q{SDL_MOUSEWHEEL_NORMAL}}},
+		{{q{flipped},  q{SDL_MOUSEWHEEL_FLIPPED}}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{SDL_MouseButton}, q{ubyte}, aliases: [q{SDL_Button}], members: (){
+	EnumMember[] ret = [
+		{{q{left},    q{SDL_BUTTON_LEFT}},    q{1}},
+		{{q{middle},  q{SDL_BUTTON_MIDDLE}},  q{2}},
+		{{q{right},   q{SDL_BUTTON_RIGHT}},   q{3}},
+		{{q{x1},      q{SDL_BUTTON_X1}},      q{4}},
+		{{q{x2},      q{SDL_BUTTON_X2}},      q{5}},
+	];
+	return ret;
+}()));
+
+alias SDL_MouseButtonFlags_ = uint;
+mixin(makeEnumBind(q{SDL_MouseButtonFlags}, q{SDL_MouseButtonFlags_}, aliases: [q{SDL_ButtonFlags}], members: (){
+	EnumMember[] ret = [
+		{{q{left},    q{SDL_BUTTON_LMASK}},   q{SDL_BUTTON_MASK(SDL_MouseButton.left)}},
+		{{q{middle},  q{SDL_BUTTON_MMASK}},   q{SDL_BUTTON_MASK(SDL_MouseButton.middle)}},
+		{{q{right},   q{SDL_BUTTON_RMASK}},   q{SDL_BUTTON_MASK(SDL_MouseButton.right)}},
+		{{q{x1},      q{SDL_BUTTON_X1MASK}},  q{SDL_BUTTON_MASK(SDL_MouseButton.x1)}},
+		{{q{x2},      q{SDL_BUTTON_X2MASK}},  q{SDL_BUTTON_MASK(SDL_MouseButton.x2)}},
+	];
+	return ret;
+}()));
+
+pragma(inline,true)
+SDL_MouseButtonFlags SDL_BUTTON_MASK(SDL_MouseButton x) nothrow @nogc pure @safe =>
+	cast(SDL_MouseButtonFlags)(1U << (x-1));
+
+mixin(joinFnBinds((){
+	FnBind[] ret = [
+		{q{bool}, q{SDL_HasMouse}, q{}},
+		{q{SDL_MouseID*}, q{SDL_GetMice}, q{int* count}},
+		{q{const(char)*}, q{SDL_GetMouseNameForID}, q{SDL_MouseID instanceID}},
+		{q{SDL_Window*}, q{SDL_GetMouseFocus}, q{}},
+		{q{SDL_MouseButtonFlags}, q{SDL_GetMouseState}, q{float* x, float* y}},
+		{q{SDL_MouseButtonFlags}, q{SDL_GetGlobalMouseState}, q{float* x, float* y}},
+		{q{SDL_MouseButtonFlags}, q{SDL_GetRelativeMouseState}, q{float* x, float* y}},
+		{q{void}, q{SDL_WarpMouseInWindow}, q{SDL_Window* window, float x, float y}},
+		{q{bool}, q{SDL_WarpMouseGlobal}, q{float x, float y}},
+		{q{bool}, q{SDL_SetWindowRelativeMouseMode}, q{SDL_Window* window, bool enabled}},
+		{q{bool}, q{SDL_GetWindowRelativeMouseMode}, q{SDL_Window* window}},
+		{q{bool}, q{SDL_CaptureMouse}, q{bool enabled}},
+		{q{SDL_Cursor*}, q{SDL_CreateCursor}, q{const(ubyte)* data, const(ubyte)* mask, int w, int h, int hotX, int hotY}},
+		{q{SDL_Cursor*}, q{SDL_CreateColorCursor}, q{SDL_Surface* surface, int hotX, int hotY}},
+		{q{SDL_Cursor*}, q{SDL_CreateSystemCursor}, q{SDL_SystemCursor id}},
+		{q{bool}, q{SDL_SetCursor}, q{SDL_Cursor* cursor}},
+		{q{SDL_Cursor*}, q{SDL_GetCursor}, q{}},
+		{q{SDL_Cursor*}, q{SDL_GetDefaultCursor}, q{}},
+		{q{void}, q{SDL_DestroyCursor}, q{SDL_Cursor* cursor}},
+		{q{bool}, q{SDL_ShowCursor}, q{}},
+		{q{bool}, q{SDL_HideCursor}, q{}},
+		{q{bool}, q{SDL_CursorVisible}, q{}},
+	];
+	return ret;
+}()));

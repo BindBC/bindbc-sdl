@@ -1,50 +1,48 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.assert_;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-alias SDL_assert_state = uint;
-enum: SDL_assert_state{
-	SDL_ASSERTION_RETRY          = 0,
-	SDL_ASSERTION_BREAK          = 1,
-	SDL_ASSERTION_ABORT          = 2,
-	SDL_ASSERTION_IGNORE         = 3,
-	SDL_ASSERTION_ALWAYS_IGNORE  = 4,
-}
-alias SDL_AssertState = SDL_assert_state;
+mixin(makeEnumBind(q{SDL_AssertState}, aliases: [q{SDL_Assertion}], members: (){
+	EnumMember[] ret = [
+		{{q{retry},           q{SDL_ASSERTION_RETRY}}},
+		{{q{break_},          q{SDL_ASSERTION_BREAK}}},
+		{{q{abort},           q{SDL_ASSERTION_ABORT}}},
+		{{q{ignore},          q{SDL_ASSERTION_IGNORE}}},
+		{{q{alwaysIgnore},    q{SDL_ASSERTION_ALWAYS_IGNORE}}},
+	];
+	return ret;
+}()));
 
-struct SDL_assert_data{
-	int always_ignore;
-	uint trigger_count;
+struct SDL_AssertData{
+	bool alwaysIgnore;
+	uint triggerCount;
 	const(char)* condition;
 	const(char)* filename;
-	int linenum;
+	int lineNum;
 	const(char)* function_;
-	const(SDL_assert_data)* next;
+	const(SDL_AssertData)* next;
+	
+	alias always_ignore = alwaysIgnore;
+	alias trigger_count = triggerCount;
+	alias linenum = lineNum;
 }
-alias SDL_AssertData = SDL_assert_data;
 
-extern(C) nothrow alias SDL_AssertionHandler = SDL_AssertState function(const(SDL_AssertData)* data, void* userData);
+alias SDL_AssertionHandler = extern(C) SDL_AssertState function(const(SDL_AssertData)* data, void* userData) nothrow;
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
+		{q{SDL_AssertState}, q{SDL_ReportAssertion}, q{SDL_AssertData* data, const(char)* func, const(char)* file, int line}},
 		{q{void}, q{SDL_SetAssertionHandler}, q{SDL_AssertionHandler handler, void* userData}},
-		{q{const(SDL_assert_data)*}, q{SDL_GetAssertionReport}, q{}},
+		{q{SDL_AssertionHandler}, q{SDL_GetDefaultAssertionHandler}, q{}},
+		{q{SDL_AssertionHandler}, q{SDL_GetAssertionHandler}, q{void** pUserData}},
+		{q{const(SDL_AssertData)*}, q{SDL_GetAssertionReport}, q{}},
 		{q{void}, q{SDL_ResetAssertionReport}, q{}},
 	];
-	if(sdlSupport >= SDLSupport.v2_0_2){
-		FnBind[] add = [
-			{q{SDL_AssertionHandler}, q{SDL_GetAssertionHandler}, q{void** pUserData}},
-			{q{SDL_AssertionHandler}, q{SDL_GetDefaultAssertionHandler}, q{}},
-		];
-		ret ~= add;
-	}
 	return ret;
 }()));

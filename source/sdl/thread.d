@@ -1,139 +1,97 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.thread;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
+
+import sdl.atomic: SDL_AtomicInt;
+import sdl.properties: SDL_PropertiesID;
+import sdl.stdinc: SDL_FunctionPointer;
+
+version(Windows)     version = Microsoft;
+else version(GDK)    version = Microsoft;
+else version(Cygwin) version = Microsoft;
 
 struct SDL_Thread;
-alias SDL_threadID = c_ulong;
-alias SDL_TLSID = uint;
 
-alias SDL_ThreadPriority = int;
-enum: SDL_ThreadPriority{
-	SDL_THREAD_PRIORITY_LOW            = 0,
-	SDL_THREAD_PRIORITY_NORMAL         = 1,
-	SDL_THREAD_PRIORITY_HIGH           = 2,
-}
-static if(sdlSupport >= SDLSupport.v2_0_9)
-enum: SDL_ThreadPriority{
-	SDL_THREAD_PRIORITY_TIME_CRITICAL  = 3,
-};
+alias SDL_ThreadID = ulong;
 
-extern(C) nothrow{
-	alias SDL_ThreadFunction = int function(void* data);
-	alias TLSDestructor = void function(void*);
-}
+alias SDL_TLSID = SDL_AtomicInt;
 
-version(Windows)     version = Win_OS2_GDK;
-else version(WinGDK) version = Win_OS2_GDK;
-else version(OS2)    version = Win_OS2_GDK;
+mixin(makeEnumBind(q{SDL_ThreadPriority}, members: (){
+	EnumMember[] ret = [
+		{{q{low},           q{SDL_THREAD_PRIORITY_LOW}}},
+		{{q{normal},        q{SDL_THREAD_PRIORITY_NORMAL}}},
+		{{q{high},          q{SDL_THREAD_PRIORITY_HIGH}}},
+		{{q{timeCritical},  q{SDL_THREAD_PRIORITY_TIME_CRITICAL}}},
+	];
+	return ret;
+}()));
 
-version(Win_OS2_GDK){
-	import core.stdc.stdint: uintptr_t;
-	
-	version(OS2){
-		static if(sdlSupport >= SDLSupport.v2_0_6):
-		
-		private alias start_address = void function(void*);
-		
-		extern(C) nothrow @nogc{
-			alias pfnSDL_CurrentBeginThread = uintptr_t function(start_address, void*, uint, void*);
-			private int _beginthread(start_address,void*, uint, void*);
-			alias SDL_beginthread = _beginthread;
-			
-			alias pfnSDL_CurrentEndThread = void function(uint);
-			private void _endthread();
-			alias SDL_endthread = _endthread;
-		}
-	}else{
-		private alias start_address = extern(Windows) uint function(void*);
-		
-		extern(C) nothrow @nogc{
-			/*
-			On Windows, SDL_CreateThread/WithStackSize require the _beginthreadex/_endthreadex of
-			the caller's process when using the DLL. As best as I can tell, this will be okay even
-			when statically linking. If it does break, I'll need to add a new version identifier
-			when BindBC_Static is specified in order to distingiuish between linking with the
-			DLL's import library and statically linking with SDL.
-			*/
-			alias pfnSDL_CurrentBeginThread = uintptr_t function(void*, uint, start_address, void*, uint, uint*);
-			private uintptr_t _beginthreadex(void*, uint, start_address, void*, uint, uint*);
-			alias SDL_beginthread = _beginthreadex;
-			
-			alias pfnSDL_CurrentEndThread = void function(uint);
-			private void _endthreadex(uint);
-			alias SDL_endthread = _endthreadex;
+mixin(makeEnumBind(q{SDL_ThreadState}, members: (){
+	EnumMember[] ret = [
+		{{q{unknown},   q{SDL_THREAD_UNKNOWN}}},
+		{{q{alive},     q{SDL_THREAD_ALIVE}}},
+		{{q{detached},  q{SDL_THREAD_DETACHED}}},
+		{{q{complete},  q{SDL_THREAD_COMPLETE}}} 
+	];
+	return ret;
+}()));
+
+alias SDL_ThreadFunction = extern(C) int function(void* data) nothrow;
+
+version(Microsoft){
+	private nothrow @nogc{
+		alias StartAddressFn = extern(Windows) uint function(void*);
+		extern(C){ //TODO: maybe move this out to BindBC-Common?
+			size_t _beginthreadex(void*, uint, StartAddressFn, void*, uint, uint*);
+			void _endthreadex(uint);
 		}
 	}
-	
-	pragma(inline, true) nothrow @nogc{
-		SDL_Thread* SDL_CreateThreadImpl(SDL_ThreadFunction fn, const(char)* name, void* data){
-			return SDL_CreateThread(fn, name, data, &SDL_beginthread, &SDL_endthread);
-		}
-		
-		static if(sdlSupport >= SDLSupport.v2_0_9){
-			SDL_Thread* SDL_CreateThreadWithStackSizeImpl(SDL_ThreadFunction fn, const(char)* name, const(size_t) stackSize, void* data){
-				return SDL_CreateThreadWithStackSize(fn, name, stackSize, data, &SDL_beginthread, &SDL_endthread);
-			}
-		}
-	}
+	enum SDL_BeginThreadFunction = &_beginthreadex;
+	enum SDL_EndThreadFunction = &_endthreadex;
+}else{
+	enum SDL_BeginThreadFunction = null;
+	enum SDL_EndThreadFunction = null;
 }
+
+pragma(inline,true) nothrow @nogc{
+	SDL_Thread* SDL_CreateThread(SDL_ThreadFunction fn, const(char)** name, void* data) =>
+		SDL_CreateThreadRuntime(fn, name, data, cast(SDL_FunctionPointer)SDL_BeginThreadFunction, cast(SDL_FunctionPointer)SDL_EndThreadFunction);
+	SDL_Thread* SDL_CreateThreadWithProperties(SDL_PropertiesID props) =>
+		SDL_CreateThreadWithPropertiesRuntime(props, cast(SDL_FunctionPointer)SDL_BeginThreadFunction, cast(SDL_FunctionPointer)SDL_EndThreadFunction);
+}
+
+mixin(makeEnumBind(q{SDLProp_ThreadCreate}, q{const(char)*}, members: (){
+	EnumMember[] ret = [
+		{{q{entryFunctionPointer},    q{SDL_PROP_THREAD_CREATE_ENTRY_FUNCTION_POINTER}},    q{"SDL.thread.create.entry_function"}},
+		{{q{nameString},              q{SDL_PROP_THREAD_CREATE_NAME_STRING}},               q{"SDL.thread.create.name"}},
+		{{q{userDataPointer},         q{SDL_PROP_THREAD_CREATE_USERDATA_POINTER}},          q{"SDL.thread.create.userdata"}},
+		{{q{stackSizeNumber},         q{SDL_PROP_THREAD_CREATE_STACKSIZE_NUMBER}},          q{"SDL.thread.create.stacksize"}},
+	];
+	return ret;
+}()));
+
+alias SDL_TLSDestructorCallback = extern(C) void function(void* value) nothrow;
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
-		{q{const(char)*}, q{SDL_GetThreadName}, q{SDL_Thread* thread}},
-		{q{SDL_threadID}, q{SDL_ThreadID}, q{}},
-		{q{SDL_threadID}, q{SDL_GetThreadID}, q{SDL_Thread* thread}},
-		{q{int}, q{SDL_SetThreadPriority}, q{SDL_ThreadPriority priority}},
+		{q{SDL_Thread*}, q{SDL_CreateThreadRuntime}, q{SDL_ThreadFunction fn, const(char)** name, void* data, SDL_FunctionPointer pFnBeginThread, SDL_FunctionPointer pFnEndThread}},
+		{q{SDL_Thread*}, q{SDL_CreateThreadWithPropertiesRuntime}, q{SDL_PropertiesID props, SDL_FunctionPointer pFnBeginThread, SDL_FunctionPointer pFnEndThread}},
+		{q{const(char)**}, q{SDL_GetThreadName}, q{SDL_Thread* thread}},
+		{q{SDL_ThreadID}, q{SDL_GetCurrentThreadID}, q{}},
+		{q{SDL_ThreadID}, q{SDL_GetThreadID}, q{SDL_Thread* thread}},
+		{q{bool}, q{SDL_SetCurrentThreadPriority}, q{SDL_ThreadPriority priority}},
 		{q{void}, q{SDL_WaitThread}, q{SDL_Thread* thread, int* status}},
-		{q{SDL_TLSID}, q{SDL_TLSCreate}, q{}},
-		{q{void*}, q{SDL_TLSGet}, q{SDL_TLSID id}},
-		{q{int}, q{SDL_TLSSet}, q{SDL_TLSID id, const(void)* value, TLSDestructor destructor}},
+		{q{SDL_ThreadState}, q{SDL_GetThreadState}, q{SDL_Thread* thread}},
+		{q{void}, q{SDL_DetachThread}, q{SDL_Thread* thread}},
+		{q{void*}, q{SDL_GetTLS}, q{SDL_TLSID* id}},
+		{q{bool}, q{SDL_SetTLS}, q{SDL_TLSID* id, const(void)** value, SDL_TLSDestructorCallback destructor}},
+		{q{void}, q{SDL_CleanupTLS}, q{}},
 	];
-	version(Win_OS2_GDK){
-		{
-			FnBind[] add = [
-				{q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data, pfnSDL_CurrentBeginThread pfnBeginThread, pfnSDL_CurrentEndThread pFnEndThread}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_9){
-			FnBind[] add = [
-				{q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stackSize, void* data, pfnSDL_CurrentBeginThread pFnBeginThread, pfnSDL_CurrentEndThread pFnEndThread}},
-			];
-			ret ~= add;
-		}
-	}else{
-		{
-			FnBind[] add = [
-				{q{SDL_Thread*}, q{SDL_CreateThread}, q{SDL_ThreadFunction fn, const(char)* name, void* data}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_9){
-			FnBind[] add = [
-				{q{SDL_Thread*}, q{SDL_CreateThreadWithStackSize}, q{SDL_ThreadFunction fn, const(char)* name, const size_t stackSize, void* data}},
-			];
-			ret ~= add;
-		}
-	}
-	if(sdlSupport >= SDLSupport.v2_0_2){
-		FnBind[] add = [
-			{q{void}, q{SDL_DetachThread}, q{SDL_Thread* thread}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_16){
-		FnBind[] add = [
-			{q{void}, q{SDL_TLSCleanup}, q{}},
-		];
-		ret ~= add;
-	}
 	return ret;
 }()));

@@ -1,160 +1,131 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.surface;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.blendmode: SDL_BlendMode;
+import sdl.blendmode: SDL_BlendMode_;
+import sdl.iostream: SDL_IOStream;
+import sdl.pixels: SDL_Colour, SDL_Colourspace, SDL_Palette, SDL_PixelFormat, SDL_PixelFormatDetails;
+import sdl.properties: SDL_PropertiesID;
 import sdl.rect: SDL_Rect;
-import sdl.rwops;
-import sdl.pixels: SDL_Palette, SDL_PixelFormat;
-import sdl.stdinc: SDL_bool;
 
-enum{
-	SDL_SWSURFACE  = 0x0000_0000,
-	SDL_PREALLOC   = 0x0000_0001,
-	SDL_RLEACCEL   = 0x0000_0002,
-	SDL_DONTFREE   = 0x0000_0004,
-}
-
-pragma(inline, true) bool SDL_MUSTLOCK(const(SDL_Surface)* s) nothrow @nogc pure{
-	return (s.flags & SDL_RLEACCEL) != 0;
-}
-
-struct SDL_BlitMap;
-
-struct SDL_Surface{
-	int flags;
-	SDL_PixelFormat* format;
-	int w, h;
-	int pitch;
-	void* pixels;
-	
-	void* userdata;
-	
-	int locked;
-	
-	static if(sdlSupport >= SDLSupport.v2_0_14){
-		void* list_blitmap;
-	}else{
-		void* lock_data;
-	}
-	
-	SDL_Rect clip_rect;
-	
-	SDL_BlitMap* map;
-	
-	int refcount;
-}
-
-alias SDL_blit = extern(C) int function(SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dst, SDL_Rect* dstRect) nothrow;
-
-static if(sdlSupport >= SDLSupport.v2_0_8){
-	alias SDL_YUV_CONVERSION_MODE = int;
-	enum: SDL_YUV_CONVERSION_MODE{
-		SDL_YUV_CONVERSION_JPEG,
-		SDL_YUV_CONVERSION_BT601,
-		SDL_YUV_CONVERSION_BT709,
-		SDL_YUV_CONVERSION_AUTOMATIC,
-	}
-}
-
-pragma(inline, true) nothrow @nogc{
-	SDL_Surface* SDL_LoadBMP(const(char)* file){
-		return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1);
-	}
-
-	int SDL_SaveBMP(SDL_Surface* surface, const(char)* file){
-		return SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), 1);
-	}
-}
-
-mixin(joinFnBinds((){
-	FnBind[] ret = [
-		{q{SDL_Surface*}, q{SDL_CreateRGBSurface}, q{uint flags, int width, int height, int depth, uint rMask, uint gMask, uint bMask, uint aMask}},
-		{q{SDL_Surface*}, q{SDL_CreateRGBSurfaceFrom}, q{void* pixels, int width, int height, int depth, int pitch, uint rMask, uint gMask, uint bMask, uint aMask}},
-		{q{void}, q{SDL_FreeSurface}, q{SDL_Surface* surface}},
-		{q{int}, q{SDL_SetSurfacePalette}, q{SDL_Surface* surface, SDL_Palette* palette}},
-		{q{int}, q{SDL_LockSurface}, q{SDL_Surface* surface}},
-		{q{int}, q{SDL_UnlockSurface}, q{SDL_Surface* surface}},
-		{q{SDL_Surface*}, q{SDL_LoadBMP_RW}, q{SDL_RWops* src, int freeSrc}},
-		{q{int}, q{SDL_SaveBMP_RW}, q{SDL_Surface* surface, SDL_RWops* dst, int freeDst}},
-		{q{int}, q{SDL_SetSurfaceRLE}, q{SDL_Surface* surface, int flag}},
-		{q{int}, q{SDL_SetColorKey}, q{SDL_Surface* surface, int flag, uint key}},
-		{q{int}, q{SDL_GetColorKey}, q{SDL_Surface* surface, uint* key}},
-		{q{int}, q{SDL_SetSurfaceColorMod}, q{SDL_Surface* surface, ubyte r, ubyte g, ubyte b}},
-		{q{int}, q{SDL_GetSurfaceColorMod}, q{SDL_Surface* surface, ubyte* r, ubyte* g, ubyte* b}},
-		{q{int}, q{SDL_SetSurfaceAlphaMod}, q{SDL_Surface* surface, ubyte alpha}},
-		{q{int}, q{SDL_GetSurfaceAlphaMod}, q{SDL_Surface* surface, ubyte* alpha}},
-		{q{int}, q{SDL_SetSurfaceBlendMode}, q{SDL_Surface* surface, SDL_BlendMode blendMode}},
-		{q{int}, q{SDL_GetSurfaceBlendMode}, q{SDL_Surface* surface, SDL_BlendMode* blendMode}},
-		{q{SDL_bool}, q{SDL_SetClipRect}, q{SDL_Surface* surface, const(SDL_Rect)* rect}},
-		{q{void}, q{SDL_GetClipRect}, q{SDL_Surface* surface, SDL_Rect* rect}},
-		{q{SDL_Surface*}, q{SDL_ConvertSurface}, q{SDL_Surface* surface, const(SDL_PixelFormat)* fmt, uint flags}},
-		{q{SDL_Surface*}, q{SDL_ConvertSurfaceFormat}, q{SDL_Surface* surface, uint pixelFormat, uint flags}},
-		{q{int}, q{SDL_ConvertPixels}, q{int width, int height, uint srcFormat, const(void)* src, int srcPitch, uint dstFormat, void* dst, int dstPitch}},
-		{q{int}, q{SDL_FillRect}, q{SDL_Surface* surface, const(SDL_Rect)* rect, uint colour}},
-		{q{int}, q{SDL_FillRects}, q{SDL_Surface* surface, const(SDL_Rect)* rects, int count, uint colour}},
-		{q{int}, q{SDL_UpperBlit}, q{SDL_Surface* src, const(SDL_Rect)* srcrect, SDL_Surface* dst, SDL_Rect* dstRect}},
-		{q{int}, q{SDL_LowerBlit}, q{SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dst, SDL_Rect* dstRect}},
-		{q{int}, q{SDL_SoftStretch}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
-		{q{int}, q{SDL_UpperBlitScaled}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, SDL_Rect* dstRect}},
-		{q{int}, q{SDL_LowerBlitScaled}, q{SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dst, SDL_Rect* dstRect}},
+alias SDL_SurfaceFlags_ = uint;
+mixin(makeEnumBind(q{SDL_SurfaceFlags}, members: (){
+	EnumMember[] ret = [
+		{{q{preAllocated},  q{SDL_SURFACE_PREALLOCATED}},  q{0x0000_0001U}},
+		{{q{lockNeeded},    q{SDL_SURFACE_LOCK_NEEDED}},   q{0x0000_0002U}},
+		{{q{locked},        q{SDL_SURFACE_LOCKED}},        q{0x0000_0004U}},
+		{{q{simdAligned},   q{SDL_SURFACE_SIMD_ALIGNED}},  q{0x0000_0008U}},
 	];
-	if(sdlSupport >= SDLSupport.v2_0_5){
-		FnBind[] add = [
-			{q{SDL_Surface*}, q{SDL_CreateRGBSurfaceWithFormat}, q{uint flags, int width, int height, int depth, uint format}},
-			{q{SDL_Surface*}, q{SDL_CreateRGBSurfaceWithFormatFrom}, q{void* pixels, int width, int height, int depth, int pitch, uint format}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_5){
-		FnBind[] add = [
-			{q{SDL_Surface*}, q{SDL_DuplicateSurface}, q{SDL_Surface* surface}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_8){
-		FnBind[] add = [
-			{q{void}, q{SDL_SetYUVConversionMode}, q{SDL_YUV_CONVERSION_MODE mode}},
-			{q{SDL_YUV_CONVERSION_MODE}, q{SDL_GetYUVConversionMode}, q{}},
-			{q{SDL_YUV_CONVERSION_MODE}, q{SDL_GetYUVConversionModeForResolution}, q{int width, int height}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_9){
-		FnBind[] add = [
-			{q{SDL_bool}, q{SDL_HasColorKey}, q{SDL_Surface* surface}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_16){
-		FnBind[] add = [
-			{q{int}, q{SDL_SoftStretchLinear}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_18){
-		FnBind[] add = [
-			{q{int}, q{SDL_PremultiplyAlpha}, q{int width, int height, uint srcFormat, const(void)* src, int srcPitch, uint dstFormat, void* dst, int dstPitch}},
-		];
-		ret ~= add;
-	}
 	return ret;
 }()));
 
-alias SDL_SetColourKey = SDL_SetColorKey;
-alias SDL_GetColourKey = SDL_GetColorKey;
-alias SDL_SetSurfaceColourMod = SDL_SetSurfaceColorMod;
-alias SDL_GetSurfaceColourMod = SDL_GetSurfaceColorMod;
-alias SDL_BlitSurface = SDL_UpperBlit;
-alias SDL_BlitScaled = SDL_UpperBlitScaled;
-static if(sdlSupport >= SDLSupport.v2_0_9){
-	alias SDL_HasColourKey = SDL_HasColorKey;
+pragma(inline,true)
+bool SDL_MUSTLOCK(SDL_Surface s) nothrow @nogc pure @safe =>
+	(s.flags & SDL_SurfaceFlags.lockNeeded) == SDL_SurfaceFlags.lockNeeded;
+
+mixin(makeEnumBind(q{SDL_ScaleMode}, members: (){
+	EnumMember[] ret = [
+		{{q{nearest},    q{SDL_SCALEMODE_NEAREST}}},
+		{{q{linear},     q{SDL_SCALEMODE_LINEAR}}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{SDL_FlipMode}, aliases: [q{SDL_Flip}], members: (){
+	EnumMember[] ret = [
+		{{q{none},        q{SDL_FLIP_NONE}}},
+		{{q{horizontal},  q{SDL_FLIP_HORIZONTAL}}},
+		{{q{vertical},    q{SDL_FLIP_VERTICAL}}},
+	];
+	return ret;
+}()));
+
+struct SDL_Surface{
+	SDL_SurfaceFlags_ flags;
+	SDL_PixelFormat format;
+	int w, h, pitch;
+	void* pixels;
+	int refCount;
+	void* reserved;
+	
+	alias refcount = refCount;
 }
+
+mixin(makeEnumBind(q{SDLProp_Surface}, q{const(char)*}, members: (){
+	EnumMember[] ret = [
+		{{q{sdrWhitePointFloat},       q{SDL_PROP_SURFACE_SDR_WHITE_POINT_FLOAT}},      q{"SDL.surface.SDR_white_point"}},
+		{{q{hdrHeadroomFloat},         q{SDL_PROP_SURFACE_HDR_HEADROOM_FLOAT}},         q{"SDL.surface.HDR_headroom"}},
+		{{q{toneMapOperatorString},    q{SDL_PROP_SURFACE_TONEMAP_OPERATOR_STRING}},    q{"SDL.surface.tonemap"}},
+	];
+	return ret;
+}()));
+
+mixin(joinFnBinds((){
+	FnBind[] ret = [
+		{q{SDL_Surface*}, q{SDL_CreateSurface}, q{int width, int height, SDL_PixelFormat format}},
+		{q{SDL_Surface*}, q{SDL_CreateSurfaceFrom}, q{int width, int height, SDL_PixelFormat format, void* pixels, int pitch}},
+		{q{void}, q{SDL_DestroySurface}, q{SDL_Surface* surface}},
+		{q{SDL_PropertiesID}, q{SDL_GetSurfaceProperties}, q{SDL_Surface* surface}},
+		{q{bool}, q{SDL_SetSurfaceColorspace}, q{SDL_Surface* surface, SDL_Colourspace colourspace}, aliases: [q{SDL_SetSurfaceColourspace}]},
+		{q{SDL_Colourspace}, q{SDL_GetSurfaceColorspace}, q{SDL_Surface* surface}, aliases: [q{SDL_GetSurfaceColourspace}]},
+		{q{SDL_Palette*}, q{SDL_CreateSurfacePalette}, q{SDL_Surface* surface}},
+		{q{bool}, q{SDL_SetSurfacePalette}, q{SDL_Surface* surface, SDL_Palette* palette}},
+		{q{SDL_Palette*}, q{SDL_GetSurfacePalette}, q{SDL_Surface* surface}},
+		{q{bool}, q{SDL_AddSurfaceAlternateImage}, q{SDL_Surface* surface, SDL_Surface* image}},
+		{q{bool}, q{SDL_SurfaceHasAlternateImages}, q{SDL_Surface* surface}},
+		{q{SDL_Surface**}, q{SDL_GetSurfaceImages}, q{SDL_Surface* surface, int* count}},
+		{q{void}, q{SDL_RemoveSurfaceAlternateImages}, q{SDL_Surface* surface}},
+		{q{bool}, q{SDL_LockSurface}, q{SDL_Surface* surface}},
+		{q{void}, q{SDL_UnlockSurface}, q{SDL_Surface* surface}},
+		{q{SDL_Surface*}, q{SDL_LoadBMP_IO}, q{SDL_IOStream* src, bool closeIO}},
+		{q{SDL_Surface*}, q{SDL_LoadBMP}, q{const(char)* file}},
+		{q{bool}, q{SDL_SaveBMP_IO}, q{SDL_Surface* surface, SDL_IOStream* dst, bool closeIO}},
+		{q{bool}, q{SDL_SaveBMP}, q{SDL_Surface* surface, const(char)* file}},
+		{q{bool}, q{SDL_SetSurfaceRLE}, q{SDL_Surface* surface, bool enabled}},
+		{q{bool}, q{SDL_SurfaceHasRLE}, q{SDL_Surface* surface}},
+		{q{bool}, q{SDL_SetSurfaceColorKey}, q{SDL_Surface* surface, bool enabled, uint key}, aliases: [q{SDL_SetSurfaceColourKey}]},
+		{q{bool}, q{SDL_SurfaceHasColorKey}, q{SDL_Surface* surface}, aliases: [q{SDL_SurfaceHasColourKey}]},
+		{q{bool}, q{SDL_GetSurfaceColorKey}, q{SDL_Surface* surface, uint* key}, aliases: [q{SDL_GetSurfaceColourKey}]},
+		{q{bool}, q{SDL_SetSurfaceColorMod}, q{SDL_Surface* surface, ubyte r, ubyte g, ubyte b}, aliases: [q{SDL_SetSurfaceColourMod}]},
+		{q{bool}, q{SDL_GetSurfaceColorMod}, q{SDL_Surface* surface, ubyte* r, ubyte* g, ubyte* b}, aliases: [q{SDL_GetSurfaceColourMod}]},
+		{q{bool}, q{SDL_SetSurfaceAlphaMod}, q{SDL_Surface* surface, ubyte alpha}},
+		{q{bool}, q{SDL_GetSurfaceAlphaMod}, q{SDL_Surface* surface, ubyte* alpha}},
+		{q{bool}, q{SDL_SetSurfaceBlendMode}, q{SDL_Surface* surface, SDL_BlendMode_ blendMode}},
+		{q{bool}, q{SDL_GetSurfaceBlendMode}, q{SDL_Surface* surface, SDL_BlendMode_* blendMode}},
+		{q{bool}, q{SDL_SetSurfaceClipRect}, q{SDL_Surface* surface, const(SDL_Rect)* rect}},
+		{q{bool}, q{SDL_GetSurfaceClipRect}, q{SDL_Surface* surface, SDL_Rect* rect}},
+		{q{bool}, q{SDL_FlipSurface}, q{SDL_Surface* surface, SDL_FlipMode flip}},
+		{q{SDL_Surface*}, q{SDL_DuplicateSurface}, q{SDL_Surface* surface}},
+		{q{SDL_Surface*}, q{SDL_ScaleSurface}, q{SDL_Surface* surface, int width, int height, SDL_ScaleMode scaleMode}},
+		{q{SDL_Surface*}, q{SDL_ConvertSurface}, q{SDL_Surface* surface, SDL_PixelFormat format}},
+		{q{SDL_Surface*}, q{SDL_ConvertSurfaceAndColorspace}, q{SDL_Surface* surface, SDL_PixelFormat format, SDL_Palette* palette, SDL_Colourspace colourspace, SDL_PropertiesID props}, aliases: [q{SDL_ConvertSurfaceAndColourspace}]},
+		{q{bool}, q{SDL_ConvertPixels}, q{int width, int height, SDL_PixelFormat srcFormat, const(void)* src, int srcPitch, SDL_PixelFormat dstFormat, void* dst, int dstPitch}},
+		{q{bool}, q{SDL_ConvertPixelsAndColorspace}, q{int width, int height, SDL_PixelFormat srcFormat, SDL_Colourspace srcColourspace, SDL_PropertiesID srcProperties, const(void)* src, int srcPitch, SDL_PixelFormat dstFormat, SDL_Colourspace dstColourspace, SDL_PropertiesID dstProperties, void* dst, int dstPitch}, aliases: [q{SDL_ConvertPixelsAndColourspace}]},
+		{q{bool}, q{SDL_PremultiplyAlpha}, q{int width, int height, SDL_PixelFormat srcFormat, const(void)* src, int srcPitch, SDL_PixelFormat dstFormat, void* dst, int dstPitch, bool linear}},
+		{q{bool}, q{SDL_PremultiplySurfaceAlpha}, q{SDL_Surface* surface, bool linear}},
+		{q{bool}, q{SDL_ClearSurface}, q{SDL_Surface* surface, float r, float g, float b, float a}},
+		{q{bool}, q{SDL_FillSurfaceRect}, q{SDL_Surface* dst, const(SDL_Rect)* rect, uint colour}},
+		{q{bool}, q{SDL_FillSurfaceRects}, q{SDL_Surface* dst, const(SDL_Rect)* rects, int count, uint colour}},
+		{q{bool}, q{SDL_BlitSurface}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
+		{q{bool}, q{SDL_BlitSurfaceUnchecked}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
+		{q{bool}, q{SDL_BlitSurfaceScaled}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect, SDL_ScaleMode scaleMode}},
+		{q{bool}, q{SDL_BlitSurfaceUncheckedScaled}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect, SDL_ScaleMode scaleMode}},
+		{q{bool}, q{SDL_BlitSurfaceTiled}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
+		{q{bool}, q{SDL_BlitSurfaceTiledWithScale}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, float scale, SDL_ScaleMode scaleMode, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
+		{q{bool}, q{SDL_BlitSurface9Grid}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, int leftWidth, int rightWidth, int topHeight, int bottomHeight, float scale, SDL_ScaleMode scaleMode, SDL_Surface* dst, const(SDL_Rect)* dstRect}},
+		{q{uint}, q{SDL_MapSurfaceRGB}, q{SDL_Surface* surface, ubyte r, ubyte g, ubyte b}},
+		{q{uint}, q{SDL_MapSurfaceRGBA}, q{SDL_Surface* surface, ubyte r, ubyte g, ubyte b, ubyte a}},
+		{q{bool}, q{SDL_ReadSurfacePixel}, q{SDL_Surface* surface, int x, int y, ubyte* r, ubyte* g, ubyte* b, ubyte* a}},
+		{q{bool}, q{SDL_ReadSurfacePixelFloat}, q{SDL_Surface* surface, int x, int y, float* r, float* g, float* b, float* a}},
+		{q{bool}, q{SDL_WriteSurfacePixel}, q{SDL_Surface* surface, int x, int y, ubyte r, ubyte g, ubyte b, ubyte a}},
+		{q{bool}, q{SDL_WriteSurfacePixelFloat}, q{SDL_Surface* surface, int x, int y, float r, float g, float b, float a}},
+		{q{void}, q{SDL_GetRGBA}, q{uint pixel, const(SDL_PixelFormatDetails)* format, const(SDL_Palette)* palette, ubyte* r, ubyte* g, ubyte* b, ubyte* a}},
+	];
+	return ret;
+}()));

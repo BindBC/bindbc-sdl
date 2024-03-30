@@ -1,70 +1,54 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.sensor;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-static if(sdlSupport >= SDLSupport.v2_0_9){
-	struct SDL_Sensor;
-	
-	alias SDL_SensorID = int;
-	
-	alias SDL_SensorType = int;
-	enum: SDL_SensorType{
-		SDL_SENSOR_INVALID    = -1,
-		SDL_SENSOR_UNKNOWN    = 0,
-		SDL_SENSOR_ACCEL      = 1,
-		SDL_SENSOR_GYRO       = 2,
-	}
-	static if(sdlSupport >= SDLSupport.v2_26)
-	enum: SDL_SensorType{
-		SDL_SENSOR_ACCEL_L    = 3,
-		SDL_SENSOR_GYRO_L     = 4,
-		SDL_SENSOR_ACCEL_R    = 5,
-		SDL_SENSOR_GYRO_R     = 6,
-	}
-	
-	enum SDL_STANDARD_GRAVITY = 9.80665f;
+import sdl.properties;
+
+struct SDL_Sensor;
+
+alias SDL_SensorID = uint;
+
+enum{
+	SDL_StandardGravity = 9.80665f,
+	SDL_STANDARD_GRAVITY = SDL_StandardGravity,
 }
 
+mixin(makeEnumBind(q{SDL_SensorType}, members: (){
+	EnumMember[] ret = [
+		{{q{invalid},  q{SDL_SENSOR_INVALID}}, q{-1}},
+		{{q{unknown},  q{SDL_SENSOR_UNKNOWN}}},
+		{{q{accel},    q{SDL_SENSOR_ACCEL}}},
+		{{q{gyro},     q{SDL_SENSOR_GYRO}}},
+		{{q{accelL},   q{SDL_SENSOR_ACCEL_L}}},
+		{{q{gyroL},    q{SDL_SENSOR_GYRO_L}}},
+		{{q{accelR},   q{SDL_SENSOR_ACCEL_R}}},
+		{{q{gyroR},    q{SDL_SENSOR_GYRO_R}}},
+	];
+	return ret;
+}()));
+
 mixin(joinFnBinds((){
-	FnBind[] ret;
-	if(sdlSupport >= SDLSupport.v2_0_9){
-		FnBind[] add = [
-			{q{int}, q{SDL_NumSensors}, q{}},
-			{q{const(char)*}, q{SDL_SensorGetDeviceName}, q{int deviceIndex}},
-			{q{SDL_SensorType}, q{SDL_SensorGetDeviceType}, q{int deviceIndex}},
-			{q{int}, q{SDL_SensorGetDeviceNonPortableType}, q{int deviceIndex}},
-			{q{SDL_SensorID}, q{SDL_SensorGetDeviceInstanceID}, q{int deviceIndex}},
-			{q{SDL_Sensor*}, q{SDL_SensorOpen}, q{int deviceIndex}},
-			{q{SDL_Sensor*}, q{SDL_SensorFromInstanceID}, q{SDL_SensorID instanceID}},
-			{q{const(char)*}, q{SDL_SensorGetName}, q{SDL_Sensor* sensor}},
-			{q{SDL_SensorType}, q{SDL_SensorGetType}, q{SDL_Sensor* sensor}},
-			{q{int}, q{SDL_SensorGetNonPortableType}, q{SDL_Sensor* sensor}},
-			{q{int}, q{SDL_SensorGetData}, q{SDL_Sensor* sensor, float* data, int numValues}},
-			{q{void}, q{SDL_SensorClose}, q{SDL_Sensor* sensor}},
-			{q{void}, q{SDL_SensorUpdate}, q{}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_14){
-		FnBind[] add = [
-			{q{void}, q{SDL_LockSensors}, q{}},
-			{q{void}, q{SDL_UnlockSensors}, q{}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_26){
-		FnBind[] add = [
-			{q{int}, q{SDL_SensorGetDataWithTimestamp}, q{SDL_Sensor* sensor, ulong* timestamp, float* data, int numValues}},
-		];
-		ret ~= add;
-	}
+	FnBind[] ret = [
+		{q{SDL_SensorID*}, q{SDL_GetSensors}, q{int* count}},
+		{q{const(char)*}, q{SDL_GetSensorNameForID}, q{SDL_SensorID instanceID}},
+		{q{SDL_SensorType}, q{SDL_GetSensorTypeForID}, q{SDL_SensorID instanceID}},
+		{q{int}, q{SDL_GetSensorNonPortableTypeForID}, q{SDL_SensorID instanceID}},
+		{q{SDL_Sensor*}, q{SDL_OpenSensor}, q{SDL_SensorID instanceID}},
+		{q{SDL_Sensor*}, q{SDL_GetSensorFromID}, q{SDL_SensorID instanceID}},
+		{q{SDL_PropertiesID}, q{SDL_GetSensorProperties}, q{SDL_Sensor* sensor}},
+		{q{const(char)*}, q{SDL_GetSensorName}, q{SDL_Sensor* sensor}},
+		{q{SDL_SensorType}, q{SDL_GetSensorType}, q{SDL_Sensor* sensor}},
+		{q{int}, q{SDL_GetSensorNonPortableType}, q{SDL_Sensor* sensor}},
+		{q{SDL_SensorID}, q{SDL_GetSensorID}, q{SDL_Sensor* sensor}},
+		{q{bool}, q{SDL_GetSensorData}, q{SDL_Sensor* sensor, float* data, int numValues}},
+		{q{void}, q{SDL_CloseSensor}, q{SDL_Sensor* sensor}},
+		{q{void}, q{SDL_UpdateSensors}, q{}},
+	];
 	return ret;
 }()));

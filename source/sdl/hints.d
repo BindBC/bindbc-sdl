@@ -1,306 +1,277 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.hints;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.stdinc: SDL_bool;
+alias SDL_Hint_ = const(char)*;
+mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
+	EnumMember[] ret = [
+		{{q{allowAltTabWhileGrabbed},               q{SDL_HINT_ALLOW_ALT_TAB_WHILE_GRABBED}},                q{"SDL_ALLOW_ALT_TAB_WHILE_GRABBED"}},
+		{{q{androidAllowRecreateActivity},          q{SDL_HINT_ANDROID_ALLOW_RECREATE_ACTIVITY}},            q{"SDL_ANDROID_ALLOW_RECREATE_ACTIVITY"}},
+		{{q{androidBlockOnPause},                   q{SDL_HINT_ANDROID_BLOCK_ON_PAUSE}},                     q{"SDL_ANDROID_BLOCK_ON_PAUSE"}},
+		{{q{androidLowLatencyAudio},                q{SDL_HINT_ANDROID_LOW_LATENCY_AUDIO}},                  q{"SDL_ANDROID_LOW_LATENCY_AUDIO"}},
+		{{q{androidTrapBackButton},                 q{SDL_HINT_ANDROID_TRAP_BACK_BUTTON}},                   q{"SDL_ANDROID_TRAP_BACK_BUTTON"}},
+		{{q{appID},                                 q{SDL_HINT_APP_ID}},                                     q{"SDL_APP_ID"}},
+		{{q{appName},                               q{SDL_HINT_APP_NAME}},                                   q{"SDL_APP_NAME"}},
+		{{q{appleTVControllerUIEvents},             q{SDL_HINT_APPLE_TV_CONTROLLER_UI_EVENTS}},              q{"SDL_APPLE_TV_CONTROLLER_UI_EVENTS"}},
+		{{q{appleTVRemoteAllowRotation},            q{SDL_HINT_APPLE_TV_REMOTE_ALLOW_ROTATION}},             q{"SDL_APPLE_TV_REMOTE_ALLOW_ROTATION"}},
+		{{q{audioALSADefaultDevice},                q{SDL_HINT_AUDIO_ALSA_DEFAULT_DEVICE}},                  q{"SDL_AUDIO_ALSA_DEFAULT_DEVICE"}},
+		{{q{audioALSADefaultPlaybackDevice},        q{SDL_HINT_AUDIO_ALSA_DEFAULT_PLAYBACK_DEVICE}},         q{"SDL_AUDIO_ALSA_DEFAULT_PLAYBACK_DEVICE"}},
+		{{q{audioALSADefaultRecordingDevice},       q{SDL_HINT_AUDIO_ALSA_DEFAULT_RECORDING_DEVICE}},        q{"SDL_AUDIO_ALSA_DEFAULT_RECORDING_DEVICE"}},
+		{{q{audioCategory},                         q{SDL_HINT_AUDIO_CATEGORY}},                             q{"SDL_AUDIO_CATEGORY"}},
+		{{q{audioChannels},                         q{SDL_HINT_AUDIO_CHANNELS}},                             q{"SDL_AUDIO_CHANNELS"}},
+		{{q{audioDeviceAppIconName},                q{SDL_HINT_AUDIO_DEVICE_APP_ICON_NAME}},                 q{"SDL_AUDIO_DEVICE_APP_ICON_NAME"}},
+		{{q{audioDeviceSampleFrames},               q{SDL_HINT_AUDIO_DEVICE_SAMPLE_FRAMES}},                 q{"SDL_AUDIO_DEVICE_SAMPLE_FRAMES"}},
+		{{q{audioDeviceStreamName},                 q{SDL_HINT_AUDIO_DEVICE_STREAM_NAME}},                   q{"SDL_AUDIO_DEVICE_STREAM_NAME"}},
+		{{q{audioDeviceStreamRole},                 q{SDL_HINT_AUDIO_DEVICE_STREAM_ROLE}},                   q{"SDL_AUDIO_DEVICE_STREAM_ROLE"}},
+		{{q{audioDiskInputFile},                    q{SDL_HINT_AUDIO_DISK_INPUT_FILE}},                      q{"SDL_AUDIO_DISK_INPUT_FILE"}},
+		{{q{audioDiskOutputFile},                   q{SDL_HINT_AUDIO_DISK_OUTPUT_FILE}},                     q{"SDL_AUDIO_DISK_OUTPUT_FILE"}},
+		{{q{audioDiskTimescale},                    q{SDL_HINT_AUDIO_DISK_TIMESCALE}},                       q{"SDL_AUDIO_DISK_TIMESCALE"}},
+		{{q{audioDriver},                           q{SDL_HINT_AUDIO_DRIVER}},                               q{"SDL_AUDIO_DRIVER"}},
+		{{q{audioDummyTimescale},                   q{SDL_HINT_AUDIO_DUMMY_TIMESCALE}},                      q{"SDL_AUDIO_DUMMY_TIMESCALE"}},
+		{{q{audioFormat},                           q{SDL_HINT_AUDIO_FORMAT}},                               q{"SDL_AUDIO_FORMAT"}},
+		{{q{audioFrequency},                        q{SDL_HINT_AUDIO_FREQUENCY}},                            q{"SDL_AUDIO_FREQUENCY"}},
+		{{q{audioIncludeMonitors},                  q{SDL_HINT_AUDIO_INCLUDE_MONITORS}},                     q{"SDL_AUDIO_INCLUDE_MONITORS"}},
+		{{q{autoUpdateJoysticks},                   q{SDL_HINT_AUTO_UPDATE_JOYSTICKS}},                      q{"SDL_AUTO_UPDATE_JOYSTICKS"}},
+		{{q{autoUpdateSensors},                     q{SDL_HINT_AUTO_UPDATE_SENSORS}},                        q{"SDL_AUTO_UPDATE_SENSORS"}},
+		{{q{bmpSaveLegacyFormat},                   q{SDL_HINT_BMP_SAVE_LEGACY_FORMAT}},                     q{"SDL_BMP_SAVE_LEGACY_FORMAT"}},
+		{{q{cameraDriver},                          q{SDL_HINT_CAMERA_DRIVER}},                              q{"SDL_CAMERA_DRIVER"}},
+		{{q{cpuFeatureMask},                        q{SDL_HINT_CPU_FEATURE_MASK}},                           q{"SDL_CPU_FEATURE_MASK"}},
+		{{q{joystickDirectinput},                   q{SDL_HINT_JOYSTICK_DIRECTINPUT}},                       q{"SDL_JOYSTICK_DIRECTINPUT"}},
+		{{q{fileDialogDriver},                      q{SDL_HINT_FILE_DIALOG_DRIVER}},                         q{"SDL_FILE_DIALOG_DRIVER"}},
+		{{q{displayUsableBounds},                   q{SDL_HINT_DISPLAY_USABLE_BOUNDS}},                      q{"SDL_DISPLAY_USABLE_BOUNDS"}},
+		{{q{emscriptenAsyncify},                    q{SDL_HINT_EMSCRIPTEN_ASYNCIFY}},                        q{"SDL_EMSCRIPTEN_ASYNCIFY"}},
+		{{q{emscriptenCanvasSelector},              q{SDL_HINT_EMSCRIPTEN_CANVAS_SELECTOR}},                 q{"SDL_EMSCRIPTEN_CANVAS_SELECTOR"}},
+		{{q{emscriptenKeyboardElement},             q{SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT}},                q{"SDL_EMSCRIPTEN_KEYBOARD_ELEMENT"}},
+		{{q{enableScreenKeyboard},                  q{SDL_HINT_ENABLE_SCREEN_KEYBOARD}},                     q{"SDL_ENABLE_SCREEN_KEYBOARD"}},
+		{{q{evdevDevices},                          q{SDL_HINT_EVDEV_DEVICES}},                              q{"SDL_EVDEV_DEVICES"}},
+		{{q{eventLogging},                          q{SDL_HINT_EVENT_LOGGING}},                              q{"SDL_EVENT_LOGGING"}},
+		{{q{forceRaisewindow},                      q{SDL_HINT_FORCE_RAISEWINDOW}},                          q{"SDL_FORCE_RAISEWINDOW"}},
+		{{q{framebufferAcceleration},               q{SDL_HINT_FRAMEBUFFER_ACCELERATION}},                   q{"SDL_FRAMEBUFFER_ACCELERATION"}},
+		{{q{gameControllerConfig},                  q{SDL_HINT_GAMECONTROLLERCONFIG}},                       q{"SDL_GAMECONTROLLERCONFIG"}},
+		{{q{gameControllerConfigFile},              q{SDL_HINT_GAMECONTROLLERCONFIG_FILE}},                  q{"SDL_GAMECONTROLLERCONFIG_FILE"}},
+		{{q{gameControllerType},                    q{SDL_HINT_GAMECONTROLLERTYPE}},                         q{"SDL_GAMECONTROLLERTYPE"}},
+		{{q{gameControllerIgnoreDevices},           q{SDL_HINT_GAMECONTROLLER_IGNORE_DEVICES}},              q{"SDL_GAMECONTROLLER_IGNORE_DEVICES"}},
+		{{q{gameControllerIgnoreDevicesExcept},     q{SDL_HINT_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT}},       q{"SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT"}},
+		{{q{gameControllerSensorFusion},            q{SDL_HINT_GAMECONTROLLER_SENSOR_FUSION}},               q{"SDL_GAMECONTROLLER_SENSOR_FUSION"}},
+		{{q{gdkTextInputDefaultText},               q{SDL_HINT_GDK_TEXTINPUT_DEFAULT_TEXT}},                 q{"SDL_GDK_TEXTINPUT_DEFAULT_TEXT"}},
+		{{q{gdkTextInputDescription},               q{SDL_HINT_GDK_TEXTINPUT_DESCRIPTION}},                  q{"SDL_GDK_TEXTINPUT_DESCRIPTION"}},
+		{{q{gdkTextInputMaxLength},                 q{SDL_HINT_GDK_TEXTINPUT_MAX_LENGTH}},                   q{"SDL_GDK_TEXTINPUT_MAX_LENGTH"}},
+		{{q{gdkTextInputScope},                     q{SDL_HINT_GDK_TEXTINPUT_SCOPE}},                        q{"SDL_GDK_TEXTINPUT_SCOPE"}},
+		{{q{gdkTextInputTitle},                     q{SDL_HINT_GDK_TEXTINPUT_TITLE}},                        q{"SDL_GDK_TEXTINPUT_TITLE"}},
+		{{q{hidapiLibusb},                          q{SDL_HINT_HIDAPI_LIBUSB}},                              q{"SDL_HIDAPI_LIBUSB"}},
+		{{q{hidapiLibusbWhitelist},                 q{SDL_HINT_HIDAPI_LIBUSB_WHITELIST}},                    q{"SDL_HIDAPI_LIBUSB_WHITELIST"}},
+		{{q{hidapiUdev},                            q{SDL_HINT_HIDAPI_UDEV}},                                q{"SDL_HIDAPI_UDEV"}},
+		{{q{gpuDriver},                             q{SDL_HINT_GPU_DRIVER}},                                 q{"SDL_GPU_DRIVER"}},
+		{{q{hidapiEnumerateOnlyControllers},        q{SDL_HINT_HIDAPI_ENUMERATE_ONLY_CONTROLLERS}},          q{"SDL_HIDAPI_ENUMERATE_ONLY_CONTROLLERS"}},
+		{{q{hidapiIgnoreDevices},                   q{SDL_HINT_HIDAPI_IGNORE_DEVICES}},                      q{"SDL_HIDAPI_IGNORE_DEVICES"}},
+		{{q{imeImplementedUI},                      q{SDL_HINT_IME_IMPLEMENTED_UI}},                         q{"SDL_IME_IMPLEMENTED_UI"}},
+		{{q{iosHideHomeIndicator},                  q{SDL_HINT_IOS_HIDE_HOME_INDICATOR}},                    q{"SDL_IOS_HIDE_HOME_INDICATOR"}},
+		{{q{joystickAllowBackgroundEvents},         q{SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS}},           q{"SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS"}},
+		{{q{joystickArcadeStickDevices},            q{SDL_HINT_JOYSTICK_ARCADESTICK_DEVICES}},               q{"SDL_JOYSTICK_ARCADESTICK_DEVICES"}},
+		{{q{joystickArcadeStickDevicesExcluded},    q{SDL_HINT_JOYSTICK_ARCADESTICK_DEVICES_EXCLUDED}},      q{"SDL_JOYSTICK_ARCADESTICK_DEVICES_EXCLUDED"}},
+		{{q{joystickBlacklistDevices},              q{SDL_HINT_JOYSTICK_BLACKLIST_DEVICES}},                 q{"SDL_JOYSTICK_BLACKLIST_DEVICES"}},
+		{{q{joystickBlacklistDevicesExcluded},      q{SDL_HINT_JOYSTICK_BLACKLIST_DEVICES_EXCLUDED}},        q{"SDL_JOYSTICK_BLACKLIST_DEVICES_EXCLUDED"}},
+		{{q{joystickDevice},                        q{SDL_HINT_JOYSTICK_DEVICE}},                            q{"SDL_JOYSTICK_DEVICE"}},
+		{{q{joystickEnhancedReports},               q{SDL_HINT_JOYSTICK_ENHANCED_REPORTS}},                  q{"SDL_JOYSTICK_ENHANCED_REPORTS"}},
+		{{q{joystickFlightStickDevices},            q{SDL_HINT_JOYSTICK_FLIGHTSTICK_DEVICES}},               q{"SDL_JOYSTICK_FLIGHTSTICK_DEVICES"}},
+		{{q{joystickFlightStickDevicesExcluded},    q{SDL_HINT_JOYSTICK_FLIGHTSTICK_DEVICES_EXCLUDED}},      q{"SDL_JOYSTICK_FLIGHTSTICK_DEVICES_EXCLUDED"}},
+		{{q{joystickGameInput},                     q{SDL_HINT_JOYSTICK_GAMEINPUT}},                         q{"SDL_JOYSTICK_GAMEINPUT"}},
+		{{q{joystickGameCubeDevices},               q{SDL_HINT_JOYSTICK_GAMECUBE_DEVICES}},                  q{"SDL_JOYSTICK_GAMECUBE_DEVICES"}},
+		{{q{joystickGameCubeDevicesExcluded},       q{SDL_HINT_JOYSTICK_GAMECUBE_DEVICES_EXCLUDED}},         q{"SDL_JOYSTICK_GAMECUBE_DEVICES_EXCLUDED"}},
+		{{q{joystickHIDAPI},                        q{SDL_HINT_JOYSTICK_HIDAPI}},                            q{"SDL_JOYSTICK_HIDAPI"}},
+		{{q{joystickHIDAPICombineJoyCons},          q{SDL_HINT_JOYSTICK_HIDAPI_COMBINE_JOY_CONS}},           q{"SDL_JOYSTICK_HIDAPI_COMBINE_JOY_CONS"}},
+		{{q{joystickHIDAPIGameCube},                q{SDL_HINT_JOYSTICK_HIDAPI_GAMECUBE}},                   q{"SDL_JOYSTICK_HIDAPI_GAMECUBE"}},
+		{{q{joystickHIDAPIGameCubeRumbleBrake},     q{SDL_HINT_JOYSTICK_HIDAPI_GAMECUBE_RUMBLE_BRAKE}},      q{"SDL_JOYSTICK_HIDAPI_GAMECUBE_RUMBLE_BRAKE"}},
+		{{q{joystickHIDAPIJoyCons},                 q{SDL_HINT_JOYSTICK_HIDAPI_JOY_CONS}},                   q{"SDL_JOYSTICK_HIDAPI_JOY_CONS"}},
+		{{q{joystickHIDAPIJoyconHomeLED},           q{SDL_HINT_JOYSTICK_HIDAPI_JOYCON_HOME_LED}},            q{"SDL_JOYSTICK_HIDAPI_JOYCON_HOME_LED"}},
+		{{q{joystickHIDAPILuna},                    q{SDL_HINT_JOYSTICK_HIDAPI_LUNA}},                       q{"SDL_JOYSTICK_HIDAPI_LUNA"}},
+		{{q{joystickHIDAPINintendoClassic},         q{SDL_HINT_JOYSTICK_HIDAPI_NINTENDO_CLASSIC}},           q{"SDL_JOYSTICK_HIDAPI_NINTENDO_CLASSIC"}},
+		{{q{joystickHIDAPIPS3},                     q{SDL_HINT_JOYSTICK_HIDAPI_PS3}},                        q{"SDL_JOYSTICK_HIDAPI_PS3"}},
+		{{q{joystickHIDAPIPS3SixaxisDriver},        q{SDL_HINT_JOYSTICK_HIDAPI_PS3_SIXAXIS_DRIVER}},         q{"SDL_JOYSTICK_HIDAPI_PS3_SIXAXIS_DRIVER"}},
+		{{q{joystickHIDAPIPS4},                     q{SDL_HINT_JOYSTICK_HIDAPI_PS4}},                        q{"SDL_JOYSTICK_HIDAPI_PS4"}},
+		{{q{joystickHIDAPIPS4ReportInterval},       q{SDL_HINT_JOYSTICK_HIDAPI_PS4_REPORT_INTERVAL}},        q{"SDL_JOYSTICK_HIDAPI_PS4_REPORT_INTERVAL"}},
+		{{q{joystickHIDAPIPS5},                     q{SDL_HINT_JOYSTICK_HIDAPI_PS5}},                        q{"SDL_JOYSTICK_HIDAPI_PS5"}},
+		{{q{joystickHIDAPIPS5PlayerLED},            q{SDL_HINT_JOYSTICK_HIDAPI_PS5_PLAYER_LED}},             q{"SDL_JOYSTICK_HIDAPI_PS5_PLAYER_LED"}},
+		{{q{joystickHIDAPIShield},                  q{SDL_HINT_JOYSTICK_HIDAPI_SHIELD}},                     q{"SDL_JOYSTICK_HIDAPI_SHIELD"}},
+		{{q{joystickHIDAPIStadia},                  q{SDL_HINT_JOYSTICK_HIDAPI_STADIA}},                     q{"SDL_JOYSTICK_HIDAPI_STADIA"}},
+		{{q{joystickHIDAPISteam},                   q{SDL_HINT_JOYSTICK_HIDAPI_STEAM}},                      q{"SDL_JOYSTICK_HIDAPI_STEAM"}},
+		{{q{joystickHIDAPISteamHomeLED},            q{SDL_HINT_JOYSTICK_HIDAPI_STEAM_HOME_LED}},             q{"SDL_JOYSTICK_HIDAPI_STEAM_HOME_LED"}},
+		{{q{joystickHIDAPISteamdeck},               q{SDL_HINT_JOYSTICK_HIDAPI_STEAMDECK}},                  q{"SDL_JOYSTICK_HIDAPI_STEAMDECK"}},
+		{{q{joystickHIDAPISteamHori},               q{SDL_HINT_JOYSTICK_HIDAPI_STEAM_HORI}},                 q{"SDL_JOYSTICK_HIDAPI_STEAM_HORI"}},
+		{{q{joystickHIDAPISwitch},                  q{SDL_HINT_JOYSTICK_HIDAPI_SWITCH}},                     q{"SDL_JOYSTICK_HIDAPI_SWITCH"}},
+		{{q{joystickHIDAPISwitchHomeLED},           q{SDL_HINT_JOYSTICK_HIDAPI_SWITCH_HOME_LED}},            q{"SDL_JOYSTICK_HIDAPI_SWITCH_HOME_LED"}},
+		{{q{joystickHIDAPISwitchPlayerLED},         q{SDL_HINT_JOYSTICK_HIDAPI_SWITCH_PLAYER_LED}},          q{"SDL_JOYSTICK_HIDAPI_SWITCH_PLAYER_LED"}},
+		{{q{joystickHIDAPIVerticalJoyCons},         q{SDL_HINT_JOYSTICK_HIDAPI_VERTICAL_JOY_CONS}},          q{"SDL_JOYSTICK_HIDAPI_VERTICAL_JOY_CONS"}},
+		{{q{joystickHIDAPIWii},                     q{SDL_HINT_JOYSTICK_HIDAPI_WII}},                        q{"SDL_JOYSTICK_HIDAPI_WII"}},
+		{{q{joystickHIDAPIWiiPlayerLED},            q{SDL_HINT_JOYSTICK_HIDAPI_WII_PLAYER_LED}},             q{"SDL_JOYSTICK_HIDAPI_WII_PLAYER_LED"}},
+		{{q{joystickHIDAPIXbox},                    q{SDL_HINT_JOYSTICK_HIDAPI_XBOX}},                       q{"SDL_JOYSTICK_HIDAPI_XBOX"}},
+		{{q{joystickHIDAPIXbox360},                 q{SDL_HINT_JOYSTICK_HIDAPI_XBOX_360}},                   q{"SDL_JOYSTICK_HIDAPI_XBOX_360"}},
+		{{q{joystickHIDAPIXbox360PlayerLED},        q{SDL_HINT_JOYSTICK_HIDAPI_XBOX_360_PLAYER_LED}},        q{"SDL_JOYSTICK_HIDAPI_XBOX_360_PLAYER_LED"}},
+		{{q{joystickHIDAPIXbox360Wireless},         q{SDL_HINT_JOYSTICK_HIDAPI_XBOX_360_WIRELESS}},          q{"SDL_JOYSTICK_HIDAPI_XBOX_360_WIRELESS"}},
+		{{q{joystickHIDAPIXboxOne},                 q{SDL_HINT_JOYSTICK_HIDAPI_XBOX_ONE}},                   q{"SDL_JOYSTICK_HIDAPI_XBOX_ONE"}},
+		{{q{joystickHIDAPIXboxOneHomeLED},          q{SDL_HINT_JOYSTICK_HIDAPI_XBOX_ONE_HOME_LED}},          q{"SDL_JOYSTICK_HIDAPI_XBOX_ONE_HOME_LED"}},
+		{{q{joystickIOKit},                         q{SDL_HINT_JOYSTICK_IOKIT}},                             q{"SDL_JOYSTICK_IOKIT"}},
+		{{q{joystickLinuxClassic},                  q{SDL_HINT_JOYSTICK_LINUX_CLASSIC}},                     q{"SDL_JOYSTICK_LINUX_CLASSIC"}},
+		{{q{joystickLinuxDeadZones},                q{SDL_HINT_JOYSTICK_LINUX_DEADZONES}},                   q{"SDL_JOYSTICK_LINUX_DEADZONES"}},
+		{{q{joystickLinuxDigitalHats},              q{SDL_HINT_JOYSTICK_LINUX_DIGITAL_HATS}},                q{"SDL_JOYSTICK_LINUX_DIGITAL_HATS"}},
+		{{q{joystickLinuxHatDeadZones},             q{SDL_HINT_JOYSTICK_LINUX_HAT_DEADZONES}},               q{"SDL_JOYSTICK_LINUX_HAT_DEADZONES"}},
+		{{q{joystickMFI},                           q{SDL_HINT_JOYSTICK_MFI}},                               q{"SDL_JOYSTICK_MFI"}},
+		{{q{joystickRawInput},                      q{SDL_HINT_JOYSTICK_RAWINPUT}},                          q{"SDL_JOYSTICK_RAWINPUT"}},
+		{{q{joystickRawInputCorrelateXInput},       q{SDL_HINT_JOYSTICK_RAWINPUT_CORRELATE_XINPUT}},         q{"SDL_JOYSTICK_RAWINPUT_CORRELATE_XINPUT"}},
+		{{q{joystickROGChakram},                    q{SDL_HINT_JOYSTICK_ROG_CHAKRAM}},                       q{"SDL_JOYSTICK_ROG_CHAKRAM"}},
+		{{q{joystickThread},                        q{SDL_HINT_JOYSTICK_THREAD}},                            q{"SDL_JOYSTICK_THREAD"}},
+		{{q{joystickThrottleDevices},               q{SDL_HINT_JOYSTICK_THROTTLE_DEVICES}},                  q{"SDL_JOYSTICK_THROTTLE_DEVICES"}},
+		{{q{joystickThrottleDevicesExcluded},       q{SDL_HINT_JOYSTICK_THROTTLE_DEVICES_EXCLUDED}},         q{"SDL_JOYSTICK_THROTTLE_DEVICES_EXCLUDED"}},
+		{{q{joystickWGI},                           q{SDL_HINT_JOYSTICK_WGI}},                               q{"SDL_JOYSTICK_WGI"}},
+		{{q{joystickWheelDevices},                  q{SDL_HINT_JOYSTICK_WHEEL_DEVICES}},                     q{"SDL_JOYSTICK_WHEEL_DEVICES"}},
+		{{q{joystickWheelDevicesExcluded},          q{SDL_HINT_JOYSTICK_WHEEL_DEVICES_EXCLUDED}},            q{"SDL_JOYSTICK_WHEEL_DEVICES_EXCLUDED"}},
+		{{q{joystickZeroCentredDevices},            q{SDL_HINT_JOYSTICK_ZERO_CENTRED_DEVICES}},              q{"SDL_JOYSTICK_ZERO_CENTERED_DEVICES"}, aliases: [{q{joystickZeroCenteredDevices}, q{SDL_HINT_JOYSTICK_ZERO_CENTERED_DEVICES}}]},
+		{{q{keycodeOptions},                        q{SDL_HINT_KEYCODE_OPTIONS}},                            q{"SDL_KEYCODE_OPTIONS"}},
+		{{q{kmsDRMDeviceIndex},                     q{SDL_HINT_KMSDRM_DEVICE_INDEX}},                        q{"SDL_KMSDRM_DEVICE_INDEX"}},
+		{{q{kmsDRMRequireDRMMaster},                q{SDL_HINT_KMSDRM_REQUIRE_DRM_MASTER}},                  q{"SDL_KMSDRM_REQUIRE_DRM_MASTER"}},
+		{{q{logging},                               q{SDL_HINT_LOGGING}},                                    q{"SDL_LOGGING"}},
+		{{q{macBackgroundApp},                      q{SDL_HINT_MAC_BACKGROUND_APP}},                         q{"SDL_MAC_BACKGROUND_APP"}},
+		{{q{macCtrlClickEmulateRightClick},         q{SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK}},         q{"SDL_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK"}},
+		{{q{macOpenGLAsyncDispatch},                q{SDL_HINT_MAC_OPENGL_ASYNC_DISPATCH}},                  q{"SDL_MAC_OPENGL_ASYNC_DISPATCH"}},
+		{{q{macOptionAsAlt},                        q{SDL_HINT_MAC_OPTION_AS_ALT}},                          q{"SDL_MAC_OPTION_AS_ALT"}},
+		{{q{macScrollMomentum},                     q{SDL_HINT_MAC_SCROLL_MOMENTUM}},                        q{"SDL_MAC_SCROLL_MOMENTUM"}},
+		{{q{mainCallbackRate},                      q{SDL_HINT_MAIN_CALLBACK_RATE}},                         q{"SDL_MAIN_CALLBACK_RATE"}},
+		{{q{mouseAutoCapture},                      q{SDL_HINT_MOUSE_AUTO_CAPTURE}},                         q{"SDL_MOUSE_AUTO_CAPTURE"}},
+		{{q{mouseDoubleClickRadius},                q{SDL_HINT_MOUSE_DOUBLE_CLICK_RADIUS}},                  q{"SDL_MOUSE_DOUBLE_CLICK_RADIUS"}},
+		{{q{mouseDoubleClickTime},                  q{SDL_HINT_MOUSE_DOUBLE_CLICK_TIME}},                    q{"SDL_MOUSE_DOUBLE_CLICK_TIME"}},
+		{{q{mouseDefaultSystemCursor},              q{SDL_HINT_MOUSE_DEFAULT_SYSTEM_CURSOR}},                q{"SDL_MOUSE_DEFAULT_SYSTEM_CURSOR"}},
+		{{q{mouseEmulateWarpWithRelative},          q{SDL_HINT_MOUSE_EMULATE_WARP_WITH_RELATIVE}},           q{"SDL_MOUSE_EMULATE_WARP_WITH_RELATIVE"}},
+		{{q{mouseFocusClickthrough},                q{SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH}},                   q{"SDL_MOUSE_FOCUS_CLICKTHROUGH"}},
+		{{q{mouseNormalSpeedScale},                 q{SDL_HINT_MOUSE_NORMAL_SPEED_SCALE}},                   q{"SDL_MOUSE_NORMAL_SPEED_SCALE"}},
+		{{q{mouseRelativeModeCentre},               q{SDL_HINT_MOUSE_RELATIVE_MODE_CENTRE}},                 q{"SDL_MOUSE_RELATIVE_MODE_CENTER"}, aliases: [{q{mouseRelativeModeCenter}, q{SDL_HINT_MOUSE_RELATIVE_MODE_CENTER}}]},
+		{{q{mouseRelativeSpeedScale},               q{SDL_HINT_MOUSE_RELATIVE_SPEED_SCALE}},                 q{"SDL_MOUSE_RELATIVE_SPEED_SCALE"}},
+		{{q{mouseRelativeSystemScale},              q{SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE}},                q{"SDL_MOUSE_RELATIVE_SYSTEM_SCALE"}},
+		{{q{mouseRelativeWarpMotion},               q{SDL_HINT_MOUSE_RELATIVE_WARP_MOTION}},                 q{"SDL_MOUSE_RELATIVE_WARP_MOTION"}},
+		{{q{mouseRelativeCursorVisible},            q{SDL_HINT_MOUSE_RELATIVE_CURSOR_VISIBLE}},              q{"SDL_MOUSE_RELATIVE_CURSOR_VISIBLE"}},
+		{{q{mouseTouchEvents},                      q{SDL_HINT_MOUSE_TOUCH_EVENTS}},                         q{"SDL_MOUSE_TOUCH_EVENTS"}},
+		{{q{muteConsoleKeyboard},                   q{SDL_HINT_MUTE_CONSOLE_KEYBOARD}},                      q{"SDL_MUTE_CONSOLE_KEYBOARD"}},
+		{{q{noSignalHandlers},                      q{SDL_HINT_NO_SIGNAL_HANDLERS}},                         q{"SDL_NO_SIGNAL_HANDLERS"}},
+		{{q{openGLLibrary},                         q{SDL_HINT_OPENGL_LIBRARY}},                             q{"SDL_OPENGL_LIBRARY"}},
+		{{q{eglLibrary},                            q{SDL_HINT_EGL_LIBRARY}},                                q{"SDL_EGL_LIBRARY"}},
+		{{q{openGLESDriver},                        q{SDL_HINT_OPENGL_ES_DRIVER}},                           q{"SDL_OPENGL_ES_DRIVER"}},
+		{{q{openVRLibrary},                         q{SDL_HINT_OPENVR_LIBRARY}},                             q{"SDL_OPENVR_LIBRARY"}},
+		{{q{orientations},                          q{SDL_HINT_ORIENTATIONS}},                               q{"SDL_ORIENTATIONS"}},
+		{{q{pollSentinel},                          q{SDL_HINT_POLL_SENTINEL}},                              q{"SDL_POLL_SENTINEL"}},
+		{{q{preferredLocales},                      q{SDL_HINT_PREFERRED_LOCALES}},                          q{"SDL_PREFERRED_LOCALES"}},
+		{{q{quitOnLastWindowClose},                 q{SDL_HINT_QUIT_ON_LAST_WINDOW_CLOSE}},                  q{"SDL_QUIT_ON_LAST_WINDOW_CLOSE"}},
+		{{q{renderDirect3DThreadSafe},              q{SDL_HINT_RENDER_DIRECT3D_THREADSAFE}},                 q{"SDL_RENDER_DIRECT3D_THREADSAFE"}},
+		{{q{renderDirect3D11Debug},                 q{SDL_HINT_RENDER_DIRECT3D11_DEBUG}},                    q{"SDL_RENDER_DIRECT3D11_DEBUG"}},
+		{{q{renderVulkanDebug},                     q{SDL_HINT_RENDER_VULKAN_DEBUG}},                        q{"SDL_RENDER_VULKAN_DEBUG"}},
+		{{q{renderGPUDebug},                        q{SDL_HINT_RENDER_GPU_DEBUG}},                           q{"SDL_RENDER_GPU_DEBUG"}},
+		{{q{renderGPULowPower},                     q{SDL_HINT_RENDER_GPU_LOW_POWER}},                       q{"SDL_RENDER_GPU_LOW_POWER"}},
+		{{q{renderDriver},                          q{SDL_HINT_RENDER_DRIVER}},                              q{"SDL_RENDER_DRIVER"}},
+		{{q{renderLineMethod},                      q{SDL_HINT_RENDER_LINE_METHOD}},                         q{"SDL_RENDER_LINE_METHOD"}},
+		{{q{renderMetalPreferLowPowerDevice},       q{SDL_HINT_RENDER_METAL_PREFER_LOW_POWER_DEVICE}},       q{"SDL_RENDER_METAL_PREFER_LOW_POWER_DEVICE"}},
+		{{q{renderVSync},                           q{SDL_HINT_RENDER_VSYNC}},                               q{"SDL_RENDER_VSYNC"}},
+		{{q{returnKeyHidesIME},                     q{SDL_HINT_RETURN_KEY_HIDES_IME}},                       q{"SDL_RETURN_KEY_HIDES_IME"}},
+		{{q{rogGamepadMice},                        q{SDL_HINT_ROG_GAMEPAD_MICE}},                           q{"SDL_ROG_GAMEPAD_MICE"}},
+		{{q{rogGamepadMiceExcluded},                q{SDL_HINT_ROG_GAMEPAD_MICE_EXCLUDED}},                  q{"SDL_ROG_GAMEPAD_MICE_EXCLUDED"}},
+		{{q{rpiVideoLayer},                         q{SDL_HINT_RPI_VIDEO_LAYER}},                            q{"SDL_RPI_VIDEO_LAYER"}},
+		{{q{screensaverInhibitActivityName},        q{SDL_HINT_SCREENSAVER_INHIBIT_ACTIVITY_NAME}},          q{"SDL_SCREENSAVER_INHIBIT_ACTIVITY_NAME"}},
+		{{q{shutDownDBusOnQuit},                    q{SDL_HINT_SHUTDOWN_DBUS_ON_QUIT}},                      q{"SDL_SHUTDOWN_DBUS_ON_QUIT"}},
+		{{q{storageTitleDriver},                    q{SDL_HINT_STORAGE_TITLE_DRIVER}},                       q{"SDL_STORAGE_TITLE_DRIVER"}},
+		{{q{storageUserDriver},                     q{SDL_HINT_STORAGE_USER_DRIVER}},                        q{"SDL_STORAGE_USER_DRIVER"}},
+		{{q{threadForceRealTimeTimeCritical},       q{SDL_HINT_THREAD_FORCE_REALTIME_TIME_CRITICAL}},        q{"SDL_THREAD_FORCE_REALTIME_TIME_CRITICAL"}},
+		{{q{threadPriorityPolicy},                  q{SDL_HINT_THREAD_PRIORITY_POLICY}},                     q{"SDL_THREAD_PRIORITY_POLICY"}},
+		{{q{timerResolution},                       q{SDL_HINT_TIMER_RESOLUTION}},                           q{"SDL_TIMER_RESOLUTION"}},
+		{{q{touchMouseEvents},                      q{SDL_HINT_TOUCH_MOUSE_EVENTS}},                         q{"SDL_TOUCH_MOUSE_EVENTS"}},
+		{{q{trackpadIsTouchOnly},                   q{SDL_HINT_TRACKPAD_IS_TOUCH_ONLY}},                     q{"SDL_TRACKPAD_IS_TOUCH_ONLY"}},
+		{{q{tvRemoteAsJoystick},                    q{SDL_HINT_TV_REMOTE_AS_JOYSTICK}},                      q{"SDL_TV_REMOTE_AS_JOYSTICK"}},
+		{{q{videoAllowScreensaver},                 q{SDL_HINT_VIDEO_ALLOW_SCREENSAVER}},                    q{"SDL_VIDEO_ALLOW_SCREENSAVER"}},
+		{{q{videoDisplayPriority},                  q{SDL_HINT_VIDEO_DISPLAY_PRIORITY}},                     q{"SDL_VIDEO_DISPLAY_PRIORITY"}},
+		{{q{videoDoubleBuffer},                     q{SDL_HINT_VIDEO_DOUBLE_BUFFER}},                        q{"SDL_VIDEO_DOUBLE_BUFFER"}},
+		{{q{videoDriver},                           q{SDL_HINT_VIDEO_DRIVER}},                               q{"SDL_VIDEO_DRIVER"}},
+		{{q{videoDummySaveFrames},                  q{SDL_HINT_VIDEO_DUMMY_SAVE_FRAMES}},                    q{"SDL_VIDEO_DUMMY_SAVE_FRAMES"}},
+		{{q{videoEGLAllowGetDisplayFallback},       q{SDL_HINT_VIDEO_EGL_ALLOW_GETDISPLAY_FALLBACK}},        q{"SDL_VIDEO_EGL_ALLOW_GETDISPLAY_FALLBACK"}},
+		{{q{videoForceEGL},                         q{SDL_HINT_VIDEO_FORCE_EGL}},                            q{"SDL_VIDEO_FORCE_EGL"}},
+		{{q{videoMacFullscreenSpaces},              q{SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES}},                q{"SDL_VIDEO_MAC_FULLSCREEN_SPACES"}},
+		{{q{videoMacFullscreenMenuVisibility},      q{SDL_HINT_VIDEO_MAC_FULLSCREEN_MENU_VISIBILITY}},       q{"SDL_VIDEO_MAC_FULLSCREEN_MENU_VISIBILITY"}},
+		{{q{videoMinimiseOnFocusLoss},              q{SDL_HINT_VIDEO_MINIMISE_ON_FOCUS_LOSS}},               q{"SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS"}, aliases: [{q{videoMinimizeOnFocusLoss}, q{SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS}}]},
+		{{q{videoOffScreenSaveFrames},              q{SDL_HINT_VIDEO_OFFSCREEN_SAVE_FRAMES}},                q{"SDL_VIDEO_OFFSCREEN_SAVE_FRAMES"}},
+		{{q{videoSyncWindowOperations},             q{SDL_HINT_VIDEO_SYNC_WINDOW_OPERATIONS}},               q{"SDL_VIDEO_SYNC_WINDOW_OPERATIONS"}},
+		{{q{videoWaylandAllowLibdecor},             q{SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR}},               q{"SDL_VIDEO_WAYLAND_ALLOW_LIBDECOR"}},
+		{{q{videoWaylandModeEmulation},             q{SDL_HINT_VIDEO_WAYLAND_MODE_EMULATION}},               q{"SDL_VIDEO_WAYLAND_MODE_EMULATION"}},
+		{{q{videoWaylandModeScaling},               q{SDL_HINT_VIDEO_WAYLAND_MODE_SCALING}},                 q{"SDL_VIDEO_WAYLAND_MODE_SCALING"}},
+		{{q{videoWaylandPreferLibdecor},            q{SDL_HINT_VIDEO_WAYLAND_PREFER_LIBDECOR}},              q{"SDL_VIDEO_WAYLAND_PREFER_LIBDECOR"}},
+		{{q{videoWaylandScaleToDisplay},            q{SDL_HINT_VIDEO_WAYLAND_SCALE_TO_DISPLAY}},             q{"SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY"}},
+		{{q{videoWinD3Dcompiler},                   q{SDL_HINT_VIDEO_WIN_D3DCOMPILER}},                      q{"SDL_VIDEO_WIN_D3DCOMPILER"}},
+		{{q{videoX11NetWMBypassCompositor},         q{SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR}},         q{"SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR"}},
+		{{q{videoX11NetWMPing},                     q{SDL_HINT_VIDEO_X11_NET_WM_PING}},                      q{"SDL_VIDEO_X11_NET_WM_PING"}},
+		{{q{videoX11NoDirectColour},                q{SDL_HINT_VIDEO_X11_NODIRECTCOLOUR}},                   q{"SDL_VIDEO_X11_NODIRECTCOLOR"}, aliases: [{q{videoX11NoDirectColor}, q{SDL_HINT_VIDEO_X11_NODIRECTCOLOR}}]},
+		{{q{videoX11ScalingFactor},                 q{SDL_HINT_VIDEO_X11_SCALING_FACTOR}},                   q{"SDL_VIDEO_X11_SCALING_FACTOR"}},
+		{{q{videoX11VisualID},                      q{SDL_HINT_VIDEO_X11_VISUALID}},                         q{"SDL_VIDEO_X11_VISUALID"}},
+		{{q{videoX11WindowVisualID},                q{SDL_HINT_VIDEO_X11_WINDOW_VISUALID}},                  q{"SDL_VIDEO_X11_WINDOW_VISUALID"}},
+		{{q{videoX11Xrandr},                        q{SDL_HINT_VIDEO_X11_XRANDR}},                           q{"SDL_VIDEO_X11_XRANDR"}},
+		{{q{vitaEnableBackTouch},                   q{SDL_HINT_VITA_ENABLE_BACK_TOUCH}},                     q{"SDL_VITA_ENABLE_BACK_TOUCH"}},
+		{{q{vitaEnableFrontTouch},                  q{SDL_HINT_VITA_ENABLE_FRONT_TOUCH}},                    q{"SDL_VITA_ENABLE_FRONT_TOUCH"}},
+		{{q{vitaModulePath},                        q{SDL_HINT_VITA_MODULE_PATH}},                           q{"SDL_VITA_MODULE_PATH"}},
+		{{q{vitaPVRInit},                           q{SDL_HINT_VITA_PVR_INIT}},                              q{"SDL_VITA_PVR_INIT"}},
+		{{q{vitaResolution},                        q{SDL_HINT_VITA_RESOLUTION}},                            q{"SDL_VITA_RESOLUTION"}},
+		{{q{vitaPVROpenGL},                         q{SDL_HINT_VITA_PVR_OPENGL}},                            q{"SDL_VITA_PVR_OPENGL"}},
+		{{q{vitaTouchMouseDevice},                  q{SDL_HINT_VITA_TOUCH_MOUSE_DEVICE}},                    q{"SDL_VITA_TOUCH_MOUSE_DEVICE"}},
+		{{q{vulkanDisplay},                         q{SDL_HINT_VULKAN_DISPLAY}},                             q{"SDL_VULKAN_DISPLAY"}},
+		{{q{vulkanLibrary},                         q{SDL_HINT_VULKAN_LIBRARY}},                             q{"SDL_VULKAN_LIBRARY"}},
+		{{q{waveFactChunk},                         q{SDL_HINT_WAVE_FACT_CHUNK}},                            q{"SDL_WAVE_FACT_CHUNK"}},
+		{{q{waveChunkLimit},                        q{SDL_HINT_WAVE_CHUNK_LIMIT}},                           q{"SDL_WAVE_CHUNK_LIMIT"}},
+		{{q{waveRiffChunkSize},                     q{SDL_HINT_WAVE_RIFF_CHUNK_SIZE}},                       q{"SDL_WAVE_RIFF_CHUNK_SIZE"}},
+		{{q{waveTruncation},                        q{SDL_HINT_WAVE_TRUNCATION}},                            q{"SDL_WAVE_TRUNCATION"}},
+		{{q{windowActivateWhenRaised},              q{SDL_HINT_WINDOW_ACTIVATE_WHEN_RAISED}},                q{"SDL_WINDOW_ACTIVATE_WHEN_RAISED"}},
+		{{q{windowActivateWhenShown},               q{SDL_HINT_WINDOW_ACTIVATE_WHEN_SHOWN}},                 q{"SDL_WINDOW_ACTIVATE_WHEN_SHOWN"}},
+		{{q{windowAllowTopmost},                    q{SDL_HINT_WINDOW_ALLOW_TOPMOST}},                       q{"SDL_WINDOW_ALLOW_TOPMOST"}},
+		{{q{windowFrameUsableWhileCursorHidden},    q{SDL_HINT_WINDOW_FRAME_USABLE_WHILE_CURSOR_HIDDEN}},    q{"SDL_WINDOW_FRAME_USABLE_WHILE_CURSOR_HIDDEN"}},
+		{{q{windowsCloseOnAltF4},                   q{SDL_HINT_WINDOWS_CLOSE_ON_ALT_F4}},                    q{"SDL_WINDOWS_CLOSE_ON_ALT_F4"}},
+		{{q{windowsEnableMenuMnemonics},            q{SDL_HINT_WINDOWS_ENABLE_MENU_MNEMONICS}},              q{"SDL_WINDOWS_ENABLE_MENU_MNEMONICS"}},
+		{{q{windowsEnableMessageloop},              q{SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP}},                 q{"SDL_WINDOWS_ENABLE_MESSAGELOOP"}},
+		{{q{windowsGameinput},                      q{SDL_HINT_WINDOWS_GAMEINPUT}},                          q{"SDL_WINDOWS_GAMEINPUT"}},
+		{{q{windowsRawKeyboard},                    q{SDL_HINT_WINDOWS_RAW_KEYBOARD}},                       q{"SDL_WINDOWS_RAW_KEYBOARD"}},
+		{{q{windowsForceSemaphoreKernel},           q{SDL_HINT_WINDOWS_FORCE_SEMAPHORE_KERNEL}},             q{"SDL_WINDOWS_FORCE_SEMAPHORE_KERNEL"}},
+		{{q{windowsIntresourceIcon},                q{SDL_HINT_WINDOWS_INTRESOURCE_ICON}},                   q{"SDL_WINDOWS_INTRESOURCE_ICON"}},
+		{{q{windowsIntresourceIconSmall},           q{SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL}},             q{"SDL_WINDOWS_INTRESOURCE_ICON_SMALL"}},
+		{{q{windowsUseD3D9Ex},                      q{SDL_HINT_WINDOWS_USE_D3D9EX}},                         q{"SDL_WINDOWS_USE_D3D9EX"}},
+		{{q{windowsEraseBackgroundMode},            q{SDL_HINT_WINDOWS_ERASE_BACKGROUND_MODE}},              q{"SDL_WINDOWS_ERASE_BACKGROUND_MODE"}},
+		{{q{x11ForceOverrideRedirect},              q{SDL_HINT_X11_FORCE_OVERRIDE_REDIRECT}},                q{"SDL_X11_FORCE_OVERRIDE_REDIRECT"}},
+		{{q{x11WindowType},                         q{SDL_HINT_X11_WINDOW_TYPE}},                            q{"SDL_X11_WINDOW_TYPE"}},
+		{{q{x11XCBLibrary},                         q{SDL_HINT_X11_XCB_LIBRARY}},                            q{"SDL_X11_XCB_LIBRARY"}},
+		{{q{xinputEnabled},                         q{SDL_HINT_XINPUT_ENABLED}},                             q{"SDL_XINPUT_ENABLED"}},
+		{{q{assert_},                               q{SDL_HINT_ASSERT}},                                     q{"SDL_ASSERT"}},
+		{{q{penMouseEvents},                        q{SDL_HINT_PEN_MOUSE_EVENTS}},                           q{"SDL_PEN_MOUSE_EVENTS"}},
+		{{q{penTouchEvents},                        q{SDL_HINT_PEN_TOUCH_EVENTS}},                           q{"SDL_PEN_TOUCH_EVENTS"}},
+	];
+	return ret;
+}()));
 
-enum{
-	SDL_HINT_FRAMEBUFFER_ACCELERATION = "SDL_FRAMEBUFFER_ACCELERATION",
-	SDL_HINT_RENDER_DRIVER = "SDL_RENDER_DRIVER",
-	SDL_HINT_RENDER_OPENGL_SHADERS = "SDL_RENDER_OPENGL_SHADERS",
-	SDL_HINT_RENDER_SCALE_QUALITY = "SDL_RENDER_SCALE_QUALITY",
-	SDL_HINT_RENDER_VSYNC = "SDL_RENDER_VSYNC",
-	SDL_HINT_VIDEO_X11_XVIDMODE = "SDL_VIDEO_X11_XVIDMODE",
-	SDL_HINT_VIDEO_X11_XINERAMA = "SDL_VIDEO_X11_XINERAMA",
-	SDL_HINT_VIDEO_X11_XRANDR = "SDL_VIDEO_X11_XRANDR",
-	SDL_HINT_GRAB_KEYBOARD = "SDL_GRAB_KEYBOARD",
-	SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS",
-	SDL_HINT_IDLE_TIMER_DISABLED = "SDL_IOS_IDLE_TIMER_DISABLED",
-	SDL_HINT_ORIENTATIONS = "SDL_IOS_ORIENTATIONS",
-	SDL_HINT_XINPUT_ENABLED = "SDL_XINPUT_ENABLED",
-	SDL_HINT_GAMECONTROLLERCONFIG = "SDL_GAMECONTROLLERCONFIG",
-	SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS = "SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS",
-	SDL_HINT_ALLOW_TOPMOST = "SDL_ALLOW_TOPMOST",
-	SDL_HINT_TIMER_RESOLUTION = "SDL_TIMER_RESOLUTION",
-}
-static if(sdlSupport >= SDLSupport.v2_0_1)
-enum{
-	SDL_HINT_RENDER_DIRECT3D_THREADSAFE = "SDL_RENDER_DIRECT3D_THREADSAFE",
-	SDL_HINT_VIDEO_HIGHDPI_DISABLED = "SDL_VIDEO_HIGHDPI_DISABLED",
-}
-static if(sdlSupport >= SDLSupport.v2_0_2)
-enum{
-	SDL_HINT_VIDEO_ALLOW_SCREENSAVER = "SDL_VIDEO_ALLOW_SCREENSAVER",
-	SDL_HINT_MOUSE_RELATIVE_MODE_WARP = "SDL_MOUSE_RELATIVE_MODE_WARP",
-	SDL_HINT_ACCELEROMETER_AS_JOYSTICK = "SDL_ACCELEROMETER_AS_JOYSTICK",
-	SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK = "SDL_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK",
-	SDL_HINT_VIDEO_WIN_D3DCOMPILER = "SDL_VIDEO_WIN_D3DCOMPILER",
-	SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT = "SDL_VIDEO_WINDOW_SHARE_PIXEL_FORMAT",
-	SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES = "SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES",
-}
-// This is *intended* to be == and not >=. The values for all of these changed in 2.0.4.
-static if(sdlSupport == SDLSupport.v2_0_3)
-enum{
-	SDL_HINT_RENDER_DIRECT3D11_DEBUG = "SDL_HINT_RENDER_DIRECT3D11_DEBUG",
-	SDL_HINT_WINRT_PRIVACY_POLICY_URL = "SDL_HINT_WINRT_PRIVACY_POLICY_URL",
-	SDL_HINT_WINRT_PRIVACY_POLICY_LABEL = "SDL_HINT_WINRT_PRIVACY_POLICY_LABEL",
-	SDL_HINT_WINRT_HANDLE_BACK_BUTTON = "SDL_HINT_WINRT_HANDLE_BACK_BUTTON",
-}
-static if(sdlSupport >= SDLSupport.v2_0_4)
-enum{
-	SDL_HINT_VIDEO_X11_NET_WM_PING = "SDL_VIDEO_X11_NET_WM_PING",
-	SDL_HINT_WINDOW_FRAME_USABLE_WHILE_CURSOR_HIDDEN = "SDL_WINDOW_FRAME_USABLE_WHILE_CURSOR_HIDDEN",
-	SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP = "SDL_WINDOWS_ENABLE_MESSAGELOOP",
-	SDL_HINT_XINPUT_USE_OLD_JOYSTICK_MAPPING = "SDL_XINPUT_USE_OLD_JOYSTICK_MAPPING",
-	SDL_HINT_THREAD_STACK_SIZE = "SDL_THREAD_STACK_SIZE",
-	SDL_HINT_MAC_BACKGROUND_APP = "SDL_MAC_BACKGROUND_APP",
-	SDL_HINT_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION = "SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION",
-	SDL_HINT_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION = "SDL_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION",
-	SDL_HINT_IME_INTERNAL_EDITING = "SDL_IME_INTERNAL_EDITING",
-	SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT = "SDL_EMSCRIPTEN_KEYBOARD_ELEMENT",
-	SDL_HINT_NO_SIGNAL_HANDLERS = "SDL_NO_SIGNAL_HANDLERS",
-	SDL_HINT_WINDOWS_NO_CLOSE_ON_ALT_F4 = "SDL_WINDOWS_NO_CLOSE_ON_ALT_F4",
-	
-	// Changed values from those introduced in 2.0.3
-	SDL_HINT_RENDER_DIRECT3D11_DEBUG = "SDL_RENDER_DIRECT3D11_DEBUG",
-	SDL_HINT_WINRT_PRIVACY_POLICY_URL = "SDL_WINRT_PRIVACY_POLICY_URL",
-	SDL_HINT_WINRT_PRIVACY_POLICY_LABEL = "SDL_WINRT_PRIVACY_POLICY_LABEL",
-	SDL_HINT_WINRT_HANDLE_BACK_BUTTON = "SDL_WINRT_HANDLE_BACK_BUTTON",
-}
-static if(sdlSupport >= SDLSupport.v2_0_4 && sdlSupport < SDLSupport.v2_0_10)
-enum{
-	SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH = "SDL_ANDROID_SEPARATE_MOUSE_AND_TOUCH",
-}
-static if(sdlSupport >= SDLSupport.v2_0_5)
-enum{
-	SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH = "SDL_MOUSE_FOCUS_CLICKTHROUGH",
-	SDL_HINT_APPLE_TV_CONTROLLER_UI_EVENTS = "SDL_APPLE_TV_CONTROLLER_UI_EVENTS",
-	SDL_HINT_APPLE_TV_REMOTE_ALLOW_ROTATION = "SDL_APPLE_TV_REMOTE_ALLOW_ROTATION",
-	SDL_HINT_BMP_SAVE_LEGACY_FORMAT = "SDL_BMP_SAVE_LEGACY_FORMAT",
-	SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING = "SDL_WINDOWS_DISABLE_THREAD_NAMING",
-	SDL_HINT_RPI_VIDEO_LAYER = "SDL_RPI_VIDEO_LAYER",
-}
-static if(sdlSupport >= SDLSupport.v2_0_6)
-enum{
-	SDL_HINT_RENDER_LOGICAL_SIZE_MODE = "SDL_RENDER_LOGICAL_SIZE_MODE",
-	SDL_HINT_WINDOWS_INTRESOURCE_ICON = "SDL_WINDOWS_INTRESOURCE_ICON",
-	SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL = "SDL_WINDOWS_INTRESOURCE_ICON_SMALL",
-	SDL_HINT_MOUSE_NORMAL_SPEED_SCALE = "SDL_MOUSE_NORMAL_SPEED_SCALE",
-	SDL_HINT_MOUSE_RELATIVE_SPEED_SCALE = "SDL_MOUSE_RELATIVE_SPEED_SCALE",
-	SDL_HINT_TOUCH_MOUSE_EVENTS = "SDL_TOUCH_MOUSE_EVENTS",
-	SDL_HINT_GAMECONTROLLER_IGNORE_DEVICES = "SDL_GAMECONTROLLER_IGNORE_DEVICES",
-	SDL_HINT_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT = "SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT",
-	SDL_HINT_QTWAYLAND_CONTENT_ORIENTATION = "SDL_QTWAYLAND_CONTENT_ORIENTATION",
-	SDL_HINT_QTWAYLAND_WINDOW_FLAGS = "SDL_QTWAYLAND_WINDOW_FLAGS",
-	SDL_HINT_OPENGL_ES_DRIVER = "SDL_OPENGL_ES_DRIVER",
-	SDL_HINT_AUDIO_RESAMPLING_MODE = "SDL_AUDIO_RESAMPLING_MODE",
-	SDL_HINT_AUDIO_CATEGORY = "SDL_AUDIO_CATEGORY",
-}
-static if(sdlSupport >= SDLSupport.v2_0_8)
-enum{
-	SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR = "SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR",
-	SDL_HINT_IOS_HIDE_HOME_INDICATOR = "SDL_IOS_HIDE_HOME_INDICATOR",
-	SDL_HINT_TV_REMOTE_AS_JOYSTICK = "SDL_TV_REMOTE_AS_JOYSTICK",
-	SDL_HINT_RETURN_KEY_HIDES_IME = "SDL_RETURN_KEY_HIDES_IME",
-	SDL_HINT_VIDEO_DOUBLE_BUFFER = "SDL_VIDEO_DOUBLE_BUFFER",
-}
-static if(sdlSupport >= SDLSupport.v2_0_9)
-enum{
-	SDL_HINT_MOUSE_DOUBLE_CLICK_TIME = "SDL_MOUSE_DOUBLE_CLICK_TIME",
-	SDL_HINT_MOUSE_DOUBLE_CLICK_RADIUS = "SDL_MOUSE_DOUBLE_CLICK_RADIUS",
-	SDL_HINT_JOYSTICK_HIDAPI = "SDL_JOYSTICK_HIDAPI",
-	SDL_HINT_JOYSTICK_HIDAPI_PS4 = "SDL_JOYSTICK_HIDAPI_PS4",
-	SDL_HINT_JOYSTICK_HIDAPI_PS4_RUMBLE = "SDL_JOYSTICK_HIDAPI_PS4_RUMBLE",
-	SDL_HINT_JOYSTICK_HIDAPI_STEAM = "SDL_JOYSTICK_HIDAPI_STEAM",
-	SDL_HINT_JOYSTICK_HIDAPI_SWITCH = "SDL_JOYSTICK_HIDAPI_SWITCH",
-	SDL_HINT_JOYSTICK_HIDAPI_XBOX = "SDL_JOYSTICK_HIDAPI_XBOX",
-	SDL_HINT_ENABLE_STEAM_CONTROLLERS = "SDL_ENABLE_STEAM_CONTROLLERS",
-	SDL_HINT_ANDROID_TRAP_BACK_BUTTON = "SDL_ANDROID_TRAP_BACK_BUTTON",
-}
-static if(sdlSupport >= SDLSupport.v2_0_10)
-enum{
-	SDL_HINT_MOUSE_TOUCH_EVENTS = "SDL_MOUSE_TOUCH_EVENTS",
-	SDL_HINT_GAMECONTROLLERCONFIG_FILE = "SDL_GAMECONTROLLERCONFIG_FILE",
-	SDL_HINT_ANDROID_BLOCK_ON_PAUSE = "SDL_ANDROID_BLOCK_ON_PAUSE",
-	SDL_HINT_RENDER_BATCHING = "SDL_RENDER_BATCHING",
-	SDL_HINT_EVENT_LOGGING = "SDL_EVENT_LOGGING",
-	SDL_HINT_WAVE_RIFF_CHUNK_SIZE = "SDL_WAVE_RIFF_CHUNK_SIZE",
-	SDL_HINT_WAVE_TRUNCATION = "SDL_WAVE_TRUNCATION",
-	SDL_HINT_WAVE_FACT_CHUNK = "SDL_WAVE_FACT_CHUNK",
-}
-static if(sdlSupport >= SDLSupport.v2_0_12)
-enum{
-	SDL_HINT_VIDEO_EXTERNAL_CONTEXT = "SDL_VIDEO_EXTERNAL_CONTEXT",
-	SDL_HINT_VIDEO_X11_WINDOW_VISUALID = "SDL_VIDEO_X11_WINDOW_VISUALID",
-	SDL_HINT_VIDEO_X11_FORCE_EGL = "SDL_VIDEO_X11_FORCE_EGL",
-	SDL_HINT_GAMECONTROLLERTYPE = "SDL_GAMECONTROLLERTYPE",
-	SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS = "SDL_GAMECONTROLLER_USE_BUTTON_LABELS",
-	SDL_HINT_JOYSTICK_HIDAPI_GAMECUBE = "SDL_JOYSTICK_HIDAPI_GAMECUBE",
-	SDL_HINT_DISPLAY_USABLE_BOUNDS = "SDL_DISPLAY_USABLE_BOUNDS",
-}
-static if(sdlSupport >= SDLSupport.v2_0_14)
-enum{
-	SDL_HINT_MOUSE_RELATIVE_SCALING = "SDL_MOUSE_RELATIVE_SCALING",
-	SDL_HINT_JOYSTICK_HIDAPI_PS5 = "SDL_JOYSTICK_HIDAPI_PS5",
-	SDL_HINT_JOYSTICK_HIDAPI_CORRELATE_XINPUT = "SDL_JOYSTICK_HIDAPI_CORRELATE_XINPUT",
-	SDL_HINT_JOYSTICK_RAWINPUT = "SDL_JOYSTICK_RAWINPUT",
-	SDL_HINT_JOYSTICK_THREAD = "SDL_JOYSTICK_THREAD",
-	SDL_HINT_LINUX_JOYSTICK_DEADZONES = "SDL_LINUX_JOYSTICK_DEADZONES",
-	SDL_HINT_THREAD_PRIORITY_POLICY = "SDL_THREAD_PRIORITY_POLICY",
-	SDL_HINT_THREAD_FORCE_REALTIME_TIME_CRITICAL = "SDL_THREAD_FORCE_REALTIME_TIME_CRITICAL",
-	SDL_HINT_ANDROID_BLOCK_ON_PAUSE_PAUSEAUDIO = "SDL_ANDROID_BLOCK_ON_PAUSE_PAUSEAUDIO",
-	SDL_HINT_EMSCRIPTEN_ASYNCIFY = "SDL_EMSCRIPTEN_ASYNCIFY",
-	SDL_HINT_AUTO_UPDATE_JOYSTICKS = "SDL_AUTO_UPDATE_JOYSTICKS",
-	SDL_HINT_AUTO_UPDATE_SENSORS = "SDL_AUTO_UPDATE_SENSORS",
-	SDL_HINT_AUDIO_DEVICE_APP_NAME = "SDL_AUDIO_DEVICE_APP_NAME",
-	SDL_HINT_AUDIO_DEVICE_STREAM_NAME = "SDL_AUDIO_DEVICE_STREAM_NAME",
-	SDL_HINT_PREFERRED_LOCALES = "SDL_PREFERRED_LOCALES",
-}
-static if(sdlSupport >= SDLSupport.v2_0_16)
-enum{
-	SDL_HINT_AUDIO_INCLUDE_MONITORS = "SDL_AUDIO_INCLUDE_MONITORS",
-	SDL_HINT_AUDIO_DEVICE_STREAM_ROLE = "SDL_AUDIO_DEVICE_STREAM_ROLE",
-}
-static if(sdlSupport >= SDLSupport.v2_0_18)
-enum{
-	SDL_HINT_APP_NAME = "SDL_APP_NAME",
-	SDL_HINT_IME_SHOW_UI = "SDL_IME_SHOW_UI",
-	SDL_HINT_JOYSTICK_DEVICE = "SDL_JOYSTICK_DEVICE",
-	SDL_HINT_LINUX_JOYSTICK_CLASSIC = "SDL_LINUX_JOYSTICK_CLASSIC",
-	SDL_HINT_POLL_SENTINEL = "SDL_HINT_POLL_SENTINEL",
-	SDL_HINT_SCREENSAVER_INHIBIT_ACTIVITY_NAME = "SDL_SCREENSAVER_INHIBIT_ACTIVITY_NAME",
-	SDL_HINT_VIDEO_EGL_ALLOW_TRANSPARENCY = "SDL_VIDEO_EGL_ALLOW_TRANSPARENCY",
-	SDL_HINT_WINDOW_NO_ACTIVATION_WHEN_SHOWN = "SDL_HINT_WINDOW_NO_ACTIVATION_WHEN_SHOWN",
-}
-static if(sdlSupport >= SDLSupport.v2_0_20)
-enum{
-	SDL_HINT_RENDER_LINE_METHOD = "SDL_RENDER_LINE_METHOD",
-}
-static if(sdlSupport >= SDLSupport.v2_0_22)
-enum{
-	SDL_HINT_FORCE_RAISEWINDOW = "SDL_HINT_FORCE_RAISEWINDOW",
-	SDL_HINT_IME_SUPPORT_EXTENDED_TEXT = "SDL_HINT_IME_SUPPORT_EXTENDED_TEXT",
-	SDL_HINT_JOYSTICK_GAMECUBE_RUMBLE_BRAKE = "SDL_HINT_JOYSTICK_GAMECUBE_RUMBLE_BRAKE",
-	SDL_HINT_JOYSTICK_ROG_CHAKRAM = "SDL_HINT_JOYSTICK_ROG_CHAKRAM",
-	SDL_HINT_MOUSE_RELATIVE_MODE_CENTER = "SDL_HINT_MOUSE_RELATIVE_MODE_CENTER",
-	SDL_HINT_MOUSE_AUTO_CAPTURE = "SDL_HINT_MOUSE_AUTO_CAPTURE",
-	SDL_HINT_VITA_TOUCH_MOUSE_DEVICE = "SDL_HINT_VITA_TOUCH_MOUSE_DEVICE",
-	SDL_HINT_VIDEO_WAYLAND_PREFER_LIBDECOR = "SDL_HINT_VIDEO_WAYLAND_PREFER_LIBDECOR",
-	SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL = "SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL",
-	SDL_HINT_VIDEO_FOREIGN_WINDOW_VULKAN = "SDL_HINT_VIDEO_FOREIGN_WINDOW_VULKAN",
-	SDL_HINT_X11_WINDOW_TYPE = "SDL_HINT_X11_WINDOW_TYPE",
-	SDL_HINT_QUIT_ON_LAST_WINDOW_CLOSE = "SDL_HINT_QUIT_ON_LAST_WINDOW_CLOSE",
-	SDL_HINT_VIDEODRIVER = "SDL_HINT_VIDEODRIVER",
-	SDL_HINT_AUDIODRIVER = "SDL_HINT_AUDIODRIVER",
-}
-static if(sdlSupport >= SDLSupport.v2_24)
-enum{
-	SDL_HINT_JOYSTICK_HIDAPI_COMBINE_JOY_CONS = "SDL_JOYSTICK_HIDAPI_COMBINE_JOY_CONS",
-	SDL_HINT_JOYSTICK_HIDAPI_NINTENDO_CLASSIC = "SDL_JOYSTICK_HIDAPI_NINTENDO_CLASSIC",
-	SDL_HINT_JOYSTICK_HIDAPI_SHIELD = "SDL_JOYSTICK_HIDAPI_SHIELD",
-	SDL_HINT_JOYSTICK_HIDAPI_JOYCON_HOME_LED = "SDL_JOYSTICK_HIDAPI_JOYCON_HOME_LED",
-	SDL_HINT_JOYSTICK_HIDAPI_SWITCH_PLAYER_LED = "SDL_JOYSTICK_HIDAPI_SWITCH_PLAYER_LED",
-	SDL_HINT_LINUX_DIGITAL_HATS = "SDL_LINUX_DIGITAL_HATS",
-	SDL_HINT_LINUX_HAT_DEADZONES = "SDL_LINUX_HAT_DEADZONES",
-	SDL_HINT_MAC_OPENGL_ASYNC_DISPATCH = "SDL_MAC_OPENGL_ASYNC_DISPATCH",
-	SDL_HINT_MOUSE_RELATIVE_WARP_MOTION = "SDL_MOUSE_RELATIVE_WARP_MOTION",
-	SDL_HINT_VIDEO_WAYLAND_MODE_EMULATION = "SDL_VIDEO_WAYLAND_MODE_EMULATION",
-	SDL_HINT_WINDOWS_DPI_AWARENESS = "SDL_WINDOWS_DPI_AWARENESS",
-	SDL_HINT_WINDOWS_DPI_SCALING = "SDL_WINDOWS_DPI_SCALING",
-	SDL_HINT_DIRECTINPUT_ENABLED = "SDL_DIRECTINPUT_ENABLED",
-	SDL_HINT_KMSDRM_DEVICE_INDEX = "SDL_KMSDRM_DEVICE_INDEX",
-	SDL_HINT_TRACKPAD_IS_TOUCH_ONLY = "SDL_TRACKPAD_IS_TOUCH_ONLY",
-}
-static if(sdlSupport >= SDLSupport.v2_26)
-enum{
-	SDL_HINT_HIDAPI_IGNORE_DEVICES = "SDL_HIDAPI_IGNORE_DEVICES",
-	SDL_HINT_JOYSTICK_HIDAPI_VERTICAL_JOY_CONS = "SDL_JOYSTICK_HIDAPI_VERTICAL_JOY_CONS",
-	SDL_HINT_JOYSTICK_HIDAPI_PS3 = "SDL_JOYSTICK_HIDAPI_PS3",
-	SDL_HINT_JOYSTICK_HIDAPI_WII = "SDL_JOYSTICK_HIDAPI_WII",
-	SDL_HINT_JOYSTICK_HIDAPI_WII_PLAYER_LED = "SDL_JOYSTICK_HIDAPI_WII_PLAYER_LED",
-	SDL_HINT_JOYSTICK_HIDAPI_XBOX_360 = "SDL_JOYSTICK_HIDAPI_XBOX_360",
-	SDL_HINT_JOYSTICK_HIDAPI_XBOX_360_PLAYER_LED = "SDL_JOYSTICK_HIDAPI_XBOX_360_PLAYER_LED",
-	SDL_HINT_JOYSTICK_HIDAPI_XBOX_360_WIRELESS = "SDL_JOYSTICK_HIDAPI_XBOX_360_WIRELESS",
-	SDL_HINT_JOYSTICK_HIDAPI_XBOX_ONE = "SDL_JOYSTICK_HIDAPI_XBOX_ONE",
-	SDL_HINT_JOYSTICK_HIDAPI_XBOX_ONE_HOME_LED = "SDL_JOYSTICK_HIDAPI_XBOX_ONE_HOME_LED",
-	SDL_HINT_MOUSE_RELATIVE_SYSTEM_SCALE = "SDL_MOUSE_RELATIVE_SYSTEM_SCALE",
-	SDL_HINT_PS2_DYNAMIC_VSYNC = "SDL_PS2_DYNAMIC_VSYNC",
-	SDL_HINT_VIDEO_WAYLAND_EMULATE_MOUSE_WARP = "SDL_VIDEO_WAYLAND_EMULATE_MOUSE_WARP",
-}
-static if(sdlSupport >= SDLSupport.v2_28)
-enum{
-	SDL_HINT_ENABLE_SCREEN_KEYBOARD = "SDL_ENABLE_SCREEN_KEYBOARD",
-	SDL_HINT_WINDOWS_ENABLE_MENU_MNEMONICS = "SDL_WINDOWS_ENABLE_MENU_MNEMONICS",
-}
-static if(sdlSupport >= SDLSupport.v2_30)
-enum{
-	SDL_HINT_JOYSTICK_ARCADESTICK_DEVICES = "SDL_JOYSTICK_ARCADESTICK_DEVICES",
-	SDL_HINT_JOYSTICK_ARCADESTICK_DEVICES_EXCLUDED = "SDL_JOYSTICK_ARCADESTICK_DEVICES_EXCLUDED",
-	SDL_HINT_JOYSTICK_BLACKLIST_DEVICES = "SDL_JOYSTICK_BLACKLIST_DEVICES",
-	SDL_HINT_JOYSTICK_BLACKLIST_DEVICES_EXCLUDED = "SDL_JOYSTICK_BLACKLIST_DEVICES_EXCLUDED",
-	SDL_HINT_JOYSTICK_FLIGHTSTICK_DEVICES = "SDL_JOYSTICK_FLIGHTSTICK_DEVICES",
-	SDL_HINT_JOYSTICK_FLIGHTSTICK_DEVICES_EXCLUDED = "SDL_JOYSTICK_FLIGHTSTICK_DEVICES_EXCLUDED",
-	SDL_HINT_JOYSTICK_GAMECUBE_DEVICES = "SDL_JOYSTICK_GAMECUBE_DEVICES",
-	SDL_HINT_JOYSTICK_GAMECUBE_DEVICES_EXCLUDED = "SDL_JOYSTICK_GAMECUBE_DEVICES_EXCLUDED",
-	SDL_HINT_JOYSTICK_HIDAPI_STEAMDECK = "SDL_JOYSTICK_HIDAPI_STEAMDECK",
-	SDL_HINT_JOYSTICK_IOKIT = "SDL_JOYSTICK_IOKIT",
-	SDL_HINT_JOYSTICK_MFI = "SDL_JOYSTICK_MFI",
-	SDL_HINT_JOYSTICK_THROTTLE_DEVICES = "SDL_JOYSTICK_THROTTLE_DEVICES",
-	SDL_HINT_JOYSTICK_THROTTLE_DEVICES_EXCLUDED = "SDL_JOYSTICK_THROTTLE_DEVICES_EXCLUDED",
-	SDL_HINT_JOYSTICK_WGI = "SDL_JOYSTICK_WGI",
-	SDL_HINT_JOYSTICK_WHEEL_DEVICES = "SDL_JOYSTICK_WHEEL_DEVICES",
-	SDL_HINT_JOYSTICK_WHEEL_DEVICES_EXCLUDED = "SDL_JOYSTICK_WHEEL_DEVICES_EXCLUDED",
-	SDL_HINT_JOYSTICK_ZERO_CENTERED_DEVICES = "SDL_JOYSTICK_ZERO_CENTERED_DEVICES",
-	SDL_HINT_LOGGING = "SDL_LOGGING",
-	SDL_HINT_RENDER_METAL_PREFER_LOW_POWER_DEVICE = "SDL_RENDER_METAL_PREFER_LOW_POWER_DEVICE",
-	SDL_HINT_ROG_GAMEPAD_MICE = "SDL_ROG_GAMEPAD_MICE",
-	SDL_HINT_ROG_GAMEPAD_MICE_EXCLUDED = "SDL_ROG_GAMEPAD_MICE_EXCLUDED",
-	SDL_HINT_SHUTDOWN_DBUS_ON_QUIT = "SDL_SHUTDOWN_DBUS_ON_QUIT",
-}
+mixin(makeEnumBind(q{SDL_HintPriority}, members: (){
+	EnumMember[] ret = [
+		{{q{default_},   q{SDL_HINT_DEFAULT}}},
+		{{q{normal},     q{SDL_HINT_NORMAL}}},
+		{{q{override_},  q{SDL_HINT_OVERRIDE}}},
+	];
+	return ret;
+}()));
 
-alias SDL_HintPriority = uint;
-enum: SDL_HintPriority{
-	SDL_HINT_DEFAULT,
-	SDL_HINT_NORMAL,
-	SDL_HINT_OVERRIDE,
-}
-
-alias SDL_HintCallback = extern(C) void function(void* userData, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
+alias SDL_HintCallback = extern(C) void function(void* userdata, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
-		{q{SDL_bool}, q{SDL_SetHintWithPriority}, q{const(char)* name, const(char)* value, SDL_HintPriority priority}},
-		{q{SDL_bool}, q{SDL_SetHint}, q{const(char)* name, const(char)* value}},
-		{q{const(char)*}, q{SDL_GetHint}, q{const(char)* name}},
-		{q{void}, q{SDL_AddHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userData}},
-		{q{void}, q{SDL_DelHintCallback}, q{const(char)* name, SDL_HintCallback callback, void* userData}},
-		{q{void}, q{SDL_ClearHints}, q{}},
+		{q{bool}, q{SDL_SetHintWithPriority}, q{SDL_Hint_ name, const(char)* value, SDL_HintPriority priority}},
+		{q{bool}, q{SDL_SetHint}, q{SDL_Hint_ name, const(char)* value}},
+		{q{bool}, q{SDL_ResetHint}, q{SDL_Hint_ name}},
+		{q{void}, q{SDL_ResetHints}, q{}},
+		{q{const(char)*}, q{SDL_GetHint}, q{SDL_Hint_ name}},
+		{q{bool}, q{SDL_GetHintBoolean}, q{SDL_Hint_ name, bool defaultValue}},
+		{q{bool}, q{SDL_AddHintCallback}, q{SDL_Hint_ name, SDL_HintCallback callback, void* userData}},
+		{q{void}, q{SDL_RemoveHintCallback}, q{SDL_Hint_ name, SDL_HintCallback callback, void* userData}},
 	];
-	if(sdlSupport >= SDLSupport.v2_0_5){
-		FnBind[] add = [
-			{q{SDL_bool}, q{SDL_GetHintBoolean}, q{const(char)* name, SDL_bool defaultValue}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_24){
-		FnBind[] add = [
-			{q{SDL_bool}, q{SDL_ResetHint}, q{const(char)* name}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_26){
-		FnBind[] add = [
-			{q{void}, q{SDL_ResetHints}, q{}},
-		];
-		ret ~= add;
-	}
 	return ret;
 }()));

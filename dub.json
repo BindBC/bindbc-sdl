@@ -1,0 +1,39 @@
+{
+	"name": "bindbc-sdl",
+	"description": "Static & dynamic bindings to SDL3 & the SDL_* libraries, compatible with BetterC, @nogc, and nothrow.",
+	"authors": ["Aya Partridge", "Mike Parker"],
+	"license": "BSL-1.0",
+	
+	"dependencies": {"bindbc-common": "~>1.0"},
+	"targetType": "staticLibrary",
+	"targetPath": "lib",
+	"targetName": "BindBC_SDL",
+	
+	"configurations": [
+		{
+			"name": "dynamic",
+			"dependencies": {"bindbc-loader": "~>1.1"},
+		},
+		{
+			"name": "dynamicBC",
+			"dependencies": {"bindbc-loader": "~>1.1"},
+			"subConfigurations": {
+				"bindbc-loader": "yesBC",
+				"bindbc-common": "yesBC",
+			},
+			"buildOptions": ["betterC"],
+		},
+		{
+			"name": "static",
+			"versions": ["BindSDL_Static"],
+		},
+		{
+			"name": "staticBC",
+			"subConfigurations": {
+				"bindbc-common": "yesBC",
+			},
+			"buildOptions": ["betterC"],
+			"versions": ["BindSDL_Static"],
+		}
+	],
+}

@@ -1,4 +1,5 @@
 lib
+examples/bin
 dub.selections.json
 .dub
 dscanner.ini

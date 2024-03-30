@@ -1,0 +1,45 @@
+{
+	"name": "bindbc-sdl-examples",
+	"description": "Examples for BindBC-SDL.",
+	"license": "public domain",
+	
+	"dependencies": {
+		"bindbc-sdl": {"path": "../"},
+		"bindbc-loader": "~>1.1",
+	},
+	"targetType": "executable",
+	"targetPath": "bin",
+	
+	"libs": ["SDL3"],
+	"versions": ["SDL_MainUseCallbacks"],
+	
+	"buildTypes": {
+		"betterC": {
+			"buildOptions": ["betterC"],
+		},
+	},
+	
+	"configurations": [
+		{ "name": "asyncio1",     "mainSourceFile": "asyncio/load_bitmaps.d" },
+		{ "name": "audio1",       "mainSourceFile": "audio/simple_playback.d" },
+		{ "name": "audio2",       "mainSourceFile": "audio/simple_playback_callback.d" },
+		{ "name": "audio3",       "mainSourceFile": "audio/load_wav.d" },
+		{ "name": "camera1",      "mainSourceFile": "camera/read_and_draw.d" },
+		{ "name": "game1",        "mainSourceFile": "game/snake.d" },
+		{ "name": "pen1",         "mainSourceFile": "pen/drawing_lines.d" },
+		{ "name": "renderer1",    "mainSourceFile": "renderer/clear.d" },
+		{ "name": "renderer2",    "mainSourceFile": "renderer/primitives.d" },
+		{ "name": "renderer3",    "mainSourceFile": "renderer/lines.d" },
+		{ "name": "renderer4",    "mainSourceFile": "renderer/points.d" },
+		{ "name": "renderer5",    "mainSourceFile": "renderer/rectangles.d" },
+		{ "name": "renderer6",    "mainSourceFile": "renderer/textures.d" },
+		{ "name": "renderer7",    "mainSourceFile": "renderer/streaming_textures.d" },
+		{ "name": "renderer8",    "mainSourceFile": "renderer/rotating_textures.d" },
+		{ "name": "renderer9",    "mainSourceFile": "renderer/scaling_textures.d" },
+		{ "name": "renderer10",   "mainSourceFile": "renderer/geometry.d" },
+		{ "name": "renderer11",   "mainSourceFile": "renderer/colour_mods.d" },
+		{ "name": "renderer14",   "mainSourceFile": "renderer/viewport.d" },
+		{ "name": "renderer15",   "mainSourceFile": "renderer/cliprect.d" },
+		{ "name": "renderer17",   "mainSourceFile": "renderer/read_pixels.d" },
+	],
+}

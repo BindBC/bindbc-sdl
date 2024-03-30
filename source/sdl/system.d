@@ -1,227 +1,127 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.system;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.render;
-import sdl.stdinc: SDL_bool;
-import sdl.video;
+import sdl.keyboard;
+import sdl.video: SDL_DisplayID, SDL_Window;
 
-version(Windows) version = Win32_GDK;
-version(WinGDK)  version = Win32_GDK;
+version(Windows)     version = Microsoft;
+else version(GDK)    version = Microsoft;
+else version(Cygwin) version = Microsoft;
 
-version(Win32_GDK){
-	static if(sdlSupport >= SDLSupport.v2_0_1):
-	struct IDirect3DDevice9;
+version(Microsoft){
+	struct MSG;
 	
-	static if(sdlSupport >= SDLSupport.v2_0_4):
-	alias SDL_WindowsMessageHook = extern(C) void function(void* userData, void* hWnd, uint message, ulong wParam, long lParam) nothrow;
-	
-	static if(sdlSupport >= SDLSupport.v2_0_16):
-	struct ID3D11Device;
-	
-	static if(sdlSupport >= SDLSupport.v2_24):
-	struct ID3D12Device;
+	alias SDL_WindowsMessageHook = extern(C) bool function(void* userData, MSG* msg) nothrow;
 }
+
+union XEvent;
+
+alias SDL_X11EventHook = extern(C) bool function(void* userData, XEvent* xEvent) nothrow;
+
+version(iOS){
+	alias SDL_iOSAnimationCallback = extern(C) void function(void* userData) nothrow;
+}
+
 version(Android){
-	enum: int{
-		SDL_ANDROID_EXTERNAL_STORAGE_READ   = 0x01,
-		SDL_ANDROID_EXTERNAL_STORAGE_WRITE  = 0x02,
-	}
-}
-version(WinRT){
-	static if(sdlSupport >= SDLSupport.v2_0_3):
-	alias SDL_WinRT_Path = int;
-	enum: SDL_WinRT_Path{
-		SDL_WINRT_PATH_INSTALLED_LOCATION,
-		SDL_WINRT_PATH_LOCAL_FOLDER,
-		SDL_WINRT_PATH_ROAMING_FOLDER,
-		SDL_WINRT_PATH_TEMP_FOLDER,
-	}
+	alias SDL_AndroidExternalStorageState_ = uint;
+	mixin(makeEnumBind(q{SDL_AndroidExternalStorageState}, q{SDL_AndroidExternalStorageState_}, aliases: [q{SDL_AndroidExternalStorage}], members: (){
+		EnumMember[] ret = [
+				{{q{read},     q{SDL_ANDROID_EXTERNAL_STORAGE_READ}},     q{0x01}},
+				{{q{write},    q{SDL_ANDROID_EXTERNAL_STORAGE_WRITE}},    q{0x02}},
+			];
+		return ret;
+	}()));
 	
-	static if(sdlSupport >= SDLSupport.v2_0_8):
-	alias SDL_WinRT_DeviceFamily = int;
-	enum: SDL_WinRT_DeviceFamily{
-		SDL_WINRT_DEVICEFAMILY_UNKNOWN,
-		SDL_WINRT_DEVICEFAMILY_DESKTOP,
-		SDL_WINRT_DEVICEFAMILY_MOBILE,
-		SDL_WINRT_DEVICEFAMILY_XBOX,
-	}
-}
-version(WinGDK){
-	static if(sdlSupport >= SDLSupport.v2_24):
-	private struct XTaskQueueObject;
-	alias XTaskQueueHandle = XTaskQueueObject*;
-	private struct XUser;
-	alias XUserHandle = XUser*;
+	alias SDL_RequestAndroidPermissionCallback = extern(C) void function(void* userData, const(char)* permission, bool granted) nothrow;
 }
 
-mixin(joinFnBinds((){
-	FnBind[] ret;
-	if(sdlSupport >= SDLSupport.v2_0_9){
-		FnBind[] add = [
-			{q{SDL_bool}, q{SDL_IsTablet}, q{}},
-		];
-		ret ~= add;
-	}
-	if(sdlSupport >= SDLSupport.v2_0_12){
-		FnBind[] add = [
-			{q{void}, q{SDL_OnApplicationWillTerminate}, q{}},
-			{q{void}, q{SDL_OnApplicationDidReceiveMemoryWarning}, q{}},
-			{q{void}, q{SDL_OnApplicationWillResignActive}, q{}},
-			{q{void}, q{SDL_OnApplicationDidEnterBackground}, q{}},
-			{q{void}, q{SDL_OnApplicationWillEnterForeground}, q{}},
-			{q{void}, q{SDL_OnApplicationDidBecomeActive}, q{}},
-		];
-		ret ~= add;
-	}
-	version(Win32_GDK){
-		if(sdlSupport >= SDLSupport.v2_0_1){
-			FnBind[] add = [
-				{q{int}, q{SDL_Direct3D9GetAdapterIndex}, q{int displayIndex}},
-				{q{IDirect3DDevice9*}, q{SDL_RenderGetD3D9Device}, q{SDL_Renderer* renderer}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_2){
-			FnBind[] add = [
-				{q{SDL_bool}, q{SDL_DXGIGetOutputInfo}, q{int displayIndex, int* adapterIndex, int* outputIndex}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_4){
-			FnBind[] add = [
-				{q{void}, q{SDL_SetWindowsMessageHook}, q{SDL_WindowsMessageHook callback, void* userData}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_16){
-			FnBind[] add = [
-				{q{void}, q{SDL_RenderGetD3D11Device}, q{SDL_Renderer* renderer}},
-			];
-			ret ~= add;
-		}
-	}
-	version(linux){
-		if(sdlSupport >= SDLSupport.v2_0_9){
-			FnBind[] add = [
-				{q{int}, q{SDL_LinuxSetThreadPriority}, q{long threadID, int priority}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_18){
-			FnBind[] add = [
-				{q{int}, q{SDL_LinuxSetThreadPriorityAndPolicy}, q{long threadID, int sdlPriority, int schedPolicy}},
-			];
-			ret ~= add;
-		}
-	}
-	version(iOS){
-		{
-			FnBind[] add = [
-				{q{int}, q{SDL_iPhoneSetAnimationCallback}, q{SDL_Window* window, int interval, void function(void*) callback, void* callbackParam}},
-				{q{void}, q{SDL_iPhoneSetEventPump}, q{SDL_bool enabled}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_12){
-			FnBind[] add = [
-				{q{void}, q{SDL_OnApplicationDidChangeStatusBarOrientation}, q{}},
-			];
-			ret ~= add;
-		}
-	}
-	version(Android){
-		{
-			FnBind[] add = [
-				{q{void*}, q{SDL_AndroidGetJNIEnv}, q{}},
-				{q{void*}, q{SDL_AndroidGetActivity}, q{}},
-				{q{const(char)*}, q{SDL_AndroidGetInternalStoragePath}, q{}},
-				{q{int}, q{SDL_AndroidGetExternalStorageState}, q{}},
-				{q{const(char)*}, q{SDL_AndroidGetExternalStoragePath}, q{}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_8){
-			FnBind[] add = [
-				{q{SDL_bool}, q{SDL_IsAndroidTV}, q{}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_9){
-			FnBind[] add = [
-				{q{SDL_bool}, q{SDL_IsChromebook}, q{}},
-				{q{SDL_bool}, q{SDL_IsDeXMode}, q{}},
-				{q{void}, q{SDL_AndroidBackButton}, q{}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_12){
-			FnBind[] add = [
-				{q{int}, q{SDL_GetAndroidSDKVersion}, q{}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_14){
-			FnBind[] add = [
-				{q{SDL_bool}, q{SDL_AndroidRequestPermission}, q{const(char)* permission}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_16){
-			FnBind[] add = [
-				{q{int}, q{SDL_AndroidShowToast}, q{const(char)* message, int duration, int gravity, int xOffset, int yOffset}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_22){
-			FnBind[] add = [
-				{q{int}, q{SDL_AndroidSendMessage}, q{uint command, int param}},
-			];
-			ret ~= add;
-		}
-	}
-	version(WinRT){
-		if(sdlSupport >= SDLSupport.v2_0_3){
-			FnBind[] add = [
-				{q{wchar_t*}, q{SDL_WinRTGetFSPathUNICODE}, q{SDL_WinRT_Path pathType}},
-				{q{const(char)*}, q{SDL_WinRTGetFSPathUTF8}, q{SDL_WinRT_Path pathType}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_0_8){
-			FnBind[] add = [
-				{q{SDL_WinRT_DeviceFamily}, q{SDL_WinRTGetDeviceFamily}, q{}},
-			];
-			ret ~= add;
-		}
-	}
-	version(WinGDK){
-		if(sdlSupport >= SDLSupport.v2_24){
-			FnBind[] add = [
-				{q{int}, q{SDL_GDKGetTaskQueue}, q{XTaskQueueHandle* outTaskQueue}},
-			];
-			ret ~= add;
-		}
-		if(sdlSupport >= SDLSupport.v2_30){
-			FnBind[] add = [
-				{q{int}, q{SDL_GDKGetDefaultUser}, q{XUserHandle* outUserHandle}},
-			];
-			ret ~= add;
-		}
-	}
+version(GDK){
+	struct XTaskQueueObject;
+	alias XTaskQueueHandle = XTaskQueueObject*;
+	struct XUser;
+	alias XUser = XUserHandle*;
+}
+
+mixin(makeEnumBind(q{SDL_Sandbox}, members: (){
+	EnumMember[] ret = [
+		{{q{none},                q{SDL_SANDBOX_NONE}}, q{0}},
+		{{q{unknownContainer},    q{SDL_SANDBOX_UNKNOWN_CONTAINER}}},
+		{{q{flatpak},             q{SDL_SANDBOX_FLATPAK}}},
+		{{q{snap},                q{SDL_SANDBOX_SNAP}}},
+		{{q{macOS},               q{SDL_SANDBOX_MACOS}}},
+	];
 	return ret;
 }()));
 
-version(iOS){
-	static if(sdlSupport >= SDLSupport.v2_0_4):
-	alias SDL_iOSSetAnimationCallback = SDL_iPhoneSetAnimationCallback;
-	alias SDL_iOSSetEventPump = SDL_iPhoneSetEventPump;
-}
+mixin(joinFnBinds((){
+	FnBind[] ret = [
+		{q{void}, q{SDL_SetX11EventHook}, q{SDL_X11EventHook callback, void* userData}},
+		{q{bool}, q{SDL_IsTablet}, q{}},
+		{q{bool}, q{SDL_IsTV}, q{}},
+		{q{SDL_Sandbox}, q{SDL_GetSandbox}, q{}},
+		{q{void}, q{SDL_OnApplicationWillTerminate}, q{}},
+		{q{void}, q{SDL_OnApplicationDidReceiveMemoryWarning}, q{}},
+		{q{void}, q{SDL_OnApplicationWillEnterBackground}, q{}},
+		{q{void}, q{SDL_OnApplicationDidEnterBackground}, q{}},
+		{q{void}, q{SDL_OnApplicationWillEnterForeground}, q{}},
+		{q{void}, q{SDL_OnApplicationDidEnterForeground}, q{}},
+	];
+	version(Microsoft){{
+		FnBind[] add = [
+			{q{void}, q{SDL_SetWindowsMessageHook}, q{SDL_WindowsMessageHook callback, void* userData}},
+		];
+		ret ~= add;
+	}}
+	version(Windows){{
+		FnBind[] add = [
+			{q{int}, q{SDL_GetDirect3D9AdapterIndex}, q{SDL_DisplayID displayID}},
+			{q{bool}, q{SDL_GetDXGIOutputInfo}, q{SDL_DisplayID displayID, int* adapterIndex, int* outputIndex}},
+		];
+		ret ~= add;
+	}}else version(Android){{
+		FnBind[] add = [
+			{q{void*}, q{SDL_GetAndroidJNIEnv}, q{}},
+			{q{void*}, q{SDL_GetAndroidActivity}, q{}},
+			{q{int}, q{SDL_GetAndroidSDKVersion}, q{}},
+			{q{bool}, q{SDL_IsChromebook}, q{}},
+			{q{bool}, q{SDL_IsDeXMode}, q{}},
+			{q{void}, q{SDL_SendAndroidBackButton}, q{}},
+			{q{const(char)*}, q{SDL_GetAndroidInternalStoragePath}, q{}},
+			{q{SDL_AndroidExternalStorageState}, q{SDL_GetAndroidExternalStorageState}, q{}},
+			{q{const(char)*}, q{SDL_GetAndroidExternalStoragePath}, q{}},
+			{q{const(char)*}, q{SDL_GetAndroidCachePath}, q{}},
+			{q{bool}, q{SDL_RequestAndroidPermission}, q{const(char)* permission, SDL_RequestAndroidPermissionCallback cb, void* userData}},
+			{q{bool}, q{SDL_ShowAndroidToast}, q{const(char)* message, int duration, int gravity, int xOffset, int yOffset}},
+			{q{bool}, q{SDL_SendAndroidMessage}, q{uint command, int param}},
+		];
+		ret ~= add;
+	}}else version(linux){{
+		FnBind[] add = [
+			{q{bool}, q{SDL_SetLinuxThreadPriority}, q{long threadID, int priority}},
+			{q{bool}, q{SDL_SetLinuxThreadPriorityAndPolicy}, q{long threadID, int sdlPriority, int schedPolicy}},
+		];
+		ret ~= add;
+	}}else version(iOS){{
+		FnBind[] add = [
+			{q{bool}, q{SDL_SetiOSAnimationCallback}, q{SDL_Window* window, int interval, SDL_iOSAnimationCallback callback, void* callbackParam}},
+			{q{void}, q{SDL_SetiOSEventPump}, q{bool enabled}},
+			{q{void}, q{SDL_OnApplicationDidChangeStatusBarOrientation}, q{}},
+		];
+		ret ~= add;
+	}}
+	version(GDK){{
+		FnBind[] add = [
+			{q{bool}, q{SDL_GetGDKTaskQueue}, q{XTaskQueueHandle* outTaskQueue}},
+			{q{bool}, q{SDL_GetGDKDefaultUser}, q{XUserHandle* outUserHandle}},
+		];
+		ret ~= add;
+	}}
+	return ret;
+}()));

@@ -1,68 +1,58 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
-+          Copyright 2018 - 2022 Michael D. Parker
++            Copyright 2024 – 2025 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
 +/
 module sdl.blendmode;
 
-import bindbc.sdl.config;
-import bindbc.sdl.codegen;
+import bindbc.sdl.config, bindbc.sdl.codegen;
 
-// SDL_BlendMode
-alias SDL_BlendMode = uint;
-enum: SDL_BlendMode{
-	SDL_BLENDMODE_NONE     = 0x00000000,
-	SDL_BLENDMODE_BLEND    = 0x00000001,
-	SDL_BLENDMODE_ADD      = 0x00000002,
-	SDL_BLENDMODE_MOD      = 0x00000004,
-}
-static if(sdlSupport >= SDLSupport.v2_0_6)
-enum: SDL_BlendMode{
-	SDL_BLENDMODE_INVALID  = 0x7FFFFFFF,
-}
-static if(sdlSupport >= SDLSupport.v2_0_12)
-enum: SDL_BlendMode{
-	SDL_BLENDMODE_MUL      = 0x00000008,
-}
+alias SDL_BlendMode_ = uint;
+mixin(makeEnumBind(q{SDL_BlendMode}, q{SDL_BlendMode_}, members: (){
+	EnumMember[] ret = [
+		{{q{none},                  q{SDL_BLENDMODE_NONE}},                   q{0x00000000U}},
+		{{q{blend},                 q{SDL_BLENDMODE_BLEND}},                  q{0x00000001U}},
+		{{q{blendPreMultiplied},    q{SDL_BLENDMODE_BLEND_PREMULTIPLIED}},    q{0x00000010U}},
+		{{q{add},                   q{SDL_BLENDMODE_ADD}},                    q{0x00000002U}},
+		{{q{addPreMultiplied},      q{SDL_BLENDMODE_ADD_PREMULTIPLIED}},      q{0x00000020U}},
+		{{q{mod},                   q{SDL_BLENDMODE_MOD}},                    q{0x00000004U}},
+		{{q{mul},                   q{SDL_BLENDMODE_MUL}},                    q{0x00000008U}},
+		{{q{invalid},               q{SDL_BLENDMODE_INVALID}},                q{0x7FFFFFFFU}},
+	];
+	return ret;
+}()));
 
-static if(sdlSupport >= SDLSupport.v2_0_6){
-	alias SDL_BlendOperation = uint;
-	enum: SDL_BlendOperation{
-		SDL_BLENDOPERATION_ADD           = 0x1,
-		SDL_BLENDOPERATION_SUBTRACT      = 0x2,
-		SDL_BLENDOPERATION_REV_SUBTRACT  = 0x3,
-		SDL_BLENDOPERATION_MINIMUM       = 0x4,
-		SDL_BLENDOPERATION_MAXIMUM       = 0x5,
-	}
-	
-	alias SDL_BlendFactor = uint;
-	enum: SDL_BlendFactor{
-		SDL_BLENDFACTOR_ZERO                 = 0x1,
-		SDL_BLENDFACTOR_ONE                  = 0x2,
-		SDL_BLENDFACTOR_SRC_COLOR            = 0x3,
-		SDL_BLENDFACTOR_SRC_COLOUR           = SDL_BLENDFACTOR_SRC_COLOR,
-		SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR  = 0x4,
-		SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOUR = SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR,
-		SDL_BLENDFACTOR_SRC_ALPHA            = 0x5,
-		SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA  = 0x6,
-		SDL_BLENDFACTOR_DST_COLOR            = 0x7,
-		SDL_BLENDFACTOR_DST_COLOUR           = SDL_BLENDFACTOR_DST_COLOR,
-		SDL_BLENDFACTOR_ONE_MINUS_DST_COLOR  = 0x8,
-		SDL_BLENDFACTOR_ONE_MINUS_DST_COLOUR = SDL_BLENDFACTOR_ONE_MINUS_DST_COLOR,
-		SDL_BLENDFACTOR_DST_ALPHA            = 0x9,
-		SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA  = 0xA,
-	}
-}
+mixin(makeEnumBind(q{SDL_BlendOperation}, members: (){
+	EnumMember[] ret = [
+		{{q{add},          q{SDL_BLENDOPERATION_ADD}},           q{0x1}},
+		{{q{subtract},     q{SDL_BLENDOPERATION_SUBTRACT}},      q{0x2}},
+		{{q{revSubtract},  q{SDL_BLENDOPERATION_REV_SUBTRACT}},  q{0x3}},
+		{{q{minimum},      q{SDL_BLENDOPERATION_MINIMUM}},       q{0x4}},
+		{{q{maximum},      q{SDL_BLENDOPERATION_MAXIMUM}},       q{0x5}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{SDL_BlendFactor}, members: (){
+	EnumMember[] ret = [
+		{{q{zero},                 q{SDL_BLENDFACTOR_ZERO}},                   q{0x1}},
+		{{q{one},                  q{SDL_BLENDFACTOR_ONE}},                    q{0x2}},
+		{{q{srcColour},            q{SDL_BLENDFACTOR_SRC_COLOUR}},             q{0x3}, aliases: [{q{srcColor}, q{SDL_BLENDFACTOR_SRC_COLOR}}]},
+		{{q{oneMinusSrcColour},    q{SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOUR}},   q{0x4}, aliases: [{q{oneMinusSrcColor}, q{SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR}}]},
+		{{q{srcAlpha},             q{SDL_BLENDFACTOR_SRC_ALPHA}},              q{0x5}},
+		{{q{oneMinusSrcAlpha},     q{SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA}},    q{0x6}},
+		{{q{dstColour},            q{SDL_BLENDFACTOR_DST_COLOUR}},             q{0x7}, aliases: [{q{dstColor}, q{SDL_BLENDFACTOR_DST_COLOR}}]},
+		{{q{oneMinusDstColour},    q{SDL_BLENDFACTOR_ONE_MINUS_DST_COLOUR}},   q{0x8}, aliases: [{q{oneMinusDstColor}, q{SDL_BLENDFACTOR_ONE_MINUS_DST_COLOR}}]},
+		{{q{dstAlpha},             q{SDL_BLENDFACTOR_DST_ALPHA}},              q{0x9}},
+		{{q{oneMinusDstAlpha},     q{SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA}},    q{0xA}},
+	];
+	return ret;
+}()));
 
 mixin(joinFnBinds((){
-	FnBind[] ret;
-	if(sdlSupport >= SDLSupport.v2_0_6){
-		FnBind[] add = [
-			{q{SDL_BlendMode}, q{SDL_ComposeCustomBlendMode}, q{SDL_BlendFactor srcColourFactor, SDL_BlendFactor dstColourFactor, SDL_BlendOperation colourOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation}},
-		];
-		ret ~= add;
-	}
+	FnBind[] ret = [
+		{q{SDL_BlendMode}, q{SDL_ComposeCustomBlendMode}, q{SDL_BlendFactor srcColourFactor, SDL_BlendFactor dstColourFactor, SDL_BlendOperation colourOperation, SDL_BlendFactor srcAlphaFactor, SDL_BlendFactor dstAlphaFactor, SDL_BlendOperation alphaOperation}},
+	];
 	return ret;
 }()));

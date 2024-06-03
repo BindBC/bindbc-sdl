@@ -107,6 +107,7 @@ enum bindSDLImage = (){
 	else version(SDL_Image_204) return true;
 	else version(SDL_Image_205) return true;
 	else version(SDL_Image_2_6) return true;
+	else version(SDL_Image_2_8) return true;
 	else return false;
 }();
 

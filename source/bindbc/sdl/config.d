@@ -76,7 +76,7 @@ enum staticBinding = (){
 
 enum sdlSupport = (){
 	version(SDL_2_30)      return SDLSupport.v2_30;
-	version(SDL_2_28)      return SDLSupport.v2_28;
+	else version(SDL_2_28) return SDLSupport.v2_28;
 	else version(SDL_2_26) return SDLSupport.v2_26;
 	else version(SDL_2_24) return SDLSupport.v2_24;
 	else version(SDL_2022) return SDLSupport.v2_0_22;

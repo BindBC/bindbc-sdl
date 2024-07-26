@@ -14,7 +14,7 @@ struct SDL_version{
 	ubyte minor;
 	ubyte patch;
 	
-	int opCmp(SDL_version x) nothrow @nogc pure{
+	int opCmp(SDL_version x) nothrow @nogc pure const {
 		if(major != x.major)
 			return major - x.major;
 		else if(minor != x.minor)

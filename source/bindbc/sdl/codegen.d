@@ -10,7 +10,7 @@ import bindbc.sdl.config: staticBinding;
 import bindbc.common.versions;
 import bindbc.common.codegen;
 
-mixin(makeFnBindFns(staticBinding, Version(0,1,1)));
+mixin(makeFnBindFns(staticBinding));
 
 enum makeDynloadFns = (string name, string[] bindModules) nothrow pure @safe{
 	string dynloadFns = `

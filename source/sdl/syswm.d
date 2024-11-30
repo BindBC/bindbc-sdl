@@ -124,6 +124,9 @@ struct SDL_SysWMmsg{
 	_Msg msg;
 }
 
+version(linux)    version = MiscUnix;
+else version(BSD) version = MiscUnix;
+
 struct SDL_SysWMinfo{
 	SDL_version version_;
 	SDL_SYSWM_TYPE subsystem;
@@ -145,9 +148,9 @@ struct SDL_SysWMinfo{
 			}
 			_WinRT winrt;
 		}
-		version(linux){
-			version(SDL_NoX11){}
-			else:
+		version(MiscUnix){
+			version(SDL_NoX11){
+			}else:
 			struct _X11{
 				void* display;
 				uint window;
@@ -180,7 +183,7 @@ struct SDL_SysWMinfo{
 			}
 			_UIKit uikit;
 		}
-		static if(sdlSupport >= SDLSupport.v2_0_2) version(linux){
+		static if(sdlSupport >= SDLSupport.v2_0_2) version(MiscUnix){
 			struct _WL{
 				void* display;
 				void* surface;

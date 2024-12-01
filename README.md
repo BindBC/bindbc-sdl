@@ -190,7 +190,7 @@ BindBC-SDL has the following configurations:
 
 For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the version identifier `BindSDL_Static` must be passed to your compiler when building your project.
 
-> [!NOTE]\
+> [!TIP]\
 > The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organisation](https://github.com/BindBC)) Some third-party BindBC packages may support it as well.
 
 ### Dynamic bindings
@@ -216,13 +216,13 @@ When linking with the static libraries, there is no runtime dependency on SDL. T
 ## Library Versions
 These are the supported versions of each SDL_* library, along with the corresponding version identifiers to add to your dub configuration or pass to the compiler.
 
-> [!NOTE]\
-> If you have `SDL_THREAD_SAFETY_ANALYSIS` support enabled in SDL, you may use version identifier `SDL_ThreadSafetyAnalysis`.
+It is necessary to specify only a single version identifier per library. For example, `SDL_Image_204` by itself will activate the SDL_image binding.
 
 > [!NOTE]\
-> It is necessary to specify only a single version identifier per library. For example, `SDL_Image_204` by itself will activate the SDL_image binding.
->
 > Previously, there were identifiers for the SDL_* libraries with no version. (`SDL_Image`, `SDL_TTF`, etc.) These are are now deprecated due to their ambiguity and older projects are encouraged to remove them.
+
+> [!NOTE]\
+> If you have `SDL_THREAD_SAFETY_ANALYSIS` support enabled in SDL, you may use version identifier `SDL_ThreadSafetyAnalysis`.
 
 <details>
 	<summary><h3>SDL versions</h3></summary>
@@ -328,7 +328,7 @@ Some platforms do not have [pre-defined versions in D](https://dlang.org/spec/ve
 If you intend to compile for any of these platforms, please add the corresponding version identifier(s) in your dub recipe's `versions` list, or supply them directly to the compiler.
 
 > [!NOTE]\
-> If you're building on Wayland and you have X11 support disabled in SDL, please add version identifier `SDL_NoX11`.
+> If you're building on Wayland and you have X11 support disabled in SDL, you can add version identifier `SDL_NoX11`.
 
 | Platform                       | Version identifier |
 |--------------------------------|--------------------|

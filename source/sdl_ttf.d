@@ -240,6 +240,7 @@ private{
 				`libSDL2_ttf.so`,
 				`libSDL2-2.0_ttf.so`,
 				`libSDL2-2.0_ttf.so.0`,
+				`libSDL2_ttf-2.0.so.0`, // Debuiab 12
 			];
 		}else static assert(0, "BindBC-SDL_ttf does not have library search paths set up for this platform");
 	}();

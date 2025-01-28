@@ -27,6 +27,7 @@ enum SDLTTFSupport: SDL_version{
 	v2_0_18     = SDL_version(2,0,18),
 	v2_20       = SDL_version(2,20,0),
 	v2_22       = SDL_version(2,22,0),
+	v2_24       = SDL_version(2,24,0),
 	
 	deprecated("Please use `v2_0_12` instead") sdlTTF2012 = SDL_version(2,0,12),
 	deprecated("Please use `v2_0_13` instead") sdlTTF2013 = SDL_version(2,0,13),
@@ -36,7 +37,8 @@ enum SDLTTFSupport: SDL_version{
 }
 
 enum sdlTTFSupport = (){
-	version(SDL_TTF_2_22)      return SDLTTFSupport.v2_22;
+	version(SDL_TTF_2_24)      return SDLTTFSupport.v2_24;
+	else version(SDL_TTF_2_22) return SDLTTFSupport.v2_22;
 	else version(SDL_TTF_2_20) return SDLTTFSupport.v2_20;
 	else version(SDL_TTF_2018) return SDLTTFSupport.v2_0_18;
 	else version(SDL_TTF_2015) return SDLTTFSupport.v2_0_15;
@@ -102,11 +104,11 @@ alias TTF_GetError = SDL_GetError;
 
 alias TTF_Direction = int;
 enum: TTF_Direction{
-	TTF_DIRECTION_LTR  = 0, /* Left to Right */
-	TTF_DIRECTION_RTL  = 1, /* Right to Left */
-	TTF_DIRECTION_TTB  = 2, /* Top to Bottom */
-	TTF_DIRECTION_BTT  = 3, /* Bottom to Top */
-};
+	TTF_DIRECTION_LTR  = 0,
+	TTF_DIRECTION_RTL  = 1,
+	TTF_DIRECTION_TTB  = 2,
+	TTF_DIRECTION_BTT  = 3,
+}
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
@@ -210,6 +212,12 @@ mixin(joinFnBinds((){
 			{q{SDL_Surface*}, q{TTF_RenderGlyph32_LCD}, q{TTF_Font* font, uint ch, SDL_Color fg, SDL_Color bg}},
 			{q{int}, q{TTF_SetFontDirection}, q{TTF_Font* font, TTF_Direction direction}},
 			{q{int}, q{TTF_SetFontScriptName}, q{TTF_Font* font, const(char)* script}},
+		];
+		ret ~= add;
+	}
+	if(sdlTTFSupport >= SDLTTFSupport.v2_24){
+		FnBind[] add = [
+			{q{void}, q{TTF_SetFontLineSkip}, q{TTF_Font* font, int lineSkip}},
 		];
 		ret ~= add;
 	}

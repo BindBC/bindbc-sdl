@@ -317,6 +317,7 @@ It is necessary to specify only a single version identifier per library. For exa
 | 2.0.18  | `SDL_TTF_2018`   | :heavy_check_mark: |
 | 2.20.X  | `SDL_TTF_2_20`   | :heavy_check_mark: |
 | 2.22.X  | `SDL_TTF_2_22`   | :x:                |
+| 2.24.X  | `SDL_TTF_2_24`   | :heavy_check_mark: |
 
 > [!NOTE]\
 > Starting from SDL_ttf 2.0.18, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.

@@ -1,8 +1,8 @@
-<div align="center" width="100%">
-	<img alt="BindBC-SDL logo" width="50%" src="https://raw.githubusercontent.com/BindBC/bindbc-branding/master/logo_wide_sdl.png"/>
-</div>
+<h1 align="center" width="100%"><a href="https://git.sleeping.town/BindBC/bindbc-sdl">
+	<img alt="BindBC-SDL logo" width="50%" src="https://git.sleeping.town/BindBC/bindbc-branding/media/branch/trunk/logo_wide_sdl.png"/>
+</a></h1>
 
-# BindBC-SDL
+# [BindBC-SDL](https://git.sleeping.town/BindBC/bindbc-sdl)
 This project provides a set of both static and dynamic bindings to
 [SDL (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility. This package is intended to replace [DerelictSDL2](https://github.com/DerelictOrg/DerelictSDL2), which does not provide the same level of compatibility.
 
@@ -17,7 +17,7 @@ This project provides a set of both static and dynamic bindings to
 |[Windows: Loading from outside the DLL search path](#windows-loading-from-outside-the-dll-search-path)|
 
 ## License
-BindBC-SDL&mdash;as well as every other binding in the [BindBC project](https://github.com/BindBC)&mdash;is licensed under the [Boost Software License](https://www.boost.org/LICENSE_1_0.txt).
+BindBC-SDL&mdash;as well as every other binding in the [BindBC project](https://git.sleeping.town/BindBC)&mdash;is licensed under the [Boost Software License](https://www.boost.org/LICENSE_1_0.txt).
 
 Bear in mind that you still need to abide by [SDL's license](https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt), and the licenses of any SDL_* libraries that you use through these bindings.
 
@@ -90,7 +90,7 @@ void main(){
 
 **If you're using dynamic bindings**: you need to load each library you need with the appropriate load function. 
 
-For most use cases, it's best to use BindBC-Loader's [error handling API](https://github.com/BindBC/bindbc-loader#error-handling) to see if there were any errors while loading the libraries. This information can be written to a log file before aborting the program.
+For most use cases, it's best to use BindBC-Loader's [error handling API](https://git.sleeping.town/BindBC/bindbc-loader#error-handling) to see if there were any errors while loading the libraries. This information can be written to a log file before aborting the program.
 
 The load function will also return a member of the `SDLSupport` enum (or equivalent: e.g. `SDLNetSupport` for SDL_net) which can be used for debugging:
 
@@ -136,7 +136,7 @@ relative to the executable, only on Windows.
 version(Windows) loadSDL("libs/sdl2.dll");
 ```
 
-[The error handling API](https://github.com/BindBC/bindbc-loader#error-handling) in BindBC-Loader can be used to log error messages:
+[The error handling API](https://git.sleeping.town/BindBC/bindbc-loader#error-handling) in BindBC-Loader can be used to log error messages:
 ```d
 import bindbc.sdl;
 
@@ -191,7 +191,7 @@ BindBC-SDL has the following configurations:
 For projects that don't use dub, if BindBC-SDL is compiled for static bindings then the version identifier `BindSDL_Static` must be passed to your compiler when building your project.
 
 > [!TIP]\
-> The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organisation](https://github.com/BindBC)) Some third-party BindBC packages may support it as well.
+> The version identifier `BindBC_Static` can be used to configure all of the _official_ BindBC packages used in your program. (i.e. those maintained in [the BindBC GitHub organisation](https://git.sleeping.town/BindBC)) Some third-party BindBC packages may support it as well.
 
 ### Dynamic bindings
 The dynamic bindings have no link-time dependency on the SDL libraries, so the SDL shared libraries must be manually loaded at runtime from the shared library search path of the user's system.
@@ -346,7 +346,7 @@ The SDL libraries load some dependency DLLs dynamically in the same way that Bin
 
 First, make sure the non-system libraries on which the SDL libraries depend (such as `zlib.dll`) are in the same directory as the SDL libraries.
 
-Second, you'll want to add your subdirectory path to the Windows DLL search path. This can be accomplished via the function `setCustomLoaderSearchPath` in `BindBC-Loader`. For more details, see ["Default Windows search path"](https://github.com/BindBC/bindbc-loader#default-windows-search-path) from the BindBC-Loader readme.
+Second, you'll want to add your subdirectory path to the Windows DLL search path. This can be accomplished via the function `setCustomLoaderSearchPath` in `BindBC-Loader`. For more details, see ["Default Windows search path"](https://git.sleeping.town/BindBC/bindbc-loader#default-windows-search-path) from the BindBC-Loader readme.
 
 The idea is that you call the function with the path to all of the DLLs before calling any of the load functions, then call it again with a `null` argument to reset to the default search path. Bear in mind that some of the SDL_* libraries load their dependencies lazily. For example, SDL_image will only load `libpng` when `IMG_Init` is called with the `IMG_INIT_PNG` flag, so the second call should not occur until after the libraries have been initialised.
 

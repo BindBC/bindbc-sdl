@@ -140,6 +140,7 @@ enum bindSDLTTF = (){
 	else version(SDL_TTF_2018) return true;
 	else version(SDL_TTF_2_20) return true;
 	else version(SDL_TTF_2_22) return true;
+	else version(SDL_TTF_2_24) return true;
 	else return false;
 }();
 

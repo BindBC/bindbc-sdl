@@ -116,6 +116,7 @@ You should also check that the desired minimum version of the library was loaded
 |`Mix_Version`          | SDL_mixer      |
 |`SDLNet_Version`       | SDL_net        |
 |`TTF_Version`          | SDL_ttf        |
+
 Unfortunately SDL_shadercross does not provide a function for this.
 
 Here's a simple example using only the load function's return value:

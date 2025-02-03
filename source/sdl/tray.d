@@ -20,11 +20,11 @@ alias SDL_TrayEntryFlags_ = uint;
 
 mixin(makeEnumBind(q{SDL_TrayEntryFlags}, q{SDL_TrayEntryFlags_}, members: (){
 	EnumMember[] ret = [
-		{{q{button},      q{SDL_TRAYENTRY_BUTTON}},      q{0x00000001U}},
-		{{q{checkbox},    q{SDL_TRAYENTRY_CHECKBOX}},    q{0x00000002U}},
-		{{q{submenu},     q{SDL_TRAYENTRY_SUBMENU}},     q{0x00000004U}},
-		{{q{disabled},    q{SDL_TRAYENTRY_DISABLED}},    q{0x80000000U}},
-		{{q{checked},     q{SDL_TRAYENTRY_CHECKED}},     q{0x40000000U}},
+		{{q{button},      q{SDL_TRAYENTRY_BUTTON}},      q{0x0000_0001U}},
+		{{q{checkbox},    q{SDL_TRAYENTRY_CHECKBOX}},    q{0x0000_0002U}},
+		{{q{submenu},     q{SDL_TRAYENTRY_SUBMENU}},     q{0x0000_0004U}},
+		{{q{disabled},    q{SDL_TRAYENTRY_DISABLED}},    q{0x8000_0000U}},
+		{{q{checked},     q{SDL_TRAYENTRY_CHECKED}},     q{0x4000_0000U}},
 	];
 	return ret;
 }()));

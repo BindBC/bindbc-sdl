@@ -42,7 +42,7 @@ enum{
 	SDL_FLOATWORDORDER = SDL_FloatWordOrder,
 }
 
-pragma(inline,true) nothrow @nogc pure @safe{
+nothrow @nogc pure @safe{
 	ushort SDL_Swap16(ushort x){
 		//LDC doesn't like this, and I can't test with GDC easily for now…
 		/+version(ExtInlineAsm_X86){
@@ -110,33 +110,35 @@ pragma(inline,true) nothrow @nogc pure @safe{
 			return (cast(ulong)SDL_Swap32(lo) << 32) | SDL_Swap32(hi);
 		}
 	}
-	float SDL_SwapFloat(float x){
-		union Swapper{
-			float f;
-			uint ui32;
+	pragma(inline,true){
+		float SDL_SwapFloat(float x){
+			union Swapper{
+				float f;
+				uint ui32;
+			}
+			Swapper swapper = {f: x};
+			swapper.ui32 = SDL_Swap32(swapper.ui32);
+			return swapper.f;
 		}
-		Swapper swapper = {f: x};
-		swapper.ui32 = SDL_Swap32(swapper.ui32);
-		return swapper.f;
-	}
-	version(LittleEndian){
-		ushort SDL_Swap16LE(ushort x)   => x;
-		uint   SDL_Swap32LE(uint x)     => x;
-		ulong  SDL_Swap64LE(ulong x)    => x;
-		float  SDL_SwapFloatLE(float x) => x;
-		ushort SDL_Swap16BE(ushort x)   => SDL_Swap16(x);
-		uint   SDL_Swap32BE(uint x)     => SDL_Swap32(x);
-		ulong  SDL_Swap64BE(ulong x)    => SDL_Swap64(x);
-		float  SDL_SwapFloatBE(float x) => SDL_SwapFloat(x);
-	}else{
-		ushort SDL_Swap16LE(ushort x)   => SDL_Swap16(x);
-		uint   SDL_Swap32LE(uint x)     => SDL_Swap32(x);
-		ulong  SDL_Swap64LE(ulong x)    => SDL_Swap64(x);
-		float  SDL_SwapFloatLE(float x) => SDL_SwapFloat(x);
-		ushort SDL_Swap16BE(ushort x)   => x;
-		uint   SDL_Swap32BE(uint x)     => x;
-		ulong  SDL_Swap64BE(ulong x)    => x;
-		float  SDL_SwapFloatBE(float x) => x;
+		version(LittleEndian){
+			ushort SDL_Swap16LE(ushort x)   => x;
+			uint   SDL_Swap32LE(uint x)     => x;
+			ulong  SDL_Swap64LE(ulong x)    => x;
+			float  SDL_SwapFloatLE(float x) => x;
+			ushort SDL_Swap16BE(ushort x)   => SDL_Swap16(x);
+			uint   SDL_Swap32BE(uint x)     => SDL_Swap32(x);
+			ulong  SDL_Swap64BE(ulong x)    => SDL_Swap64(x);
+			float  SDL_SwapFloatBE(float x) => SDL_SwapFloat(x);
+		}else{
+			ushort SDL_Swap16LE(ushort x)   => SDL_Swap16(x);
+			uint   SDL_Swap32LE(uint x)     => SDL_Swap32(x);
+			ulong  SDL_Swap64LE(ulong x)    => SDL_Swap64(x);
+			float  SDL_SwapFloatLE(float x) => SDL_SwapFloat(x);
+			ushort SDL_Swap16BE(ushort x)   => x;
+			uint   SDL_Swap32BE(uint x)     => x;
+			ulong  SDL_Swap64BE(ulong x)    => x;
+			float  SDL_SwapFloatBE(float x) => x;
+		}
 	}
 }
 

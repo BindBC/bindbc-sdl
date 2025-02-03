@@ -9,11 +9,11 @@ module sdl.timer;
 import bindbc.sdl.config, bindbc.sdl.codegen;
 
 enum{
-	SDL_MSPerSecond  = 1000,
-	SDL_USPerSecond  = 1000000,
-	SDL_NSPerSecond  = 1000000000L,
-	SDL_NSPerMS      = 1000000,
-	SDL_NSPerUS      = 1000,
+	SDL_MSPerSecond  = 1_000,
+	SDL_USPerSecond  = 1_000_000,
+	SDL_NSPerSecond  = 1_000_000_000L,
+	SDL_NSPerMS      = 1_000_000,
+	SDL_NSPerUS      = 1_000,
 	
 	SDL_MS_PER_SECOND = SDL_MSPerSecond,
 	SDL_US_PER_SECOND = SDL_USPerSecond,

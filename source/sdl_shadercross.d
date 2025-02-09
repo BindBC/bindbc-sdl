@@ -14,9 +14,13 @@ import sdl.gpu: SDL_GPUComputePipeline, SDL_GPUDevice, SDL_GPUShader, SDL_GPUSha
 import sdl.properties: SDL_PropertiesID;
 
 enum{
-	SDL_SHADERCROSS_MAJOR_VERSION = sdlShaderCrossVersion.major,
-	SDL_SHADERCROSS_MINOR_VERSION = sdlShaderCrossVersion.minor,
-	SDL_SHADERCROSS_MICRO_VERSION = sdlShaderCrossVersion.patch,
+	SDL_ShaderCross_MajorVersion = sdlShaderCrossVersion.major,
+	SDL_ShaderCross_MinorVersion = sdlShaderCrossVersion.minor,
+	SDL_ShaderCross_MicroVersion = sdlShaderCrossVersion.patch,
+	
+	SDL_SHADERCROSS_MAJOR_VERSION = SDLShaderCross_MajorVersion,
+	SDL_SHADERCROSS_MINOR_VERSION = SDLShaderCross_MinorVersion,
+	SDL_SHADERCROSS_MICRO_VERSION = SDLShaderCross_MicroVersion,
 }
 
 mixin(makeEnumBind(q{SDL_ShaderCross_ShaderStage}, members: (){

@@ -15,22 +15,22 @@ import sdl.iostream: SDL_IOStream;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
-	SDL_MixerMajorVersion = sdlMixerVersion.major,
-	SDL_MixerMinorVersion = sdlMixerVersion.minor,
-	SDL_MixerMicroVersion = sdlMixerVersion.patch,
-	SDL_MixerVersion = SDL_VERSIONNUM(SDL_MixerMajorVersion, SDL_MixerMinorVersion, SDL_MixerMicroVersion),
+	SDL_Mixer_MajorVersion = sdlMixerVersion.major,
+	SDL_Mixer_MinorVersion = sdlMixerVersion.minor,
+	SDL_Mixer_MicroVersion = sdlMixerVersion.patch,
+	SDL_Mixer_Version = SDL_VERSIONNUM(SDL_Mixer_MajorVersion, SDL_Mixer_MinorVersion, SDL_Mixer_MicroVersion),
 	
-	SDL_MIXER_MAJOR_VERSION = SDL_MixerMajorVersion,
-	SDL_MIXER_MINOR_VERSION = SDL_MixerMinorVersion,
-	SDL_MIXER_MICRO_VERSION = SDL_MixerMicroVersion,
-	SDL_MIXER_VERSION = SDL_MixerVersion,
+	SDL_MIXER_MAJOR_VERSION = SDL_Mixer_MajorVersion,
+	SDL_MIXER_MINOR_VERSION = SDL_Mixer_MinorVersion,
+	SDL_MIXER_MICRO_VERSION = SDL_Mixer_MicroVersion,
+	SDL_MIXER_VERSION = SDL_Mixer_Version,
 }
 
 pragma(inline,true)
 bool SDL_MIXER_VERSION_ATLEAST(uint x, uint y, uint z) nothrow @nogc pure @safe =>
-	(SDL_MixerMajorVersion >= x) &&
-	(SDL_MixerMajorVersion >  x || SDL_MixerMinorVersion >= y) &&
-	(SDL_MixerMajorVersion >  x || SDL_MixerMinorVersion >  y || SDL_MixerMicroVersion >= z);
+	(SDL_Mixer_MajorVersion >= x) &&
+	(SDL_Mixer_MajorVersion >  x || SDL_Mixer_MinorVersion >= y) &&
+	(SDL_Mixer_MajorVersion >  x || SDL_Mixer_MinorVersion >  y || SDL_Mixer_MicroVersion >= z);
 
 alias MIX_InitFlags_ = uint;
 mixin(makeEnumBind(q{MIX_InitFlags}, q{MIX_InitFlags_}, aliases: [q{MIX_Init}], members: (){

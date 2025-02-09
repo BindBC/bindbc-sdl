@@ -16,22 +16,22 @@ import sdl.surface: SDL_Surface;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
-	SDL_ImageMajorVersion = sdlImageVersion.major,
-	SDL_ImageMinorVersion = sdlImageVersion.minor,
-	SDL_ImageMicroVersion = sdlImageVersion.patch,
-	SDL_ImageVersion = SDL_VERSIONNUM(SDL_ImageMajorVersion, SDL_ImageMinorVersion, SDL_ImageMicroVersion),
+	SDL_Image_MajorVersion = sdlImageVersion.major,
+	SDL_Image_MinorVersion = sdlImageVersion.minor,
+	SDL_Image_MicroVersion = sdlImageVersion.patch,
+	SDL_Image_Version = SDL_VERSIONNUM(SDL_Image_MajorVersion, SDL_Image_MinorVersion, SDL_Image_MicroVersion),
 	
-	SDL_IMAGE_MAJOR_VERSION = SDL_ImageMajorVersion,
-	SDL_IMAGE_MINOR_VERSION = SDL_ImageMinorVersion,
-	SDL_IMAGE_PATCHLEVEL = SDL_ImageMicroVersion,
-	SDL_IMAGE_VERSION = SDL_ImageVersion,
+	SDL_IMAGE_MAJOR_VERSION = SDL_Image_MajorVersion,
+	SDL_IMAGE_MINOR_VERSION = SDL_Image_MinorVersion,
+	SDL_IMAGE_PATCHLEVEL = SDL_Image_MicroVersion,
+	SDL_IMAGE_VERSION = SDL_Image_Version,
 }
 
 pragma(inline, true)
 bool SDL_IMAGE_VERSION_ATLEAST(int x, int y, int z) nothrow @nogc pure @safe =>
-	(SDL_ImageMajorVersion >= x) &&
-	(SDL_ImageMajorVersion >  x || SDL_ImageMinorVersion >= y) &&
-	(SDL_ImageMajorVersion >  x || SDL_ImageMinorVersion >  y || SDL_ImageMicroVersion >= z);
+	(SDL_Image_MajorVersion >= x) &&
+	(SDL_Image_MajorVersion >  x || SDL_Image_MinorVersion >= y) &&
+	(SDL_Image_MajorVersion >  x || SDL_Image_MinorVersion >  y || SDL_Image_MicroVersion >= z);
 
 struct IMG_Animation{
 	int w, h, count;

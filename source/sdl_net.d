@@ -13,22 +13,22 @@ import bindbc.sdl.codegen;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
-	SDL_NetMajorVersion = sdlNetVersion.major,
-	SDL_NetMinorVersion = sdlNetVersion.minor,
-	SDL_NetMicroVersion = sdlNetVersion.patch,
-	SDL_NetVersion = SDL_VERSIONNUM(SDL_NetMajorVersion, SDL_NetMinorVersion, SDL_NetMicroVersion),
+	SDL_Net_MajorVersion = sdlNetVersion.major,
+	SDL_Net_MinorVersion = sdlNetVersion.minor,
+	SDL_Net_MicroVersion = sdlNetVersion.patch,
+	SDL_Net_Version = SDL_VERSIONNUM(SDL_Net_MajorVersion, SDL_Net_MinorVersion, SDL_Net_MicroVersion),
 	
-	SDL_NET_MAJOR_VERSION = SDL_NetMajorVersion,
-	SDL_NET_MINOR_VERSION = SDL_NetMinorVersion,
-	SDL_NET_MICRO_VERSION = SDL_NetMicroVersion,
-	SDL_NET_VERSION = SDL_NetVersion,
+	SDL_NET_MAJOR_VERSION = SDL_Net_MajorVersion,
+	SDL_NET_MINOR_VERSION = SDL_Net_MinorVersion,
+	SDL_NET_MICRO_VERSION = SDL_Net_MicroVersion,
+	SDL_NET_VERSION = SDL_Net_Version,
 }
 
 pragma(inline,true)
 bool SDL_NET_VERSION_ATLEAST(uint x, uint y, uint z) nothrow @nogc pure @safe =>
-	(SDL_NetMajorVersion >= x) &&
-	(SDL_NetMajorVersion >  x || SDL_NetMinorVersion >= y) &&
-	(SDL_NetMajorVersion >  x || SDL_NetMinorVersion >  y || SDL_NetMicroVersion >= z);
+	(SDL_Net_MajorVersion >= x) &&
+	(SDL_Net_MajorVersion >  x || SDL_Net_MinorVersion >= y) &&
+	(SDL_Net_MajorVersion >  x || SDL_Net_MinorVersion >  y || SDL_Net_MicroVersion >= z);
 
 struct SDLNet_Address;
 

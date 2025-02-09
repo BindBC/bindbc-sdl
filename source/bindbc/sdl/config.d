@@ -36,8 +36,8 @@ enum sdlVersion = (){
 }();
 
 enum sdlImageVersion = (){
-	/+version(SDL_Image_3_2)      return Version(3,2,0);
-	else+/version(SDL_Image_3_0) return Version(3,1,1);
+	/+version(SDL_Image_3_4)      return Version(3,4,0);
+	else+/version(SDL_Image_3_2) return Version(3,2,0);
 	else                        return Version.none;
 }();
 
@@ -55,7 +55,7 @@ enum sdlNetVersion = (){
 
 enum sdlTTFVersion = (){
 	/+version(SDL_TTF_3_2)      return Version(3,2,0);
-	else+/version(SDL_TTF_3_0) return Version(3,1,0);
+	else+/version(SDL_TTF_3_1) return Version(3,1,0);
 	else                      return Version.none;
 }();
 

@@ -20,22 +20,22 @@ import sdl.surface: SDL_Surface;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
-	SDL_TTFMajorVersion = sdlTTFVersion.major,
-	SDL_TTFMinorVersion = sdlTTFVersion.minor,
-	SDL_TTFMicroVersion = sdlTTFVersion.patch,
-	SDL_TTFVersion = SDL_VERSIONNUM(SDL_TTFMajorVersion, SDL_TTFMinorVersion, SDL_TTFMicroVersion),
+	SDL_TTF_MajorVersion = sdlTTFVersion.major,
+	SDL_TTF_MinorVersion = sdlTTFVersion.minor,
+	SDL_TTF_MicroVersion = sdlTTFVersion.patch,
+	SDL_TTF_Version = SDL_VERSIONNUM(SDL_TTF_MajorVersion, SDL_TTF_MinorVersion, SDL_TTF_MicroVersion),
 	
-	SDL_TTF_MAJOR_VERSION = SDL_TTFMajorVersion,
-	SDL_TTF_MINOR_VERSION = SDL_TTFMinorVersion,
-	SDL_TTF_MICRO_VERSION = SDL_TTFMicroVersion,
-	SDL_TTF_VERSION = SDL_TTFVersion,
+	SDL_TTF_MAJOR_VERSION = SDL_TTF_MajorVersion,
+	SDL_TTF_MINOR_VERSION = SDL_TTF_MinorVersion,
+	SDL_TTF_MICRO_VERSION = SDL_TTF_MicroVersion,
+	SDL_TTF_VERSION = SDL_TTF_Version,
 }
 
 pragma(inline,true)
 bool SDL_TTF_VERSION_ATLEAST(uint x, uint y, uint z) nothrow @nogc pure @safe =>
-	(SDL_TTFMajorVersion >= x) &&
-	(SDL_TTFMajorVersion  > x || SDL_TTFMinorVersion >= y) &&
-	(SDL_TTFMajorVersion  > x || SDL_TTFMinorVersion >  y || SDL_TTFMicroVersion >= z);
+	(SDL_TTF_MajorVersion >= x) &&
+	(SDL_TTF_MajorVersion  > x || SDL_TTF_MinorVersion >= y) &&
+	(SDL_TTF_MajorVersion  > x || SDL_TTF_MinorVersion >  y || SDL_TTF_MicroVersion >= z);
 
 struct TTF_Font;
 
@@ -49,6 +49,7 @@ mixin(makeEnumBind(q{TTFProp_FontCreate}, q{const(char)*}, members: (){
 		{{q{faceNumber},                  q{TTF_PROP_FONT_CREATE_FACE_NUMBER}},                   q{"SDL_ttf.font.create.face"}},
 		{{q{horizontalDPINumber},         q{TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER}},         q{"SDL_ttf.font.create.hdpi"}},
 		{{q{verticalDPINumber},           q{TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER}},           q{"SDL_ttf.font.create.vdpi"}},
+		{{q{existingFont},                q{TTF_PROP_FONT_CREATE_EXISTING_FONT}},                 q{"SDL_ttf.font.create.existing_font"}},
 	];
 	return ret;
 }()));
@@ -106,6 +107,16 @@ mixin(makeEnumBind(q{TTF_Direction}, members: (){
 	return ret;
 }()));
 
+mixin(makeEnumBind(q{TTF_ImageType}, members: (){
+	EnumMember[] ret = [
+		{{q{invalid}, q{TTF_IMAGE_INVALID}}},
+		{{q{alpha}, q{TTF_IMAGE_ALPHA}}},
+		{{q{colour}, q{TTF_IMAGE_COLOUR}}, aliases: [{q{color}, q{TTF_IMAGE_COLOR}}]},
+		{{q{sdf}, q{TTF_IMAGE_SDF}}},
+	];
+	return ret;
+}()));
+
 struct TTF_Text{
 	char* text;
 	int numLines;
@@ -116,17 +127,35 @@ struct TTF_Text{
 	alias refcount = refCount;
 }
 
+mixin(makeEnumBind(q{TTFProp_RendererTextEngineCreate}, q{const(char)*}, aliases: [q{TTFProp_RendererTextEngine}], members: (){
+	EnumMember[] ret = [
+		{{q{renderer},            q{TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER}},              q{"SDL_ttf.renderer_text_engine.create.renderer"}},
+		{{q{atlasTextureSize},    q{TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE}},    q{"SDL_ttf.renderer_text_engine.create.atlas_texture_size"}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{TTFProp_GPUTextEngineCreate}, q{const(char)*}, aliases: [q{TTFProp_GPUTextEngine}], members: (){
+	EnumMember[] ret = [
+		{{q{device},              q{TTF_PROP_GPU_TEXT_ENGINE_DEVICE}},                q{"SDL_ttf.gpu_text_engine.create.device"}},
+		{{q{atlasTextureSize},    q{TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE}},    q{"SDL_ttf.gpu_text_engine.create.atlas_texture_size"}},
+	];
+	return ret;
+}()));
+
 struct TTF_GPUAtlasDrawSequence{
 	SDL_GPUTexture* atlasTexture;
 	SDL_FPoint* xy, uv;
 	int numVertices;
 	int* indices;
 	int numIndices;
+	TTF_ImageType imageType;
 	TTF_GPUAtlasDrawSequence* next;
 	
 	alias atlas_texture = atlasTexture;
 	alias num_vertices = numVertices;
 	alias num_indices = numIndices;
+	alias image_type = imageType;
 }
 
 mixin(makeEnumBind(q{TTF_GPUTextEngineWinding}, members: (){
@@ -250,6 +279,7 @@ mixin(joinFnBinds((){
 		{q{TTF_Font*}, q{TTF_OpenFont}, q{const(char)* file, float ptSize}},
 		{q{TTF_Font*}, q{TTF_OpenFontIO}, q{SDL_IOStream* src, bool closeIO, float ptSize}},
 		{q{TTF_Font*}, q{TTF_OpenFontWithProperties}, q{SDL_PropertiesID props}},
+		{q{TTF_Font*}, q{TTF_CopyFont}, q{TTF_Font* existingFont}},
 		{q{SDL_PropertiesID}, q{TTF_GetFontProperties}, q{TTF_Font* font}},
 		{q{uint}, q{TTF_GetFontGeneration}, q{TTF_Font* font}},
 		{q{bool}, q{TTF_AddFallbackFont}, q{TTF_Font* font, TTF_Font* fallback}},
@@ -288,8 +318,8 @@ mixin(joinFnBinds((){
 		{q{uint}, q{TTF_GetGlyphScript}, q{uint ch}},
 		{q{bool}, q{TTF_SetFontLanguage}, q{TTF_Font* font, const(char)* languageBCP47}},
 		{q{bool}, q{TTF_FontHasGlyph}, q{TTF_Font* font, uint ch}},
-		{q{SDL_Surface*}, q{TTF_GetGlyphImage}, q{TTF_Font* font, uint ch}},
-		{q{SDL_Surface*}, q{TTF_GetGlyphImageForIndex}, q{TTF_Font* font, uint glyphIndex}},
+		{q{SDL_Surface*}, q{TTF_GetGlyphImage}, q{TTF_Font* font, uint ch, TTF_ImageType* imageType}},
+		{q{SDL_Surface*}, q{TTF_GetGlyphImageForIndex}, q{TTF_Font* font, uint glyphIndex, TTF_ImageType* imageType}},
 		{q{bool}, q{TTF_GetGlyphMetrics}, q{TTF_Font* font, uint ch, int* minX, int* maxX, int* minY, int* maxY, int* advance}},
 		{q{bool}, q{TTF_GetGlyphKerning}, q{TTF_Font* font, uint previousCh, uint ch, int* kerning}},
 		{q{bool}, q{TTF_GetStringSize}, q{TTF_Font* font, const(char)* text, size_t length, int* w, int* h}},
@@ -311,9 +341,11 @@ mixin(joinFnBinds((){
 		{q{bool}, q{TTF_DrawSurfaceText}, q{TTF_Text* text, int x, int y, SDL_Surface* surface}},
 		{q{void}, q{TTF_DestroySurfaceTextEngine}, q{TTF_TextEngine* engine}},
 		{q{TTF_TextEngine*}, q{TTF_CreateRendererTextEngine}, q{SDL_Renderer* renderer}},
+		{q{TTF_TextEngine*}, q{TTF_CreateRendererTextEngineWithProperties}, q{SDL_PropertiesID props}},
 		{q{bool}, q{TTF_DrawRendererText}, q{TTF_Text* text, float x, float y}},
 		{q{void}, q{TTF_DestroyRendererTextEngine}, q{TTF_TextEngine* engine}},
 		{q{TTF_TextEngine*}, q{TTF_CreateGPUTextEngine}, q{SDL_GPUDevice* device}},
+		{q{TTF_TextEngine*}, q{TTF_CreateGPUTextEngineWithProperties}, q{SDL_PropertiesID props}},
 		{q{TTF_GPUAtlasDrawSequence*}, q{TTF_GetGPUTextDrawData}, q{TTF_Text* text}},
 		{q{void}, q{TTF_DestroyGPUTextEngine}, q{TTF_TextEngine* engine}},
 		{q{void}, q{TTF_SetGPUTextEngineWinding}, q{TTF_TextEngine* engine, TTF_GPUTextEngineWinding winding}},

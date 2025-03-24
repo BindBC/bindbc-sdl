@@ -210,7 +210,7 @@ SDL_AppResult SDL_AppIterate(void* appState){
 	as = cast(AppState*)appState;
 	ctx = &as.snakeCtx;
 	r.w = r.h = snakeBlockSizeInPixels;
-	SDL_SetRenderDrawColour(as.renderer, 0, 0, 0, sdl.alphaOpaque);
+	SDL_SetRenderDrawColour(as.renderer, 0, 0, 0, sdl.SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(as.renderer);
 	foreach(CellPos i; 0..snakeGameWidth){
 		foreach(CellPos j; 0..snakeGameHeight){
@@ -219,13 +219,13 @@ SDL_AppResult SDL_AppIterate(void* appState){
 				continue;
 			setRectXY(&r, i, j);
 			if(ct == Cell.food)
-				SDL_SetRenderDrawColour(as.renderer, 80, 80, 255, sdl.alphaOpaque);
+				SDL_SetRenderDrawColour(as.renderer, 80, 80, 255, sdl.SDL_ALPHA_OPAQUE);
 			else /* body */
-				SDL_SetRenderDrawColour(as.renderer, 0, 128, 0, sdl.alphaOpaque);
+				SDL_SetRenderDrawColour(as.renderer, 0, 128, 0, sdl.SDL_ALPHA_OPAQUE);
 			SDL_RenderFillRect(as.renderer, &r);
 		}
 	}
-	SDL_SetRenderDrawColour(as.renderer, 255, 255, 0, sdl.alphaOpaque); /*head*/
+	SDL_SetRenderDrawColour(as.renderer, 255, 255, 0, sdl.SDL_ALPHA_OPAQUE); /*head*/
 	setRectXY(&r, ctx.headXPos, ctx.headYPos);
 	SDL_RenderFillRect(as.renderer, &r);
 	SDL_RenderPresent(as.renderer);

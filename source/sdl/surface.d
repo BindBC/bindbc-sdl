@@ -125,7 +125,6 @@ mixin(joinFnBinds((){
 		{q{bool}, q{SDL_ReadSurfacePixelFloat}, q{SDL_Surface* surface, int x, int y, float* r, float* g, float* b, float* a}},
 		{q{bool}, q{SDL_WriteSurfacePixel}, q{SDL_Surface* surface, int x, int y, ubyte r, ubyte g, ubyte b, ubyte a}},
 		{q{bool}, q{SDL_WriteSurfacePixelFloat}, q{SDL_Surface* surface, int x, int y, float r, float g, float b, float a}},
-		{q{void}, q{SDL_GetRGBA}, q{uint pixel, const(SDL_PixelFormatDetails)* format, const(SDL_Palette)* palette, ubyte* r, ubyte* g, ubyte* b, ubyte* a}},
 	];
 	return ret;
 }()));

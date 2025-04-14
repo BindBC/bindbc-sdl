@@ -2,6 +2,8 @@
 	<img alt="BindBC-SDL logo" width="50%" src="https://git.sleeping.town/BindBC/bindbc-branding/media/branch/trunk/logo_wide_sdl.png"/>
 </a></h1>
 
+[Official git repository](https://git.sleeping.town/BindBC/bindbc-sdl)
+
 This project provides a set of both static and dynamic bindings to
 [SDL3 (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility.
 

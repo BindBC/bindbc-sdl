@@ -56,9 +56,9 @@ enum sdlNetVersion = (){
 }();
 
 enum sdlTTFVersion = (){
-	/+version(SDL_TTF_3_2)      return Version(3,2,0);
-	else+/version(SDL_TTF_3_1) return Version(3,1,0);
-	else                      return Version.none;
+	version(SDL_TTF_3_2_2)      return Version(3,2,2);
+	else version(SDL_TTF_3_2)   return Version(3,2,0);
+	else                        return Version.none;
 }();
 
 enum sdlShaderCrossVersion = (){

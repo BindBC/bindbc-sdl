@@ -294,13 +294,10 @@ It is necessary to specify only a single version identifier per library. For exa
 
 <details><summary><h3>SDL_ttf versions</h3></summary>
 
-
-> [!NOTE]\
-> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_ttf/commit/07e4d1241817f2c0f81749183fac5ec82d7bbd72) (tagged `preview-3.1.0`). This version may be *ABI* stable, but it is not *API* stable. The *API* of these bindings & the version identifier used to activate them will change when SDL_ttf 3.2 is released.
-
 | Version |Version identifier| Public API updated |
 |---------|------------------|--------------------|
-| 3.1.0   | `SDL_TTF_3_1`    |                    |
+| 3.2.0   | `SDL_TTF_3_2`    |                    |
+| 3.2.2   | `SDL_TTF_3_2_2`  | :heavy_check_mark: |
 
 </details>
 

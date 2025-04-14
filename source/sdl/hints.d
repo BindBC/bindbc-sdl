@@ -272,7 +272,7 @@ mixin(makeEnumBind(q{SDL_HintPriority}, members: (){
 	return ret;
 }()));
 
-alias SDL_HintCallback = extern(C) void function(void* userdata, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
+alias SDL_HintCallback = extern(C) void function(void* userData, const(char)* name, const(char)* oldValue, const(char)* newValue) nothrow;
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [

@@ -76,15 +76,43 @@ mixin(makeEnumBind(q{TTF_FontStyleFlags}, q{TTF_FontStyleFlags_}, aliases: [q{TT
 }()));
 
 mixin(makeEnumBind(q{TTF_HintingFlags}, aliases: [q{TTF_Hinting}], members: (){
-	EnumMember[] ret = [
-		{{q{normal},         q{TTF_HINTING_NORMAL}}, q{0}},
-		{{q{light},          q{TTF_HINTING_LIGHT}}},
-		{{q{mono},           q{TTF_HINTING_MONO}}},
-		{{q{none},           q{TTF_HINTING_NONE}}},
-		{{q{lightSubpixel},  q{TTF_HINTING_LIGHT_SUBPIXEL}}},
-	];
+	EnumMember[] ret;
+	if(sdlTTFVersion >= Version(3,2,2)){
+		EnumMember[] add = [
+			{{q{invalid},        q{TTF_HINTING_INVALID}}, q{-1}},
+		];
+		ret ~= add;
+	}
+	{
+		EnumMember[] add = [
+			{{q{normal},         q{TTF_HINTING_NORMAL}}, q{0}},
+			{{q{light},          q{TTF_HINTING_LIGHT}}},
+			{{q{mono},           q{TTF_HINTING_MONO}}},
+			{{q{none},           q{TTF_HINTING_NONE}}},
+			{{q{lightSubpixel},  q{TTF_HINTING_LIGHT_SUBPIXEL}}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
+
+static if(sdlTTFVersion >= Version(3,2,2)){
+	mixin(makeEnumBind(q{TTF_FontWeight}, q{int}, members: (){
+		EnumMember[] ret = [
+			{{q{thin},        q{TTF_FONT_WEIGHT_THIN}},         q{100}},
+			{{q{extraLight},  q{TTF_FONT_WEIGHT_EXTRA_LIGHT}},  q{200}},
+			{{q{light},       q{TTF_FONT_WEIGHT_LIGHT}},        q{300}},
+			{{q{normal},      q{TTF_FONT_WEIGHT_NORMAL}},       q{400}},
+			{{q{medium},      q{TTF_FONT_WEIGHT_MEDIUM}},       q{500}},
+			{{q{semiBold},    q{TTF_FONT_WEIGHT_SEMI_BOLD}},    q{600}},
+			{{q{bold},        q{TTF_FONT_WEIGHT_BOLD}},         q{700}},
+			{{q{extraBold},   q{TTF_FONT_WEIGHT_EXTRA_BOLD}},   q{800}},
+			{{q{black},       q{TTF_FONT_WEIGHT_BLACK}},        q{900}},
+			{{q{extraBlack},  q{TTF_FONT_WEIGHT_EXTRA_BLACK}},  q{950}},
+		];
+		return ret;
+	}()));
+}
 
 mixin(makeEnumBind(q{TTF_HorizontalAlignment}, aliases: [q{TTF_HorizontalAlign}], members: (){
 	EnumMember[] ret = [
@@ -313,6 +341,8 @@ mixin(joinFnBinds((){
 		{q{const(char)*}, q{TTF_GetFontStyleName}, q{const(TTF_Font)* font}},
 		{q{bool}, q{TTF_SetFontDirection}, q{TTF_Font* font, TTF_Direction direction}},
 		{q{TTF_Direction}, q{TTF_GetFontDirection}, q{TTF_Font* font}},
+		{q{uint}, q{TTF_StringToTag}, q{const(char)* string}},
+		{q{void}, q{TTF_TagToString}, q{uint tag, char* string, size_t size}},
 		{q{bool}, q{TTF_SetFontScript}, q{TTF_Font* font, uint script}},
 		{q{uint}, q{TTF_GetFontScript}, q{TTF_Font* font}},
 		{q{uint}, q{TTF_GetGlyphScript}, q{uint ch}},
@@ -387,6 +417,12 @@ mixin(joinFnBinds((){
 		{q{void}, q{TTF_Quit}, q{}},
 		{q{int}, q{TTF_WasInit}, q{}},
 	];
+	if(sdlTTFVersion >= Version(3,2,2)){
+		FnBind[] add = [
+			{q{int}, q{TTF_GetFontWeight}, q{const(TTF_Font)* font}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

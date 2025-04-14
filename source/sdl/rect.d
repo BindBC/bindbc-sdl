@@ -46,7 +46,7 @@ pragma(inline,true) nothrow @nogc{
 	bool SDL_RectEmptyFloat(const(SDL_FRect)* r) pure @safe =>
 		!r || r.w < 0f || r.h < 0f;
 	
-	bool SDL_RectsEqualEpsilon(const(SDL_FRect)* a, const(SDL_FRect)* b, const float epsilon) @trusted =>
+	bool SDL_RectsEqualEpsilon(const(SDL_FRect)* a, const(SDL_FRect)* b, float epsilon) @trusted =>
 		a && b && (a == b || (
 			SDL_fabsf(a.x - b.x) <= epsilon &&
 			SDL_fabsf(a.y - b.y) <= epsilon &&

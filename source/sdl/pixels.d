@@ -265,6 +265,12 @@ mixin(makeEnumBind(q{SDL_PixelFormat}, members: (){
 		];
 		ret ~= add;
 	}}
+	if(sdlVersion >= Version(3,2,6)){
+		EnumMember[] add = [
+			{{q{mjpg},      q{SDL_PIXELFORMAT_MJPG}},      q{0x47504A4DU}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

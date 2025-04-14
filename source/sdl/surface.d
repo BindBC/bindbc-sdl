@@ -30,10 +30,20 @@ bool SDL_MUSTLOCK(SDL_Surface s) nothrow @nogc pure @safe =>
 	(s.flags & SDL_SurfaceFlags.lockNeeded) == SDL_SurfaceFlags.lockNeeded;
 
 mixin(makeEnumBind(q{SDL_ScaleMode}, members: (){
-	EnumMember[] ret = [
-		{{q{nearest},    q{SDL_SCALEMODE_NEAREST}}},
-		{{q{linear},     q{SDL_SCALEMODE_LINEAR}}},
-	];
+	EnumMember[] ret;
+	if(sdlVersion >= Version(3,2,6)){
+		EnumMember[] add = [
+			{{q{invalid},    q{SDL_SCALEMODE_INVALID}}, q{-1}},
+		];
+		ret ~= add;
+	}
+	{
+		EnumMember[] add = [
+			{{q{nearest},    q{SDL_SCALEMODE_NEAREST}}},
+			{{q{linear},     q{SDL_SCALEMODE_LINEAR}}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -63,6 +73,13 @@ mixin(makeEnumBind(q{SDLProp_Surface}, q{const(char)*}, members: (){
 		{{q{hdrHeadroomFloat},         q{SDL_PROP_SURFACE_HDR_HEADROOM_FLOAT}},         q{"SDL.surface.HDR_headroom"}},
 		{{q{toneMapOperatorString},    q{SDL_PROP_SURFACE_TONEMAP_OPERATOR_STRING}},    q{"SDL.surface.tonemap"}},
 	];
+	if(sdlVersion >= Version(3,2,6)){
+		EnumMember[] add = [
+			{{q{hotspotXNumber},    q{SDL_PROP_SURFACE_HOTSPOT_X_NUMBER}},    q{"SDL.surface.hotspot.x"}},
+			{{q{hotspotYNumber},    q{SDL_PROP_SURFACE_HOTSPOT_Y_NUMBER}},    q{"SDL.surface.hotspot.y"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -126,5 +143,11 @@ mixin(joinFnBinds((){
 		{q{bool}, q{SDL_WriteSurfacePixel}, q{SDL_Surface* surface, int x, int y, ubyte r, ubyte g, ubyte b, ubyte a}},
 		{q{bool}, q{SDL_WriteSurfacePixelFloat}, q{SDL_Surface* surface, int x, int y, float r, float g, float b, float a}},
 	];
+	if(sdlVersion >= Version(3,2,4)){
+		FnBind[] add = [
+			{q{bool}, q{SDL_StretchSurface}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect, SDL_ScaleMode scaleMode}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

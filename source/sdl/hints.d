@@ -248,6 +248,18 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 		{{q{penMouseEvents},                        q{SDL_HINT_PEN_MOUSE_EVENTS}},                           q{"SDL_PEN_MOUSE_EVENTS"}},
 		{{q{penTouchEvents},                        q{SDL_HINT_PEN_TOUCH_EVENTS}},                           q{"SDL_PEN_TOUCH_EVENTS"}},
 	];
+	if(sdlVersion >= Version(3,2,6)){
+		EnumMember[] add = [
+			{{q{joystickZeroCentredDevices},        q{SDL_HINT_JOYSTICK_ZERO_CENTRED_DEVICES}},        q{"SDL_JOYSTICK_ZERO_CENTERED_DEVICES"}, aliases: [{q{joystickZeroCenteredDevices}, q{SDL_HINT_JOYSTICK_ZERO_CENTERED_DEVICES}}]},
+		];
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,2,10)){
+		EnumMember[] add = [
+			{{q{videoX11ExternalWindowInput},       q{SDL_HINT_VIDEO_X11_EXTERNAL_WINDOW_INPUT}},      q{"SDL_VIDEO_X11_EXTERNAL_WINDOW_INPUT"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

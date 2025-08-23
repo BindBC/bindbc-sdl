@@ -250,13 +250,13 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 	];
 	if(sdlVersion >= Version(3,2,6)){
 		EnumMember[] add = [
-			{{q{joystickZeroCentredDevices},        q{SDL_HINT_JOYSTICK_ZERO_CENTRED_DEVICES}},        q{"SDL_JOYSTICK_ZERO_CENTERED_DEVICES"}, aliases: [{q{joystickZeroCenteredDevices}, q{SDL_HINT_JOYSTICK_ZERO_CENTERED_DEVICES}}]},
+			{{q{joystickHapticAxes},                q{SDL_HINT_JOYSTICK_HAPTIC_AXES}},                       q{"SDL_JOYSTICK_HAPTIC_AXES"}},
 		];
 		ret ~= add;
 	}
 	if(sdlVersion >= Version(3,2,10)){
 		EnumMember[] add = [
-			{{q{videoX11ExternalWindowInput},       q{SDL_HINT_VIDEO_X11_EXTERNAL_WINDOW_INPUT}},      q{"SDL_VIDEO_X11_EXTERNAL_WINDOW_INPUT"}},
+			{{q{videoX11ExternalWindowInput},       q{SDL_HINT_VIDEO_X11_EXTERNAL_WINDOW_INPUT}},            q{"SDL_VIDEO_X11_EXTERNAL_WINDOW_INPUT"}},
 		];
 		ret ~= add;
 	}

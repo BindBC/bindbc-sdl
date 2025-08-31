@@ -31,10 +31,12 @@ enum dStyleEnums = (){
 }();
 
 enum sdlVersion = (){
-	version(SDL_3_2_10)  return Version(3,2,10);
-	version(SDL_3_2_6)   return Version(3,2,6);
-	version(SDL_3_2_4)   return Version(3,2,4);
-	else                 return Version(3,2,0);
+	version(SDL_3_2_18)       return Version(3,2,18);
+	else version(SDL_3_2_12)  return Version(3,2,12);
+	else version(SDL_3_2_10)  return Version(3,2,10);
+	else version(SDL_3_2_6)   return Version(3,2,6);
+	else version(SDL_3_2_4)   return Version(3,2,4);
+	else                      return Version(3,2,0);
 }();
 
 enum sdlImageVersion = (){

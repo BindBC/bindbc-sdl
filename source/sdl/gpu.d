@@ -1020,7 +1020,7 @@ mixin(makeEnumBind(q{SDLProp_GPUTextureCreate}, q{const(char)*}, members: (){
 		{{q{d3d12ClearBFloat},          q{SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_B_FLOAT}},          q{"SDL.gpu.createtexture.d3d12.clear.b"}},
 		{{q{d3d12ClearAFloat},          q{SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_A_FLOAT}},          q{"SDL.gpu.createtexture.d3d12.clear.a"}},
 		{{q{d3d12ClearDepthFloat},      q{SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_DEPTH_FLOAT}},      q{"SDL.gpu.createtexture.d3d12.clear.depth"}},
-		{{q{d3d12ClearStencilUInt8},    q{SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_STENCIL_UINT8}},    q{"SDL.gpu.createtexture.d3d12.clear.stencil"}},
+		{{q{d3d12ClearStencilNumber},   q{SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_STENCIL_NUMBER}},   q{"SDL.gpu.createtexture.d3d12.clear.stencil"}, aliases: [{q{d3d12ClearStencilUInt8}, q{SDL_PROP_GPU_TEXTURE_CREATE_D3D12_CLEAR_STENCIL_UINT8}}]},
 		{{q{nameString},                q{SDL_PROP_GPU_TEXTURE_CREATE_NAME_STRING}},                  q{"SDL.gpu.texture.create.name"}},
 	];
 	return ret;

@@ -266,6 +266,13 @@ struct SDL_MouseWheelEvent{
 	
 	alias mouse_x = mouseX;
 	alias mouse_y = mouseY;
+	
+	static if(sdlVersion >= Version(3,2,12)){
+		int integerX, integerY;
+		
+		alias integer_x = integerX;
+		alias integer_y = integerY;
+	}
 }
 
 struct SDL_JoyAxisEvent{

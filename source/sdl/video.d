@@ -274,6 +274,12 @@ mixin(makeEnumBind(q{SDLProp_WindowCreate}, q{const(char)*}, members: (){
 		{{q{win32PixelFormatHWNDPointer},        q{SDL_PROP_WINDOW_CREATE_WIN32_PIXEL_FORMAT_HWND_POINTER}},        q{"SDL.window.create.win32.pixel_format_hwnd"}},
 		{{q{x11WindowNumber},                    q{SDL_PROP_WINDOW_CREATE_X11_WINDOW_NUMBER}},                      q{"SDL.window.create.x11.window"}},
 	];
+	if(sdlVersion >= Version(3,2,18)){
+		EnumMember[] add = [
+			{{q{constrainPopupBoolean},          q{SDL_PROP_WINDOW_CREATE_CONSTRAIN_POPUP_BOOLEAN}},                q{"SDL.window.create.constrain_popup"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

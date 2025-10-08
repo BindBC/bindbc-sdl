@@ -378,7 +378,7 @@ mixin(makeSDLMain(dynLoad: q{
 		}
 	}})); //makeSDLMain's parameters are optional
 
-version SDL_MainUseCallbacks{
+version(SDL_MainUseCallbacks){
 	extern(C) SDL_AppResult SDL_AppInit(void** state, int argC, char** argV) nothrow{
 		try{
 			if(!rt_init()) return SDL_AppResult.failure;

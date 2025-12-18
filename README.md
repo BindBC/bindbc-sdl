@@ -4,10 +4,10 @@
 
 [Official git repository](https://git.sleeping.town/BindBC/bindbc-sdl)
 
-This project provides a set of both static and dynamic bindings to
-[SDL3 (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility.
+**If you are using SDL2, please go to the [SDL2 branch](https://git.sleeping.town/BindBC/bindbc-sdl/src/branch/SDL2).**
 
-If you still need SDL2 bindings, they are available in the [SDL2](https://git.sleeping.town/BindBC/bindbc-sdl/src/branch/SDL2) branch with versions tagged 1.X.X.
+This project provides a set of both static and dynamic bindings to
+[SDL (Simple DirectMedia Layer)](https://libsdl.org/) and its official extension libraries. They are compatible with `@nogc` and `nothrow`, and can be compiled with BetterC compatibility.
 
 | Table of Contents |
 |-------------------|

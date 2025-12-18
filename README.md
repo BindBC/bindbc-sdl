@@ -307,7 +307,7 @@ It is necessary to specify only a single version identifier per library. For exa
 
 
 > [!NOTE]\
-> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_shadercross/commit/a1bc850a6c32d5186d84dfd00701dd35858e309d). SDL_shadercross has no versioned releases yet. The API of these bindings & the version identifier used to activate them may change if/when SDL_shadercross recieves its first versioned release.
+> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_shadercross/commit/f1ca8cfefba8f32095861bbcf2a4f4d773f0fbb4). SDL_shadercross has no versioned releases yet. The API of these bindings & the version identifier used to activate them may change if/when SDL_shadercross recieves its first versioned release.
 
 | Version | Version identifier    | Public API updated |
 |---------|-----------------------|--------------------|

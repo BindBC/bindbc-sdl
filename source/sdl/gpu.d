@@ -498,7 +498,7 @@ struct SDL_GPUTextureLocation{
 	SDL_GPUTexture* texture;
 	uint mipLevel;
 	uint layer;
-	uint x, y, z;
+	uint x, y, f;
 	
 	alias mip_level = mipLevel;
 }
@@ -824,7 +824,7 @@ struct SDL_GPUGraphicsPipelineCreateInfo{
 	SDL_GPUShader* fragmentShader;
 	SDL_GPUVertexInputState vertexInputState;
 	SDL_GPUPrimitiveType primitiveType;
-	SDL_GPURasteriserState rasterizerState;
+	SDL_GPURasteriserState rasteriserState;
 	SDL_GPUMultisampleState multisampleState;
 	SDL_GPUDepthStencilState depthStencilState;
 	SDL_GPUGraphicsPipelineTargetInfo targetInfo;
@@ -835,7 +835,9 @@ struct SDL_GPUGraphicsPipelineCreateInfo{
 	alias fragment_shader = fragmentShader;
 	alias vertex_input_state = vertexInputState;
 	alias primitive_type = primitiveType;
-	alias rasterizer_state = rasterizerState;
+	alias rasteriser_state = rasteriserState;
+	alias rasterizer_state = rasteriserState;
+	alias rasterizerState = rasteriserState;
 	alias multisample_state = multisampleState;
 	alias depth_stencil_state = depthStencilState;
 	alias target_info = targetInfo;

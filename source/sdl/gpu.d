@@ -498,7 +498,7 @@ struct SDL_GPUTextureLocation{
 	SDL_GPUTexture* texture;
 	uint mipLevel;
 	uint layer;
-	uint x, y, f;
+	uint x, y, z;
 	
 	alias mip_level = mipLevel;
 }

@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -32,9 +32,8 @@ bool SDL_MUSTLOCK(SDL_Surface s) nothrow @nogc pure @safe =>
 mixin(makeEnumBind(q{SDL_ScaleMode}, members: (){
 	EnumMember[] ret;
 	if(sdlVersion >= Version(3,2,6)){
-		EnumMember[] add = [
-			{{q{invalid},    q{SDL_SCALEMODE_INVALID}}, q{-1}},
-		];
+		EnumMember add =
+			{{q{invalid},    q{SDL_SCALEMODE_INVALID}}, q{-1}};
 		ret ~= add;
 	}
 	{
@@ -42,6 +41,11 @@ mixin(makeEnumBind(q{SDL_ScaleMode}, members: (){
 			{{q{nearest},    q{SDL_SCALEMODE_NEAREST}}},
 			{{q{linear},     q{SDL_SCALEMODE_LINEAR}}},
 		];
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember add =
+			{{q{pixelArt},   q{SDL_SCALEMODE_PIXELART}}};
 		ret ~= add;
 	}
 	return ret;
@@ -53,6 +57,11 @@ mixin(makeEnumBind(q{SDL_FlipMode}, aliases: [q{SDL_Flip}], members: (){
 		{{q{horizontal},  q{SDL_FLIP_HORIZONTAL}}},
 		{{q{vertical},    q{SDL_FLIP_VERTICAL}}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember add =
+			{{q{horizontalAndVertical}, q{SDL_FLIP_HORIZONTAL_AND_VERTICAL}}, q{horizontal | vertical}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -77,6 +86,12 @@ mixin(makeEnumBind(q{SDLProp_Surface}, q{const(char)*}, members: (){
 		EnumMember[] add = [
 			{{q{hotspotXNumber},    q{SDL_PROP_SURFACE_HOTSPOT_X_NUMBER}},    q{"SDL.surface.hotspot.x"}},
 			{{q{hotspotYNumber},    q{SDL_PROP_SURFACE_HOTSPOT_Y_NUMBER}},    q{"SDL.surface.hotspot.y"}},
+		];
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{rotationFloat},     q{SDL_PROP_SURFACE_ROTATION_FLOAT}},      q{"SDL.surface.rotation"}},
 		];
 		ret ~= add;
 	}
@@ -146,6 +161,18 @@ mixin(joinFnBinds((){
 	if(sdlVersion >= Version(3,2,4)){
 		FnBind[] add = [
 			{q{bool}, q{SDL_StretchSurface}, q{SDL_Surface* src, const(SDL_Rect)* srcRect, SDL_Surface* dst, const(SDL_Rect)* dstRect, SDL_ScaleMode scaleMode}},
+		];
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{SDL_Surface*}, q{SDL_LoadSurface_IO}, q{SDL_IOStream* src, bool closeIO}},
+			{q{SDL_Surface*}, q{SDL_LoadSurface}, q{const(char)* file}},
+			{q{SDL_Surface*}, q{SDL_LoadPNG_IO}, q{SDL_IOStream* src, bool closeIO}},
+			{q{SDL_Surface*}, q{SDL_LoadPNG}, q{const(char)* file}},
+			{q{bool}, q{SDL_SavePNG_IO}, q{SDL_Surface* surface, SDL_IOStream* dst, bool closeIO}},
+			{q{bool}, q{SDL_SavePNG}, q{SDL_Surface* surface, const(char)* file}},
+			{q{SDL_Surface*}, q{SDL_RotateSurface}, q{SDL_Surface* surface, float angle}},
 		];
 		ret ~= add;
 	}

@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -249,14 +249,38 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 		{{q{penTouchEvents},                        q{SDL_HINT_PEN_TOUCH_EVENTS}},                           q{"SDL_PEN_TOUCH_EVENTS"}},
 	];
 	if(sdlVersion >= Version(3,2,6)){
-		EnumMember[] add = [
-			{{q{joystickHapticAxes},                q{SDL_HINT_JOYSTICK_HAPTIC_AXES}},                       q{"SDL_JOYSTICK_HAPTIC_AXES"}},
-		];
+		EnumMember add =
+			{{q{joystickHapticAxes},                q{SDL_HINT_JOYSTICK_HAPTIC_AXES}},                       q{"SDL_JOYSTICK_HAPTIC_AXES"}};
 		ret ~= add;
 	}
 	if(sdlVersion >= Version(3,2,10)){
+		EnumMember add =
+			{{q{videoX11ExternalWindowInput},       q{SDL_HINT_VIDEO_X11_EXTERNAL_WINDOW_INPUT}},            q{"SDL_VIDEO_X11_EXTERNAL_WINDOW_INPUT"}};
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,0)){
 		EnumMember[] add = [
-			{{q{videoX11ExternalWindowInput},       q{SDL_HINT_VIDEO_X11_EXTERNAL_WINDOW_INPUT}},            q{"SDL_VIDEO_X11_EXTERNAL_WINDOW_INPUT"}},
+			{{q{audioDeviceRawStream},              q{SDL_HINT_AUDIO_DEVICE_RAW_STREAM}},                    q{"SDL_AUDIO_DEVICE_RAW_STREAM"}},
+			{{q{invalidParamChecks},                q{SDL_HINT_INVALID_PARAM_CHECKS}},                       q{"SDL_INVALID_PARAM_CHECKS"}},
+			{{q{hidapiLibusbGamecube},              q{SDL_HINT_HIDAPI_LIBUSB_GAMECUBE}},                     q{"SDL_HIDAPI_LIBUSB_GAMECUBE"}},
+			{{q{joystickHIDAPILG4FF},               q{SDL_HINT_JOYSTICK_HIDAPI_LG4FF}},                      q{"SDL_JOYSTICK_HIDAPI_LG4FF"}},
+			{{q{joystickHIDAPI8BitDo},              q{SDL_HINT_JOYSTICK_HIDAPI_8BITDO}},                     q{"SDL_JOYSTICK_HIDAPI_8BITDO"}},
+			{{q{joystickHIDAPISInput},              q{SDL_HINT_JOYSTICK_HIDAPI_SINPUT}},                     q{"SDL_JOYSTICK_HIDAPI_SINPUT"}},
+			{{q{joystickHIDAPIZUIKI},               q{SDL_HINT_JOYSTICK_HIDAPI_ZUIKI}},                      q{"SDL_JOYSTICK_HIDAPI_ZUIKI"}},
+			{{q{joystickHIDAPIFlydigi},             q{SDL_HINT_JOYSTICK_HIDAPI_FLYDIGI}},                    q{"SDL_JOYSTICK_HIDAPI_FLYDIGI"}},
+			{{q{joystickHIDAPISwitch2},             q{SDL_HINT_JOYSTICK_HIDAPI_SWITCH2}},                    q{"SDL_JOYSTICK_HIDAPI_SWITCH2"}},
+			{{q{joystickHIDAPIGIP},                 q{SDL_HINT_JOYSTICK_HIDAPI_GIP}},                        q{"SDL_JOYSTICK_HIDAPI_GIP"}},
+			{{q{joystickHIDAPIGIPResetForMetadata}, q{SDL_HINT_JOYSTICK_HIDAPI_GIP_RESET_FOR_METADATA}},     q{"SDL_JOYSTICK_HIDAPI_GIP_RESET_FOR_METADATA"}},
+			{{q{kmsDRMAtomic},                      q{SDL_HINT_KMSDRM_ATOMIC}},                              q{"SDL_KMSDRM_ATOMIC"}},
+			{{q{macPressAndHold},                   q{SDL_HINT_MAC_PRESS_AND_HOLD}},                         q{"SDL_MAC_PRESS_AND_HOLD"}},
+			{{q{mouseDPIScaleCursors},              q{SDL_HINT_MOUSE_DPI_SCALE_CURSORS}},                    q{"SDL_MOUSE_DPI_SCALE_CURSORS"}},
+			{{q{renderDirect3D11Warp},              q{SDL_HINT_RENDER_DIRECT3D11_WARP}},                     q{"SDL_RENDER_DIRECT3D11_WARP"}},
+			{{q{ps2GSHeight},                       q{SDL_HINT_PS2_GS_HEIGHT}},                              q{"SDL_PS2_GS_HEIGHT"}},
+			{{q{ps2GSProgressive},                  q{SDL_HINT_PS2_GS_PROGRESSIVE}},                         q{"SDL_PS2_GS_PROGRESSIVE"}},
+			{{q{ps2GSMode},                         q{SDL_HINT_PS2_GS_MODE}},                                q{"SDL_PS2_GS_MODE"}},
+			{{q{videoMetalAutoResizeDrawable},      q{SDL_HINT_VIDEO_METAL_AUTO_RESIZE_DRAWABLE}},           q{"SDL_VIDEO_METAL_AUTO_RESIZE_DRAWABLE"}},
+			{{q{videoMatchExclusiveModeOnMove},     q{SDL_HINT_VIDEO_MATCH_EXCLUSIVE_MODE_ON_MOVE}},         q{"SDL_VIDEO_MATCH_EXCLUSIVE_MODE_ON_MOVE"}},
+			{{q{windowsRawKeyboardExcludeHotkeys},  q{SDL_HINT_WINDOWS_RAW_KEYBOARD_EXCLUDE_HOTKEYS}},       q{"SDL_WINDOWS_RAW_KEYBOARD_EXCLUDE_HOTKEYS"}},
 		];
 		ret ~= add;
 	}

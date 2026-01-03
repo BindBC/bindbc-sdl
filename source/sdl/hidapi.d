@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -7,6 +7,8 @@
 module sdl.hidapi;
 
 import bindbc.sdl.config, bindbc.sdl.codegen;
+
+import sdl.properties: SDL_PropertiesID;
 
 struct SDL_HIDDevice;
 alias SDL_hid_device = SDL_HIDDevice;
@@ -54,6 +56,14 @@ struct SDL_HIDDeviceInfo{
 }
 alias SDL_hid_device_info = SDL_HIDDeviceInfo;
 
+static if(sdlVersion >= Version(3,4,0))
+mixin(makeEnumBind(q{SDLProp_HIDAPI}, aliases: [q{SDLProp_hidapi}], members: (){
+	EnumMember[] ret = [
+		{{q{libusbDeviceHandlePointer},    q{SDL_PROP_HIDAPI_LIBUSB_DEVICE_HANDLE_POINTER}},    q{"SDL.hidapi.libusb.device.handle"}},
+	];
+	return ret;
+}()));
+
 mixin(joinFnBinds((){
 	FnBind[] ret = [
 		{q{int}, q{SDL_hid_init}, q{}, aliases: [q{SDL_HIDInit}]},
@@ -79,5 +89,11 @@ mixin(joinFnBinds((){
 		{q{int}, q{SDL_hid_get_report_descriptor}, q{SDL_HIDDevice* dev, ubyte* buf, size_t buf_size}, aliases: [q{SDL_HIDGetReportDescriptor}]},
 		{q{void}, q{SDL_hid_ble_scan}, q{bool active}, aliases: [q{SDL_HIDBLEScan}]},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{SDL_PropertiesID}, q{SDL_hid_get_properties}, q{SDL_HIDDevice* dev}, aliases: [q{SDL_HIDGetProperties}]},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

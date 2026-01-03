@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -30,8 +30,17 @@ mixin(makeEnumBind(q{SDL_GamepadType}, members: (){
 		{{q{nintendoSwitchJoyconLeft},     q{SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT}}},
 		{{q{nintendoSwitchJoyconRight},    q{SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT}}},
 		{{q{nintendoSwitchJoyconPair},     q{SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR}}},
-		{{q{count},                        q{SDL_GAMEPAD_TYPE_COUNT}}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember add =
+			{{q{gamecube},                 q{SDL_GAMEPAD_TYPE_GAMECUBE}}};
+		ret ~= add;
+	}
+	{
+		EnumMember add =
+			{{q{count},                    q{SDL_GAMEPAD_TYPE_COUNT}}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 

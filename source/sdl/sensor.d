@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -29,6 +29,7 @@ mixin(makeEnumBind(q{SDL_SensorType}, members: (){
 		{{q{gyroL},    q{SDL_SENSOR_GYRO_L}}},
 		{{q{accelR},   q{SDL_SENSOR_ACCEL_R}}},
 		{{q{gyroR},    q{SDL_SENSOR_GYRO_R}}},
+		{{q{count},    q{SDL_SENSOR_COUNT}}},
 	];
 	return ret;
 }()));

@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -21,6 +21,9 @@ mixin(makeEnumBind(q{SDL_PropertyType}, members: (){
 	];
 	return ret;
 }()));
+
+enum SDLProp_NameString = "SDL.name";
+alias SDL_PROP_NAME_STRING = SDLProp_NameString;
 
 extern(C) nothrow{
 	alias SDL_CleanupPropertyCallback = void function(void* userData, void* value);

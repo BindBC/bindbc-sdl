@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -68,9 +68,15 @@ mixin(makeEnumBind(q{SDLProp_IOStream}, q{const(char)*}, members: (){
 
 mixin(makeEnumBind(q{SDLProp_IOStreamMemory}, q{const(char)*}, members: (){
 	EnumMember[] ret = [
-		{{q{pointer},       q{SDL_PROP_IOSTREAM_MEMORY_POINTER}},        q{"SDL.iostream.memory.base"}},
-		{{q{sizeNumber},    q{SDL_PROP_IOSTREAM_MEMORY_SIZE_NUMBER}},    q{"SDL.iostream.memory.size"}},
+		{{q{pointer},                q{SDL_PROP_IOSTREAM_MEMORY_POINTER}},              q{"SDL.iostream.memory.base"}},
+		{{q{sizeNumber},             q{SDL_PROP_IOSTREAM_MEMORY_SIZE_NUMBER}},          q{"SDL.iostream.memory.size"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{freeFuncPointer},    q{SDL_PROP_IOSTREAM_MEMORY_FREE_FUNC_POINTER}},    q{"SDL.iostream.memory.free"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

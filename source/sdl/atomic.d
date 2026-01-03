@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -126,5 +126,11 @@ mixin(joinFnBinds((){
 		{q{void*}, q{SDL_SetAtomicPointer}, q{void** a, void* v}},
 		{q{void*}, q{SDL_GetAtomicPointer}, q{void** a}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{uint}, q{SDL_AddAtomicU32}, q{SDL_AtomicU32* a, int v}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

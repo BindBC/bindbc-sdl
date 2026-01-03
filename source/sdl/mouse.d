@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -50,6 +50,11 @@ mixin(makeEnumBind(q{SDL_MouseWheelDirection}, aliases: [q{SDL_MouseWheel}], mem
 	return ret;
 }()));
 
+struct SDL_CursorFrameInfo{
+	SDL_Surface* surface;
+	uint duration;
+}
+
 mixin(makeEnumBind(q{SDL_MouseButton}, q{ubyte}, aliases: [q{SDL_Button}], members: (){
 	EnumMember[] ret = [
 		{{q{left},    q{SDL_BUTTON_LEFT}},    q{1}},
@@ -72,6 +77,8 @@ mixin(makeEnumBind(q{SDL_MouseButtonFlags}, q{SDL_MouseButtonFlags_}, aliases: [
 	];
 	return ret;
 }()));
+
+alias SDL_MouseMotionTransformCallback = extern(C) void function(void* userData, ulong timestamp, SDL_Window* window, SDL_MouseID mouseID, float* x, float* y) nothrow;
 
 pragma(inline,true)
 SDL_MouseButtonFlags SDL_BUTTON_MASK(SDL_MouseButton x) nothrow @nogc pure @safe =>
@@ -102,5 +109,12 @@ mixin(joinFnBinds((){
 		{q{bool}, q{SDL_HideCursor}, q{}},
 		{q{bool}, q{SDL_CursorVisible}, q{}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{bool}, q{SDL_SetRelativeMouseTransform}, q{SDL_MouseMotionTransformCallback callback, void* userData}},
+			{q{SDL_Cursor*}, q{SDL_CreateAnimatedCursor}, q{SDL_CursorFrameInfo* frames, int frameCount, int hotX, int hotY}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

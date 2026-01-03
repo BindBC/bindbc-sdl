@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -49,7 +49,7 @@ nothrow @nogc pure @safe{
 			asm nothrow @nogc pure @trusted{ "xchgb %b0,%h0" : "=q"(x) : "0"(x); }
 			return x;
 		}else version(ExtInlineAsm_X86_64){
-			asm nothrow @nogc pure @trusted{ "xchgb %b0,%h0" : "=Q"(x) : "0"(x); }
+			asm nothrow @nogc pure @trusted{ "xchgb %b0,%h0" : "=abcd"(x) : "0"(x); }
 			return x;
 		}else +/version(ExtInlineAsm_PPC){
 			int result;

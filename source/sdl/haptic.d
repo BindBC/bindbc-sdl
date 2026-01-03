@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -12,8 +12,10 @@ import sdl.joystick: SDL_Joystick;
 
 struct SDL_Haptic;
 
-alias SDL_HapticType_ = ushort;
-mixin(makeEnumBind(q{SDL_HapticType}, q{SDL_HapticType_}, members: (){
+enum SDL_HAPTIC_INFINITY = 4_294_967_295U;
+alias infinity = SDL_HAPTIC_INFINITY;
+
+mixin(makeEnumBind(q{SDL_HapticEffectType}, q{ushort}, aliases: [q{SDL_HapticType}], members: (){
 	EnumMember[] ret = [
 		{{q{constant},     q{SDL_HAPTIC_CONSTANT}},     q{1U <<  0}},
 		{{q{sine},         q{SDL_HAPTIC_SINE}},         q{1U <<  1}},
@@ -34,6 +36,7 @@ mixin(makeEnumBind(q{SDL_HapticType}, q{SDL_HapticType_}, members: (){
 	];
 	return ret;
 }()));
+deprecated alias SDL_HapticType_ = SDL_HapticEffectType;
 
 alias SDL_HapticFeature_ = uint;
 mixin(makeEnumBind(q{SDL_HapticFeature}, q{SDL_HapticFeature_}, members: (){
@@ -62,8 +65,8 @@ mixin(makeEnumBind(q{SDL_HapticFeature}, q{SDL_HapticFeature_}, members: (){
 	return ret;
 }()));
 
-alias SDL_HapticDirectionType_ = ubyte;
-mixin(makeEnumBind(q{SDL_HapticDirectionType}, q{SDL_HapticDirectionType_}, aliases: [q{SDL_HapticDir}], members: (){
+deprecated alias SDL_HapticDirectionType_ = ubyte;
+mixin(makeEnumBind(q{SDL_HapticDirectionType}, q{ubyte}, aliases: [q{SDL_HapticDir}], members: (){
 	EnumMember[] ret = [
 		{{q{polar},           q{SDL_HAPTIC_POLAR}},            q{0}},
 		{{q{cartesian},       q{SDL_HAPTIC_CARTESIAN}},        q{1}},
@@ -73,16 +76,15 @@ mixin(makeEnumBind(q{SDL_HapticDirectionType}, q{SDL_HapticDirectionType_}, alia
 	return ret;
 }()));
 
-enum SDL_HAPTIC_INFINITY = 4_294_967_295U;
-alias infinity = SDL_HAPTIC_INFINITY;
+alias SDL_HapticEffectID = int;
 
 struct SDL_HapticDirection{
-	SDL_HapticDirectionType_ type;
+	SDL_HapticDirectionType type;
 	int[3] dir;
 }
 
 struct SDL_HapticConstant{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	SDL_HapticDirection direction;
 	uint length;
 	ushort delay, button, interval;
@@ -97,7 +99,7 @@ struct SDL_HapticConstant{
 }
 
 struct SDL_HapticPeriodic{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	SDL_HapticDirection direction;
 	uint length;
 	ushort delay, button, interval;
@@ -114,7 +116,7 @@ struct SDL_HapticPeriodic{
 }
 
 struct SDL_HapticCondition{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	SDL_HapticDirection direction;
 	uint length;
 	ushort delay, button, interval;
@@ -131,7 +133,7 @@ struct SDL_HapticCondition{
 }
 
 struct SDL_HapticRamp{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	SDL_HapticDirection direction;
 	uint length;
 	ushort delay, button, interval;	
@@ -146,7 +148,7 @@ struct SDL_HapticRamp{
 }
 
 struct SDL_HapticLeftRight{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	uint length;
 	ushort largeMagnitude, smallMagnitude;
 	
@@ -155,7 +157,7 @@ struct SDL_HapticLeftRight{
 }
 
 struct SDL_HapticCustom{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	SDL_HapticDirection direction;
 	uint length;
 	ushort delay, button, interval;
@@ -172,7 +174,7 @@ struct SDL_HapticCustom{
 }
 
 union SDL_HapticEffect{
-	SDL_HapticType_ type;
+	SDL_HapticEffectType type;
 	SDL_HapticConstant constant;
 	SDL_HapticPeriodic periodic;
 	SDL_HapticCondition condition;
@@ -203,12 +205,12 @@ mixin(joinFnBinds((){
 		{q{uint}, q{SDL_GetHapticFeatures}, q{SDL_Haptic* haptic}},
 		{q{int}, q{SDL_GetNumHapticAxes}, q{SDL_Haptic* haptic}},
 		{q{bool}, q{SDL_HapticEffectSupported}, q{SDL_Haptic* haptic, const(SDL_HapticEffect)* effect}},
-		{q{int}, q{SDL_CreateHapticEffect}, q{SDL_Haptic* haptic, const(SDL_HapticEffect)* effect}},
-		{q{bool}, q{SDL_UpdateHapticEffect}, q{SDL_Haptic* haptic, int effect, const(SDL_HapticEffect)* data}},
-		{q{bool}, q{SDL_RunHapticEffect}, q{SDL_Haptic* haptic, int effect, uint iterations}},
-		{q{bool}, q{SDL_StopHapticEffect}, q{SDL_Haptic* haptic, int effect}},
-		{q{void}, q{SDL_DestroyHapticEffect}, q{SDL_Haptic* haptic, int effect}},
-		{q{bool}, q{SDL_GetHapticEffectStatus}, q{SDL_Haptic* haptic, int effect}},
+		{q{SDL_HapticEffectID}, q{SDL_CreateHapticEffect}, q{SDL_Haptic* haptic, const(SDL_HapticEffect)* effect}},
+		{q{bool}, q{SDL_UpdateHapticEffect}, q{SDL_Haptic* haptic, SDL_HapticEffectID effect, const(SDL_HapticEffect)* data}},
+		{q{bool}, q{SDL_RunHapticEffect}, q{SDL_Haptic* haptic, SDL_HapticEffectID effect, uint iterations}},
+		{q{bool}, q{SDL_StopHapticEffect}, q{SDL_Haptic* haptic, SDL_HapticEffectID effect}},
+		{q{void}, q{SDL_DestroyHapticEffect}, q{SDL_Haptic* haptic, SDL_HapticEffectID effect}},
+		{q{bool}, q{SDL_GetHapticEffectStatus}, q{SDL_Haptic* haptic, SDL_HapticEffectID effect}},
 		{q{bool}, q{SDL_SetHapticGain}, q{SDL_Haptic* haptic, int gain}},
 		{q{bool}, q{SDL_SetHapticAutocenter}, q{SDL_Haptic* haptic, int autoCentre}, aliases: [q{SDL_SetHapticAutoCentre}, q{SDL_SetHapticAutoCenter}]},
 		{q{bool}, q{SDL_PauseHaptic}, q{SDL_Haptic* haptic}},

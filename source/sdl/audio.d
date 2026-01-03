@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -90,7 +90,18 @@ int SDL_AUDIO_FRAMESIZE(SDL_AudioSpec x) nothrow @nogc pure @safe =>
 
 struct SDL_AudioStream;
 
+static if(sdlVersion >= Version(3,4,0))
+mixin(makeEnumBind(q{SDLProp_AudioStream}, q{const(char)*}, members: (){
+	EnumMember[] ret = [
+		{{q{autoCleanupBoolean}, q{SDL_PROP_AUDIOSTREAM_AUTO_CLEANUP_BOOLEAN}}, q{"SDL.audiostream.auto_cleanup"}},
+	];
+	return ret;
+}()));
+
 extern(C) nothrow{
+	static if(sdlVersion >= Version(3,4,0)){
+		alias SDL_AudioStreamDataCompleteCallback = void function(void* userData, const(void)* buf, int bufLen);
+	}
 	alias SDL_AudioStreamCallback = void function(void* userData, SDL_AudioStream* stream, int additionalAmount, int totalAmount);
 	alias SDL_AudioPostMixCallback = void function(void* userData, const(SDL_AudioSpec)* spec, float* buffer, int bufLen);
 }
@@ -154,5 +165,12 @@ mixin(joinFnBinds((){
 		{q{const(char)*}, q{SDL_GetAudioFormatName}, q{SDL_AudioFormat format}},
 		{q{int}, q{SDL_GetSilenceValueForFormat}, q{SDL_AudioFormat format}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{bool}, q{SDL_PutAudioStreamDataNoCopy}, q{SDL_AudioStream* stream, const(void)* buf, int len, SDL_AudioStreamDataCompleteCallback callback, void* userData}},
+			{q{bool}, q{SDL_PutAudioStreamPlanarData}, q{SDL_AudioStream* stream, const(void*)* channelBuffers, int numChannels, int numSamples}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -34,6 +34,15 @@ mixin(makeEnumBind(q{SDL_CameraPosition}, members: (){
 		{{q{unknown},      q{SDL_CAMERA_POSITION_UNKNOWN}}},
 		{{q{frontFacing},  q{SDL_CAMERA_POSITION_FRONT_FACING}}},
 		{{q{backFacing},   q{SDL_CAMERA_POSITION_BACK_FACING}}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{SDL_CameraPermissionState}, members: (){
+	EnumMember[] ret = [
+		{{q{denied},    q{SDL_CAMERA_PERMISSION_STATE_DENIED}}, q{-1}},
+		{{q{pending},   q{SDL_CAMERA_PERMISSION_STATE_PENDING}}},
+		{{q{approved},  q{SDL_CAMERA_PERMISSION_STATE_APPROVED}}},
 	];
 	return ret;
 }()));

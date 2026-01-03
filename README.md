@@ -259,6 +259,7 @@ It is necessary to specify only a single version identifier per library. For exa
 | 3.2.10      | `SDL_3_2_10`     |
 | 3.2.12      | `SDL_3_2_12`     |
 | 3.2.18      | `SDL_3_2_18`     |
+| 3.4.0       | `SDL_3_4_0`      |
 
 </details>
 

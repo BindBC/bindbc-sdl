@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -369,6 +369,7 @@ mixin(makeEnumBind(q{SDL_ChromaLocation}, members: (){
 }()));
 
 mixin(makeEnumBind(q{SDL_Colourspace}, aliases: [q{SDL_Colorspace}], members: (){
+	string defaultColourspace = sdlVersion >= Version(3,4,0) ? q{bt601Limited} : q{jpeg};
 	EnumMember[] ret = [
 		{{q{unknown},          q{SDL_COLOURSPACE_UNKNOWN}},           q{0}, aliases: [{c: q{SDL_COLORSPACE_UNKNOWN}}]},
 		{{q{srgb},             q{SDL_COLOURSPACE_SRGB}},              q{0x1200_05A0U}, aliases: [{c: q{SDL_COLORSPACE_SRGB}}]},
@@ -382,7 +383,7 @@ mixin(makeEnumBind(q{SDL_Colourspace}, aliases: [q{SDL_Colorspace}], members: ()
 		{{q{bt2020Limited},    q{SDL_COLOURSPACE_BT2020_LIMITED}},    q{0x2110_2609U}, aliases: [{c: q{SDL_COLORSPACE_BT2020_LIMITED}}]},
 		{{q{bt2020Full},       q{SDL_COLOURSPACE_BT2020_FULL}},       q{0x2210_2609U}, aliases: [{c: q{SDL_COLORSPACE_BT2020_FULL}}]},
 		{{q{rgbDefault},       q{SDL_COLOURSPACE_RGB_DEFAULT}},       q{srgb}, aliases: [{c: q{SDL_COLORSPACE_RGB_DEFAULT}}]},
-		{{q{yuvDefault},       q{SDL_COLOURSPACE_YUV_DEFAULT}},       q{jpeg}, aliases: [{c: q{SDL_COLORSPACE_YUV_DEFAULT}}]},
+		{{q{yuvDefault},       q{SDL_COLOURSPACE_YUV_DEFAULT}},       defaultColourspace, aliases: [{c: q{SDL_COLORSPACE_YUV_DEFAULT}}]},
 	];
 	return ret;
 }()));

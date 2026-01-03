@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -95,6 +95,11 @@ mixin(makeEnumBind(q{SDL_WindowFlags}, q{SDL_WindowFlags_}, members: (){
 		{{q{transparent},          q{SDL_WINDOW_TRANSPARENT}},            q{0x0000_0000_4000_0000UL}},
 		{{q{notFocusable},         q{SDL_WINDOW_NOT_FOCUSABLE}},          q{0x0000_0000_8000_0000UL}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember add =
+			{{q{fillDocument},     q{SDL_WINDOW_FILL_DOCUMENT}},          q{0x0000_0000_0020_0000UL}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -134,6 +139,18 @@ mixin(makeEnumBind(q{SDL_FlashOperation}, aliases: [q{SDL_Flash}], members: (){
 		{{q{cancel},          q{SDL_FLASH_CANCEL}}},
 		{{q{briefly},         q{SDL_FLASH_BRIEFLY}}},
 		{{q{untilFocused},    q{SDL_FLASH_UNTIL_FOCUSED}}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{SDL_ProgressState}, members: (){
+	EnumMember[] ret = [
+		{{q{invalid},        q{SDL_PROGRESS_STATE_INVALID}}, q{-1}},
+		{{q{none},           q{SDL_PROGRESS_STATE_NONE}}},
+		{{q{indeterminate},  q{SDL_PROGRESS_STATE_INDETERMINATE}}},
+		{{q{normal},         q{SDL_PROGRESS_STATE_NORMAL}}},
+		{{q{paused},         q{SDL_PROGRESS_STATE_PAUSED}}},
+		{{q{error},          q{SDL_PROGRESS_STATE_ERROR}}},
 	];
 	return ret;
 }()));
@@ -234,6 +251,12 @@ mixin(makeEnumBind(q{SDLProp_Display}, q{const(char)*}, members: (){
 		{{q{hdrEnabledBoolean},               q{SDL_PROP_DISPLAY_HDR_ENABLED_BOOLEAN}},                q{"SDL.display.HDR_enabled"}},
 		{{q{kmsDRMPanelOrientationNumber},    q{SDL_PROP_DISPLAY_KMSDRM_PANEL_ORIENTATION_NUMBER}},    q{"SDL.display.KMSDRM.panel_orientation"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{waylandWLOutputPointer},      q{SDL_PROP_DISPLAY_WAYLAND_WL_OUTPUT_POINTER}},          q{"SDL.display.wayland.wl_output"}},
+			{{q{windowsHMonitorPointer},      q{SDL_PROP_DISPLAY_WINDOWS_HMONITOR_POINTER}},           q{"SDL.display.windows.hmonitor"}},
+		];
+	}
 	return ret;
 }()));
 
@@ -275,8 +298,15 @@ mixin(makeEnumBind(q{SDLProp_WindowCreate}, q{const(char)*}, members: (){
 		{{q{x11WindowNumber},                    q{SDL_PROP_WINDOW_CREATE_X11_WINDOW_NUMBER}},                      q{"SDL.window.create.x11.window"}},
 	];
 	if(sdlVersion >= Version(3,2,18)){
+		EnumMember add =
+			{{q{constrainPopupBoolean},          q{SDL_PROP_WINDOW_CREATE_CONSTRAIN_POPUP_BOOLEAN}},                q{"SDL.window.create.constrain_popup"}};
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,0)){
 		EnumMember[] add = [
-			{{q{constrainPopupBoolean},          q{SDL_PROP_WINDOW_CREATE_CONSTRAIN_POPUP_BOOLEAN}},                q{"SDL.window.create.constrain_popup"}},
+			{{q{windowScenePointer},             q{SDL_PROP_WINDOW_CREATE_WINDOWSCENE_POINTER}},                    q{"SDL.window.create.uikit.windowscene"}},
+			{{q{emscriptenCanvasIDString},       q{SDL_PROP_WINDOW_CREATE_EMSCRIPTEN_CANVAS_ID_STRING}},            q{"SDL.window.create.emscripten.canvas_id"}},
+			{{q{emscriptenKeyboardElementString},q{SDL_PROP_WINDOW_CREATE_EMSCRIPTEN_KEYBOARD_ELEMENT_STRING}},     q{"SDL.window.create.emscripten.keyboard_element"}},
 		];
 		ret ~= add;
 	}
@@ -301,7 +331,7 @@ mixin(makeEnumBind(q{SDLProp_Window}, q{const(char)*}, members: (){
 		{{q{kmsDRMGBMDevicePointer},                  q{SDL_PROP_WINDOW_KMSDRM_GBM_DEVICE_POINTER}},                    q{"SDL.window.kmsdrm.gbm_dev"}},
 		{{q{cocoaWindowPointer},                      q{SDL_PROP_WINDOW_COCOA_WINDOW_POINTER}},                         q{"SDL.window.cocoa.window"}},
 		{{q{cocoaMetalViewTagNumber},                 q{SDL_PROP_WINDOW_COCOA_METAL_VIEW_TAG_NUMBER}},                  q{"SDL.window.cocoa.metal_view_tag"}},
-		{{q{openVROverlayID},                         q{SDL_PROP_WINDOW_OPENVR_OVERLAY_ID}},                            q{"SDL.window.openvr.overlay_id"}},
+		{{q{openVROverlayIDNumber},                   q{SDL_PROP_WINDOW_OPENVR_OVERLAY_ID_NUMBER}},                     q{"SDL.window.openvr.overlay_id"}, aliases: [{q{openVROverlayID}, q{SDL_PROP_WINDOW_OPENVR_OVERLAY_ID}}]},
 		{{q{vivanteDisplayPointer},                   q{SDL_PROP_WINDOW_VIVANTE_DISPLAY_POINTER}},                      q{"SDL.window.vivante.display"}},
 		{{q{vivanteWindowPointer},                    q{SDL_PROP_WINDOW_VIVANTE_WINDOW_POINTER}},                       q{"SDL.window.vivante.window"}},
 		{{q{vivanteSurfacePointer},                   q{SDL_PROP_WINDOW_VIVANTE_SURFACE_POINTER}},                      q{"SDL.window.vivante.surface"}},
@@ -321,6 +351,13 @@ mixin(makeEnumBind(q{SDLProp_Window}, q{const(char)*}, members: (){
 		{{q{x11ScreenNumber},                         q{SDL_PROP_WINDOW_X11_SCREEN_NUMBER}},                            q{"SDL.window.x11.screen"}},
 		{{q{x11WindowNumber},                         q{SDL_PROP_WINDOW_X11_WINDOW_NUMBER}},                            q{"SDL.window.x11.window"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{emscriptenCanvasIDString},            q{SDL_PROP_WINDOW_EMSCRIPTEN_CANVAS_ID_STRING}},                  q{"SDL.window.emscripten.canvas_id"}},
+			{{q{emscriptenKeyboardElementString},     q{SDL_PROP_WINDOW_EMSCRIPTEN_KEYBOARD_ELEMENT_STRING}},           q{"SDL.window.emscripten.keyboard_element"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -463,5 +500,15 @@ mixin(joinFnBinds((){
 		{q{bool}, q{SDL_GL_SwapWindow}, q{SDL_Window* window}},
 		{q{bool}, q{SDL_GL_DestroyContext}, q{SDL_GLContext context}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{bool}, q{SDL_SetWindowFillDocument}, q{SDL_Window* window, bool fill}},
+			{q{bool}, q{SDL_SetWindowProgressState}, q{SDL_Window* window, SDL_ProgressState state}},
+			{q{SDL_ProgressState}, q{SDL_GetWindowProgressState}, q{SDL_Window* window}},
+			{q{bool}, q{SDL_SetWindowProgressValue}, q{SDL_Window* window, float value}},
+			{q{float}, q{SDL_GetWindowProgressValue}, q{SDL_Window* window}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

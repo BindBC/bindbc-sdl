@@ -1,5 +1,5 @@
 /+
-+            Copyright 2022 – 2025 Aya Partridge
++            Copyright 2022 – 2026 Aya Partridge
 +          Copyright 2018 - 2022 Michael D. Parker
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
@@ -31,7 +31,8 @@ enum dStyleEnums = (){
 }();
 
 enum sdlVersion = (){
-	version(SDL_3_2_18)       return Version(3,2,18);
+	version(SDL_3_4_0)        return Version(3,4,0);
+	else version(SDL_3_2_18)  return Version(3,2,18);
 	else version(SDL_3_2_12)  return Version(3,2,12);
 	else version(SDL_3_2_10)  return Version(3,2,10);
 	else version(SDL_3_2_6)   return Version(3,2,6);

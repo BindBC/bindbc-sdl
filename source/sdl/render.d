@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -10,7 +10,8 @@ import bindbc.sdl.config, bindbc.sdl.codegen;
 
 import sdl.blendmode: SDL_BlendMode_;
 import sdl.events: SDL_Event;
-import sdl.pixels: SDL_FColour, SDL_PixelFormat;
+import sdl.gpu: SDL_GPUBuffer, SDL_GPUDevice, SDL_GPUShader, SDL_GPUTexture, SDL_GPUTextureSamplerBinding;
+import sdl.pixels: SDL_FColour, SDL_Palette, SDL_PixelFormat;
 import sdl.properties: SDL_PropertiesID;
 import sdl.rect: SDL_FRect, SDL_FPoint, SDL_Rect;
 import sdl.surface: SDL_FlipMode, SDL_ScaleMode, SDL_Surface;
@@ -19,6 +20,8 @@ import sdl.video: SDL_Window, SDL_WindowFlags_;
 enum{
 	SDL_SoftwareRenderer = "software",
 	SDL_SOFTWARE_RENDERER = SDL_SoftwareRenderer,
+	SDL_GPURenderer = "gpu",
+	SDL_GPU_RENDERER = SDL_GPURenderer,
 }
 
 struct SDL_Vertex{
@@ -35,6 +38,16 @@ mixin(makeEnumBind(q{SDL_TextureAccess}, members: (){
 		{{q{static_},    q{SDL_TEXTUREACCESS_STATIC}}},
 		{{q{streaming},  q{SDL_TEXTUREACCESS_STREAMING}}},
 		{{q{target},     q{SDL_TEXTUREACCESS_TARGET}}},
+	];
+	return ret;
+}()));
+
+mixin(makeEnumBind(q{SDL_TextureAddressMode}, aliases: [q{SDL_TextureAddress}], members: (){
+	EnumMember[] ret = [
+		{{q{invalid},  q{SDL_TEXTURE_ADDRESS_INVALID}}, q{-1}},
+		{{q{auto_},    q{SDL_TEXTURE_ADDRESS_AUTO}}},
+		{{q{clamp},    q{SDL_TEXTURE_ADDRESS_CLAMP}}},
+		{{q{wrap},     q{SDL_TEXTURE_ADDRESS_WRAP}}},
 	];
 	return ret;
 }()));
@@ -74,6 +87,15 @@ mixin(makeEnumBind(q{SDLProp_RendererCreate}, q{const(char)*}, members: (){
 		{{q{vulkanGraphicsQueueFamilyIndexNumber},    q{SDL_PROP_RENDERER_CREATE_VULKAN_GRAPHICS_QUEUE_FAMILY_INDEX_NUMBER}},    q{"SDL.renderer.create.vulkan.graphics_queue_family_index"}},
 		{{q{vulkanPresentQueueFamilyIndexNumber},     q{SDL_PROP_RENDERER_CREATE_VULKAN_PRESENT_QUEUE_FAMILY_INDEX_NUMBER}},     q{"SDL.renderer.create.vulkan.present_queue_family_index"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{gpuDevicePointer},                    q{SDL_PROP_RENDERER_CREATE_GPU_DEVICE_POINTER}},                           q{"SDL.renderer.create.gpu.device"}},
+			{{q{gpuShadersSPIRVBoolean},              q{SDL_PROP_RENDERER_CREATE_GPU_SHADERS_SPIRV_BOOLEAN}},                    q{"SDL.renderer.create.gpu.shaders_spirv"}},
+			{{q{gpuShadersDXILBoolean},               q{SDL_PROP_RENDERER_CREATE_GPU_SHADERS_DXIL_BOOLEAN}},                     q{"SDL.renderer.create.gpu.shaders_dxil"}},
+			{{q{gpuShadersMSLBoolean},                q{SDL_PROP_RENDERER_CREATE_GPU_SHADERS_MSL_BOOLEAN}},                      q{"SDL.renderer.create.gpu.shaders_msl"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -104,6 +126,11 @@ mixin(makeEnumBind(q{SDLProp_Renderer}, q{const(char)*}, members: (){
 		{{q{vulkanSwapchainImageCountNumber},         q{SDL_PROP_RENDERER_VULKAN_SWAPCHAIN_IMAGE_COUNT_NUMBER}},          q{"SDL.renderer.vulkan.swapchain_image_count"}},
 		{{q{gpuDevicePointer},                        q{SDL_PROP_RENDERER_GPU_DEVICE_POINTER}},                           q{"SDL.renderer.gpu.device"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember add =
+			{{q{textureWrappingBoolean},              q{SDL_PROP_RENDERER_TEXTURE_WRAPPING_BOOLEAN}},                     q{"SDL.renderer.texture_wrapping"}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -133,6 +160,16 @@ mixin(makeEnumBind(q{SDLProp_TextureCreate}, q{const(char)*}, members: (){
 		{{q{openGLES2TextureVNumber},     q{SDL_PROP_TEXTURE_CREATE_OPENGLES2_TEXTURE_V_NUMBER}},     q{"SDL.texture.create.opengles2.texture_v"}},
 		{{q{vulkanTextureNumber},         q{SDL_PROP_TEXTURE_CREATE_VULKAN_TEXTURE_NUMBER}},          q{"SDL.texture.create.vulkan.texture"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{vulkanLayoutNumber},      q{SDL_PROP_TEXTURE_CREATE_VULKAN_LAYOUT_NUMBER}},           q{"SDL.texture.create.vulkan.layout"}},
+			{{q{gpuTexturePointer},       q{SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_POINTER}},            q{"SDL.texture.create.gpu.texture"}},
+			{{q{gpuTextureUVPointer},     q{SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_UV_POINTER}},         q{"SDL.texture.create.gpu.texture_uv"}},
+			{{q{gpuTextureUPointer},      q{SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_U_POINTER}},          q{"SDL.texture.create.gpu.texture_u"}},
+			{{q{gpuTextureVPointer},      q{SDL_PROP_TEXTURE_CREATE_GPU_TEXTURE_V_POINTER}},          q{"SDL.texture.create.gpu.texture_v"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -165,6 +202,15 @@ mixin(makeEnumBind(q{SDLProp_Texture}, q{const(char)*}, members: (){
 		{{q{openGLES2TextureTargetNumber},    q{SDL_PROP_TEXTURE_OPENGLES2_TEXTURE_TARGET_NUMBER}},    q{"SDL.texture.opengles2.target"}},
 		{{q{vulkanTextureNumber},             q{SDL_PROP_TEXTURE_VULKAN_TEXTURE_NUMBER}},              q{"SDL.texture.vulkan.texture"}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{gpuTexturePointer},           q{SDL_PROP_TEXTURE_GPU_TEXTURE_POINTER}},                q{"SDL.texture.gpu.texture"}},
+			{{q{gpuTextureUVPointer},         q{SDL_PROP_TEXTURE_GPU_TEXTURE_UV_POINTER}},             q{"SDL.texture.gpu.texture_uv"}},
+			{{q{gpuTextureUPointer},          q{SDL_PROP_TEXTURE_GPU_TEXTURE_U_POINTER}},              q{"SDL.texture.gpu.texture_u"}},
+			{{q{gpuTextureVPointer},          q{SDL_PROP_TEXTURE_GPU_TEXTURE_V_POINTER}},              q{"SDL.texture.gpu.texture_v"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 
@@ -181,6 +227,27 @@ enum{
 	SDL_DebugTextFontCharacterSize = 8,
 	SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE = SDL_DebugTextFontCharacterSize,
 }
+
+struct SDL_GPURenderStateCreateInfo{
+	SDL_GPUShader* fragmentShader;
+	int numSamplerBindings;
+	const(SDL_GPUTextureSamplerBinding)* samplerBindings;
+	int numStorageTextures;
+	SDL_GPUTexture** storageTextures;
+	int numStorageBuffers;
+	SDL_GPUBuffer** storageBuffers;
+	SDL_PropertiesID props;
+	
+	alias fragment_shader = fragmentShader;
+	alias num_sampler_bindings = numSamplerBindings;
+	alias sampler_bindings = samplerBindings;
+	alias num_storage_textures = numStorageTextures;
+	alias storage_textures = storageTextures;
+	alias num_storage_buffers = numStorageBuffers;
+	alias storage_buffers = storageBuffers;
+}
+
+struct SDL_GPURenderState;
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
@@ -274,5 +341,23 @@ mixin(joinFnBinds((){
 		{q{bool}, q{SDL_RenderDebugText}, q{SDL_Renderer* renderer, float x, float y, const(char)* str}},
 		{q{bool}, q{SDL_RenderDebugTextFormat}, q{SDL_Renderer* renderer, float x, float y, const(char)* fmt, ...}},
 	];
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{SDL_Renderer*}, q{SDL_CreateGPURenderer}, q{SDL_GPUDevice* device, SDL_Window* window}},
+			{q{SDL_GPUDevice*}, q{SDL_GetGPURendererDevice}, q{SDL_Renderer* renderer}},
+			{q{bool}, q{SDL_SetTexturePalette}, q{SDL_Texture* texture, SDL_Palette* palette}},
+			{q{SDL_Palette*}, q{SDL_GetTexturePalette}, q{SDL_Texture* texture}},
+			{q{bool}, q{SDL_RenderTexture9GridTiled}, q{SDL_Renderer* renderer, SDL_Texture* texture, const(SDL_FRect)* srcRect, float leftWidth, float rightWidth, float topHeight, float bottomHeight, float scale, const SDL_FRect* dstRect, float tileScale}},
+			{q{bool}, q{SDL_SetRenderTextureAddressMode}, q{SDL_Renderer* renderer, SDL_TextureAddressMode uMode, SDL_TextureAddressMode vMode}},
+			{q{bool}, q{SDL_GetRenderTextureAddressMode}, q{SDL_Renderer* renderer, SDL_TextureAddressMode* uMode, SDL_TextureAddressMode* vMode}},
+			{q{bool}, q{SDL_SetDefaultTextureScaleMode}, q{SDL_Renderer* renderer, SDL_ScaleMode scaleMode}},
+			{q{bool}, q{SDL_GetDefaultTextureScaleMode}, q{SDL_Renderer* renderer, SDL_ScaleMode* scaleMode}},
+			{q{SDL_GPURenderState*}, q{SDL_CreateGPURenderState}, q{SDL_Renderer* renderer, SDL_GPURenderStateCreateInfo* createInfo}},
+			{q{bool}, q{SDL_SetGPURenderStateFragmentUniforms}, q{SDL_GPURenderState* state, uint slotIndex, const(void)* data, uint length}},
+			{q{bool}, q{SDL_SetGPURenderState}, q{SDL_Renderer* renderer, SDL_GPURenderState* state}},
+			{q{void}, q{SDL_DestroyGPURenderState}, q{SDL_GPURenderState* state}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

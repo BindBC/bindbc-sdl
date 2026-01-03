@@ -1,5 +1,5 @@
 /+
-+            Copyright 2024 – 2025 Aya Partridge
++            Copyright 2024 – 2026 Aya Partridge
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
 +           http://www.boost.org/LICENSE_1_0.txt)
@@ -8,7 +8,7 @@ module sdl.gpu;
 
 import bindbc.sdl.config, bindbc.sdl.codegen;
 
-import sdl.pixels: SDL_FColour;
+import sdl.pixels: SDL_FColour, SDL_PixelFormat;
 import sdl.properties: SDL_PropertiesID;
 import sdl.rect: SDL_Rect;
 import sdl.surface: SDL_FlipMode;
@@ -760,7 +760,12 @@ struct SDL_GPUMultisampleState{
 	SDL_GPUSampleCount sampleCount;
 	uint sampleMask;
 	bool enableMask;
-	ubyte padding1;
+	static if(sdlVersion >= Version(3,4,0)){
+		bool enableAlphaToCoverage;
+		alias enable_alpha_to_coverage = enableAlphaToCoverage;
+	}else{
+		ubyte padding1;
+	}
 	ubyte padding2;
 	ubyte padding3;
 	
@@ -911,8 +916,14 @@ struct SDL_GPUDepthStencilTargetInfo{
 	SDL_GPUStoreOp stencilStoreOp;
 	bool cycle;
 	ubyte clearStencil;
-	ubyte padding1;
-	ubyte padding2;
+	static if(sdlVersion >= Version(3,4,0)){
+		ubyte mipLevel;
+		alias mip_level = mipLevel;
+		ubyte layer;
+	}else{
+		ubyte padding1;
+		ubyte padding2;
+	}
 	
 	alias clear_depth = clearDepth;
 	alias load_op = loadOp;
@@ -973,16 +984,57 @@ struct SDL_GPUStorageTextureReadWriteBinding{
 
 mixin(makeEnumBind(q{SDLProp_GPUDeviceCreate}, q{const(char)*}, members: (){
 	EnumMember[] ret = [
-		{{q{debugModeBoolean},           q{SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN}},             q{"SDL.gpu.device.create.debugmode"}},
-		{{q{preferLowPowerBoolean},      q{SDL_PROP_GPU_DEVICE_CREATE_PREFERLOWPOWER_BOOLEAN}},        q{"SDL.gpu.device.create.preferlowpower"}},
-		{{q{nameString},                 q{SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING}},                   q{"SDL.gpu.device.create.name"}},
-		{{q{shadersPrivateBoolean},      q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_PRIVATE_BOOLEAN}},       q{"SDL.gpu.device.create.shaders.private"}},
-		{{q{shadersSPIRVBoolean},        q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_SPIRV_BOOLEAN}},         q{"SDL.gpu.device.create.shaders.spirv"}},
-		{{q{shadersDXBCBoolean},         q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXBC_BOOLEAN}},          q{"SDL.gpu.device.create.shaders.dxbc"}},
-		{{q{shadersDXILBoolean},         q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXIL_BOOLEAN}},          q{"SDL.gpu.device.create.shaders.dxil"}},
-		{{q{shadersMSLBoolean},          q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_MSL_BOOLEAN}},           q{"SDL.gpu.device.create.shaders.msl"}},
-		{{q{shadersMetallibBoolean},     q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_METALLIB_BOOLEAN}},      q{"SDL.gpu.device.create.shaders.metallib"}},
-		{{q{d3d12SemanticNameString},    q{SDL_PROP_GPU_DEVICE_CREATE_D3D12_SEMANTIC_NAME_STRING}},    q{"SDL.gpu.device.create.d3d12.semantic"}},
+		{{q{debugModeBoolean},                                q{SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN}},                               q{"SDL.gpu.device.create.debugmode"}},
+		{{q{preferLowPowerBoolean},                           q{SDL_PROP_GPU_DEVICE_CREATE_PREFERLOWPOWER_BOOLEAN}},                          q{"SDL.gpu.device.create.preferlowpower"}},
+		{{q{nameString},                                      q{SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING}},                                     q{"SDL.gpu.device.create.name"}},
+		{{q{shadersPrivateBoolean},                           q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_PRIVATE_BOOLEAN}},                         q{"SDL.gpu.device.create.shaders.private"}},
+		{{q{shadersSPIRVBoolean},                             q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_SPIRV_BOOLEAN}},                           q{"SDL.gpu.device.create.shaders.spirv"}},
+		{{q{shadersDXBCBoolean},                              q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXBC_BOOLEAN}},                            q{"SDL.gpu.device.create.shaders.dxbc"}},
+		{{q{shadersDXILBoolean},                              q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXIL_BOOLEAN}},                            q{"SDL.gpu.device.create.shaders.dxil"}},
+		{{q{shadersMSLBoolean},                               q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_MSL_BOOLEAN}},                             q{"SDL.gpu.device.create.shaders.msl"}},
+		{{q{shadersMetallibBoolean},                          q{SDL_PROP_GPU_DEVICE_CREATE_SHADERS_METALLIB_BOOLEAN}},                        q{"SDL.gpu.device.create.shaders.metallib"}},
+		{{q{d3d12SemanticNameString},                         q{SDL_PROP_GPU_DEVICE_CREATE_D3D12_SEMANTIC_NAME_STRING}},                      q{"SDL.gpu.device.create.d3d12.semantic"}},
+	];
+	if(sdlVersion >= Version(3,4,0)){
+		EnumMember[] add = [
+			{{q{verboseBoolean},                              q{SDL_PROP_GPU_DEVICE_CREATE_VERBOSE_BOOLEAN}},                                 q{"SDL.gpu.device.create.verbose"}},
+			{{q{featureClipDistanceBoolean},                  q{SDL_PROP_GPU_DEVICE_CREATE_FEATURE_CLIP_DISTANCE_BOOLEAN}},                   q{"SDL.gpu.device.create.feature.clip_distance"}},
+			{{q{featureDepthClampingBoolean},                 q{SDL_PROP_GPU_DEVICE_CREATE_FEATURE_DEPTH_CLAMPING_BOOLEAN}},                  q{"SDL.gpu.device.create.feature.depth_clamping"}},
+			{{q{featureIndirectDrawFirstInstanceBoolean},     q{SDL_PROP_GPU_DEVICE_CREATE_FEATURE_INDIRECT_DRAW_FIRST_INSTANCE_BOOLEAN}},    q{"SDL.gpu.device.create.feature.indirect_draw_first_instance"}},
+			{{q{featureAnisotropyBoolean},                    q{SDL_PROP_GPU_DEVICE_CREATE_FEATURE_ANISOTROPY_BOOLEAN}},                      q{"SDL.gpu.device.create.feature.anisotropy"}},
+			{{q{d3d12AllowFewerResourceSlotsBoolean},         q{SDL_PROP_GPU_DEVICE_CREATE_D3D12_ALLOW_FEWER_RESOURCE_SLOTS_BOOLEAN}},        q{"SDL.gpu.device.create.d3d12.allowtier1resourcebinding"}},
+			{{q{vulkanRequireHardwareAccelerationBoolean},    q{SDL_PROP_GPU_DEVICE_CREATE_VULKAN_REQUIRE_HARDWARE_ACCELERATION_BOOLEAN}},    q{"SDL.gpu.device.create.vulkan.requirehardwareacceleration"}},
+			{{q{vulkanOptionsPointer},                        q{SDL_PROP_GPU_DEVICE_CREATE_VULKAN_OPTIONS_POINTER}},                          q{"SDL.gpu.device.create.vulkan.options"}},
+		];
+		ret ~= add;
+	}
+	return ret;
+}()));
+
+struct SDL_GPUVulkanOptions{
+	uint vulkanAPIVersion;
+	void* featureList;
+	void* vulkan10PhysicalDeviceFeatures;
+	uint deviceExtensionCount;
+	const(char)** deviceExtensionNames;
+	uint instanceExtensionCount;
+	const(char)** instanceExtensionNames;
+	
+	alias vulkan_api_version = vulkanAPIVersion;
+	alias feature_list = featureList;
+	alias vulkan_10_physical_device_features = vulkan10PhysicalDeviceFeatures;
+	alias device_extension_count = deviceExtensionCount;
+	alias device_extension_names = deviceExtensionNames;
+	alias instance_extension_count = instanceExtensionCount;
+	alias instance_extension_names = instanceExtensionNames;
+}
+
+mixin(makeEnumBind(q{SDLProp_GPUDevice}, q{const(char)*}, members: (){
+	EnumMember[] ret = [
+		{{q{nameString},             q{SDL_PROP_GPU_DEVICE_NAME_STRING}},              q{"SDL.gpu.device.name"}},
+		{{q{driverNameString},       q{SDL_PROP_GPU_DEVICE_DRIVER_NAME_STRING}},       q{"SDL.gpu.device.driver_name"}},
+		{{q{driverVersionString},    q{SDL_PROP_GPU_DEVICE_DRIVER_VERSION_STRING}},    q{"SDL.gpu.device.driver_version"}},
+		{{q{driverInfoString},       q{SDL_PROP_GPU_DEVICE_DRIVER_INFO_STRING}},       q{"SDL.gpu.device.driver_info"}},
 	];
 	return ret;
 }()));
@@ -1144,5 +1196,13 @@ mixin(joinFnBinds((){
 		];
 		ret ~= add;
 	}}
+	if(sdlVersion >= Version(3,4,0)){
+		FnBind[] add = [
+			{q{SDL_PropertiesID}, q{SDL_GetGPUDeviceProperties}, q{SDL_GPUDevice* device}},
+			{q{SDL_PixelFormat}, q{SDL_GetPixelFormatFromGPUTextureFormat}, q{SDL_GPUTextureFormat format}},
+			{q{SDL_GPUTextureFormat}, q{SDL_GetGPUTextureFormatFromPixelFormat}, q{SDL_PixelFormat format}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));

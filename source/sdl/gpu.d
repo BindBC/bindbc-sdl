@@ -1104,7 +1104,7 @@ mixin(joinFnBinds((){
 		{q{int}, q{SDL_GetNumGPUDrivers}, q{}},
 		{q{const(char)*}, q{SDL_GetGPUDriver}, q{int index}},
 		{q{const(char)*}, q{SDL_GetGPUDeviceDriver}, q{SDL_GPUDevice* device}},
-		{q{SDL_GPUShaderFormat_}, q{SDL_GetGPUShaderFormats}, q{SDL_GPUDevice* device}},
+		{q{SDL_GPUShaderFormat}, q{SDL_GetGPUShaderFormats}, q{SDL_GPUDevice* device}},
 		{q{SDL_GPUComputePipeline*}, q{SDL_CreateGPUComputePipeline}, q{SDL_GPUDevice* device, const(SDL_GPUComputePipelineCreateInfo)* createInfo}},
 		{q{SDL_GPUGraphicsPipeline*}, q{SDL_CreateGPUGraphicsPipeline}, q{SDL_GPUDevice* device, const(SDL_GPUGraphicsPipelineCreateInfo)* createInfo}},
 		{q{SDL_GPUSampler*}, q{SDL_CreateGPUSampler}, q{SDL_GPUDevice* device, const(SDL_GPUSamplerCreateInfo)* createInfo}},

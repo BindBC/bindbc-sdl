@@ -468,9 +468,9 @@ mixin(makeEnumBind(q{SDL_GPUSwapchainComposition}, members: (){
 }()));
 
 struct SDL_GPUViewport{
-	float x, y, w, h;
-	float minDepth;
-	float maxDepth;
+	float x=0, y=0, w=0, h=0;
+	float minDepth=0;
+	float maxDepth=0;
 	
 	alias min_depth = minDepth;
 	alias max_depth = maxDepth;
@@ -576,11 +576,11 @@ struct SDL_GPUSamplerCreateInfo{
 	SDL_GPUSamplerAddressMode addressModeU;
 	SDL_GPUSamplerAddressMode addressModeV;
 	SDL_GPUSamplerAddressMode addressModeW;
-	float mipLODBias;
-	float maxAnisotropy;
+	float mipLODBias=0;
+	float maxAnisotropy=0;
 	SDL_GPUCompareOp compareOp;
-	float minLOD;
-	float maxLOD;
+	float minLOD=0;
+	float maxLOD=0;
 	bool enableAnisotropy;
 	bool enableCompare;
 	ubyte padding1;
@@ -737,9 +737,9 @@ struct SDL_GPURasteriserState{
 	SDL_GPUFillMode fillMode;
 	SDL_GPUCullMode cullMode;
 	SDL_GPUFrontFace frontFace;
-	float depthBiasConstantFactor;
-	float depthBiasClamp;
-	float depthBiasSlopeFactor;
+	float depthBiasConstantFactor=0;
+	float depthBiasClamp=0;
+	float depthBiasSlopeFactor=0;
 	bool enableDepthBias;
 	bool enableDepthClip;
 	ubyte padding1;
@@ -909,7 +909,7 @@ alias SDL_GPUColorTargetInfo = SDL_GPUColourTargetInfo;
 
 struct SDL_GPUDepthStencilTargetInfo{
 	SDL_GPUTexture* texture;
-	float clearDepth;
+	float clearDepth=0;
 	SDL_GPULoadOp loadOp;
 	SDL_GPUStoreOp storeOp;
 	SDL_GPULoadOp stencilLoadOp;

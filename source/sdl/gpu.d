@@ -708,8 +708,8 @@ struct SDL_GPUTextureCreateInfo{
 	SDL_GPUTextureUsageFlags_ usage;
 	uint width;
 	uint height;
-	uint layerCountOrDepth;
-	uint numLevels;
+	uint layerCountOrDepth=1;
+	uint numLevels=1;
 	SDL_GPUSampleCount sampleCount;
 	
 	SDL_PropertiesID props;

@@ -284,6 +284,11 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 		];
 		ret ~= add;
 	}
+	if(sdlVersion >= Version(3,4,2)){
+		EnumMember add =
+			{{q{openGLForceSRGBFramebuffer},        q{SDL_HINT_OPENGL_FORCE_SRGB_FRAMEBUFFER}},              q{"SDL_OPENGL_FORCE_SRGB_FRAMEBUFFER"}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 

@@ -1008,6 +1008,14 @@ mixin(makeEnumBind(q{SDLProp_GPUDeviceCreate}, q{const(char)*}, members: (){
 		];
 		ret ~= add;
 	}
+	if(sdlVersion >= Version(3,4,2)){
+		EnumMember[] add = [
+			{{q{d3d12AgilitySDKVersionNumber},                q{SDL_PROP_GPU_DEVICE_CREATE_D3D12_AGILITY_SDK_VERSION_NUMBER}},                q{"SDL.gpu.device.create.d3d12.agility_sdk_version"}},
+			{{q{d3d12AgilitySDKPathString},                   q{SDL_PROP_GPU_DEVICE_CREATE_D3D12_AGILITY_SDK_PATH_STRING}},                   q{"SDL.gpu.device.create.d3d12.agility_sdk_path"}},
+			{{q{metalAllowMacFamily1Boolean},                 q{SDL_PROP_GPU_DEVICE_CREATE_METAL_ALLOW_MACFAMILY1_BOOLEAN}},                  q{"SDL.gpu.device.create.metal.allowmacfamily1"}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

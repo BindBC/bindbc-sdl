@@ -352,7 +352,7 @@ mixin(joinFnBinds((){
 			{q{bool}, q{SDL_GetRenderTextureAddressMode}, q{SDL_Renderer* renderer, SDL_TextureAddressMode* uMode, SDL_TextureAddressMode* vMode}},
 			{q{bool}, q{SDL_SetDefaultTextureScaleMode}, q{SDL_Renderer* renderer, SDL_ScaleMode scaleMode}},
 			{q{bool}, q{SDL_GetDefaultTextureScaleMode}, q{SDL_Renderer* renderer, SDL_ScaleMode* scaleMode}},
-			{q{SDL_GPURenderState*}, q{SDL_CreateGPURenderState}, q{SDL_Renderer* renderer, SDL_GPURenderStateCreateInfo* createInfo}},
+			{q{SDL_GPURenderState*}, q{SDL_CreateGPURenderState}, q{SDL_Renderer* renderer, const(SDL_GPURenderStateCreateInfo)* createInfo}},
 			{q{bool}, q{SDL_SetGPURenderStateFragmentUniforms}, q{SDL_GPURenderState* state, uint slotIndex, const(void)* data, uint length}},
 			{q{bool}, q{SDL_SetGPURenderState}, q{SDL_Renderer* renderer, SDL_GPURenderState* state}},
 			{q{void}, q{SDL_DestroyGPURenderState}, q{SDL_GPURenderState* state}},

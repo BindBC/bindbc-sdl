@@ -56,7 +56,7 @@ enum sdlMixerVersion = (){
 
 enum sdlNetVersion = (){
 	/+version(SDL_Net_3_2)      return Version(3,2,0);
-	else+/version(SDL_Net_3_0) return Version(3,0,0);
+	else+/version(SDL_Net_3_1) return Version(3,1,0);
 	else                      return Version.none;
 }();
 

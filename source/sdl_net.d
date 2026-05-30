@@ -13,74 +13,98 @@ import bindbc.sdl.codegen;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
-	SDL_Net_MajorVersion = sdlNetVersion.major,
-	SDL_Net_MinorVersion = sdlNetVersion.minor,
-	SDL_Net_MicroVersion = sdlNetVersion.patch,
-	SDL_Net_Version = SDL_VERSIONNUM(SDL_Net_MajorVersion, SDL_Net_MinorVersion, SDL_Net_MicroVersion),
+	majorVersion = sdlNetVersion.major,
+	minorVersion = sdlNetVersion.minor,
+	microVersion = sdlNetVersion.patch,
+	versionNum = SDL_VERSIONNUM(majorVersion, minorVersion, microVersion),
 	
-	SDL_NET_MAJOR_VERSION = SDL_Net_MajorVersion,
-	SDL_NET_MINOR_VERSION = SDL_Net_MinorVersion,
-	SDL_NET_MICRO_VERSION = SDL_Net_MicroVersion,
-	SDL_NET_VERSION = SDL_Net_Version,
+	SDL_NET_MAJOR_VERSION = majorVersion,
+	SDL_NET_MINOR_VERSION = minorVersion,
+	SDL_NET_MICRO_VERSION = microVersion,
+	SDL_NET_VERSION = versionNum,
 }
 
 pragma(inline,true)
-bool SDL_NET_VERSION_ATLEAST(uint x, uint y, uint z) nothrow @nogc pure @safe =>
-	(SDL_Net_MajorVersion >= x) &&
-	(SDL_Net_MajorVersion >  x || SDL_Net_MinorVersion >= y) &&
-	(SDL_Net_MajorVersion >  x || SDL_Net_MinorVersion >  y || SDL_Net_MicroVersion >= z);
+bool versionAtLeast(uint x, uint y, uint z) nothrow @nogc pure @safe =>
+	(majorVersion >= x) &&
+	(majorVersion >  x || minorVersion >= y) &&
+	(majorVersion >  x || minorVersion >  y || microVersion >= z);
+alias SDL_NET_VERSION_ATLEAST = versionAtLeast;
 
-struct SDLNet_Address;
+mixin(makeEnumBind(q{NET_Status}, members: (){
+	EnumMember[] ret = [
+		{{q{failure},    q{NET_FAILURE}},    q{-1}},
+		{{q{waiting},    q{NET_WAITING}},    q{ 0}},
+		{{q{success},    q{NET_SUCCESS}},    q{ 1}},
+	];
+	return ret;
+}()));
 
-struct SDLNet_StreamSocket;
+struct NET_Address;
 
-struct SDLNet_Server;
+struct NET_StreamSocket;
 
-struct SDLNet_DatagramSocket;
+struct NET_Server;
 
-struct SDLNet_Datagram{
-	SDLNet_Address* addr;
+mixin(makeEnumBind(q{NETProp_Server}, members: (){
+	EnumMember[] ret = [
+		{{q{reuseAddrBoolean},    q{NET_PROP_SERVER_REUSEADDR_BOOLEAN}},    q{"NET.server.reuseaddr"}},
+	];
+	return ret;
+}()));
+
+struct NET_DatagramSocket;
+
+struct NET_Datagram{
+	NET_Address* addr;
 	ushort port;
 	ubyte* buf;
 	int bufLen;
-	
-	alias buflen = bufLen;
 }
+
+mixin(makeEnumBind(q{NETProp_DatagramSocket}, members: (){
+	EnumMember[] ret = [
+		{{q{reuseAddrBoolean},         q{NET_PROP_DATAGRAM_SOCKET_REUSEADDR_BOOLEAN}},          q{"NET.datagram_socket.reuseaddr"}},
+		{{q{allowBroadcastBoolean},    q{NET_PROP_DATAGRAM_SOCKET_ALLOW_BROADCAST_BOOLEAN}},    q{"NET.datagram_socket.allow_broadcast"}},
+	];
+	return ret;
+}()));
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
-		{q{int}, q{SDLNet_Version}, q{}},
-		{q{void}, q{SDLNet_Quit}, q{}},
-		{q{SDLNet_Address*}, q{SDLNet_ResolveHostname}, q{const(char)* host}},
-		{q{int}, q{SDLNet_WaitUntilResolved}, q{SDLNet_Address* address, int timeout}},
-		{q{int}, q{SDLNet_GetAddressStatus}, q{SDLNet_Address* address}},
-		{q{const(char)*}, q{SDLNet_GetAddressString}, q{SDLNet_Address* address}},
-		{q{SDLNet_Address*}, q{SDLNet_RefAddress}, q{SDLNet_Address* address}},
-		{q{void}, q{SDLNet_UnrefAddress}, q{SDLNet_Address* address}},
-		{q{void}, q{SDLNet_SimulateAddressResolutionLoss}, q{int percentLoss}},
-		{q{int}, q{SDLNet_CompareAddresses}, q{const(SDLNet_Address)* a, const(SDLNet_Address)* b}},
-		{q{SDLNet_Address**}, q{SDLNet_GetLocalAddresses}, q{int* numAddresses}},
-		{q{void}, q{SDLNet_FreeLocalAddresses}, q{SDLNet_Address** addresses}},
-		{q{SDLNet_StreamSocket*}, q{SDLNet_CreateClient}, q{SDLNet_Address* address, ushort port}},
-		{q{int}, q{SDLNet_WaitUntilConnected}, q{SDLNet_StreamSocket* sock, int timeout}},
-		{q{SDLNet_Server*}, q{SDLNet_CreateServer}, q{SDLNet_Address* addr, ushort port}},
-		{q{bool}, q{SDLNet_AcceptClient}, q{SDLNet_Server* server, SDLNet_StreamSocket** clientStream}},
-		{q{void}, q{SDLNet_DestroyServer}, q{SDLNet_Server* server}},
-		{q{SDLNet_Address*}, q{SDLNet_GetStreamSocketAddress}, q{SDLNet_StreamSocket* sock}},
-		{q{int}, q{SDLNet_GetConnectionStatus}, q{SDLNet_StreamSocket* sock}},
-		{q{bool}, q{SDLNet_WriteToStreamSocket}, q{SDLNet_StreamSocket* sock, const(void)* buf, int bufLen}},
-		{q{int}, q{SDLNet_GetStreamSocketPendingWrites}, q{SDLNet_StreamSocket* sock}},
-		{q{int}, q{SDLNet_WaitUntilStreamSocketDrained}, q{SDLNet_StreamSocket* sock, int timeout}},
-		{q{int}, q{SDLNet_ReadFromStreamSocket}, q{SDLNet_StreamSocket* sock, void* buf, int bufLen}},
-		{q{void}, q{SDLNet_SimulateStreamPacketLoss}, q{SDLNet_StreamSocket* sock, int percentLoss}},
-		{q{void}, q{SDLNet_DestroyStreamSocket}, q{SDLNet_StreamSocket* sock}},
-		{q{SDLNet_DatagramSocket*}, q{SDLNet_CreateDatagramSocket}, q{SDLNet_Address* addr, ushort port}},
-		{q{bool}, q{SDLNet_SendDatagram}, q{SDLNet_DatagramSocket* sock, SDLNet_Address* address, ushort port, const(void)* buf, int bufLen}},
-		{q{bool}, q{SDLNet_ReceiveDatagram}, q{SDLNet_DatagramSocket* sock, SDLNet_Datagram** dgram}},
-		{q{void}, q{SDLNet_DestroyDatagram}, q{SDLNet_Datagram* dgram}},
-		{q{void}, q{SDLNet_SimulateDatagramPacketLoss}, q{SDLNet_DatagramSocket* sock, int percentLoss}},
-		{q{void}, q{SDLNet_DestroyDatagramSocket}, q{SDLNet_DatagramSocket* sock}},
-		{q{int}, q{SDLNet_WaitUntilInputAvailable}, q{void** vSockets, int numSockets, int timeout}},
+		{q{int}, q{NET_Version}, q{}},
+		{q{bool}, q{NET_Init}, q{}},
+		{q{void}, q{NET_Quit}, q{}},
+		{q{NET_Address*}, q{NET_ResolveHostname}, q{const(char)* host}},
+		{q{NET_Status}, q{NET_WaitUntilResolved}, q{NET_Address* address, int timeout}},
+		{q{NET_Status}, q{NET_GetAddressStatus}, q{NET_Address* address}},
+		{q{const(char)*}, q{NET_GetAddressString}, q{NET_Address* address}},
+		{q{NET_Address*}, q{NET_RefAddress}, q{NET_Address* address}},
+		{q{void}, q{NET_UnrefAddress}, q{NET_Address* address}},
+		{q{void}, q{NET_SimulateAddressResolutionLoss}, q{int percentLoss}},
+		{q{int}, q{NET_CompareAddresses}, q{const(NET_Address)* a, const(NET_Address)* b}},
+		{q{NET_Address**}, q{NET_GetLocalAddresses}, q{int* numAddresses}},
+		{q{void}, q{NET_FreeLocalAddresses}, q{NET_Address** addresses}},
+		{q{NET_StreamSocket*}, q{NET_CreateClient}, q{NET_Address* address, ushort port, SDL_PropertiesID props}},
+		{q{NET_Status}, q{NET_WaitUntilConnected}, q{NET_StreamSocket* sock, int timeout}},
+		{q{NET_Server*}, q{NET_CreateServer}, q{NET_Address* addr, ushort port, SDL_PropertiesID props}},
+		{q{bool}, q{NET_AcceptClient}, q{NET_Server* server, NET_StreamSocket** clientStream}},
+		{q{void}, q{NET_DestroyServer}, q{NET_Server* server}},
+		{q{NET_Address*}, q{NET_GetStreamSocketAddress}, q{NET_StreamSocket* sock}},
+		{q{NET_Status}, q{NET_GetConnectionStatus}, q{NET_StreamSocket* sock}},
+		{q{bool}, q{NET_WriteToStreamSocket}, q{NET_StreamSocket* sock, const(void)* buf, int bufLen}},
+		{q{int}, q{NET_GetStreamSocketPendingWrites}, q{NET_StreamSocket* sock}},
+		{q{int}, q{NET_WaitUntilStreamSocketDrained}, q{NET_StreamSocket* sock, int timeout}},
+		{q{int}, q{NET_ReadFromStreamSocket}, q{NET_StreamSocket* sock, void* buf, int bufLen}},
+		{q{void}, q{NET_SimulateStreamPacketLoss}, q{NET_StreamSocket* sock, int percentLoss}},
+		{q{void}, q{NET_DestroyStreamSocket}, q{NET_StreamSocket* sock}},
+		{q{NET_DatagramSocket*}, q{NET_CreateDatagramSocket}, q{NET_Address* addr, ushort port, SDL_PropertiesID props}},
+		{q{bool}, q{NET_SendDatagram}, q{NET_DatagramSocket* sock, NET_Address* address, ushort port, const(void)* buf, int bufLen}},
+		{q{bool}, q{NET_ReceiveDatagram}, q{NET_DatagramSocket* sock, NET_Datagram** dgram}},
+		{q{void}, q{NET_DestroyDatagram}, q{NET_Datagram* dgram}},
+		{q{void}, q{NET_SimulateDatagramPacketLoss}, q{NET_DatagramSocket* sock, int percentLoss}},
+		{q{void}, q{NET_DestroyDatagramSocket}, q{NET_DatagramSocket* sock}},
+		{q{int}, q{NET_WaitUntilInputAvailable}, q{void** vSockets, int numSockets, int timeout}},
 	];
 	return ret;
 }()));

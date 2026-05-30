@@ -285,11 +285,11 @@ It is necessary to specify only a single version identifier per library. For exa
 
 
 > [!NOTE]\
-> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_net/commit/f02213ba76be2f091778b5a9aab5afe218f3ca7f). SDL_net 3.X has not officially released yet. The API of these bindings & the version identifier used to activate them will change when SDL_net 3.X is officially released.
+> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_net/commit/8fd5743ad60fa7552a929ed4121eab039e2453dd). SDL_net 3.X has not officially released yet. The API of these bindings & the version identifier used to activate them will change when SDL_net 3.X is officially released.
 
 | Version |Version identifier| Public API updated |
 |---------|------------------|--------------------|
-| 3.0.0   | `SDL_Net_3_0`    |                    |
+| 3.1.0   | `SDL_Net_3_1`    |                    |
 
 </details>
 

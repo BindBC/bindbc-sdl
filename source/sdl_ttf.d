@@ -20,22 +20,28 @@ import sdl.surface: SDL_Surface;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
-	SDL_TTF_MajorVersion = sdlTTFVersion.major,
-	SDL_TTF_MinorVersion = sdlTTFVersion.minor,
-	SDL_TTF_MicroVersion = sdlTTFVersion.patch,
-	SDL_TTF_Version = SDL_VERSIONNUM(SDL_TTF_MajorVersion, SDL_TTF_MinorVersion, SDL_TTF_MicroVersion),
+	majorVersion = sdlTTFVersion.major,
+	minorVersion = sdlTTFVersion.minor,
+	microVersion = sdlTTFVersion.patch,
+	versionNum = SDL_VERSIONNUM(majorVersion, minorVersion, microVersion),
 	
-	SDL_TTF_MAJOR_VERSION = SDL_TTF_MajorVersion,
-	SDL_TTF_MINOR_VERSION = SDL_TTF_MinorVersion,
-	SDL_TTF_MICRO_VERSION = SDL_TTF_MicroVersion,
-	SDL_TTF_VERSION = SDL_TTF_Version,
+	SDL_TTF_MajorVersion = majorVersion,
+	SDL_TTF_MinorVersion = minorVersion,
+	SDL_TTF_MicroVersion = microVersion,
+	SDL_TTF_Version = versionNum,
+	
+	SDL_TTF_MAJOR_VERSION = majorVersion,
+	SDL_TTF_MINOR_VERSION = minorVersion,
+	SDL_TTF_MICRO_VERSION = microVersion,
+	SDL_TTF_VERSION = versionNum,
 }
 
 pragma(inline,true)
-bool SDL_TTF_VERSION_ATLEAST(uint x, uint y, uint z) nothrow @nogc pure @safe =>
-	(SDL_TTF_MajorVersion >= x) &&
-	(SDL_TTF_MajorVersion  > x || SDL_TTF_MinorVersion >= y) &&
-	(SDL_TTF_MajorVersion  > x || SDL_TTF_MinorVersion >  y || SDL_TTF_MicroVersion >= z);
+bool versionAtLeast(uint x, uint y, uint z) nothrow @nogc pure @safe =>
+	(majorVersion >= x) &&
+	(majorVersion  > x || minorVersion >= y) &&
+	(majorVersion  > x || minorVersion >  y || microVersion >= z);
+alias SDL_TTF_VERSION_ATLEAST = versionAtLeast;
 
 struct TTF_Font;
 

@@ -275,13 +275,9 @@ It is necessary to specify only a single version identifier per library. For exa
 
 <details><summary><h3>SDL_mixer versions</h3></summary>
 
-
-> [!NOTE]\
-> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_mixer/commit/af6a29df4e14c6ce72608b3ccd49cf35e1014255). SDL_mixer 3.X has not officially released yet. The API of these bindings & the version identifier used to activate them will change when SDL_mixer 3.X is officially released.
-
 | Version |Version identifier| Public API updated |
 |---------|------------------|--------------------|
-| 3.0.0   | `SDL_Mixer_3_0`  |                    |
+| 3.2.2   | `SDL_Mixer_3_2_2`|                    |
 
 </details>
 

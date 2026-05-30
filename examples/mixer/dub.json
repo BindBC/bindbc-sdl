@@ -1,0 +1,25 @@
+{
+	"name": "bindbc-sdl-mixer-examples",
+	"description": "Examples for BindBC-SDL interfacing with SDL3_mixer.",
+	"license": "public domain",
+	
+	"dependencies": {
+		"bindbc-sdl": {"path": "../../"},
+		"bindbc-loader": "~>1.1",
+	},
+	"targetType": "executable",
+	"targetPath": "bin",
+	
+	"libs": ["SDL3", "SDL3_mixer"],
+	"versions": ["SDL_MainUseCallbacks", "SDL_Mixer_3_2_2"],
+	
+	"buildTypes": {
+		"betterC": {
+			"buildOptions": ["betterC"],
+		},
+	},
+	
+	"configurations": [
+		{ "name": "mixer1",       "mainSourceFile": "./mixer.d" },
+	],
+}

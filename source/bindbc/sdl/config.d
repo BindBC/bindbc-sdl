@@ -49,8 +49,8 @@ enum sdlImageVersion = (){
 }();
 
 enum sdlMixerVersion = (){
-	/+version(SDL_Mixer_3_2)      return Version(3,2,0);
-	else+/version(SDL_Mixer_3_0) return Version(3,0,0);
+	version(SDL_Mixer_3_2_2)      return Version(3,2,2);
+	version(SDL_Mixer_3_2)      return Version(3,2,2);
 	else                        return Version.none;
 }();
 

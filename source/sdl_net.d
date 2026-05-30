@@ -1,5 +1,5 @@
 /+
-+            Copyright 2022 – 2024 Aya Partridge
++            Copyright 2022 – 2026 Aya Partridge
 +          Copyright 2018 - 2022 Michael D. Parker
 + Distributed under the Boost Software License, Version 1.0.
 +     (See accompanying file LICENSE_1_0.txt or copy at
@@ -19,13 +19,15 @@ enum SDLNetSupport: SDLNet_version{
 	v2_0_0      = SDLNet_version(2,0,0),
 	v2_0_1      = SDLNet_version(2,0,1),
 	v2_2        = SDLNet_version(2,2,0),
+	v2_4        = SDLNet_version(2,4,0),
 	
 	deprecated("Please use `v2_0_0` instead") sdlNet200 = SDLNet_version(2,0,0),
 	deprecated("Please use `v2_0_1` instead") sdlNet201 = SDLNet_version(2,0,1),
 }
 
 enum sdlNetSupport = (){
-	version(SDL_Net_2_2)      return SDLNetSupport.v2_2;
+	version(SDL_Net_2_4)      return SDLNetSupport.v2_4;
+	else version(SDL_Net_2_2) return SDLNetSupport.v2_2;
 	else version(SDL_Net_201) return SDLNetSupport.v2_0_1;
 	else                      return SDLNetSupport.v2_0_0;
 }();
@@ -164,6 +166,13 @@ mixin(joinFnBinds((){
 		{q{void}, q{SDLNet_SetError}, q{const(char)* fmt, ...}},
 		{q{const(char)*}, q{SDLNet_GetError}, q{}},
 	];
+	if(sdlNetSupport >= SDLNetSupport.v2_4){
+		FnBind[] add = [
+			{q{TCPsocket}, q{SDLNet_TCP_OpenServer}, q{IPaddress* ip}},
+			{q{TCPsocket}, q{SDLNet_TCP_OpenClient}, q{IPaddress* ip}},
+		];
+		ret ~= add;
+	}
 	return ret;
 }()));
 

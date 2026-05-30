@@ -300,6 +300,7 @@ It is necessary to specify only a single version identifier per library. For exa
 | 2.0.0   | `SDL_Net_200`    |                    |
 | 2.0.1   | `SDL_Net_201`    | :x:                |
 | 2.2.X   | `SDL_Net_2_2`    | :x:                |
+| 2.4.X   | `SDL_Net_2_4`    | :heavy_check_mark: |
 
 > [!NOTE]\
 > Starting from SDL_net 2.2.X, all even-numbered versions are releases, while all odd-numbered versions are pre-releases—which are not for general use and therefore not supported by BindBC-SDL.

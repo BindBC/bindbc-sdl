@@ -10,218 +10,217 @@ import bindbc.sdl.config;
 static if(sdlMixerVersion):
 import bindbc.sdl.codegen;
 
-import sdl.audio: SDL_AudioDeviceID, SDL_AudioFormat, SDL_AudioSpec;
+import sdl.audio: SDL_AudioDeviceID, SDL_AudioFormat, SDL_AudioSpec, SDL_AudioStream;
 import sdl.iostream: SDL_IOStream;
+import sdl.properties: SDL_PropertiesID;
 import sdl.version_: SDL_VERSIONNUM;
 
+struct MIX_Mixer;
+
+struct MIX_Audio;
+
+struct MIX_Track;
+
+struct MIX_Group;
+
 enum{
-	SDL_Mixer_MajorVersion = sdlMixerVersion.major,
-	SDL_Mixer_MinorVersion = sdlMixerVersion.minor,
-	SDL_Mixer_MicroVersion = sdlMixerVersion.patch,
-	SDL_Mixer_Version = SDL_VERSIONNUM(SDL_Mixer_MajorVersion, SDL_Mixer_MinorVersion, SDL_Mixer_MicroVersion),
+	majorVersion = sdlMixerVersion.major,
+	minorVersion = sdlMixerVersion.minor,
+	microVersion = sdlMixerVersion.patch,
+	versionNum = SDL_VERSIONNUM(majorVersion, minorVersion, microVersion),
 	
-	SDL_MIXER_MAJOR_VERSION = SDL_Mixer_MajorVersion,
-	SDL_MIXER_MINOR_VERSION = SDL_Mixer_MinorVersion,
-	SDL_MIXER_MICRO_VERSION = SDL_Mixer_MicroVersion,
-	SDL_MIXER_VERSION = SDL_Mixer_Version,
+	SDL_MIXER_MAJOR_VERSION = majorVersion,
+	SDL_MIXER_MINOR_VERSION = minorVersion,
+	SDL_MIXER_MICRO_VERSION = microVersion,
+	SDL_MIXER_VERSION = versionNum,
 }
 
 pragma(inline,true)
-bool SDL_MIXER_VERSION_ATLEAST(uint x, uint y, uint z) nothrow @nogc pure @safe =>
-	(SDL_Mixer_MajorVersion >= x) &&
-	(SDL_Mixer_MajorVersion >  x || SDL_Mixer_MinorVersion >= y) &&
-	(SDL_Mixer_MajorVersion >  x || SDL_Mixer_MinorVersion >  y || SDL_Mixer_MicroVersion >= z);
+bool versionAtLeast(uint x, uint y, uint z) nothrow @nogc pure @safe =>
+	(majorVersion >= x) &&
+	(majorVersion >  x || minorVersion >= y) &&
+	(majorVersion >  x || minorVersion >  y || microVersion >= z);
+alias SDL_MIXER_VERSION_ATLEAST = versionAtLeast;
 
-alias MIX_InitFlags_ = uint;
-mixin(makeEnumBind(q{MIX_InitFlags}, q{MIX_InitFlags_}, aliases: [q{MIX_Init}], members: (){
+mixin(makeEnumBind(q{MIXProp_Mixer}, members: (){
 	EnumMember[] ret = [
-		{{q{flac},       q{MIX_INIT_FLAC}},       q{0x0000_0001}},
-		{{q{mod},        q{MIX_INIT_MOD}},        q{0x0000_0002}},
-		{{q{mp3},        q{MIX_INIT_MP3}},        q{0x0000_0008}},
-		{{q{ogg},        q{MIX_INIT_OGG}},        q{0x0000_0010}},
-		{{q{mid},        q{MIX_INIT_MID}},        q{0x0000_0020}},
-		{{q{opus},       q{MIX_INIT_OPUS}},       q{0x0000_0040}},
-		{{q{wavPack},    q{MIX_INIT_WAVPACK}},    q{0x0000_0080}},
+		{{q{deviceNumber},    q{MIX_PROP_MIXER_DEVICE_NUMBER}},    q{"SDL_mixer.mixer.device"}},
 	];
 	return ret;
 }()));
 
-enum{
-	MIX_Channels = 8,
-	MIX_CHANNELS = MIX_Channels,
-}
+mixin(makeEnumBind(q{MIXProp_Audio}, members: (){
+	EnumMember[] ret = [
+		{{q{loadIOStreamPointer},            q{MIX_PROP_AUDIO_LOAD_IOSTREAM_POINTER}},              q{"SDL_mixer.audio.load.iostream"}},
+		{{q{loadCloseIOBoolean},             q{MIX_PROP_AUDIO_LOAD_CLOSEIO_BOOLEAN}},               q{"SDL_mixer.audio.load.closeIO"}},
+		{{q{loadPreDecodeBoolean},           q{MIX_PROP_AUDIO_LOAD_PREDECODE_BOOLEAN}},             q{"SDL_mixer.audio.load.preDecode"}},
+		{{q{loadPreferredMixerPointer},      q{MIX_PROP_AUDIO_LOAD_PREFERRED_MIXER_POINTER}},       q{"SDL_mixer.audio.load.preferred_mixer"}},
+		{{q{loadSkipMetadataTagsBoolean},    q{MIX_PROP_AUDIO_LOAD_SKIP_METADATA_TAGS_BOOLEAN}},    q{"SDL_mixer.audio.load.skip_metadata_tags"}},
+		{{q{decoderString},                  q{MIX_PROP_AUDIO_DECODER_STRING}},                     q{"SDL_mixer.audio.decoder"}},
+	];
+	return ret;
+}()));
 
-enum{
-	MIX_DefaultFrequency  = 44_100,
-	MIX_DefaultFormat     = SDL_AudioFormat.s16,
-	MIX_DefaultChannels   = 2,
-	MIX_MaxVolume         = 128,
+mixin(makeEnumBind(q{MIXProp_Metadata}, members: (){
+	EnumMember[] ret = [
+		{{q{titleString},                q{MIX_PROP_METADATA_TITLE_STRING}},                 q{"SDL_mixer.metadata.title"}},
+		{{q{artistString},               q{MIX_PROP_METADATA_ARTIST_STRING}},                q{"SDL_mixer.metadata.artist"}},
+		{{q{albumString},                q{MIX_PROP_METADATA_ALBUM_STRING}},                 q{"SDL_mixer.metadata.album"}},
+		{{q{copyrightString},            q{MIX_PROP_METADATA_COPYRIGHT_STRING}},             q{"SDL_mixer.metadata.copyright"}},
+		{{q{trackNumber},                q{MIX_PROP_METADATA_TRACK_NUMBER}},                 q{"SDL_mixer.metadata.track"}},
+		{{q{totalTracksNumber},          q{MIX_PROP_METADATA_TOTAL_TRACKS_NUMBER}},          q{"SDL_mixer.metadata.total_tracks"}},
+		{{q{yearNumber},                 q{MIX_PROP_METADATA_YEAR_NUMBER}},                  q{"SDL_mixer.metadata.year"}},
+		{{q{durationFramesNumber},       q{MIX_PROP_METADATA_DURATION_FRAMES_NUMBER}},       q{"SDL_mixer.metadata.duration_frames"}},
+		{{q{durationInfiniteBoolean},    q{MIX_PROP_METADATA_DURATION_INFINITE_BOOLEAN}},    q{"SDL_mixer.metadata.duration_infinite"}},
+	];
+	return ret;
+}()));
+
+enum: long{
+	MIX_Duration_Unknown = -1,
+	MIX_Duration_Infinite = -2,
 	
-	MIX_DEFAULT_FREQUENCY = MIX_DefaultFrequency,
-	MIX_DEFAULT_FORMAT = MIX_DefaultFormat,
-	MIX_DEFAULT_CHANNELS = MIX_DefaultChannels,
-	MIX_MAX_VOLUME = MIX_MaxVolume,
+	MIX_DURATION_UNKNOWN = MIX_Duration_Unknown,
+	MIX_DURATION_INFINITE = MIX_Duration_Infinite,
 }
 
-struct Mix_Chunk{
-	int allocated;
-	ubyte* aBuf;
-	uint aLen;
-	ubyte volume;
-	
-	alias abuf = aBuf;
-	alias alen = aLen;
-}
-
-mixin(makeEnumBind(q{Mix_Fading}, members: (){
+mixin(makeEnumBind(q{MIXProp_Play}, members: (){
 	EnumMember[] ret = [
-		{{q{noFading}, q{MIX_NO_FADING}}},
-		{{q{fadingOut}, q{MIX_FADING_OUT}}},
-		{{q{fadingIn}, q{MIX_FADING_IN}}},
+		{{q{loopsNumber},                        q{MIX_PROP_PLAY_LOOPS_NUMBER}},                          q{"SDL_mixer.play.loops"}},
+		{{q{maxFrameNumber},                     q{MIX_PROP_PLAY_MAX_FRAME_NUMBER}},                      q{"SDL_mixer.play.max_frame"}},
+		{{q{maxMillisecondsNumber},              q{MIX_PROP_PLAY_MAX_MILLISECONDS_NUMBER}},               q{"SDL_mixer.play.max_milliseconds"}},
+		{{q{startFrameNumber},                   q{MIX_PROP_PLAY_START_FRAME_NUMBER}},                    q{"SDL_mixer.play.start_frame"}},
+		{{q{startMillisecondNumber},             q{MIX_PROP_PLAY_START_MILLISECOND_NUMBER}},              q{"SDL_mixer.play.start_millisecond"}},
+		{{q{loopStartFrameNumber},               q{MIX_PROP_PLAY_LOOP_START_FRAME_NUMBER}},               q{"SDL_mixer.play.loop_start_frame"}},
+		{{q{loopStartMillisecondNumber},         q{MIX_PROP_PLAY_LOOP_START_MILLISECOND_NUMBER}},         q{"SDL_mixer.play.loop_start_millisecond"}},
+		{{q{fadeInFramesNumber},                 q{MIX_PROP_PLAY_FADE_IN_FRAMES_NUMBER}},                 q{"SDL_mixer.play.fade_in_frames"}},
+		{{q{fadeInMillisecondsNumber},           q{MIX_PROP_PLAY_FADE_IN_MILLISECONDS_NUMBER}},           q{"SDL_mixer.play.fade_in_milliseconds"}},
+		{{q{fadeInStartGainFloat},               q{MIX_PROP_PLAY_FADE_IN_START_GAIN_FLOAT}},              q{"SDL_mixer.play.fade_in_start_gain"}},
+		{{q{appendSilenceFramesNumber},          q{MIX_PROP_PLAY_APPEND_SILENCE_FRAMES_NUMBER}},          q{"SDL_mixer.play.append_silence_frames"}},
+		{{q{appendSilenceMillisecondsNumber},    q{MIX_PROP_PLAY_APPEND_SILENCE_MILLISECONDS_NUMBER}},    q{"SDL_mixer.play.append_silence_milliseconds"}},
+		{{q{haltWhenExhaustedBoolean},           q{MIX_PROP_PLAY_HALT_WHEN_EXHAUSTED_BOOLEAN}},           q{"SDL_mixer.play.halt_when_exhausted"}},
 	];
+	if(sdlMixerVersion >= Version(3,2,2)){
+		EnumMember add =
+			{{q{startOrderNumber},               q{MIX_PROP_PLAY_START_ORDER_NUMBER}},                    q{"SDL_mixer.play.start_order"}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 
-mixin(makeEnumBind(q{Mix_MusicType}, aliases: [q{Mus}], members: (){
-	EnumMember[] ret = [
-		{{q{none},           q{MUS_NONE}}},
-		{{q{wav},            q{MUS_WAV}}},
-		{{q{mod},            q{MUS_MOD}}},
-		{{q{mid},            q{MUS_MID}}},
-		{{q{ogg},            q{MUS_OGG}}},
-		{{q{mp3},            q{MUS_MP3}}},
-		{{q{mp3MADUnused},   q{MUS_MP3_MAD_UNUSED}}},
-		{{q{flac},           q{MUS_FLAC}}},
-		{{q{modPlugUnused},  q{MUS_MODPLUG_UNUSED}}},
-		{{q{opus},           q{MUS_OPUS}}},
-		{{q{wavPack},        q{MUS_WAVPACK}}},
-		{{q{gme},            q{MUS_GME}}},
-	];
-	return ret;
-}()));
-
-struct Mix_Music;
-
-extern(C) nothrow{
-	alias Mix_MixCallback = void function(void* uData, ubyte* stream, int len);
-	alias Mix_MusicFinishedCallback = void function();
-	alias Mix_ChannelFinishedCallback = void function(int channel);
+struct MIX_StereoGains{
+	float left, right;
 }
 
-enum{
-	MIX_ChannelPost = -2,
-	MIX_CHANNEL_POST = MIX_ChannelPost,
+struct MIX_Point3D{
+	float x, y, z;
 }
 
 extern(C) nothrow{
-	alias Mix_EffectFunc_t = void function(int chan, void* stream, int len, void* uData);
-	alias Mix_EffectDone_t = void function(int chan, void* uData);
+	alias MIX_TrackStoppedCallback = void function(void* userData, MIX_Track* track);
+	alias MIX_TrackMixCallback = void function(void* userData, MIX_Track* track, const(SDL_AudioSpec)* spec, float* pcm, int samples);
+	alias MIX_GroupMixCallback = void function(void* userData, MIX_Group* group, const(SDL_AudioSpec)* spec, float* pcm, int samples);
+	alias MIX_PostMixCallback = void function(void* userData, MIX_Mixer* mixer, const(SDL_AudioSpec)* spec, float* pcm, int samples);
 }
 
-enum{
-	MIX_EffectsMaxSpeed = "MIX_EFFECTSMAXSPEED",
-	MIX_EFFECTSMAXSPEED = MIX_EffectsMaxSpeed,
-}
-
-alias Mix_EachSoundFontCallback = extern(C) bool function(const(char)*, void*) nothrow;
+struct MIX_AudioDecoder;
 
 mixin(joinFnBinds((){
 	FnBind[] ret = [
-		{q{int}, q{Mix_Version}, q{}},
-		{q{MIX_InitFlags}, q{Mix_Init}, q{MIX_InitFlags flags}},
-		{q{void}, q{Mix_Quit}, q{}},
-		{q{bool}, q{Mix_OpenAudio}, q{SDL_AudioDeviceID devID, const(SDL_AudioSpec)* spec}},
-		{q{void}, q{Mix_PauseAudio}, q{int pauseOn}},
-		{q{bool}, q{Mix_QuerySpec}, q{int* frequency, SDL_AudioFormat* format, int* channels}},
-		{q{int}, q{Mix_AllocateChannels}, q{int numChans}},
-		{q{Mix_Chunk*}, q{Mix_LoadWAV_IO}, q{SDL_IOStream* src, bool closeIO}},
-		{q{Mix_Chunk*}, q{Mix_LoadWAV}, q{const(char)* file}},
-		{q{Mix_Music*}, q{Mix_LoadMUS}, q{const(char)* file}},
-		{q{Mix_Music*}, q{Mix_LoadMUS_IO}, q{SDL_IOStream* src, bool closeIO}},
-		{q{Mix_Music*}, q{Mix_LoadMUSType_IO}, q{SDL_IOStream* src, Mix_MusicType type, bool closeIO}},
-		{q{Mix_Chunk*}, q{Mix_QuickLoad_WAV}, q{ubyte* mem}},
-		{q{Mix_Chunk*}, q{Mix_QuickLoad_RAW}, q{ubyte* mem, uint len}},
-		{q{void}, q{Mix_FreeChunk}, q{Mix_Chunk* chunk}},
-		{q{void}, q{Mix_FreeMusic}, q{Mix_Music* music}},
-		{q{int}, q{Mix_GetNumChunkDecoders}, q{}},
-		{q{const(char)*}, q{Mix_GetChunkDecoder}, q{int index}},
-		{q{bool}, q{Mix_HasChunkDecoder}, q{const(char)* name}},
-		{q{int}, q{Mix_GetNumMusicDecoders}, q{}},
-		{q{const(char)*}, q{Mix_GetMusicDecoder}, q{int index}},
-		{q{bool}, q{Mix_HasMusicDecoder}, q{const(char)* name}},
-		{q{Mix_MusicType}, q{Mix_GetMusicType}, q{const(Mix_Music)* music}},
-		{q{const(char)*}, q{Mix_GetMusicTitle}, q{const(Mix_Music)* music}},
-		{q{const(char)*}, q{Mix_GetMusicTitleTag}, q{const(Mix_Music)* music}},
-		{q{const(char)*}, q{Mix_GetMusicArtistTag}, q{const(Mix_Music)* music}},
-		{q{const(char)*}, q{Mix_GetMusicAlbumTag}, q{const(Mix_Music)* music}},
-		{q{const(char)*}, q{Mix_GetMusicCopyrightTag}, q{const(Mix_Music)* music}},
-		{q{void}, q{Mix_SetPostMix}, q{Mix_MixCallback mixFunc, void* arg}},
-		{q{void}, q{Mix_HookMusic}, q{Mix_MixCallback mixFunc, void* arg}},
-		{q{void}, q{Mix_HookMusicFinished}, q{Mix_MusicFinishedCallback musicFinished}},
-		{q{void*}, q{Mix_GetMusicHookData}, q{}},
-		{q{void}, q{Mix_ChannelFinished}, q{Mix_ChannelFinishedCallback channelFinished}},
-		{q{bool}, q{Mix_RegisterEffect}, q{int chan, Mix_EffectFunc_t f, Mix_EffectDone_t d, void* arg}},
-		{q{bool}, q{Mix_UnregisterEffect}, q{int channel, Mix_EffectFunc_t f}},
-		{q{bool}, q{Mix_UnregisterAllEffects}, q{int channel}},
-		{q{bool}, q{Mix_SetPanning}, q{int channel, ubyte left, ubyte right}},
-		{q{bool}, q{Mix_SetPosition}, q{int channel, short angle, ubyte distance}},
-		{q{bool}, q{Mix_SetDistance}, q{int channel, ubyte distance}},
-		{q{bool}, q{Mix_SetReverseStereo}, q{int channel, int flip}},
-		{q{int}, q{Mix_ReserveChannels}, q{int num}},
-		{q{bool}, q{Mix_GroupChannel}, q{int which, int tag}},
-		{q{bool}, q{Mix_GroupChannels}, q{int from, int to, int tag}},
-		{q{int}, q{Mix_GroupAvailable}, q{int tag}},
-		{q{int}, q{Mix_GroupCount}, q{int tag}},
-		{q{int}, q{Mix_GroupOldest}, q{int tag}},
-		{q{int}, q{Mix_GroupNewer}, q{int tag}},
-		{q{int}, q{Mix_PlayChannel}, q{int channel, Mix_Chunk* chunk, int loops}},
-		{q{int}, q{Mix_PlayChannelTimed}, q{int channel, Mix_Chunk* chunk, int loops, int ticks}},
-		{q{bool}, q{Mix_PlayMusic}, q{Mix_Music* music, int loops}},
-		{q{bool}, q{Mix_FadeInMusic}, q{Mix_Music* music, int loops, int ms}},
-		{q{bool}, q{Mix_FadeInMusicPos}, q{Mix_Music* music, int loops, int ms, double position}},
-		{q{int}, q{Mix_FadeInChannel}, q{int channel, Mix_Chunk* chunk, int loops, int ms}},
-		{q{int}, q{Mix_FadeInChannelTimed}, q{int channel, Mix_Chunk* chunk, int loops, int ms, int ticks}},
-		{q{int}, q{Mix_Volume}, q{int channel, int volume}},
-		{q{int}, q{Mix_VolumeChunk}, q{Mix_Chunk* chunk, int volume}},
-		{q{int}, q{Mix_VolumeMusic}, q{int volume}},
-		{q{int}, q{Mix_GetMusicVolume}, q{Mix_Music* music}},
-		{q{int}, q{Mix_MasterVolume}, q{int volume}},
-		{q{void}, q{Mix_HaltChannel}, q{int channel}},
-		{q{void}, q{Mix_HaltGroup}, q{int tag}},
-		{q{void}, q{Mix_HaltMusic}, q{}},
-		{q{int}, q{Mix_ExpireChannel}, q{int channel, int ticks}},
-		{q{int}, q{Mix_FadeOutChannel}, q{int which, int ms}},
-		{q{int}, q{Mix_FadeOutGroup}, q{int tag, int ms}},
-		{q{bool}, q{Mix_FadeOutMusic}, q{int ms}},
-		{q{Mix_Fading}, q{Mix_FadingMusic}, q{}},
-		{q{Mix_Fading}, q{Mix_FadingChannel}, q{int which}},
-		{q{void}, q{Mix_Pause}, q{int channel}},
-		{q{void}, q{Mix_PauseGroup}, q{int tag}},
-		{q{void}, q{Mix_Resume}, q{int channel}},
-		{q{void}, q{Mix_ResumeGroup}, q{int tag}},
-		{q{int}, q{Mix_Paused}, q{int channel}},
-		{q{void}, q{Mix_PauseMusic}, q{}},
-		{q{void}, q{Mix_ResumeMusic}, q{}},
-		{q{void}, q{Mix_RewindMusic}, q{}},
-		{q{bool}, q{Mix_PausedMusic}, q{}},
-		{q{bool}, q{Mix_ModMusicJumpToOrder}, q{int order}},
-		{q{bool}, q{Mix_StartTrack}, q{Mix_Music* music, int track}},
-		{q{int}, q{Mix_GetNumTracks}, q{Mix_Music* music}},
-		{q{bool}, q{Mix_SetMusicPosition}, q{double position}},
-		{q{double}, q{Mix_GetMusicPosition}, q{Mix_Music* music}},
-		{q{double}, q{Mix_MusicDuration}, q{Mix_Music* music}},
-		{q{double}, q{Mix_GetMusicLoopStartTime}, q{Mix_Music* music}},
-		{q{double}, q{Mix_GetMusicLoopEndTime}, q{Mix_Music* music}},
-		{q{double}, q{Mix_GetMusicLoopLengthTime}, q{Mix_Music* music}},
-		{q{int}, q{Mix_Playing}, q{int channel}},
-		{q{bool}, q{Mix_PlayingMusic}, q{}},
-		{q{bool}, q{Mix_SetSoundFonts}, q{const(char)* paths}},
-		{q{const(char)*}, q{Mix_GetSoundFonts}, q{}},
-		{q{bool}, q{Mix_EachSoundFont}, q{Mix_EachSoundFontCallback function_, void* data}},
-		{q{bool}, q{Mix_SetTimidityCfg}, q{const(char)* path}},
-		{q{const(char)*}, q{Mix_GetTimidityCfg}, q{}},
-		{q{Mix_Chunk*}, q{Mix_GetChunk}, q{int channel}},
-		{q{void}, q{Mix_CloseAudio}, q{}},
+		{q{int}, q{MIX_Version}, q{}},
+		{q{bool}, q{MIX_Init}, q{}},
+		{q{void}, q{MIX_Quit}, q{}},
+		{q{int}, q{MIX_GetNumAudioDecoders}, q{}},
+		{q{const(char)*}, q{MIX_GetAudioDecoder}, q{int index}},
+		{q{MIX_Mixer*}, q{MIX_CreateMixerDevice}, q{SDL_AudioDeviceID devID, const(SDL_AudioSpec)* spec}},
+		{q{MIX_Mixer*}, q{MIX_CreateMixer}, q{const(SDL_AudioSpec)* spec}},
+		{q{void}, q{MIX_DestroyMixer}, q{MIX_Mixer* mixer}},
+		{q{SDL_PropertiesID}, q{MIX_GetMixerProperties}, q{MIX_Mixer* mixer}},
+		{q{bool}, q{MIX_GetMixerFormat}, q{MIX_Mixer* mixer, SDL_AudioSpec* spec}},
+		{q{void}, q{MIX_LockMixer}, q{MIX_Mixer* mixer}},
+		{q{void}, q{MIX_UnlockMixer}, q{MIX_Mixer* mixer}},
+		{q{MIX_Audio*}, q{MIX_LoadAudio_IO}, q{MIX_Mixer* mixer, SDL_IOStream* io, bool preDecode, bool closeIO}},
+		{q{MIX_Audio*}, q{MIX_LoadAudio}, q{MIX_Mixer* mixer, const(char)* path, bool preDecode}},
+		{q{MIX_Audio*}, q{MIX_LoadAudioNoCopy}, q{MIX_Mixer* mixer, const(void)* data, size_t dataLen, bool freeWhenDone}},
+		{q{MIX_Audio*}, q{MIX_LoadAudioWithProperties}, q{SDL_PropertiesID props}},
+		{q{MIX_Audio*}, q{MIX_LoadRawAudio_IO}, q{MIX_Mixer* mixer, SDL_IOStream* io, const(SDL_AudioSpec)* spec, bool closeIO}},
+		{q{MIX_Audio*}, q{MIX_LoadRawAudio}, q{MIX_Mixer* mixer, const(void)* data, size_t dataLen, const(SDL_AudioSpec)* spec}},
+		{q{MIX_Audio*}, q{MIX_LoadRawAudioNoCopy}, q{MIX_Mixer* mixer, const(void)* data, size_t dataLen, const(SDL_AudioSpec)* spec, bool freeWhenDone}},
+		{q{MIX_Audio*}, q{MIX_CreateSineWaveAudio}, q{MIX_Mixer* mixer, int hz, float amplitude, long ms}},
+		{q{SDL_PropertiesID}, q{MIX_GetAudioProperties}, q{MIX_Audio* audio}},
+		{q{long}, q{MIX_GetAudioDuration}, q{MIX_Audio* audio}},
+		{q{bool}, q{MIX_GetAudioFormat}, q{MIX_Audio* audio, SDL_AudioSpec* spec}},
+		{q{void}, q{MIX_DestroyAudio}, q{MIX_Audio* audio}},
+		{q{MIX_Track*}, q{MIX_CreateTrack}, q{MIX_Mixer* mixer}},
+		{q{void}, q{MIX_DestroyTrack}, q{MIX_Track* track}},
+		{q{SDL_PropertiesID}, q{MIX_GetTrackProperties}, q{MIX_Track* track}},
+		{q{MIX_Mixer*}, q{MIX_GetTrackMixer}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_SetTrackAudio}, q{MIX_Track* track, MIX_Audio* audio}},
+		{q{bool}, q{MIX_SetTrackAudioStream}, q{MIX_Track* track, SDL_AudioStream* stream}},
+		{q{bool}, q{MIX_SetTrackIOStream}, q{MIX_Track* track, SDL_IOStream* io, bool closeIO}},
+		{q{bool}, q{MIX_SetTrackRawIOStream}, q{MIX_Track* track, SDL_IOStream* io, const(SDL_AudioSpec)* spec, bool closeIO}},
+		{q{bool}, q{MIX_TagTrack}, q{MIX_Track* track, const(char)* tag}},
+		{q{void}, q{MIX_UntagTrack}, q{MIX_Track* track, const(char)* tag}},
+		{q{char**}, q{MIX_GetTrackTags}, q{MIX_Track* track, int* count}},
+		{q{MIX_Track**}, q{MIX_GetTaggedTracks}, q{MIX_Mixer* mixer, const(char)* tag, int* count}},
+		{q{bool}, q{MIX_SetTrackPlaybackPosition}, q{MIX_Track* track, long frames}},
+		{q{long}, q{MIX_GetTrackPlaybackPosition}, q{MIX_Track* track}},
+		{q{long}, q{MIX_GetTrackFadeFrames}, q{MIX_Track* track}},
+		{q{int}, q{MIX_GetTrackLoops}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_SetTrackLoops}, q{MIX_Track* track, int numLoops}},
+		{q{MIX_Audio*}, q{MIX_GetTrackAudio}, q{MIX_Track* track}},
+		{q{SDL_AudioStream*}, q{MIX_GetTrackAudioStream}, q{MIX_Track* track}},
+		{q{long}, q{MIX_GetTrackRemaining}, q{MIX_Track* track}},
+		{q{long}, q{MIX_TrackMSToFrames}, q{MIX_Track* track, long ms}},
+		{q{long}, q{MIX_TrackFramesToMS}, q{MIX_Track* track, long frames}},
+		{q{long}, q{MIX_AudioMSToFrames}, q{MIX_Audio* audio, long ms}},
+		{q{long}, q{MIX_AudioFramesToMS}, q{MIX_Audio* audio, long frames}},
+		{q{long}, q{MIX_MSToFrames}, q{int sample_rate, long ms}},
+		{q{long}, q{MIX_FramesToMS}, q{int sample_rate, long frames}},
+		{q{bool}, q{MIX_PlayTrack}, q{MIX_Track* track, SDL_PropertiesID options}},
+		{q{bool}, q{MIX_PlayTag}, q{MIX_Mixer* mixer, const(char)* tag, SDL_PropertiesID options}},
+		{q{bool}, q{MIX_PlayAudio}, q{MIX_Mixer* mixer, MIX_Audio* audio}},
+		{q{bool}, q{MIX_StopTrack}, q{MIX_Track* track, long fadeOutFrames}},
+		{q{bool}, q{MIX_StopAllTracks}, q{MIX_Mixer* mixer, long fadeOutMS}},
+		{q{bool}, q{MIX_StopTag}, q{MIX_Mixer* mixer, const(char)* tag, long fadeOutMS}},
+		{q{bool}, q{MIX_PauseTrack}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_PauseAllTracks}, q{MIX_Mixer* mixer}},
+		{q{bool}, q{MIX_PauseTag}, q{MIX_Mixer* mixer, const(char)* tag}},
+		{q{bool}, q{MIX_ResumeTrack}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_ResumeAllTracks}, q{MIX_Mixer* mixer}},
+		{q{bool}, q{MIX_ResumeTag}, q{MIX_Mixer* mixer, const(char)* tag}},
+		{q{bool}, q{MIX_TrackPlaying}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_TrackPaused}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_SetMixerGain}, q{MIX_Mixer* mixer, float gain}},
+		{q{float}, q{MIX_GetMixerGain}, q{MIX_Mixer* mixer}},
+		{q{bool}, q{MIX_SetTrackGain}, q{MIX_Track* track, float gain}},
+		{q{float}, q{MIX_GetTrackGain}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_SetTagGain}, q{MIX_Mixer* mixer, const(char)* tag, float gain}},
+		{q{bool}, q{MIX_SetMixerFrequencyRatio}, q{MIX_Mixer* mixer, float ratio}},
+		{q{float}, q{MIX_GetMixerFrequencyRatio}, q{MIX_Mixer* mixer}},
+		{q{bool}, q{MIX_SetTrackFrequencyRatio}, q{MIX_Track* track, float ratio}},
+		{q{float}, q{MIX_GetTrackFrequencyRatio}, q{MIX_Track* track}},
+		{q{bool}, q{MIX_SetTrackOutputChannelMap}, q{MIX_Track* track, const(int)* chMap, int count}},
+		{q{bool}, q{MIX_SetTrackStereo}, q{MIX_Track* track, const(MIX_StereoGains)* gains}},
+		{q{bool}, q{MIX_SetTrack3DPosition}, q{MIX_Track* track, const(MIX_Point3D)* position}},
+		{q{bool}, q{MIX_GetTrack3DPosition}, q{MIX_Track* track, MIX_Point3D* position}},
+		{q{MIX_Group*}, q{MIX_CreateGroup}, q{MIX_Mixer* mixer}},
+		{q{void}, q{MIX_DestroyGroup}, q{MIX_Group* group}},
+		{q{SDL_PropertiesID}, q{MIX_GetGroupProperties}, q{MIX_Group* group}},
+		{q{MIX_Mixer*}, q{MIX_GetGroupMixer}, q{MIX_Group* group}},
+		{q{bool}, q{MIX_SetTrackGroup}, q{MIX_Track* track, MIX_Group* group}},
+		{q{bool}, q{MIX_SetTrackStoppedCallback}, q{MIX_Track* track, MIX_TrackStoppedCallback cb, void* userData}},
+		{q{bool}, q{MIX_SetTrackRawCallback}, q{MIX_Track* track, MIX_TrackMixCallback cb, void* userData}},
+		{q{bool}, q{MIX_SetTrackCookedCallback}, q{MIX_Track* track, MIX_TrackMixCallback cb, void* userData}},
+		{q{bool}, q{MIX_SetGroupPostMixCallback}, q{MIX_Group* group, MIX_GroupMixCallback cb, void* userData}},
+		{q{bool}, q{MIX_SetPostMixCallback}, q{MIX_Mixer* mixer, MIX_PostMixCallback cb, void* userData}},
+		{q{int}, q{MIX_Generate}, q{MIX_Mixer* mixer, void* buffer, int bufLen}},
+		{q{MIX_AudioDecoder*}, q{MIX_CreateAudioDecoder}, q{const(char)* path, SDL_PropertiesID props}},
+		{q{MIX_AudioDecoder*}, q{MIX_CreateAudioDecoder_IO}, q{SDL_IOStream* io, bool closeIO, SDL_PropertiesID props}},
+		{q{void}, q{MIX_DestroyAudioDecoder}, q{MIX_AudioDecoder* audioDecoder}},
+		{q{SDL_PropertiesID}, q{MIX_GetAudioDecoderProperties}, q{MIX_AudioDecoder* audioDecoder}},
+		{q{bool}, q{MIX_GetAudioDecoderFormat}, q{MIX_AudioDecoder* audioDecoder, SDL_AudioSpec* spec}},
+		{q{int}, q{MIX_DecodeAudio}, q{MIX_AudioDecoder* audioDecoder, void* buffer, int bufLen, const(SDL_AudioSpec)* spec}},
 	];
 	return ret;
 }()));

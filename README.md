@@ -39,12 +39,12 @@ To use BindBC-SDL in your dub project, add it to the list of `dependencies` in y
 Example __dub.json__
 ```json
 "dependencies": {
-	"bindbc-sdl": "~>2.0",
+	"bindbc-sdl": "~>2.3",
 },
 ```
 Example __dub.sdl__
 ```sdl
-dependency "bindbc-sdl" version="~>2.0"
+dependency "bindbc-sdl" version="~>2.3"
 ```
 
 By default, BindBC-SDL is configured to compile as a dynamic binding that is not BetterC-compatible. If you prefer static bindings or need BetterC compatibility, they can be enabled via `subConfigurations` in your dub configuration file. For configuration naming & more details, see [Configurations](#configurations).
@@ -67,16 +67,16 @@ If you're using static bindings, then you will also need to add the name of each
 Example __dub.json__
 ```json
 "versions": [
-	"SDL_3_4", "SDL_Net_3_0",
+	"SDL_3_4", "SDL_Mixer_3_2",
 ],
 "libs": [
-	"SDL3", "SDL3_net",
+	"SDL3", "SDL3_mixer",
 ],
 ```
 Example __dub.sdl__
 ```sdl
-versions "SDL_3_4" "SDL_Net_3_0"
-libs "SDL3" "SDL3_net"
+versions "SDL_3_4" "SDL_Mixer_3_2"
+libs "SDL3" "SDL3_mixer"
 ```
 
 **If you're using static bindings**: `import bindbc.sdl` in your code, and then you can use all of SDL just like you would in C. That's it!
@@ -115,7 +115,7 @@ You should also check that the desired minimum version of the library was loaded
 |-----------------------|----------------|
 |`SDL_GetVersion`       | SDL            |
 |`IMG_Version`          | SDL_image      |
-|`Mix_Version`          | SDL_mixer      |
+|`MIX_Version`          | SDL_mixer      |
 |`SDLNet_Version`       | SDL_net        |
 |`TTF_Version`          | SDL_ttf        |
 
@@ -248,8 +248,7 @@ These are the supported versions of each SDL_* library, along with the correspon
 
 It is necessary to specify only a single version identifier per library. For example, `SDL_Image_3_2` by itself will activate the SDL_image binding.
 
-<details>
-	<summary><h3>SDL versions</h3></summary>
+<details><summary><h3>SDL versions</h3></summary>
 
 | Version     |Version identifier|
 |-------------|------------------|
@@ -275,13 +274,10 @@ It is necessary to specify only a single version identifier per library. For exa
 
 <details><summary><h3>SDL_mixer versions</h3></summary>
 
-
-> [!NOTE]\
-> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_mixer/commit/af6a29df4e14c6ce72608b3ccd49cf35e1014255). SDL_mixer 3.X has not officially released yet. The API of these bindings & the version identifier used to activate them will change when SDL_mixer 3.X is officially released.
-
-| Version |Version identifier| Public API updated |
-|---------|------------------|--------------------|
-| 3.0.0   | `SDL_Mixer_3_0`  |                    |
+| Version | Version identifier | Public API updated |
+|---------|--------------------|--------------------|
+| 3.2.0   | `SDL_Mixer_3_2`    |                    |
+| 3.2.2   | `SDL_Mixer_3_2_2`  | :heavy_check_mark: |
 
 </details>
 

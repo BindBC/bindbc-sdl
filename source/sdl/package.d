@@ -105,6 +105,7 @@ alias versionNumMajor = SDL_VERSIONNUM_MAJOR;
 alias versionNumMinor = SDL_VERSIONNUM_MINOR;
 alias versionNumMicro = SDL_VERSIONNUM_MICRO;
 alias versionAtleast = SDL_VERSION_ATLEAST;
+alias versionAtLeast = SDL_VERSION_ATLEAST;
 //sdl.video
 alias windowPosUndefinedDisplay = SDL_WINDOWPOS_UNDEFINED_DISPLAY;
 alias windowPosIsUndefined = SDL_WINDOWPOS_ISUNDEFINED;

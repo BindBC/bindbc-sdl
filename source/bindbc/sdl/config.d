@@ -31,7 +31,8 @@ enum dStyleEnums = (){
 }();
 
 enum sdlVersion = (){
-	version(SDL_3_4_4)        return Version(3,4,4);
+	version(SDL_3_4_10)       return Version(3,4,10);
+	else version(SDL_3_4_4)   return Version(3,4,4);
 	else version(SDL_3_4_2)   return Version(3,4,2);
 	else version(SDL_3_4_0)   return Version(3,4,0);
 	else version(SDL_3_2_18)  return Version(3,2,18);
@@ -55,8 +56,8 @@ enum sdlMixerVersion = (){
 }();
 
 enum sdlNetVersion = (){
-	/+version(SDL_Net_3_2)      return Version(3,2,0);
-	else+/version(SDL_Net_3_1) return Version(3,1,0);
+	version(SDL_Net_3_2)      return Version(3,2,0);
+	else version(SDL_Net_3_1) return Version(3,2,0);
 	else                      return Version.none;
 }();
 

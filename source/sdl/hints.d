@@ -212,7 +212,7 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 		{{q{videoX11ScalingFactor},                 q{SDL_HINT_VIDEO_X11_SCALING_FACTOR}},                   q{"SDL_VIDEO_X11_SCALING_FACTOR"}},
 		{{q{videoX11VisualID},                      q{SDL_HINT_VIDEO_X11_VISUALID}},                         q{"SDL_VIDEO_X11_VISUALID"}},
 		{{q{videoX11WindowVisualID},                q{SDL_HINT_VIDEO_X11_WINDOW_VISUALID}},                  q{"SDL_VIDEO_X11_WINDOW_VISUALID"}},
-		{{q{videoX11Xrandr},                        q{SDL_HINT_VIDEO_X11_XRANDR}},                           q{"SDL_VIDEO_X11_XRANDR"}},
+		{{q{videoX11XRandR},                        q{SDL_HINT_VIDEO_X11_XRANDR}},                           q{"SDL_VIDEO_X11_XRANDR"}, aliases: [{q{videoX11Xrandr}}]},
 		{{q{vitaEnableBackTouch},                   q{SDL_HINT_VITA_ENABLE_BACK_TOUCH}},                     q{"SDL_VITA_ENABLE_BACK_TOUCH"}},
 		{{q{vitaEnableFrontTouch},                  q{SDL_HINT_VITA_ENABLE_FRONT_TOUCH}},                    q{"SDL_VITA_ENABLE_FRONT_TOUCH"}},
 		{{q{vitaModulePath},                        q{SDL_HINT_VITA_MODULE_PATH}},                           q{"SDL_VITA_MODULE_PATH"}},
@@ -294,6 +294,11 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 			{{q{joystickGameInputRaw},              q{SDL_HINT_JOYSTICK_GAMEINPUT_RAW}},                     q{"SDL_JOYSTICK_GAMEINPUT_RAW"}},
 			{{q{windowsRawKeyboardInputSink},       q{SDL_HINT_WINDOWS_RAW_KEYBOARD_INPUTSINK}},             q{"SDL_WINDOWS_RAW_KEYBOARD_INPUTSINK"}},
 		];
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,10)){
+		EnumMember add =
+			{{q{videoX11EnableXSyncExt},            q{SDL_HINT_VIDEO_X11_ENABLE_XSYNC_EXT}},                 q{"SDL_VIDEO_X11_ENABLE_XSYNC_EXT"}};
 		ret ~= add;
 	}
 	return ret;

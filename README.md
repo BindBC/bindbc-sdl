@@ -261,44 +261,41 @@ It is necessary to specify only a single version identifier per library. For exa
 | 3.4.0       | `SDL_3_4_0`      |
 | 3.4.2       | `SDL_3_4_2`      |
 | 3.4.4       | `SDL_3_4_4`      |
+| 3.4.10      | `SDL_3_4_10`     |
 
 </details>
 
 <details><summary><h3>SDL_image versions</h3></summary>
 
-| Version |Version identifier| Public API updated |
-|---------|------------------|--------------------|
-| 3.2.0   | `SDL_Image_3_2`  |                    |
+| Version |Version identifier|
+|---------|------------------|
+| 3.2.0   | `SDL_Image_3_2`  |
 
 </details>
 
 <details><summary><h3>SDL_mixer versions</h3></summary>
 
-| Version | Version identifier | Public API updated |
-|---------|--------------------|--------------------|
-| 3.2.0   | `SDL_Mixer_3_2`    |                    |
-| 3.2.2   | `SDL_Mixer_3_2_2`  | :heavy_check_mark: |
+| Version | Version identifier |
+|---------|--------------------|
+| 3.2.0   | `SDL_Mixer_3_2`    |
+| 3.2.2   | `SDL_Mixer_3_2_2`  |
 
 </details>
 
 <details><summary><h3>SDL_net versions</h3></summary>
 
-
-> [!NOTE]\
-> These bindings are based on [this commit](https://github.com/libsdl-org/SDL_net/commit/8fd5743ad60fa7552a929ed4121eab039e2453dd). SDL_net 3.X has not officially released yet. The API of these bindings & the version identifier used to activate them will change when SDL_net 3.X is officially released.
-
-| Version |Version identifier| Public API updated |
-|---------|------------------|--------------------|
-| 3.1.0   | `SDL_Net_3_1`    |                    |
+| Version |Version identifier|
+|---------|------------------|
+| 3.2.0   | `SDL_Net_3_2` (or `SDL_Net_3_1`) |
 
 </details>
 
 <details><summary><h3>SDL_ttf versions</h3></summary>
 
-| Version |Version identifier| Public API updated |
-|---------|------------------|--------------------|
-| 3.2.0   | `SDL_TTF_3_2`    |                    |
-| 3.2.2   | `SDL_TTF_3_2_2`  | :heavy_check_mark: |
+| Version |Version identifier|
+|---------|------------------|
+| 3.2.0   | `SDL_TTF_3_2`    |
+| 3.2.2   | `SDL_TTF_3_2_2`  |
 
 </details>
 
@@ -308,9 +305,9 @@ It is necessary to specify only a single version identifier per library. For exa
 > [!NOTE]\
 > These bindings are based on [this commit](https://github.com/libsdl-org/SDL_shadercross/commit/f1ca8cfefba8f32095861bbcf2a4f4d773f0fbb4). SDL_shadercross has no versioned releases yet. The API of these bindings & the version identifier used to activate them may change if/when SDL_shadercross recieves its first versioned release.
 
-| Version | Version identifier    | Public API updated |
-|---------|-----------------------|--------------------|
-| 3.0.0   | `SDL_ShaderCross_3_0` |                    |
+| Version | Version identifier    |
+|---------|-----------------------|
+| 3.0.0   | `SDL_ShaderCross_3_0` |
 
 </details>
 

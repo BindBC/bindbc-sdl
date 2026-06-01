@@ -105,6 +105,7 @@ mixin(joinFnBinds((){
 		{q{void}, q{NET_SimulateDatagramPacketLoss}, q{NET_DatagramSocket* sock, int percentLoss}},
 		{q{void}, q{NET_DestroyDatagramSocket}, q{NET_DatagramSocket* sock}},
 		{q{int}, q{NET_WaitUntilInputAvailable}, q{void** vSockets, int numSockets, int timeout}},
+		{q{const(void)*}, q{NET_GetAddressBytes}, q{NET_Address* address, int* numBytes}},
 	];
 	return ret;
 }()));

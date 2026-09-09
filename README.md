@@ -262,6 +262,8 @@ It is necessary to specify only a single version identifier per library. For exa
 | 3.4.2       | `SDL_3_4_2`      |
 | 3.4.4       | `SDL_3_4_4`      |
 | 3.4.10      | `SDL_3_4_10`     |
+| 3.4.12      | `SDL_3_4_12`     |
+| 3.4.16      | `SDL_3_4_16`     |
 
 </details>
 

@@ -301,6 +301,16 @@ mixin(makeEnumBind(q{SDL_Hint}, q{SDL_Hint_}, members: (){
 			{{q{videoX11EnableXSyncExt},            q{SDL_HINT_VIDEO_X11_ENABLE_XSYNC_EXT}},                 q{"SDL_VIDEO_X11_ENABLE_XSYNC_EXT"}};
 		ret ~= add;
 	}
+	if(sdlVersion >= Version(3,4,12)){
+		EnumMember add =
+			{{q{enableSteamScreenKeyboard},         q{SDL_HINT_ENABLE_STEAM_SCREEN_KEYBOARD}},               q{"SDL_ENABLE_STEAM_SCREEN_KEYBOARD"}};
+		ret ~= add;
+	}
+	if(sdlVersion >= Version(3,4,16)){
+		EnumMember add =
+			{{q{androidAAudioInputPreset},          q{SDL_HINT_ANDROID_AAUDIO_INPUT_PRESET}},                q{"SDL_ANDROID_AAUDIO_INPUT_PRESET"}};
+		ret ~= add;
+	}
 	return ret;
 }()));
 

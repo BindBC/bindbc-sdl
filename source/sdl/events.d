@@ -478,6 +478,11 @@ struct SDL_PenProximityEvent{
 	ulong timestamp;
 	SDL_WindowID windowID;
 	SDL_PenID which;
+	static if(sdlVersion >= Version(3,4,16)){
+		SDL_PenInputFlags_ penState;
+		
+		alias pen_state = penState;
+	}
 }
 
 struct SDL_PenMotionEvent{

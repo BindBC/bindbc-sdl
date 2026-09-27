@@ -22,7 +22,7 @@ This project provides a set of both static and dynamic bindings to
 |[Entry points](#entry-points)|
 
 ## License
-BindBC-SDL&mdash;as well as every other binding in the [BindBC project](https://git.sleeping.town/BindBC)&mdash;is licensed under the [Boost Software License](https://www.boost.org/LICENSE_1_0.txt).
+BindBC-SDL is licensed under the [LGPL 3.0](https://www.gnu.org/licenses/lgpl-3.0.en.html) licence.
 
 Bear in mind that you still need to abide by [SDL's license](https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt), and the licenses of any SDL_* libraries that you use through these bindings.
 

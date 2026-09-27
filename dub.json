@@ -2,10 +2,10 @@
 	"name": "bindbc-sdl",
 	"description": "Static & dynamic bindings to SDL2/3 & the SDL_* libraries, compatible with BetterC, @nogc, and nothrow.",
 	"authors": ["Aya Partridge", "Mike Parker"],
-	"license": "BSL-1.0",
+	"license": "LGPL-3.0-or-later",
 	
 	"dependencies": {"bindbc-common": "~>1.0"},
-	"targetType": "staticLibrary",
+	"targetType": "library",
 	"targetPath": "lib",
 	"targetName": "BindBC_SDL",
 	

@@ -10,6 +10,7 @@ import bindbc.sdl.config;
 static if(sdlNetVersion):
 import bindbc.sdl.codegen;
 
+import sdl.properties: SDL_PropertiesID;
 import sdl.version_: SDL_VERSIONNUM;
 
 enum{
